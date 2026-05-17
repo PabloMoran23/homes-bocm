@@ -23,6 +23,13 @@ import type { SigmaBocmPopupLink, SectorFeatureCollection } from "@/lib/sector-g
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
 import { ubicacionPath } from "@/lib/ubicacion";
 import type { MadridSigmaDataset } from "@/lib/types";
+import { LICENCIA_MAPA_CONFIG } from "@/lib/licencia-mapa-config";
+import type { LicenciaMapaCategoria } from "@/lib/licencia-tipos";
+import {
+  allLicenciaTiposEnabled,
+  LICENCIA_TIPOS_FILTRABLES,
+  passesLicenciaTipoFilter,
+} from "@/lib/map-licencia-filters";
 import { ambitosProyectosEnVista, PROYECTOS_URBANISTICOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
@@ -58,6 +65,7 @@ type UbicacionGeo = {
       licencias: number;
       sigma: number;
       ultimaLicenciaFecha?: string | null;
+      ultimaLicenciaTipo?: string | null;
     };
   }>;
 };
@@ -105,6 +113,20 @@ export function ExploreMadridApp() {
     [dateFrom, dateTo],
   );
   const dateFilterActive = Boolean(dateFrom || dateTo);
+  const [licenciaTiposEnabled, setLicenciaTiposEnabled] = useState<Set<LicenciaMapaCategoria>>(
+    () => allLicenciaTiposEnabled(),
+  );
+  const licenciaTipoFilterActive =
+    licenciaTiposEnabled.size < LICENCIA_TIPOS_FILTRABLES.length;
+
+  const toggleLicenciaTipo = useCallback((cat: LicenciaMapaCategoria) => {
+    setLicenciaTiposEnabled((prev) => {
+      const next = new Set(prev);
+      if (next.has(cat)) next.delete(cat);
+      else next.add(cat);
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -233,9 +255,24 @@ export function ExploreMadridApp() {
         passesMapDateRange(ubicacionActivityMs(f.properties), dateRange),
       );
     }
+    if (showUbicaciones && licenciaTipoFilterActive) {
+      feats = feats.filter((f) =>
+        passesLicenciaTipoFilter(f.properties.ultimaLicenciaTipo, licenciaTiposEnabled),
+      );
+    }
     feats = filterPointFeaturesInView(feats, mapBounds);
     return { ...ubicGeo, features: feats };
-  }, [ubicGeo, q, searchIndex, mapBounds, dateFilterActive, dateRange]);
+  }, [
+    ubicGeo,
+    q,
+    searchIndex,
+    mapBounds,
+    dateFilterActive,
+    dateRange,
+    showUbicaciones,
+    licenciaTipoFilterActive,
+    licenciaTiposEnabled,
+  ]);
 
   const polygonGeo =
     mapMode === "ambitos"
@@ -303,6 +340,7 @@ export function ExploreMadridApp() {
     if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
     if (dateFilterActive) parts.push("filtro de fecha activo");
+    if (showUbicaciones && licenciaTipoFilterActive) parts.push("filtro por tipo de licencia");
     return parts.length ? parts.join(" · ") : "Sin datos en esta zona";
   }, [
     showUbicaciones,
@@ -312,6 +350,7 @@ export function ExploreMadridApp() {
     mapBounds,
     dataReady.ubic,
     dateFilterActive,
+    licenciaTipoFilterActive,
   ]);
 
   const onBoundsChange = useCallback((b: MapBounds) => {
@@ -494,6 +533,58 @@ export function ExploreMadridApp() {
               Edificios (licencias)
             </label>
           </fieldset>
+
+          {showUbicaciones ? (
+            <fieldset className="space-y-2 border-t border-slate-100 pt-3">
+              <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                Tipo de licencia
+              </legend>
+              <p className="text-xs leading-relaxed text-slate-500">
+                Según la licencia más reciente de cada edificio. Desmarca las que no quieras ver.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLicenciaTiposEnabled(allLicenciaTiposEnabled())}
+                  className="text-xs font-medium text-[var(--portal-accent)] hover:underline"
+                >
+                  Todas
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLicenciaTiposEnabled(new Set())}
+                  className="text-xs font-medium text-slate-500 hover:underline"
+                >
+                  Ninguna
+                </button>
+              </div>
+              <div className="max-h-44 space-y-1.5 overflow-y-auto pr-1">
+                {LICENCIA_TIPOS_FILTRABLES.map((cat) => {
+                  const cfg = LICENCIA_MAPA_CONFIG[cat];
+                  const on = licenciaTiposEnabled.has(cat);
+                  return (
+                    <label
+                      key={cat}
+                      className="flex cursor-pointer items-center gap-2 text-xs text-slate-700"
+                    >
+                      <input
+                        type="checkbox"
+                        className="accent-[var(--portal-accent)]"
+                        checked={on}
+                        onChange={() => toggleLicenciaTipo(cat)}
+                      />
+                      <span
+                        className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-white"
+                        style={{ backgroundColor: cfg.bg, boxShadow: `0 0 0 1px ${cfg.ring}` }}
+                        aria-hidden
+                      />
+                      <span className="leading-snug">{cfg.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
+          ) : null}
 
           <fieldset className="space-y-2 border-t border-slate-100 pt-3">
             <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
