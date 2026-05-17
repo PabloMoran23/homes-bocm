@@ -1,0 +1,29 @@
+name: Sync SQLite → Supabase
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download SQLite artifact
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: poc-local-sqlite
+          path: db/
+      - run: pip install -r db/requirements-supabase.txt
+      - name: Sync to Supabase
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ ! -f db/poc_local.sqlite ]; then
+            echo "No hay db/poc_local.sqlite en el repo. Sube el artefacto o commitea la DB de desarrollo."
+            exit 1
+          fi
+          python3 db/sync_sqlite_to_supabase.py --truncate

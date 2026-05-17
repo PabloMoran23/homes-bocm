@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.local
+!.env.example
+!web/.env.local.example
+
+# Datos web generados (incluir en deploy)
+!web/public/data/
+pdfs/
+pdfs_history/
+output/
+db/*.sqlite
+db/*.sqlite3
+*.log

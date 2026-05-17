@@ -1,0 +1,20 @@
+{
+  "resolvers": [
+    {
+      "type": "madrid_ayto_pgoum",
+      "id": "madrid_ayto_pgoum_ambito",
+      "comment": "Solo municipio Madrid (capital); PGOUM 97 SIGMA"
+    },
+    {
+      "type": "madrid_sitcm_vpla_ambito",
+      "id": "cm_sitcm_vpla_v_ambito",
+      "count": 80,
+      "require_provincia_madrid": true
+    },
+    {
+      "type": "nominatim_municipio",
+      "id": "nominatim_municipio_centroid",
+      "min_interval_s": 1.15
+    }
+  ]
+}

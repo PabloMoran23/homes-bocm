@@ -1,0 +1,45 @@
+{
+  "_doc": "Orden = prioridad. Cada resolver puede filtrar por boletin_source_id (equals | in | prefix) y municipio_norm_equals. Plantillas: {municipio_raw},{municipio_norm},{municipio_sql},{sector_raw},{sector_norm},{sector_sql}. Copia a resolvers.json.",
+  "_enrutado_ccaa": "boletin_source_id suele ser carpeta del índice: bocm, boja, dogv, bocyl, … Un resolver por servicio real (IDE autonómica o geoportal municipal). Si varios devuelven geometría, el primero que acierte en la lista gana; deja nominatim al final como fallback.",
+  "resolvers": [
+    {
+      "type": "madrid_sitcm_vpla_ambito",
+      "id": "cm_sitcm_vpla_v_ambito",
+      "count": 80,
+      "require_provincia_madrid": true
+    },
+    {
+      "type": "arcgis_rest_query",
+      "id": "ejemplo_bocm_madrid_ciudad_pg",
+      "boletin_source_id_equals": "bocm",
+      "municipio_norm_equals": "madrid",
+      "mapserver_base": "https://sigma.madrid.es/hosted/rest/services/PGOUM97/PG_GESTION/MapServer",
+      "layer_id": 6,
+      "where_template": "CODAMBGES = '{sector_raw}'"
+    },
+    {
+      "type": "wfs_getfeature",
+      "id": "ejemplo_dogv_geoserver_placeholder",
+      "boletin_source_id_equals": "dogv",
+      "wfs_url": "https://IDE_URL/ejemplo/wfs",
+      "type_name": "workspace:sectores_planeamiento",
+      "version": "2.0.0",
+      "output_format": "application/json",
+      "cql_filter_template": "strToLowerCase(nombre_muni) LIKE '%{municipio_norm}%' AND strToLowerCase(etiqueta) LIKE '%{sector_norm}%'",
+      "count": 5
+    },
+    {
+      "type": "arcgis_rest_query",
+      "id": "ejemplo_boja_andalucia_placeholder",
+      "boletin_source_id_equals": "boja",
+      "mapserver_base": "https://…/MapServer",
+      "layer_id": 0,
+      "where_template": "1=0"
+    },
+    {
+      "type": "nominatim_municipio",
+      "id": "nominatim_municipio_centroid",
+      "min_interval_s": 1.15
+    }
+  ]
+}

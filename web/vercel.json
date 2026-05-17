@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "env": {
+    "SKIP_BUILD_DATA": "1"
+  }
+}

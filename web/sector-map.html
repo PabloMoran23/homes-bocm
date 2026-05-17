@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sectores resueltos (sector_geometry)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    html, body { height: 100%; margin: 0; font-family: system-ui, sans-serif; }
+    #map { height: calc(100% - 52px); width: 100%; }
+    #bar {
+      height: 52px; padding: 8px 12px; display: flex; align-items: center; gap: 12px;
+      background: #0f172a; color: #e2e8f0; flex-wrap: wrap;
+    }
+    #bar button, #bar a {
+      background: #334155; color: #f8fafc; border: 0; padding: 8px 14px; border-radius: 8px;
+      cursor: pointer; text-decoration: none; font-size: 14px;
+    }
+    #bar button:hover, #bar a:hover { background: #475569; }
+    #stats { font-size: 13px; opacity: 0.9; }
+    .leaflet-popup-content { font-size: 13px; max-width: 280px; }
+  </style>
+</head>
+<body>
+  <div id="bar">
+    <strong>Sectores</strong>
+    <button type="button" id="btnReload">Recargar GeoJSON</button>
+    <a href="../output/sector_geometry_map.geojson" target="_blank" rel="noopener">Descargar .geojson</a>
+    <span id="stats"></span>
+  </div>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+    const GEOJSON_URL = "../output/sector_geometry_map.geojson";
+    const map = L.map("map", { preferCanvas: true }).setView([40.4, -3.7], 9);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(map);
+
+    let layer = null;
+
+    function styleFeature(f) {
+      const r = f.properties && f.properties.resolver_id;
+      if (r && r.indexOf("cm_sitcm") === 0) return { color: "#2563eb", weight: 2, fillOpacity: 0.25 };
+      if (r && r.indexOf("nominatim") === 0) return { color: "#94a3b8", weight: 1, fillOpacity: 0.5 };
+      return { color: "#16a34a", weight: 2, fillOpacity: 0.2 };
+    }
+
+    function onEachFeature(feature, lyr) {
+      const p = feature.properties || {};
+      const bits = [
+        "<b>" + (p.municipio || "?") + "</b>",
+        p.sector ? "<div>" + String(p.sector).slice(0, 200) + "</div>" : "",
+        p.DS_NOMB_AMB ? "<div><i>SIT:</i> " + p.DS_NOMB_AMB + "</div>" : "",
+        p.resolver_id ? "<div><i>Resolver:</i> " + p.resolver_id + "</div>" : "",
+        p.boletin_source_id ? "<div><i>Fuente:</i> " + p.boletin_source_id + "</div>" : "",
+      ];
+      lyr.bindPopup(bits.join(""));
+    }
+
+    async function loadLayer() {
+      const url = GEOJSON_URL + "?t=" + Date.now();
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) {
+        document.getElementById("stats").textContent =
+          "No se pudo cargar " + GEOJSON_URL + " (" + res.status + "). Ejecuta: python3 -m sector_geometry.export_map_geojson";
+        return;
+      }
+      const data = await res.json();
+      if (layer) map.removeLayer(layer);
+      layer = L.geoJSON(data, { style: styleFeature, onEachFeature }).addTo(map);
+      const n = (data.features && data.features.length) || 0;
+      document.getElementById("stats").textContent = n + " entidades";
+      if (n) map.fitBounds(layer.getBounds(), { padding: [24, 24], maxZoom: 14 });
+    }
+
+    document.getElementById("btnReload").addEventListener("click", loadLayer);
+    loadLayer();
+    setInterval(loadLayer, 60000);
+  </script>
+</body>
+</html>
