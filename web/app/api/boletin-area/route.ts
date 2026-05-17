@@ -22,16 +22,14 @@ export async function GET(req: Request) {
   let lng: number;
 
   if (ndp) {
-    const { data: inv, error } = await supabase
-      .schema("homes")
-      .from("inmueble")
-      .select("lat, lng")
-      .eq("ndp_edificio", ndp.trim())
-      .maybeSingle();
+    const { data: rows, error } = await supabase.rpc("resolve_ndp_coords", {
+      p_ndp: ndp.trim(),
+    });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+    const inv = Array.isArray(rows) ? rows[0] : rows;
     if (!inv?.lat || !inv?.lng) {
       return NextResponse.json({ error: "NDP sin coordenadas válidas" }, { status: 422 });
     }
