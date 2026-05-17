@@ -34,7 +34,7 @@ export default function RootLayout({
       <body className="flex min-h-full flex-col bg-[var(--surface)] font-sans text-slate-900 antialiased">
         <TierProvider>
           <NavBar />
-          {children}
+          <main className="flex min-h-0 flex-1 flex-col">{children}</main>
           <SiteFooter />
         </TierProvider>
       </body>

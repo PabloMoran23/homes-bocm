@@ -28,7 +28,7 @@ const FALLBACK: LandingNewsSpotlight[] = [
     tag: "Madrid",
     dateLabel: "Explorar",
     title: "Descubre qué se está planeando cerca de ti",
-    dek: "Mapa unificado de expedientes SIGMA y licencias por dirección.",
+    dek: "Mapa unificado de proyectos urbanísticos y licencias por dirección.",
   },
 ];
 

@@ -12,14 +12,14 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const ficha = loadSigmaFichaBySlug(slug);
-  if (!ficha) return { title: "Expediente no encontrado" };
+  if (!ficha) return { title: "Proyecto no encontrado" };
   const title =
     ficha.catalog?.EXP_TX_DENOM ||
     ficha.visorCabecera?.h1 ||
-    `Expediente ${ficha.expedienteGrupo}`;
+    `Proyecto ${ficha.expedienteGrupo}`;
   return {
     title: title.length > 72 ? `${title.slice(0, 69)}…` : title,
-    description: `Ficha SIGMA Ayto. Madrid · ${ficha.expedienteGrupo}`,
+    description: `Proyecto urbanístico · Ayto. Madrid · ${ficha.expedienteGrupo}`,
   };
 }
 

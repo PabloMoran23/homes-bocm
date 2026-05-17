@@ -197,7 +197,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
               href={sigmaFichaPath(String(p.sigmaExpediente))}
               className="hover:text-slate-800 hover:underline"
             >
-              Expediente SIGMA
+              Proyecto urbanístico
             </Link>
           </>
         ) : null}
@@ -259,7 +259,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 href={sigmaFichaPath(p.sigmaExpediente)}
                 className="inline-flex items-center rounded-lg border border-sky-300 bg-white/90 px-4 py-2.5 text-sm font-semibold text-sky-950 hover:bg-sky-50"
               >
-                Ficha expediente SIGMA
+                Ficha del proyecto
               </Link>
             ) : null}
             {hasValue(p.sigmaVisorUrl) ? (
@@ -279,7 +279,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded-lg border border-sky-200 bg-white/90 px-4 py-2.5 text-sm font-semibold text-sky-900 hover:bg-sky-50"
               >
-                Ficha SIGMA (GIS)
+                Visor del Ayuntamiento (GIS)
               </a>
             ) : null}
           </div>
@@ -291,7 +291,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             <KpiCard label="Estado (BOCM)" value={p.estadoTramitacion} tone="amber" />
           ) : null}
           {hasValue(p.sigmaFase) ? (
-            <KpiCard label="Fase SIGMA" value={p.sigmaFase!} tone="sky" />
+            <KpiCard label="Fase" value={p.sigmaFase!} tone="sky" />
           ) : null}
           {tramCount > 0 ? (
             <KpiCard
@@ -334,7 +334,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
           {bocmVsSigma ? (
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                BOCM vs SIGMA
+                BOCM y planeamiento
               </h3>
               <div className="mt-3 space-y-3 text-sm">
                 <div>
@@ -351,7 +351,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
 
           {p.sigmaMatchType ? (
             <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
-              Enlace BOCM↔SIGMA: <strong>{sigmaMatchLabel(p.sigmaMatchType)}</strong>
+              Enlace BOCM ↔ proyecto: <strong>{sigmaMatchLabel(p.sigmaMatchType)}</strong>
               {p.sigmaMatchScore != null ? ` (${p.sigmaMatchScore})` : ""}
             </p>
           ) : null}
@@ -396,7 +396,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 )}
                 {p.sigmaDenominacion && p.sigmaDenominacion !== visorH1 ? (
                   <div className="rounded-lg bg-slate-50 px-4 py-3 text-sm">
-                    <span className="font-medium text-slate-500">Denominación SIGMA · </span>
+                    <span className="font-medium text-slate-500">Denominación · </span>
                     {p.sigmaDenominacion}
                   </div>
                 ) : null}
@@ -406,12 +406,12 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             {activeTab === "ayto" && p.sigmaExpediente && (
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Catálogo SIGMA</h2>
+                  <h2 className="text-lg font-semibold text-slate-900">Datos del Ayuntamiento</h2>
                   <p className="mt-1 text-sm text-slate-500">
                     Metadatos del índice geográfico urbanístico municipal.
                   </p>
                   <dl className="mt-4 divide-y divide-slate-100">
-                    <DetailRow label="Expediente" value={p.sigmaExpediente} mono />
+                    <DetailRow label="Referencia" value={p.sigmaExpediente} mono />
                     <DetailRow label="Denominación" value={p.sigmaDenominacion} />
                     <DetailRow label="Tipo figura" value={p.sigmaTipoFigura} />
                     <DetailRow label="Código figura" value={p.sigmaFiguraCodigo} mono />
@@ -457,7 +457,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                   </div>
                 ) : (
                   <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600">
-                    Este expediente no devolvió pasos de tramitación en el visor. La fase SIGMA arriba
+                    Este proyecto no devolvió pasos de tramitación en el visor. La fase indicada arriba
                     refleja el estado del catálogo GIS.
                   </p>
                 )}

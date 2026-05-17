@@ -23,12 +23,11 @@ export default async function Home() {
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
                 Homes centraliza lo que cambia el tejido alrededor de ti: qué se tramita, dónde y con
-                qué intensidad. Sigue expedientes, configura alertas, estudia un ámbito y entiende el
+                qué intensidad. Sigue proyectos, configura alertas, estudia un ámbito y entiende el
                 pulso del suelo en minutos — no en tardes de buscar a mano.
               </p>
               <p className="mt-4 max-w-xl text-sm font-medium text-slate-700">
-                Más de 1.000 fuentes cruzadas para una sola vista. El listado exacto es nuestro
-                secreto industrial; tú te quedas con claridad y acción.
+                Más de 1.000 fuentes cruzadas para una sola vista. Para tu claridad y acción rápida.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -42,12 +41,6 @@ export default async function Home() {
                   className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
                 >
                   Explorar Madrid
-                </Link>
-                <Link
-                  href="/planes"
-                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 sm:order-last"
-                >
-                  Ver planes
                 </Link>
               </div>
             </div>
@@ -73,7 +66,7 @@ export default async function Home() {
             <h3 className="font-semibold text-slate-900">Si analizas suelo</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               Cruza municipio, instrumento y texto en segundos; prepara informes y compara escenarios
-              con datos exportables en planes superiores.
+              con datos exportables.
             </p>
           </div>
           <div>
@@ -82,12 +75,6 @@ export default async function Home() {
               Misma inteligencia para varias zonas: alertas compartidas, API e integraciones en
               roadmap — todo sobre el mismo núcleo de datos.
             </p>
-            <Link
-              href="/planes"
-              className="mt-3 inline-block text-sm font-medium text-[var(--portal-accent)] underline-offset-2 hover:underline"
-            >
-              Ver planes
-            </Link>
           </div>
         </div>
       </section>

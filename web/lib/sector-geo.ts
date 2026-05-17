@@ -105,7 +105,7 @@ export function featurePopupHtml(
     return bits.join("<br/>");
   }
   if (isSigmaFeature(p)) {
-    const denom = String(r.EXP_TX_DENOM || "Expediente urbanístico").trim();
+    const denom = String(r.EXP_TX_DENOM || "Proyecto urbanístico").trim();
     const bits: string[] = [`<b>${escapeHtml(denom)}</b>`];
     if (r.EXP_TX_NUMERO) {
       bits.push(
@@ -126,7 +126,7 @@ export function featurePopupHtml(
       const kind = String(r.sigma_layer_kind);
       if (kind === "tramitados_ad") {
         bits.push(
-          `<div style="color:#92400e">Planeamiento AD (catálogo tramitados) · geometría expediente</div>`,
+          `<div style="color:#92400e">Planeamiento en tramitación · ámbito del proyecto</div>`,
         );
       } else {
         const labels: Record<string, string> = {
@@ -156,7 +156,7 @@ export function featurePopupHtml(
     if (expKey) {
       const fichaRel = sigmaFichaPath(expKey);
       bits.push(
-        `<a href="${escapeAttr(fichaRel)}" style="display:inline-block;margin-top:6px;color:#0d9488;font-weight:700;font-size:13px">Ver ficha expediente</a>`,
+        `<a href="${escapeAttr(fichaRel)}" style="display:inline-block;margin-top:6px;color:#0d9488;font-weight:700;font-size:13px">Ver ficha del proyecto</a>`,
       );
     }
     if (visorUrl) {

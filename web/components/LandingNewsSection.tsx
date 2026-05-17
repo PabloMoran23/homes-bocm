@@ -56,7 +56,7 @@ export function LandingNewsSection({
               Noticias del territorio
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300/95 sm:text-base">
-              Titulares automáticos a partir de los expedientes con más viviendas previstas en la
+              Titulares automáticos a partir de los proyectos con más viviendas previstas en la
               documentación analizada. Se actualizan al regenerar los datos.
               {updated ? ` Última actualización: ${updated}.` : null}
             </p>
@@ -98,7 +98,7 @@ export function LandingNewsSection({
             </h3>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300/95 sm:text-base">{featured.dek}</p>
             <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-teal-200/95 transition group-hover:gap-2">
-              Ver expediente
+              Ver proyecto
               <span aria-hidden>→</span>
             </span>
           </Link>
@@ -139,7 +139,7 @@ export function LandingNewsSection({
         ) : null}
 
         <p className="mt-6 text-center text-[11px] text-slate-500">
-          Criterio: expedientes SIGMA con cifra de viviendas en documentación PDF · No es previsión
+          Criterio: proyectos con cifra de viviendas en documentación PDF · No es previsión
           oficial de obra terminada
         </p>
       </div>

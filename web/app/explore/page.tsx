@@ -4,12 +4,12 @@ import { ExploreMadridApp } from "@/components/ExploreMadridApp";
 export const metadata: Metadata = {
   title: "Mapa Madrid",
   description:
-    "Mapa unificado: expedientes SIGMA del Ayuntamiento y ubicaciones con licencias urbanísticas.",
+    "Mapa unificado: proyectos urbanísticos del Ayuntamiento y ubicaciones con licencias.",
 };
 
 export default function ExplorePage() {
   return (
-    <div className="flex h-[calc(100dvh-3.5rem)] min-h-[480px] flex-col">
+    <div className="fixed inset-x-0 bottom-0 top-14 z-0 overflow-hidden">
       <ExploreMadridApp />
     </div>
   );

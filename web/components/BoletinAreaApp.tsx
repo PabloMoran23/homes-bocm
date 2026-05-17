@@ -76,7 +76,7 @@ function EventoFila({ ev }: { ev: BoletinEvento }) {
                   : "bg-amber-100 text-amber-900"
               }`}
             >
-              {ev.tipo === "sigma" ? "Planeamiento" : "Licencia"}
+              {ev.tipo === "sigma" ? "Proyecto" : "Licencia"}
             </span>
             {ev.contienePunto ? (
               <span className="text-[10px] font-medium text-teal-700">Te afecta directamente</span>
@@ -391,7 +391,7 @@ export function BoletinAreaApp() {
               </section>
 
               <footer className="mt-8 border-t border-slate-100 pt-4 text-[11px] leading-relaxed text-slate-400">
-                Datos: licencias urbanísticas del Ayuntamiento de Madrid y expedientes SIGMA. Las
+                Datos: licencias urbanísticas del Ayuntamiento de Madrid y proyectos de planeamiento. Las
                 fechas de planeamiento corresponden al último trámite conocido en el visor. No
                 indican inicio ni fin de obra salvo que se indique lo contrario.
               </footer>

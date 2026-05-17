@@ -48,7 +48,7 @@ function ExpedienteCard({
         ) : null}
       </div>
       <h3 className="mt-2 text-base font-semibold leading-snug text-slate-900">
-        {exp.denominacion || "Expediente urbanístico"}
+        {exp.denominacion || "Proyecto urbanístico"}
       </h3>
       {metric?.num_viviendas_max != null ? (
         <p className="mt-1 text-sm text-teal-800">
@@ -146,7 +146,7 @@ export function UbicacionDetailView({
       aside={aside}
       footer={
         <p className="text-center text-xs text-slate-400">
-          Datos: licencias open data Ayto. Madrid · planeamiento SIGMA · NDP{" "}
+          Datos: licencias open data Ayto. Madrid · proyectos de planeamiento · NDP{" "}
           <span className="font-mono">{ndp}</span>
         </p>
       }
@@ -249,7 +249,7 @@ export function UbicacionDetailView({
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Planeamiento que afecta a la zona</h2>
             <p className="mt-1 max-w-2xl text-sm text-slate-600">
-              El punto cae dentro de estos ámbitos SIGMA. Los cambios del PGOUM suelen regular toda la ciudad; los
+              El punto cae dentro de estos proyectos de planeamiento. Los cambios del PGOUM suelen regular toda la ciudad; los
               planes de sector o actuaciones locales son los que más suelen explicar un proyecto concreto cerca.
             </p>
           </div>

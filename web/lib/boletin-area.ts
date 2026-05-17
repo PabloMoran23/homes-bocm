@@ -68,7 +68,7 @@ export function boletinResumenParrafo(data: BoletinAreaResult): string {
   }
   if (stats.expedientesSigma > 0) {
     parts.push(
-      `${stats.expedientesSigma} expediente${stats.expedientesSigma > 1 ? "s" : ""} de planeamiento que afectan la zona`,
+      `${stats.expedientesSigma} proyecto${stats.expedientesSigma > 1 ? "s" : ""} de planeamiento que afectan la zona`,
     );
   }
   return `En los últimos ${params.months} meses, en ${r} m a la redonda: ${parts.join(" y ")}.`;

@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TierSwitcher } from "@/components/TierSwitcher";
 
 const links = [
   { href: "/", label: "Inicio" },
   { href: "/explore", label: "Explorar" },
   { href: "/boletin", label: "Tu zona" },
-  { href: "/planes", label: "Planes" },
 ];
 
 export function NavBar() {
@@ -50,9 +48,6 @@ export function NavBar() {
             );
           })}
         </nav>
-        <div className="shrink-0 border-l border-slate-200 pl-2 sm:pl-3">
-          <TierSwitcher />
-        </div>
       </div>
     </header>
   );

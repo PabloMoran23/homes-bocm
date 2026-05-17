@@ -203,7 +203,7 @@ export function buildUbicacionResumen(
   const nLocal = expedientesPorCategoria.local.length + expedientesPorCategoria.sector.length;
   if (nLocal > 0) {
     bullets.push(
-      `${nLocal} expediente${nLocal > 1 ? "s" : ""} de planeamiento del sector afectan a esta ubicación.`,
+      `${nLocal} proyecto${nLocal > 1 ? "s" : ""} de planeamiento del sector afectan a esta ubicación.`,
     );
   }
   if (hayNormativaPgoum) {
@@ -212,7 +212,7 @@ export function buildUbicacionResumen(
     );
   }
   if (ficha.expedientesSigma.length === 0 && !hayObraReciente) {
-    bullets.push("No hemos detectado planeamiento SIGMA ni licencias en esta coordenada.");
+    bullets.push("No hemos detectado proyectos de planeamiento ni licencias en esta coordenada.");
   }
 
   const conViviendas = ficha.expedientesSigma.filter(
@@ -223,7 +223,7 @@ export function buildUbicacionResumen(
       ...conViviendas.map((e) => metricsByExpediente[e.expediente_grupo]!.num_viviendas_max!),
     );
     bullets.push(
-      `Algún ámbito cercano contempla hasta ${max.toLocaleString("es-ES")} viviendas nuevas (cifra orientativa del expediente, no solo de este edificio).`,
+      `Algún proyecto cercano contempla hasta ${max.toLocaleString("es-ES")} viviendas nuevas (cifra orientativa del proyecto, no solo de este edificio).`,
     );
   }
 
@@ -234,7 +234,7 @@ export function buildUbicacionResumen(
         ? `Esta dirección está dentro de ${ficha.expedientesSigma.length} ámbito${ficha.expedientesSigma.length > 1 ? "s" : ""} de planeamiento aprobado${ficha.expedientesSigma.length > 1 ? "s" : ""}; en muchos casos son normas de ciudad, no un proyecto de obra en tu puerta.`
         : hayObraReciente
           ? `Aquí constan ${ficha.stats.licenciasTotal} licencias en el registro municipal; revisa la actividad reciente en el edificio.`
-          : `De momento no hay señales claras de obra ni de expedientes de planeamiento en este punto.`;
+          : `De momento no hay señales claras de obra ni de proyectos de planeamiento en este punto.`;
 
   const hitos: UbicacionResumen["hitos"] = [];
 

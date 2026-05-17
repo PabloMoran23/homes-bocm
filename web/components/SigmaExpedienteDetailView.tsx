@@ -123,7 +123,7 @@ export function SigmaExpedienteDetailView({
       <div className="p-5 sm:p-7">
         <div className="flex flex-wrap gap-2">
           <span className="rounded-full bg-teal-100 px-3 py-0.5 text-xs font-semibold text-teal-900">
-            Expediente SIGMA
+            Proyecto urbanístico
           </span>
           {c?.source === "informacion_publica" ? (
             <span className="rounded-full bg-violet-100 px-3 py-0.5 text-xs font-semibold text-violet-900">
@@ -237,7 +237,7 @@ export function SigmaExpedienteDetailView({
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         {activeTab === "resumen" && (
           <dl className="grid gap-4 sm:grid-cols-2">
-            <SummaryCell label="Expediente" value={ficha.expedienteGrupo} mono />
+            <SummaryCell label="Referencia" value={ficha.expedienteGrupo} mono />
             <SummaryCell label="Denominación" value={c?.EXP_TX_DENOM} />
             <SummaryCell label="Fase" value={c?.FAS_TX_DENOM} />
             <SummaryCell label="Figura" value={c?.TFIG_TX_ABREV || c?.FIG_TX_ETIQ} />

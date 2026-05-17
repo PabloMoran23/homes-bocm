@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+
 import { normSearch } from "@/lib/madrid";
 import {
   SIGMA_DEFAULT_MIN_YEAR_EXCLUSIVE_2020,
@@ -11,10 +12,16 @@ import {
 } from "@/lib/madrid-sigma-filters";
 import { loadSigmaMetricsBundle, type MadridSigmaMetricsFile } from "@/lib/sigma-metrics";
 import { filterSigmaMapFeaturesByBBox, SIGMA_MAP_DEFAULT_MAX_BBOX_KM2 } from "@/lib/sigma-map-geometry";
+import {
+  filterPointFeaturesInView,
+  filterPolygonFeaturesInView,
+  type MapBounds,
+} from "@/lib/map-viewport";
 import type { SigmaBocmPopupLink, SectorFeatureCollection } from "@/lib/sector-geo";
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
 import { ubicacionPath } from "@/lib/ubicacion";
 import type { MadridSigmaDataset } from "@/lib/types";
+import { ambitosProyectosEnVista, PROYECTOS_URBANISTICOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
   () => import("./MadridUnifiedMap").then((m) => ({ default: m.MadridUnifiedMap })),
@@ -74,13 +81,15 @@ export function ExploreMadridApp() {
   const [bocmByExp, setBocmByExp] = useState<Record<string, SigmaBocmPopupLink[]> | null>(null);
   const [metricsBundle, setMetricsBundle] = useState<MadridSigmaMetricsFile | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const [q, setQ] = useState("");
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
   const [showUbicaciones, setShowUbicaciones] = useState(true);
-  const [showSigma, setShowSigma] = useState(true);
+  const [showSigma, setShowSigma] = useState(false);
+  const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
+  const [dataReady, setDataReady] = useState({ ubic: false, search: false });
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
   const [layerLoading, setLayerLoading] = useState(false);
   const [showHugeSigmaPolygons, setShowHugeSigmaPolygons] = useState(false);
@@ -93,36 +102,16 @@ export function ExploreMadridApp() {
     let cancelled = false;
     (async () => {
       try {
-        const [mapRes, searchRes, sigmaRes, ambitosRes, ipRes, bocmRes] = await Promise.all([
+        const [mapRes, searchRes] = await Promise.all([
           fetch("/data/ubicaciones-map.geojson"),
           fetch("/data/ubicaciones-search.json"),
-          fetch("/data/madrid-sigma.json"),
-          fetch("/data/madrid-sigma-ambitos.geojson"),
-          fetch("/data/madrid-sigma-ip.geojson"),
-          fetch("/data/madrid-sigma-bocm-projects.json"),
         ]);
         if (!mapRes.ok || !searchRes.ok) throw new Error("ubicaciones");
         if (!cancelled) {
           setUbicGeo((await mapRes.json()) as UbicacionGeo);
           setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
+          setDataReady({ ubic: true, search: true });
         }
-        if (sigmaRes.ok && !cancelled) setSigmaData((await sigmaRes.json()) as MadridSigmaDataset);
-        if (ambitosRes.ok && !cancelled) {
-          const fc = (await ambitosRes.json()) as SectorFeatureCollection;
-          setAmbitosGeo(fc);
-          setGeoCache((p) => ({ ...p, ambitos: fc }));
-        }
-        if (ipRes.ok && !cancelled) {
-          const fc = (await ipRes.json()) as SectorFeatureCollection;
-          setIpGeo(fc);
-          setGeoCache((p) => ({ ...p, ip: fc }));
-        }
-        if (bocmRes.ok && !cancelled) {
-          const j = (await bocmRes.json()) as { byExpediente?: Record<string, SigmaBocmPopupLink[]> };
-          if (j.byExpediente) setBocmByExp(j.byExpediente);
-        }
-        const mb = await loadSigmaMetricsBundle();
-        if (!cancelled) setMetricsBundle(mb);
       } catch {
         if (!cancelled) {
           setErr(
@@ -135,6 +124,54 @@ export function ExploreMadridApp() {
       cancelled = true;
     };
   }, []);
+
+  /** Carga SIGMA bajo demanda (evita ~25 MB + miles de polígonos al abrir). */
+  useEffect(() => {
+    if (!showSigma || ambitosGeo) return;
+    let cancelled = false;
+    setLayerLoading(true);
+    (async () => {
+      try {
+        const [sigmaRes, ambitosRes] = await Promise.all([
+          fetch("/data/madrid-sigma.json"),
+          fetch("/data/madrid-sigma-ambitos.geojson"),
+        ]);
+        if (sigmaRes.ok && !cancelled) setSigmaData((await sigmaRes.json()) as MadridSigmaDataset);
+        if (ambitosRes.ok && !cancelled) {
+          const fc = (await ambitosRes.json()) as SectorFeatureCollection;
+          setAmbitosGeo(fc);
+          setGeoCache((p) => ({ ...p, ambitos: fc }));
+        }
+      } finally {
+        if (!cancelled) setLayerLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showSigma, ambitosGeo]);
+
+  /** Popups SIGMA: BOCM + métricas solo si hace falta. */
+  useEffect(() => {
+    if (!showSigma || (bocmByExp && metricsBundle)) return;
+    let cancelled = false;
+    (async () => {
+      const [bocmRes, mb] = await Promise.all([
+        bocmByExp ? Promise.resolve(null) : fetch("/data/madrid-sigma-bocm-projects.json"),
+        metricsBundle ? Promise.resolve(null) : loadSigmaMetricsBundle(),
+      ]);
+      if (!cancelled) {
+        if (bocmRes?.ok) {
+          const j = (await bocmRes.json()) as { byExpediente?: Record<string, SigmaBocmPopupLink[]> };
+          if (j.byExpediente) setBocmByExp(j.byExpediente);
+        }
+        if (mb) setMetricsBundle(mb);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showSigma, bocmByExp, metricsBundle]);
 
   useEffect(() => {
     if (mapMode === "ambitos" || mapMode === "ip" || geoCache[mapMode]) return;
@@ -171,21 +208,21 @@ export function ExploreMadridApp() {
       const [lng, lat] = f.geometry.coordinates;
       return lat >= 39.5 && lat <= 41.2 && lng >= -4.5 && lng <= -3.0;
     });
-    const base = { ...ubicGeo, features: madridOnly };
+    let feats = madridOnly;
     const nq = norm(q.trim());
-    if (nq.length < 2) return base;
-    const ndpSet = new Set(
-      searchIndex
-        .filter((item) =>
-          norm([item.label, item.direccion, item.distrito, item.ndp].join(" ")).includes(nq),
-        )
-        .map((i) => i.ndp),
-    );
-    return {
-      ...base,
-      features: base.features.filter((f) => ndpSet.has(f.properties.ndp)),
-    };
-  }, [ubicGeo, q, searchIndex]);
+    if (nq.length >= 2) {
+      const ndpSet = new Set(
+        searchIndex
+          .filter((item) =>
+            norm([item.label, item.direccion, item.distrito, item.ndp].join(" ")).includes(nq),
+          )
+          .map((i) => i.ndp),
+      );
+      feats = feats.filter((f) => ndpSet.has(f.properties.ndp));
+    }
+    feats = filterPointFeaturesInView(feats, mapBounds);
+    return { ...ubicGeo, features: feats };
+  }, [ubicGeo, q, searchIndex, mapBounds]);
 
   const polygonGeo =
     mapMode === "ambitos"
@@ -229,7 +266,8 @@ export function ExploreMadridApp() {
       );
       return visible;
     }
-    return { type: "FeatureCollection" as const, features: feats };
+    const fc = { type: "FeatureCollection" as const, features: feats };
+    return filterPolygonFeaturesInView(fc, mapBounds);
   }, [
     polygonGeo,
     q,
@@ -237,7 +275,25 @@ export function ExploreMadridApp() {
     bocmByExp,
     sigmaMinYearInclusive,
     showHugeSigmaPolygons,
+    mapBounds,
   ]);
+
+  const mapStatsHint = useMemo(() => {
+    const parts: string[] = [];
+    if (showUbicaciones && filteredUbicGeo) {
+      parts.push(`${filteredUbicGeo.features.length.toLocaleString("es-ES")} edificios en vista`);
+    }
+    if (showSigma && sigmaGeoFiltered) {
+      parts.push(ambitosProyectosEnVista(sigmaGeoFiltered.features.length));
+    }
+    if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
+    if (!mapBounds) return "Acercando datos a la zona visible…";
+    return parts.length ? parts.join(" · ") : "Sin datos en esta zona";
+  }, [showUbicaciones, filteredUbicGeo, showSigma, sigmaGeoFiltered, mapBounds, dataReady.ubic]);
+
+  const onBoundsChange = useCallback((b: MapBounds) => {
+    setMapBounds(b);
+  }, []);
 
   const sigmaPopupOptions = useMemo(
     () => ({
@@ -268,46 +324,80 @@ export function ExploreMadridApp() {
     );
   }
 
-  if (!ubicGeo) {
-    return (
-      <Div className="flex flex-1 items-center justify-center bg-slate-100">
-        <p className="text-sm text-slate-500">Cargando Madrid…</p>
-      </Div>
-    );
-  }
-
   return (
-    <Div className="relative flex min-h-0 flex-1 flex-col">
-      <MadridUnifiedMap
-        ubicacionesGeojson={showUbicaciones ? filteredUbicGeo : null}
-        sigmaGeojson={showSigma ? sigmaGeoFiltered : null}
-        highlightNdp={highlightNdp}
-        onSelectNdp={goUbicacion}
-        sigmaPopupOptions={sigmaPopupOptions}
-        showUbicaciones={showUbicaciones}
-        showSigma={showSigma && !layerLoading}
-        className="absolute inset-0"
-      />
+    <Div className="relative h-full w-full">
+      <div className="absolute inset-0">
+        <MadridUnifiedMap
+          ubicacionesGeojson={showUbicaciones && dataReady.ubic ? filteredUbicGeo : null}
+          sigmaGeojson={showSigma ? sigmaGeoFiltered : null}
+          highlightNdp={highlightNdp}
+          onSelectNdp={goUbicacion}
+          sigmaPopupOptions={sigmaPopupOptions}
+          showUbicaciones={showUbicaciones && dataReady.ubic}
+          showSigma={showSigma && !layerLoading}
+          onBoundsChange={onBoundsChange}
+          statsHint={
+            !dataReady.ubic
+              ? "Cargando edificios…"
+              : mapStatsHint
+          }
+          className="h-full w-full"
+        />
+        {!dataReady.ubic ? (
+          <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/60 backdrop-blur-[1px]">
+            <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
+              Cargando edificios…
+            </p>
+          </Div>
+        ) : null}
+      </div>
 
-      <button
-        type="button"
-        onClick={() => setPanelOpen((o) => !o)}
-        className="absolute left-3 top-3 z-[1100] rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-xs font-semibold text-slate-700 shadow-md backdrop-blur-sm sm:hidden"
-      >
-        {panelOpen ? "Ocultar" : "Filtros"}
-      </button>
+      {!panelOpen ? (
+        <button
+          type="button"
+          onClick={() => setPanelOpen(true)}
+          className="absolute bottom-5 right-5 z-[1100] rounded-full border border-slate-200 bg-white/95 px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-lg backdrop-blur-sm"
+        >
+          Filtros
+        </button>
+      ) : null}
 
-      <aside
-        className={`absolute left-3 top-3 z-[1050] flex max-h-[calc(100%-1.5rem)] w-[min(calc(100%-1.5rem),22rem)] flex-col overflow-hidden rounded-2xl border border-slate-200/90 bg-white/95 shadow-xl backdrop-blur-md transition-transform sm:top-4 sm:max-h-[calc(100%-2rem)] ${
-          panelOpen ? "translate-x-0" : "-translate-x-[110%] sm:translate-x-0"
-        }`}
-      >
-        <div className="border-b border-slate-100 px-4 py-3">
-          <h1 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h1>
-          <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-            Expedientes SIGMA y edificios con licencias. Clic en polígono → ficha expediente; en punto →
-            ubicación.
-          </p>
+      {panelOpen ? (
+        <>
+          <button
+            type="button"
+            aria-label="Cerrar filtros"
+            className="absolute inset-0 z-[1040] bg-slate-900/40"
+            onClick={() => setPanelOpen(false)}
+          />
+          <aside className="absolute inset-x-0 bottom-0 z-[1050] flex max-h-[min(72dvh,28rem)] flex-col overflow-hidden rounded-t-2xl border border-slate-200/90 border-b-0 bg-white shadow-xl sm:inset-x-auto sm:bottom-auto sm:left-4 sm:top-4 sm:max-h-[calc(100%-2rem)] sm:w-[min(calc(100%-1.5rem),22rem)] sm:rounded-2xl sm:border-b">
+        <div className="flex shrink-0 justify-center border-b border-slate-100 py-2 sm:hidden">
+          <span className="h-1 w-10 rounded-full bg-slate-300" aria-hidden />
+        </div>
+        <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-4 py-3">
+          <div className="min-w-0">
+            <h1 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h1>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
+              {PROYECTOS_URBANISTICOS} y edificios con licencias. Clic en un ámbito → ficha del proyecto; en un
+              punto → ubicación.
+            </p>
+          </div>
+          <button
+            type="button"
+            aria-label="Cerrar filtros"
+            onClick={() => setPanelOpen(false)}
+            className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800"
+          >
+            <span className="sr-only">Cerrar</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+              <path
+                d="M5 5l10 10M15 5L5 15"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
         </div>
 
         <div className="flex-1 space-y-4 overflow-y-auto px-4 py-3">
@@ -323,7 +413,7 @@ export function ExploreMadridApp() {
                 setHighlightNdp(null);
               }}
               onFocus={() => setOpenSuggest(true)}
-              placeholder="Dirección, expediente, barrio…"
+              placeholder="Dirección, proyecto, barrio…"
               className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/20"
               autoComplete="off"
             />
@@ -366,7 +456,10 @@ export function ExploreMadridApp() {
                 checked={showSigma}
                 onChange={(e) => setShowSigma(e.target.checked)}
               />
-              Expedientes SIGMA
+              {PROYECTOS_URBANISTICOS}
+              {layerLoading ? (
+                <span className="text-xs text-slate-400">(cargando…)</span>
+              ) : null}
             </label>
             <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
               <input
@@ -382,7 +475,7 @@ export function ExploreMadridApp() {
           {showSigma ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">
               <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                SIGMA · geometría
+                Capas de proyectos
               </legend>
               {(["ambitos", "ip", "ad", "gestion", "urbanizacion"] as const).map((mode) => (
                 <label key={mode} className="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
@@ -394,13 +487,13 @@ export function ExploreMadridApp() {
                     onChange={() => setMapMode(mode)}
                   />
                   {mode === "ambitos"
-                    ? "Todos los ámbitos (mapeados)"
+                    ? "Todos los proyectos en mapa"
                     : mode === "ip"
-                      ? "Información pública"
+                      ? "En información pública"
                       : mode === "ad"
-                        ? "Planeamiento AD"
+                        ? "Planeamiento en curso"
                         : mode === "gestion"
-                          ? "Gestión"
+                          ? "Gestión urbanística"
                           : "Urbanización"}
                 </label>
               ))}
@@ -446,23 +539,15 @@ export function ExploreMadridApp() {
 
         {sigmaData?.counts ? (
           <div className="border-t border-slate-100 bg-slate-50/80 px-4 py-2.5 text-[11px] text-slate-500">
-            Catálogo: {sigmaData.counts.expedientes_unicos?.toLocaleString("es-ES") ?? "—"} expedientes
+            Catálogo: {sigmaData.counts.expedientes_unicos?.toLocaleString("es-ES") ?? "—"} proyectos
             {metricsBundle?.count ? (
               <span> · {metricsBundle.count} con métricas PDF</span>
             ) : null}
           </div>
         ) : null}
-      </aside>
+          </aside>
+        </>
+      ) : null}
     </Div>
   );
-}
-
-function motion({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return <div className={className}>{children}</div>;
 }
