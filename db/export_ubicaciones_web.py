@@ -18,6 +18,25 @@ SEARCH_JSON = OUT_DIR / "ubicaciones-search.json"
 META_JSON = OUT_DIR / "ubicaciones-meta.json"
 
 
+def fecha_es_a_iso(raw: str | None) -> str | None:
+    """Convierte D/M/YYYY o ISO a YYYY-MM-DD para el cliente."""
+    if not raw or not str(raw).strip():
+        return None
+    s = str(raw).strip()
+    if len(s) >= 10 and s[4] == "-" and s[7] == "-":
+        return s[:10]
+    parts = s.split("/")
+    if len(parts) == 3:
+        try:
+            d, m, y = int(parts[0]), int(parts[1]), int(parts[2])
+            if y < 100:
+                y += 2000 if y < 50 else 1900
+            return f"{y:04d}-{m:02d}-{d:02d}"
+        except ValueError:
+            return None
+    return None
+
+
 def main() -> None:
     db = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_DB
     if not db.is_file():
@@ -50,7 +69,15 @@ def main() -> None:
               CASE WHEN ae.fecha_concesion IS NULL OR ae.fecha_concesion = '' THEN 1 ELSE 0 END,
               ae.fecha_concesion DESC,
               ae.fecha_alta DESC
-            LIMIT 1) AS ultima_licencia_tipo
+            LIMIT 1) AS ultima_licencia_tipo,
+          (SELECT COALESCE(NULLIF(ae.fecha_concesion, ''), ae.fecha_alta)
+             FROM actuacion_edificacion ae
+            WHERE ae.inmueble_id = i.id
+            ORDER BY
+              CASE WHEN ae.fecha_concesion IS NULL OR ae.fecha_concesion = '' THEN 1 ELSE 0 END,
+              ae.fecha_concesion DESC,
+              ae.fecha_alta DESC
+            LIMIT 1) AS ultima_licencia_fecha
         FROM inmueble i
         WHERE i.lat IS NOT NULL AND i.lng IS NOT NULL
         ORDER BY licencias_count DESC
@@ -74,6 +101,7 @@ def main() -> None:
             "licencias": r["licencias_count"],
             "sigma": r["sigma_count"],
             "ultimaLicenciaTipo": r["ultima_licencia_tipo"],
+            "ultimaLicenciaFecha": fecha_es_a_iso(r["ultima_licencia_fecha"]),
         }
         features.append(
             {

@@ -7,6 +7,8 @@ export type UbicacionMapProperties = {
   sigma: number;
   /** Tipo de la licencia más reciente en el edificio (open data Ayto.). */
   ultimaLicenciaTipo?: string | null;
+  /** Fecha de la licencia más reciente (YYYY-MM-DD). */
+  ultimaLicenciaFecha?: string | null;
 };
 
 export type UbicacionSearchItem = {

@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { normSearch } from "@/lib/madrid";
+import { sigmaPassesPortalLink } from "@/lib/madrid-sigma-filters";
 import {
-  SIGMA_DEFAULT_MIN_YEAR_EXCLUSIVE_2020,
-  sigmaPassesMinYearInclusive,
-  sigmaPassesPortalLink,
-} from "@/lib/madrid-sigma-filters";
+  mapDateRangeFromInputs,
+  passesMapDateRange,
+  sigmaFeatureActivityMs,
+  ubicacionActivityMs,
+} from "@/lib/map-date-filters";
 import { loadSigmaMetricsBundle, type MadridSigmaMetricsFile } from "@/lib/sigma-metrics";
 import { filterSigmaMapFeaturesByBBox, SIGMA_MAP_DEFAULT_MAX_BBOX_KM2 } from "@/lib/sigma-map-geometry";
 import {
@@ -55,6 +57,7 @@ type UbicacionGeo = {
       barrio: string | null;
       licencias: number;
       sigma: number;
+      ultimaLicenciaFecha?: string | null;
     };
   }>;
 };
@@ -94,9 +97,14 @@ export function ExploreMadridApp() {
   const [layerLoading, setLayerLoading] = useState(false);
   const [showHugeSigmaPolygons, setShowHugeSigmaPolygons] = useState(false);
   const [sigmaMapOnlyWithPortal, setSigmaMapOnlyWithPortal] = useState(false);
-  const [sigmaMinYearInclusive, setSigmaMinYearInclusive] = useState<number | null>(
-    SIGMA_DEFAULT_MIN_YEAR_EXCLUSIVE_2020,
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+
+  const dateRange = useMemo(
+    () => mapDateRangeFromInputs(dateFrom, dateTo),
+    [dateFrom, dateTo],
   );
+  const dateFilterActive = Boolean(dateFrom || dateTo);
 
   useEffect(() => {
     let cancelled = false;
@@ -220,9 +228,14 @@ export function ExploreMadridApp() {
       );
       feats = feats.filter((f) => ndpSet.has(f.properties.ndp));
     }
+    if (dateFilterActive) {
+      feats = feats.filter((f) =>
+        passesMapDateRange(ubicacionActivityMs(f.properties), dateRange),
+      );
+    }
     feats = filterPointFeaturesInView(feats, mapBounds);
     return { ...ubicGeo, features: feats };
-  }, [ubicGeo, q, searchIndex, mapBounds]);
+  }, [ubicGeo, q, searchIndex, mapBounds, dateFilterActive, dateRange]);
 
   const polygonGeo =
     mapMode === "ambitos"
@@ -250,11 +263,11 @@ export function ExploreMadridApp() {
         sigmaPassesPortalLink((f.properties || {}) as Record<string, unknown>, bocmByExp),
       );
     }
-    if (sigmaMinYearInclusive != null) {
+    if (dateFilterActive) {
       feats = feats.filter((f) =>
-        sigmaPassesMinYearInclusive(
-          (f.properties || {}) as Record<string, unknown>,
-          sigmaMinYearInclusive,
+        passesMapDateRange(
+          sigmaFeatureActivityMs((f.properties || {}) as Record<string, unknown>),
+          dateRange,
         ),
       );
     }
@@ -273,7 +286,8 @@ export function ExploreMadridApp() {
     q,
     sigmaMapOnlyWithPortal,
     bocmByExp,
-    sigmaMinYearInclusive,
+    dateFilterActive,
+    dateRange,
     showHugeSigmaPolygons,
     mapBounds,
   ]);
@@ -288,8 +302,17 @@ export function ExploreMadridApp() {
     }
     if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
+    if (dateFilterActive) parts.push("filtro de fecha activo");
     return parts.length ? parts.join(" · ") : "Sin datos en esta zona";
-  }, [showUbicaciones, filteredUbicGeo, showSigma, sigmaGeoFiltered, mapBounds, dataReady.ubic]);
+  }, [
+    showUbicaciones,
+    filteredUbicGeo,
+    showSigma,
+    sigmaGeoFiltered,
+    mapBounds,
+    dataReady.ubic,
+    dateFilterActive,
+  ]);
 
   const onBoundsChange = useCallback((b: MapBounds) => {
     setMapBounds(b);
@@ -472,6 +495,48 @@ export function ExploreMadridApp() {
             </label>
           </fieldset>
 
+          <fieldset className="space-y-2 border-t border-slate-100 pt-3">
+            <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+              Fecha
+            </legend>
+            <p className="text-xs leading-relaxed text-slate-500">
+              Última licencia del edificio o última actividad del proyecto. Sin fecha no aparece si
+              filtras.
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="block space-y-1 text-xs text-slate-600">
+                <span>Desde</span>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm outline-none focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/20"
+                />
+              </label>
+              <label className="block space-y-1 text-xs text-slate-600">
+                <span>Hasta</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-sm outline-none focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/20"
+                />
+              </label>
+            </div>
+            {dateFilterActive ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setDateFrom("");
+                  setDateTo("");
+                }}
+                className="text-xs font-medium text-[var(--portal-accent)] hover:underline"
+              >
+                Quitar filtro de fecha
+              </button>
+            ) : null}
+          </fieldset>
+
           {showSigma ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">
               <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
@@ -514,21 +579,6 @@ export function ExploreMadridApp() {
                   onChange={(e) => setShowHugeSigmaPolygons(e.target.checked)}
                 />
                 Polígonos muy extensos
-              </label>
-              <label className="flex items-center gap-2 text-xs text-slate-600">
-                <span className="shrink-0">Desde año</span>
-                <select
-                  value={sigmaMinYearInclusive === null ? "" : String(sigmaMinYearInclusive)}
-                  onChange={(e) =>
-                    setSigmaMinYearInclusive(e.target.value === "" ? null : Number(e.target.value))
-                  }
-                  className="rounded border border-slate-200 px-1 py-0.5 text-xs"
-                >
-                  <option value="">Todos</option>
-                  <option value="2021">2021</option>
-                  <option value="2020">2020</option>
-                  <option value="2018">2018</option>
-                </select>
               </label>
               {layerLoading ? (
                 <p className="text-xs text-slate-400">Cargando capa…</p>
