@@ -7,6 +7,7 @@ import type {
   MadridSigmaDataset,
   SigmaExpediente,
   SigmaFicha,
+  SigmaVisorFicha,
   SigmaVisorNtiDoc,
   SigmaVisorTramite,
 } from "@/lib/types";
@@ -17,6 +18,7 @@ type VisoRecord = {
   sinDatosVisor?: boolean;
   visorUrlUsada?: string;
   visorCabecera?: { h1?: string; h2?: string };
+  visorFicha?: SigmaVisorFicha;
   tramitacion?: SigmaVisorTramite[];
   documentacionUrls?: string[];
   ntiListadoUrl?: string;
@@ -87,6 +89,7 @@ function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
       visorFetchedAt: generatedAt,
       visorUrl: null as string | null,
       visorCabecera: null,
+      visorFicha: null,
       tramitacion: [] as SigmaVisorTramite[],
       documentacionUrls: [] as string[],
       ntiListadoUrl: null as string | null,
@@ -107,6 +110,7 @@ function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
     visorCabecera: v.visorCabecera
       ? { h1: v.visorCabecera.h1 ?? null, h2: v.visorCabecera.h2 ?? null }
       : null,
+    visorFicha: v.visorFicha ?? null,
     tramitacion: Array.isArray(v.tramitacion) ? v.tramitacion : [],
     documentacionUrls: Array.isArray(v.documentacionUrls) ? v.documentacionUrls : [],
     ntiListadoUrl: v.ntiListadoUrl?.trim() || null,

@@ -57,6 +57,24 @@ function radiusForCount(n: number) {
   return Math.min(10 + Math.sqrt(n) * 2.4, 36);
 }
 
+function detailFitOptions(
+  points: MapPoint[],
+  sectorGeoJson?: SectorFeatureCollection | null,
+): { padding: [number, number]; maxZoom: number } {
+  const nSectors = sectorGeoJson?.features?.length ?? 0;
+  const nPoints = points.length;
+  if (nSectors >= 1 && nPoints === 0) {
+    return {
+      padding: nSectors === 1 ? [24, 24] : [36, 36],
+      maxZoom: nSectors === 1 ? 18 : 15,
+    };
+  }
+  if (nSectors <= 1 && nPoints <= 1) {
+    return { padding: [32, 32], maxZoom: 17 };
+  }
+  return { padding: [40, 40], maxZoom: 14 };
+}
+
 function FitBounds({
   points,
   sectorGeoJson,
@@ -67,14 +85,15 @@ function FitBounds({
   variant: "explore" | "detail";
 }) {
   const map = useMap();
+  const sectorKey = sectorGeoJson?.features?.length ?? 0;
 
   const fit = useCallback(() => {
     const bounds = collectMapBounds(points, sectorGeoJson);
     if (!bounds) return;
 
     if (variant === "detail") {
-      const maxZoom = points.length <= 1 && (sectorGeoJson?.features?.length ?? 0) <= 1 ? 16 : 14;
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom, animate: false });
+      const { padding, maxZoom } = detailFitOptions(points, sectorGeoJson);
+      map.fitBounds(bounds, { padding, maxZoom, animate: false });
       return;
     }
 
@@ -93,7 +112,13 @@ function FitBounds({
 
   useEffect(() => {
     fit();
-  }, [fit]);
+    const t = window.setTimeout(fit, 150);
+    const t2 = window.setTimeout(fit, 450);
+    return () => {
+      window.clearTimeout(t);
+      window.clearTimeout(t2);
+    };
+  }, [fit, sectorKey]);
 
   return null;
 }
@@ -108,12 +133,14 @@ function MapResizeFix({
   variant: "explore" | "detail";
 }) {
   const map = useMap();
+  const sectorKey = sectorGeoJson?.features?.length ?? 0;
+
   const fit = useCallback(() => {
     const bounds = collectMapBounds(points, sectorGeoJson);
     if (!bounds) return;
     if (variant === "detail") {
-      const maxZoom = points.length <= 1 && (sectorGeoJson?.features?.length ?? 0) <= 1 ? 16 : 14;
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom, animate: false });
+      const { padding, maxZoom } = detailFitOptions(points, sectorGeoJson);
+      map.fitBounds(bounds, { padding, maxZoom, animate: false });
     } else if (points.length === 1 && !(sectorGeoJson?.features?.length)) {
       map.setView([points[0].lat, points[0].lng], 11, { animate: false });
     } else {
@@ -122,12 +149,26 @@ function MapResizeFix({
   }, [map, points, sectorGeoJson, variant]);
 
   useEffect(() => {
-    const t = window.setTimeout(() => {
-      map.invalidateSize();
+    const run = () => {
+      map.invalidateSize({ pan: false });
       fit();
-    }, 200);
-    return () => window.clearTimeout(t);
-  }, [map, fit]);
+    };
+    const t = window.setTimeout(run, 100);
+    const t2 = window.setTimeout(run, 400);
+    const el = map.getContainer();
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => {
+            window.requestAnimationFrame(run);
+          })
+        : null;
+    ro?.observe(el);
+    return () => {
+      window.clearTimeout(t);
+      window.clearTimeout(t2);
+      ro?.disconnect();
+    };
+  }, [map, fit, sectorKey]);
 
   return null;
 }

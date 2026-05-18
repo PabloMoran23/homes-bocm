@@ -70,8 +70,8 @@ export function formatM2(n: number | null | undefined): string | null {
 
 export function metricCoverageBadge(hasMetrics: boolean): { label: string; tone: "teal" | "slate" } {
   return hasMetrics
-    ? { label: "Con análisis PDF", tone: "teal" }
-    : { label: "Solo catálogo SIGMA", tone: "slate" };
+    ? { label: "Estimación desde documentos oficiales", tone: "teal" }
+    : { label: "Datos del ayuntamiento", tone: "slate" };
 }
 
 let metricsCache: MadridSigmaMetricsFile | null = null;

@@ -94,10 +94,14 @@ def _visor_stats(path: Path) -> dict:
         and isinstance(v["ntiArbol"], dict)
         and (v["ntiArbol"].get("documentos") or v["ntiArbol"].get("documentosMuestra"))
     )
+    con_ficha_html = sum(
+        1 for v in by_g.values() if isinstance(v, dict) and v.get("visorFicha")
+    )
     return {
         "exists": True,
         "generatedAt": raw.get("generatedAt"),
         "expedientesEnJson": len(by_g),
+        "conVisorFicha": con_ficha_html,
         "conFichaTramitacionOUrls": con_ficha,
         "conArbolNti": con_nti,
     }

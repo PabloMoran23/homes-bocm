@@ -34,6 +34,30 @@ export type SigmaVisorNtiDoc = {
   fechaDocumento: string | null;
 };
 
+/** Campos estructurados de la ficha HTML del visor municipal (VSURB). */
+export type SigmaVisorFicha = {
+  figuraCodigo?: string | null;
+  denominacionVisor?: string | null;
+  figuraTipo?: string | null;
+  tipoPlaneamiento?: string | null;
+  expedienteVisor?: string | null;
+  archivoPlanos?: string | null;
+  ambitoOrdenacion?: string | null;
+  distrito?: string | null;
+  iniciativa?: string | null;
+  sistemaActuacion?: string | null;
+  promotor?: string | null;
+  unidadTramitadora?: string | null;
+  descripcionAmbito?: string | null;
+  resumenContenido?: string | null;
+  observaciones?: string | null;
+  alegaciones?: string | null;
+  equipoRedactor?: string | null;
+  sugerencias?: string | null;
+  superficieAmbitoTexto?: string | null;
+  superficieAmbitoM2?: number | null;
+};
+
 export type Project = {
   id: string;
   sourceId: string;
@@ -221,6 +245,7 @@ export type SigmaFicha = {
   visorFetchedAt: string | null;
   visorUrl: string | null;
   visorCabecera: { h1: string | null; h2: string | null } | null;
+  visorFicha: SigmaVisorFicha | null;
   tramitacion: SigmaVisorTramite[];
   documentacionUrls: string[];
   ntiListadoUrl: string | null;

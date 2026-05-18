@@ -6,18 +6,24 @@ import { useEffect, useMemo, useState } from "react";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import { RelatedBoletines } from "@/components/project-detail/RelatedBoletines";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
+import { SigmaUserResumen } from "@/components/sigma/SigmaUserResumen";
 import { filterSectorGeoJsonForProjects } from "@/lib/filter-sector-geo";
 import {
   coordSourceLabel,
-  formatSigmaDateYmdUTC,
   hasValue,
   projectHeadline,
   relevanciaBadgeClass,
   relevanciaLabel,
-  sigmaCatalogSourceLabel,
-  sigmaLayerKindLabel,
   sigmaMatchLabel,
 } from "@/lib/project-display";
+import {
+  SIGMA_AYTO_INTRO,
+  SIGMA_AYTO_TAB_LABEL,
+  SIGMA_DOCUMENTOS_INTRO,
+  SIGMA_DOCUMENTOS_TAB_LABEL,
+  SIGMA_TRAMITACION_EMPTY,
+  SIGMA_TRAMITACION_INTRO,
+} from "@/lib/sigma-user-labels";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import {
   loadSigmaNtiLinkedBundle,
@@ -44,10 +50,10 @@ type TabId = "resumen" | "ayto" | "documentos" | "boletin" | "relacionados";
 
 const TABS: { id: TabId; label: string; show: (p: Project) => boolean }[] = [
   { id: "resumen", label: "Resumen", show: () => true },
-  { id: "ayto", label: "Ayto. Madrid", show: (p) => Boolean(p.sigmaExpediente) },
+  { id: "ayto", label: SIGMA_AYTO_TAB_LABEL, show: (p) => Boolean(p.sigmaExpediente) },
   {
     id: "documentos",
-    label: "Documentos",
+    label: SIGMA_DOCUMENTOS_TAB_LABEL,
     show: (p) =>
       Boolean(
         p.sigmaVisorNtiDocumentosTotal ||
@@ -291,20 +297,20 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             <KpiCard label="Estado (BOCM)" value={p.estadoTramitacion} tone="amber" />
           ) : null}
           {hasValue(p.sigmaFase) ? (
-            <KpiCard label="Fase" value={p.sigmaFase!} tone="sky" />
+            <KpiCard label="Estado (Ayuntamiento)" value={p.sigmaFase!} tone="sky" />
           ) : null}
           {tramCount > 0 ? (
             <KpiCard
-              label="Pasos tramitación"
+              label="Hitos de tramitación"
               value={String(tramCount)}
-              sub="Visor Ayto."
+              sub="Visor municipal"
               tone="teal"
             />
           ) : docTotal > 0 ? (
             <KpiCard
-              label="Documentos NTI"
+              label="Documentos oficiales"
               value={String(docTotal)}
-              sub={docLocal > 0 ? `${docLocal} en disco` : undefined}
+              sub={docLocal > 0 ? `${docLocal} descargados` : undefined}
               tone="teal"
             />
           ) : null}
@@ -338,11 +344,11 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
               </h3>
               <div className="mt-3 space-y-3 text-sm">
                 <div>
-                  <p className="text-[10px] font-semibold uppercase text-amber-800">Anuncio</p>
+                  <p className="text-[10px] font-semibold uppercase text-amber-800">Boletín</p>
                   <p className="font-medium text-slate-900">{bocmVsSigma.bocm}</p>
                 </div>
                 <div>
-                  <p className="text-[10px] font-semibold uppercase text-sky-800">Catálogo</p>
+                  <p className="text-[10px] font-semibold uppercase text-sky-800">Ayuntamiento</p>
                   <p className="font-medium text-slate-900">{bocmVsSigma.sigma}</p>
                 </div>
               </div>
@@ -351,7 +357,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
 
           {p.sigmaMatchType ? (
             <p className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600">
-              Enlace BOCM ↔ proyecto: <strong>{sigmaMatchLabel(p.sigmaMatchType)}</strong>
+              Cómo enlazamos boletín y expediente: <strong>{sigmaMatchLabel(p.sigmaMatchType)}</strong>
               {p.sigmaMatchScore != null ? ` (${p.sigmaMatchScore})` : ""}
             </p>
           ) : null}
@@ -406,59 +412,38 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             {activeTab === "ayto" && p.sigmaExpediente && (
               <div className="space-y-8">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Datos del Ayuntamiento</h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Metadatos del índice geográfico urbanístico municipal.
-                  </p>
-                  <dl className="mt-4 divide-y divide-slate-100">
-                    <DetailRow label="Referencia" value={p.sigmaExpediente} mono />
-                    <DetailRow label="Denominación" value={p.sigmaDenominacion} />
-                    <DetailRow label="Tipo figura" value={p.sigmaTipoFigura} />
-                    <DetailRow label="Código figura" value={p.sigmaFiguraCodigo} mono />
-                    <DetailRow label="Órgano tramitador" value={p.sigmaOrganoTramitador} />
-                    <DetailRow label="Fase vigente" value={p.sigmaFase} />
-                    <DetailRow
-                      label="Aprobación"
-                      value={formatSigmaDateYmdUTC(p.sigmaFechaAprobacion ?? null) ?? undefined}
+                  <h2 className="text-lg font-semibold text-slate-900">Proyecto en el Ayuntamiento</h2>
+                  <p className="mt-1 text-sm text-slate-600">{SIGMA_AYTO_INTRO}</p>
+                  <div className="mt-6">
+                    <SigmaUserResumen
+                      fields={{
+                        expedienteGrupo: p.sigmaExpediente,
+                        denominacion: p.sigmaDenominacion,
+                        fase: p.sigmaFase,
+                        figEtiq: p.sigmaTipoFigura,
+                        tfigAbrev: p.sigmaFiguraCodigo,
+                        organo: p.sigmaOrganoTramitador,
+                        infopubIniYmd: p.sigmaInfopublicaInicio,
+                        infopubFinYmd: p.sigmaInfopublicaFin,
+                        source: p.sigmaCatalogSource,
+                        layerKind: p.sigmaSigmaLayerKind,
+                      }}
+                      tramitacion={p.sigmaVisorTramitacion ?? []}
                     />
-                    <DetailRow
-                      label="Info. pública"
-                      value={(() => {
-                        const ini = formatSigmaDateYmdUTC(p.sigmaInfopublicaInicio ?? null);
-                        const fin = formatSigmaDateYmdUTC(p.sigmaInfopublicaFin ?? null);
-                        if (!ini && !fin) return null;
-                        return [ini, fin ? `→ ${fin}` : null].filter(Boolean).join(" ");
-                      })()}
-                    />
-                    <DetailRow
-                      label="Origen"
-                      value={sigmaCatalogSourceLabel(p.sigmaCatalogSource) ?? undefined}
-                    />
-                    <DetailRow
-                      label="Capa"
-                      value={sigmaLayerKindLabel(p.sigmaSigmaLayerKind) ?? undefined}
-                    />
-                  </dl>
+                  </div>
                 </div>
 
                 {tramCount > 0 ? (
                   <div>
-                    <h2 className="text-lg font-semibold text-slate-900">Cronología de tramitación</h2>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Historial del visor de seguimiento (
-                      {hasValue(p.sigmaVisorFetchedAt)
-                        ? new Date(p.sigmaVisorFetchedAt!).toLocaleString("es-ES")
-                        : "última sincronización"}
-                      ).
-                    </p>
+                    <h2 className="text-lg font-semibold text-slate-900">Cronología completa</h2>
+                    <p className="mt-1 text-sm text-slate-600">{SIGMA_TRAMITACION_INTRO}</p>
                     <div className="mt-6">
                       <TramitacionTimeline rows={p.sigmaVisorTramitacion!} />
                     </div>
                   </div>
                 ) : (
                   <p className="rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600">
-                    Este proyecto no devolvió pasos de tramitación en el visor. La fase indicada arriba
-                    refleja el estado del catálogo GIS.
+                    {SIGMA_TRAMITACION_EMPTY}
                   </p>
                 )}
               </div>
@@ -467,10 +452,8 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             {activeTab === "documentos" && (
               <div className="space-y-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-slate-900">Documentación electrónica</h2>
-                  <p className="mt-1 text-sm text-slate-500">
-                    Árbol NTI y enlaces del visor documental del Ayuntamiento.
-                  </p>
+                  <h2 className="text-lg font-semibold text-slate-900">Documentos oficiales</h2>
+                  <p className="mt-1 text-sm text-slate-600">{SIGMA_DOCUMENTOS_INTRO}</p>
                 </div>
 
                 {(p.sigmaVisorDocumentacionUrls?.length ?? 0) > 0 ? (
@@ -501,8 +484,8 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 !(p.sigmaVisorNtiDocumentosMuestra?.length) &&
                 !p.sigmaVisorNtiDocumentosTotal ? (
                   <p className="text-sm text-slate-500">
-                    Sin árbol NTI para este expediente en nuestra base (sólo aplica a parte del
-                    catálogo municipal).
+                    No hay documentos descargados para este expediente en Homes. Puedes abrir el visor
+                    municipal si el ayuntamiento los publica.
                   </p>
                 ) : null}
               </div>

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SigmaExpedienteDetailView } from "@/components/SigmaExpedienteDetailView";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
+import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -13,13 +14,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const ficha = loadSigmaFichaBySlug(slug);
   if (!ficha) return { title: "Proyecto no encontrado" };
-  const title =
-    ficha.catalog?.EXP_TX_DENOM ||
-    ficha.visorCabecera?.h1 ||
-    `Proyecto ${ficha.expedienteGrupo}`;
+  const { title } = sigmaPickDisplayHeadline({
+    expedienteGrupo: ficha.expedienteGrupo,
+    source: ficha.catalog?.source,
+    denominacion: ficha.catalog?.EXP_TX_DENOM,
+    visorH1: ficha.visorCabecera?.h1,
+    visorH2: ficha.visorCabecera?.h2,
+    fase: ficha.catalog?.FAS_TX_DENOM,
+    figEtiq: ficha.catalog?.FIG_TX_ETIQ,
+    tfigAbrev: ficha.catalog?.TFIG_TX_ABREV,
+    organo: ficha.catalog?.ORG_TX_DESC,
+  });
   return {
     title: title.length > 72 ? `${title.slice(0, 69)}…` : title,
-    description: `Proyecto urbanístico · Ayto. Madrid · ${ficha.expedienteGrupo}`,
+    description: `Proyecto urbanístico del Ayuntamiento de Madrid · ${ficha.expedienteGrupo}`,
   };
 }
 

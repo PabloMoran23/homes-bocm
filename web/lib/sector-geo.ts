@@ -1,6 +1,11 @@
 /** GeoJSON para sector_geometry o capas SIGMA (Ayto. Madrid). */
 
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
+import {
+  generaViviendaUserLabel,
+  sigmaMapPopupLayerHint,
+  sigmaTipoActuacion,
+} from "@/lib/sigma-user-labels";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
@@ -107,37 +112,31 @@ export function featurePopupHtml(
   if (isSigmaFeature(p)) {
     const denom = String(r.EXP_TX_DENOM || "Proyecto urbanístico").trim();
     const bits: string[] = [`<b>${escapeHtml(denom)}</b>`];
-    if (r.EXP_TX_NUMERO) {
-      bits.push(
-        `<div class="font-mono text-xs text-slate-700">${escapeHtml(String(r.EXP_TX_NUMERO))}</div>`,
-      );
-    }
-    if (r.TFIG_TX_ABREV || r.FIG_TX_ETIQ) {
-      const cod = [r.TFIG_TX_ABREV, r.FIG_TX_ETIQ].filter(Boolean).map(String).join(" · ");
-      bits.push(`<div class="font-mono text-xs text-slate-500">${escapeHtml(cod)}</div>`);
+    const tipo = sigmaTipoActuacion(
+      r.FIG_TX_ETIQ ? String(r.FIG_TX_ETIQ) : null,
+      r.TFIG_TX_ABREV ? String(r.TFIG_TX_ABREV) : null,
+    );
+    if (tipo) {
+      bits.push(`<div class="text-xs text-slate-600">${escapeHtml(tipo)}</div>`);
     }
     if (r.FAS_TX_DENOM) {
-      bits.push(`<div><i>Fase:</i> ${escapeHtml(String(r.FAS_TX_DENOM))}</div>`);
+      bits.push(`<div><i>Estado:</i> ${escapeHtml(String(r.FAS_TX_DENOM))}</div>`);
     }
     if (r.ORG_TX_DESC) {
-      bits.push(`<div><i>Órgano:</i> ${escapeHtml(String(r.ORG_TX_DESC).slice(0, 120))}</div>`);
+      bits.push(
+        `<div><i>Tramita:</i> ${escapeHtml(String(r.ORG_TX_DESC).slice(0, 120))}</div>`,
+      );
     }
-    if (r.sigma_layer_kind) {
-      const kind = String(r.sigma_layer_kind);
-      if (kind === "tramitados_ad") {
-        bits.push(
-          `<div style="color:#92400e">Planeamiento en tramitación · ámbito del proyecto</div>`,
-        );
-      } else {
-        const labels: Record<string, string> = {
-          planeamiento: "Planeamiento",
-          gestion: "Gestión",
-          urbanizacion: "Urbanización",
-        };
-        bits.push(
-          `<div style="color:#0369a1">En información pública · ${labels[kind] || kind}</div>`,
-        );
-      }
+    const layerHint = sigmaMapPopupLayerHint(
+      r.sigma_layer_kind ? String(r.sigma_layer_kind) : null,
+    );
+    if (layerHint) {
+      bits.push(`<div style="color:#0369a1;font-size:11px">${escapeHtml(layerHint)}</div>`);
+    }
+    if (r.EXP_TX_NUMERO) {
+      bits.push(
+        `<div class="text-[10px] text-slate-400">Ref. ${escapeHtml(String(r.EXP_TX_NUMERO))}</div>`,
+      );
     }
     const visorUrl = r.Enlace || r.ENLACE;
     const expKey = expedienteGrupoKeyFromVariant(String(r.EXP_TX_NUMERO || ""));
@@ -146,11 +145,11 @@ export function featurePopupHtml(
       bits.push(
         `<div style="margin-top:6px;padding:6px 8px;background:#f0fdfa;border-radius:8px;font-size:12px;color:#115e59">` +
           `<strong>Hasta ${escapeHtml(String(metricSlice.num_viviendas_max.toLocaleString("es-ES")))} viviendas</strong>` +
-          `<span style="color:#64748b;font-weight:400"> · según PDF</span></div>`,
+          `<span style="color:#64748b;font-weight:400"> · estimación Homes</span></div>`,
       );
     } else if (metricSlice?.genera_vivienda_nueva && metricSlice.genera_vivienda_nueva !== "desconocido") {
       bits.push(
-        `<div style="margin-top:6px;font-size:11px;color:#64748b">Señal: ${escapeHtml(metricSlice.genera_vivienda_nueva.replace(/_/g, " "))}</div>`,
+        `<div style="margin-top:6px;font-size:11px;color:#64748b">${escapeHtml(generaViviendaUserLabel(metricSlice.genera_vivienda_nueva))}</div>`,
       );
     }
     if (expKey) {
@@ -161,7 +160,7 @@ export function featurePopupHtml(
     }
     if (visorUrl) {
       bits.push(
-        `<a href="${escapeAttr(String(visorUrl))}" target="_blank" rel="noopener noreferrer" style="color:#64748b;font-weight:600;font-size:12px">Visor Ayto. ↗</a>`,
+        `<a href="${escapeAttr(String(visorUrl))}" target="_blank" rel="noopener noreferrer" style="color:#64748b;font-weight:600;font-size:12px">Visor municipal ↗</a>`,
       );
     }
 
@@ -172,7 +171,7 @@ export function featurePopupHtml(
     if (bocmHits?.length) {
       bits.push(
         `<hr style="margin:8px 0;border:none;border-top:1px solid #e2e8f0"/>` +
-          `<div style="font-weight:600;color:#334155;font-size:11px;text-transform:uppercase;letter-spacing:0.04em">Homes · BOCM</div>`,
+          `<div style="font-weight:600;color:#334155;font-size:11px;text-transform:uppercase;letter-spacing:0.04em">Anuncios en el Boletín</div>`,
       );
       for (const h of bocmHits.slice(0, 6)) {
         const rel = `/proyecto/${encodeURIComponent(h.id)}`;
@@ -180,7 +179,7 @@ export function featurePopupHtml(
         const art = h.artNum ? ` · art. ${escapeHtml(h.artNum)}` : "";
         bits.push(
           `<div style="margin-top:6px;line-height:1.35">` +
-            `<a href="${escapeAttr(rel)}" style="color:#0d9488;font-weight:600;font-size:13px">Ficha BOCM</a>` +
+            `<a href="${escapeAttr(rel)}" style="color:#0d9488;font-weight:600;font-size:13px">Ver anuncio</a>` +
             `<div style="font-size:11px;color:#64748b;margin-top:2px">${escapeHtml(h.bocmDate)}${art}${relTag}</div>` +
             `<div style="font-size:11px;color:#334155;margin-top:2px">${escapeHtml((h.title || "").slice(0, 140))}${(h.title || "").length > 140 ? "…" : ""}</div>` +
             `</div>`,

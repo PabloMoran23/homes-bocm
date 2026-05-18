@@ -37,6 +37,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from sector_geometry.madrid_viso_ficha_parse import parse_visor_ficha
 from sector_geometry.madrid_viso_filters import expediente_is_recent
 
 POC_ROOT = Path(__file__).resolve().parents[1]
@@ -217,6 +218,10 @@ def parse_visor(html: bytes) -> dict[str, Any]:
                 out["tramitacion"].append(
                     {"fecha": fecha or None, "tramite": tramite or None, "organo": organo or None}
                 )
+
+    ficha = parse_visor_ficha(hc)
+    if ficha:
+        out["visorFicha"] = ficha
 
     return out
 
@@ -483,8 +488,123 @@ def merge_metadata(t: Target, index_by_grupo: dict[str, dict[str, Any]]) -> Targ
 def _save_viso_bundle(bundle: dict[str, Any], by_g: dict[str, Any]) -> None:
     bundle["generatedAt"] = datetime.now(timezone.utc).isoformat()
     bundle["conNtiArbol"] = sum(1 for v in by_g.values() if v.get("ntiArbol"))
+    bundle["conVisorFicha"] = sum(1 for v in by_g.values() if v.get("visorFicha"))
     bundle["byGrupoExpediente"] = by_g
     OUT_JSON.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _best_cached_html(grupo: str) -> bytes | None:
+    cache_key = grupo.replace("/", "_")
+    files = sorted(
+        CACHE_DIR.glob(f"{cache_key}_*.html"),
+        key=lambda p: p.stat().st_size,
+        reverse=True,
+    )
+    for path in files:
+        body = path.read_bytes()
+        if body and b"wbvisor" in body.lower():
+            return body
+    return None
+
+
+def _fetch_and_cache_html(
+    grupo: str,
+    *,
+    layer_kind: str | None,
+    enlace_sigma: str | None,
+    delay_s: float,
+) -> bytes | None:
+    cache_key = grupo.replace("/", "_")
+    urls = visor_candidates(grupo, layer_kind=layer_kind, enlace_sigma=enlace_sigma)
+    for url in urls:
+        cfile = CACHE_DIR / f"{cache_key}_{hash(url) & 0xFFFF}.html"
+        if cfile.is_file():
+            body = cfile.read_bytes()
+        else:
+            time.sleep(delay_s)
+            code, body = _http_get(url)
+            if code == 200 and body:
+                cfile.write_bytes(body)
+        if not body or parse_visor(body).get("sinDatosVisor"):
+            continue
+        return body
+    return None
+
+
+def run_enrich_ficha_from_cache(
+    *,
+    limit: int = 0,
+    delay_s: float = 0.0,
+    fetch_missing: bool = False,
+    checkpoint_every: int = 200,
+    since_year: int | None = None,
+) -> dict[str, Any]:
+    """
+    Rellena visorFicha en madrid_viso_expedientes.json desde HTML en madrid_viso_cache/.
+    Con --fetch-missing descarga fichas sin caché local.
+    """
+    if not OUT_JSON.is_file():
+        raise SystemExit(f"No existe {OUT_JSON}; ejecuta madrid_viso_fetch antes.")
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    bundle = json.loads(OUT_JSON.read_text(encoding="utf-8"))
+    by_g: dict[str, Any] = dict(bundle.get("byGrupoExpediente") or {})
+    index_by_grupo = load_index_bundle()
+
+    keys = sorted(set(by_g.keys()) | set(index_by_grupo.keys()))
+    if since_year is not None:
+        keys = [
+            g
+            for g in keys
+            if expediente_is_recent(by_g.get(g) or {}, g, since_year=since_year)
+        ]
+    if limit > 0:
+        keys = keys[:limit]
+
+    enriched = fetched = skipped = 0
+    for i, grupo in enumerate(keys):
+        rec = by_g.setdefault(grupo, {"expedienteGrupo": grupo})
+        body = _best_cached_html(grupo)
+        if not body and fetch_missing:
+            meta = index_by_grupo.get(grupo) or {}
+            body = _fetch_and_cache_html(
+                grupo,
+                layer_kind=meta.get("sigma_layer_kind") if isinstance(meta, dict) else rec.get("sigmaLayerKind"),
+                enlace_sigma=(meta.get("Enlace") if isinstance(meta, dict) else None) or rec.get("visorUrlUsada"),
+                delay_s=delay_s,
+            )
+            if body:
+                fetched += 1
+                parsed = parse_visor(body)
+                if parsed.get("tramitacion") and not rec.get("tramitacion"):
+                    rec["tramitacion"] = parsed["tramitacion"]
+                if parsed.get("documentacionUrls") and not rec.get("documentacionUrls"):
+                    rec["documentacionUrls"] = parsed["documentacionUrls"]
+                if parsed.get("visorCabecera") and not rec.get("visorCabecera"):
+                    rec["visorCabecera"] = parsed["visorCabecera"]
+        if not body:
+            skipped += 1
+            continue
+        ficha = parse_visor_ficha(body)
+        if not ficha:
+            skipped += 1
+            continue
+        rec["visorFicha"] = ficha
+        enriched += 1
+        if (i + 1) % 500 == 0:
+            print(f"  … {i+1}/{len(keys)} ({enriched} fichas)", flush=True)
+        if checkpoint_every > 0 and (i + 1) % checkpoint_every == 0:
+            _save_viso_bundle(bundle, by_g)
+
+    _save_viso_bundle(bundle, by_g)
+    return {
+        "mode": "enrich_ficha_from_cache",
+        "procesados": len(keys),
+        "visorFicha": enriched,
+        "htmlDescargados": fetched,
+        "sinHtml": skipped,
+        "conVisorFicha": bundle["conVisorFicha"],
+        "total": len(by_g),
+    }
 
 
 def run_refresh_nti_only(
@@ -705,6 +825,7 @@ def run_fetch(
         "targets": len(uniq),
         "conFicha": sum(1 for v in by_grupo_out.values() if v.get("tramitacion")),
         "conNtiArbol": sum(1 for v in by_grupo_out.values() if v.get("ntiArbol")),
+        "conVisorFicha": sum(1 for v in by_grupo_out.values() if v.get("visorFicha")),
         "byGrupoExpediente": by_grupo_out,
         "erroresMuestra": errors[:30],
     }
@@ -748,10 +869,36 @@ def main() -> None:
         default=0,
         help="Solo expedientes con año en número o trámite >= este año (0=sin filtro).",
     )
+    ap.add_argument(
+        "--enrich-ficha",
+        action="store_true",
+        help="Extraer visorFicha (promotor, resumen, m²…) desde HTML en caché o descargando.",
+    )
+    ap.add_argument(
+        "--fetch-missing-html",
+        action="store_true",
+        help="Con --enrich-ficha: descargar HTML si no hay caché local.",
+    )
     args = ap.parse_args()
     since_year = args.since_year if args.since_year > 0 else None
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    if args.enrich_ficha:
+        bundle = run_enrich_ficha_from_cache(
+            limit=args.limit,
+            delay_s=args.delay,
+            fetch_missing=args.fetch_missing_html,
+            checkpoint_every=max(0, args.checkpoint_every),
+            since_year=since_year,
+        )
+        print(
+            f"visorFicha: {bundle.get('visorFicha')} enriquecidos "
+            f"({bundle.get('conVisorFicha')}/{bundle.get('total')} total, "
+            f"+{bundle.get('htmlDescargados')} HTML nuevos)",
+            flush=True,
+        )
+        return
+
     if args.refresh_nti_only:
         bundle = run_refresh_nti_only(
             limit=args.limit,

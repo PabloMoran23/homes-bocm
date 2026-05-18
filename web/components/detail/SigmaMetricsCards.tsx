@@ -96,13 +96,13 @@ export function SigmaMetricsPanel({
             <KpiTile label="Tipo vivienda" value={metric.tipo_vivienda} />
           ) : null}
           {metric.pdfs_procesados != null ? (
-            <KpiTile label="PDFs analizados" value={String(metric.pdfs_procesados)} />
+            <KpiTile label="Documentos revisados" value={String(metric.pdfs_procesados)} />
           ) : null}
         </div>
       ) : (
         <p className="text-sm leading-relaxed text-slate-600">
-          Aún no hay métricas extraídas de los documentos NTI de este expediente. Puedes consultar
-          tramitación y catálogo SIGMA en las pestañas.
+          Todavía no hemos extraído cifras de viviendas o superficie de los documentos de este
+          expediente. Puedes ver el estado y la tramitación en las otras pestañas.
         </p>
       )}
 
