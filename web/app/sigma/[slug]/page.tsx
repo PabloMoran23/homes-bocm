@@ -12,7 +12,7 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const ficha = loadSigmaFichaBySlug(slug);
+  const ficha = await loadSigmaFichaBySlug(slug);
   if (!ficha) return { title: "Proyecto no encontrado" };
   const { title } = sigmaPickDisplayHeadline({
     expedienteGrupo: ficha.expedienteGrupo,
@@ -33,9 +33,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SigmaFichaPage({ params }: PageProps) {
   const { slug } = await params;
-  const ficha = loadSigmaFichaBySlug(slug);
+  const ficha = await loadSigmaFichaBySlug(slug);
   if (!ficha) notFound();
 
-  const metric = getSigmaMetricForGrupo(ficha.expedienteGrupo);
+  const metric = await getSigmaMetricForGrupo(ficha.expedienteGrupo);
   return <SigmaExpedienteDetailView ficha={ficha} metric={metric} />;
 }

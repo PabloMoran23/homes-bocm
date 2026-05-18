@@ -1,21 +1,24 @@
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
-import type { MadridSigmaMetricsFile, SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import { fetchStaticJson } from "@/lib/fetch-static-json";
+import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 
-const DATA = join(process.cwd(), "public/data");
+type MadridSigmaMetricsFile = {
+  generatedAt?: string;
+  count?: number;
+  byExpediente?: Record<string, SigmaExpedienteMetric>;
+};
 
-let cached: MadridSigmaMetricsFile | null = null;
+let metricsPromise: Promise<MadridSigmaMetricsFile | null> | null = null;
 
-export function loadSigmaMetricsFile(): MadridSigmaMetricsFile | null {
-  if (cached) return cached;
-  const path = join(DATA, "madrid-sigma-metrics.json");
-  if (!existsSync(path)) return null;
-  cached = JSON.parse(readFileSync(path, "utf-8")) as MadridSigmaMetricsFile;
-  return cached;
+async function loadMetricsFile(): Promise<MadridSigmaMetricsFile | null> {
+  if (!metricsPromise) {
+    metricsPromise = fetchStaticJson<MadridSigmaMetricsFile>("/data/madrid-sigma-metrics.json");
+  }
+  return metricsPromise;
 }
 
-export function getSigmaMetricForGrupo(expedienteGrupo: string): SigmaExpedienteMetric | null {
-  const file = loadSigmaMetricsFile();
-  if (!file?.byExpediente) return null;
-  return file.byExpediente[expedienteGrupo] ?? null;
+export async function getSigmaMetricForGrupo(
+  expedienteGrupo: string,
+): Promise<SigmaExpedienteMetric | null> {
+  const file = await loadMetricsFile();
+  return file?.byExpediente?.[expedienteGrupo] ?? null;
 }

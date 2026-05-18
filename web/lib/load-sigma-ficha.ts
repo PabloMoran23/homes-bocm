@@ -1,6 +1,5 @@
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
+import { fetchStaticJson } from "@/lib/fetch-static-json";
 import { sigmaFichaGrupoFromSlug } from "@/lib/sigma-ficha-path";
 import type { SigmaBocmPopupLink } from "@/lib/sector-geo";
 import type {
@@ -12,8 +11,6 @@ import type {
   SigmaVisorTramite,
 } from "@/lib/types";
 
-const DATA = join(process.cwd(), "public/data");
-
 type VisoRecord = {
   sinDatosVisor?: boolean;
   visorUrlUsada?: string;
@@ -22,7 +19,6 @@ type VisoRecord = {
   tramitacion?: SigmaVisorTramite[];
   documentacionUrls?: string[];
   ntiListadoUrl?: string;
-  /** Export slim (web); el JSON completo usa ntiArbol. */
   ntiDocumentosTotal?: number;
   ntiDocumentosMuestra?: SigmaVisorNtiDoc[];
   ntiArbol?: {
@@ -32,60 +28,72 @@ type VisoRecord = {
   };
 };
 
-let catalogByGrupo: Map<string, SigmaExpediente> | null = null;
-let catalogSyncAt: string | null = null;
-let visoByGrupo: Record<string, VisoRecord> | null = null;
-let visoGeneratedAt: string | null = null;
-let bocmByExpediente: Record<string, SigmaBocmPopupLink[]> | null = null;
+type VisoBundle = {
+  generatedAt?: string;
+  byGrupoExpediente?: Record<string, VisoRecord>;
+};
 
-function loadCatalog(): Map<string, SigmaExpediente> {
-  if (catalogByGrupo) return catalogByGrupo;
-  const path = join(DATA, "madrid-sigma.json");
-  if (!existsSync(path)) {
-    catalogByGrupo = new Map();
-    return catalogByGrupo;
+let catalogPromise: Promise<{
+  byGrupo: Map<string, SigmaExpediente>;
+  syncAt: string | null;
+}> | null = null;
+
+let visoPromise: Promise<{
+  byGrupo: Record<string, VisoRecord>;
+  generatedAt: string | null;
+}> | null = null;
+
+let bocmPromise: Promise<Record<string, SigmaBocmPopupLink[]>> | null = null;
+
+async function loadCatalog(): Promise<{
+  byGrupo: Map<string, SigmaExpediente>;
+  syncAt: string | null;
+}> {
+  if (!catalogPromise) {
+    catalogPromise = (async () => {
+      const raw = await fetchStaticJson<MadridSigmaDataset>("/data/madrid-sigma.json");
+      const byGrupo = new Map<string, SigmaExpediente>();
+      if (!raw) return { byGrupo, syncAt: null };
+      for (const e of raw.expedientes || []) {
+        const n = e.EXP_TX_NUMERO;
+        if (!n) continue;
+        byGrupo.set(expedienteGrupoKeyFromVariant(String(n)), e);
+      }
+      return { byGrupo, syncAt: raw.generatedAt ?? null };
+    })();
   }
-  const raw = JSON.parse(readFileSync(path, "utf-8")) as MadridSigmaDataset;
-  catalogSyncAt = raw.generatedAt ?? null;
-  catalogByGrupo = new Map();
-  for (const e of raw.expedientes || []) {
-    const n = e.EXP_TX_NUMERO;
-    if (!n) continue;
-    catalogByGrupo.set(expedienteGrupoKeyFromVariant(String(n)), e);
-  }
-  return catalogByGrupo;
+  return catalogPromise;
 }
 
-function loadViso(): { byGrupo: Record<string, VisoRecord>; generatedAt: string | null } {
-  if (visoByGrupo) return { byGrupo: visoByGrupo, generatedAt: visoGeneratedAt };
-  const slimPath = join(DATA, "madrid-sigma-visor-slim.json");
-  const fullPath = join(DATA, "madrid-viso-expedientes.json");
-  const path = existsSync(slimPath) ? slimPath : fullPath;
-  if (!existsSync(path)) {
-    visoByGrupo = {};
-    return { byGrupo: visoByGrupo, generatedAt: null };
+async function loadViso(): Promise<{
+  byGrupo: Record<string, VisoRecord>;
+  generatedAt: string | null;
+}> {
+  if (!visoPromise) {
+    visoPromise = (async () => {
+      const raw = await fetchStaticJson<VisoBundle>("/data/madrid-sigma-visor-slim.json");
+      if (!raw?.byGrupoExpediente) {
+        return { byGrupo: {}, generatedAt: null };
+      }
+      return {
+        byGrupo: raw.byGrupoExpediente,
+        generatedAt: raw.generatedAt ?? null,
+      };
+    })();
   }
-  const raw = JSON.parse(readFileSync(path, "utf-8")) as {
-    generatedAt?: string;
-    byGrupoExpediente?: Record<string, VisoRecord>;
-  };
-  visoGeneratedAt = raw.generatedAt ?? null;
-  visoByGrupo = raw.byGrupoExpediente || {};
-  return { byGrupo: visoByGrupo, generatedAt: visoGeneratedAt };
+  return visoPromise;
 }
 
-function loadBocmLinks(): Record<string, SigmaBocmPopupLink[]> {
-  if (bocmByExpediente) return bocmByExpediente;
-  const path = join(DATA, "madrid-sigma-bocm-projects.json");
-  if (!existsSync(path)) {
-    bocmByExpediente = {};
-    return bocmByExpediente;
+async function loadBocmLinks(): Promise<Record<string, SigmaBocmPopupLink[]>> {
+  if (!bocmPromise) {
+    bocmPromise = (async () => {
+      const raw = await fetchStaticJson<{ byExpediente?: Record<string, SigmaBocmPopupLink[]> }>(
+        "/data/madrid-sigma-bocm-projects.json",
+      );
+      return raw?.byExpediente || {};
+    })();
   }
-  const raw = JSON.parse(readFileSync(path, "utf-8")) as {
-    byExpediente?: Record<string, SigmaBocmPopupLink[]>;
-  };
-  bocmByExpediente = raw.byExpediente || {};
-  return bocmByExpediente;
+  return bocmPromise;
 }
 
 function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
@@ -131,30 +139,33 @@ function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
   };
 }
 
-export function loadSigmaFichaBySlug(slug: string): SigmaFicha | null {
+export async function loadSigmaFichaBySlug(slug: string): Promise<SigmaFicha | null> {
   const grupo = sigmaFichaGrupoFromSlug(slug);
-  const catalog = loadCatalog().get(grupo) ?? null;
-  const { byGrupo, generatedAt } = loadViso();
-  const viso = parseViso(byGrupo[grupo], generatedAt);
-  const bocm = loadBocmLinks()[grupo] || [];
+  const [{ byGrupo: cat, syncAt }, { byGrupo: viso, generatedAt }, bocm] = await Promise.all([
+    loadCatalog(),
+    loadViso(),
+    loadBocmLinks(),
+  ]);
+  const catalog = cat.get(grupo) ?? null;
+  const visoParsed = parseViso(viso[grupo], generatedAt);
+  const bocmProyectos = bocm[grupo] || [];
 
-  if (!catalog && !viso.tramitacion.length && !viso.ntiDocumentosTotal && !bocm.length) {
+  if (!catalog && !visoParsed.tramitacion.length && !visoParsed.ntiDocumentosTotal && !bocmProyectos.length) {
     return null;
   }
 
   return {
     expedienteGrupo: grupo,
-    sigmaSyncAt: catalogSyncAt,
+    sigmaSyncAt: syncAt,
     catalog,
-    bocmProyectos: bocm,
-    ...viso,
+    bocmProyectos,
+    ...visoParsed,
   };
 }
 
 /** Lista slugs para sitemap o pruebas (opcional). */
-export function listSigmaFichaSlugs(): string[] {
-  const cat = loadCatalog();
-  const { byGrupo } = loadViso();
-  const keys = new Set<string>([...cat.keys(), ...Object.keys(byGrupo)]);
+export async function listSigmaFichaSlugs(): Promise<string[]> {
+  const [{ byGrupo: cat }, { byGrupo: viso }] = await Promise.all([loadCatalog(), loadViso()]);
+  const keys = new Set<string>([...cat.keys(), ...Object.keys(viso)]);
   return [...keys].map((g) => g.replace(/\//g, "-")).sort();
 }
