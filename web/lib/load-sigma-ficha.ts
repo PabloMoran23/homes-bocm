@@ -22,6 +22,9 @@ type VisoRecord = {
   tramitacion?: SigmaVisorTramite[];
   documentacionUrls?: string[];
   ntiListadoUrl?: string;
+  /** Export slim (web); el JSON completo usa ntiArbol. */
+  ntiDocumentosTotal?: number;
+  ntiDocumentosMuestra?: SigmaVisorNtiDoc[];
   ntiArbol?: {
     documentosTotal?: number;
     documentos?: SigmaVisorNtiDoc[];
@@ -55,7 +58,9 @@ function loadCatalog(): Map<string, SigmaExpediente> {
 
 function loadViso(): { byGrupo: Record<string, VisoRecord>; generatedAt: string | null } {
   if (visoByGrupo) return { byGrupo: visoByGrupo, generatedAt: visoGeneratedAt };
-  const path = join(DATA, "madrid-viso-expedientes.json");
+  const slimPath = join(DATA, "madrid-sigma-visor-slim.json");
+  const fullPath = join(DATA, "madrid-viso-expedientes.json");
+  const path = existsSync(slimPath) ? slimPath : fullPath;
   if (!existsSync(path)) {
     visoByGrupo = {};
     return { byGrupo: visoByGrupo, generatedAt: null };
@@ -98,12 +103,19 @@ function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
     };
   }
   const nti = v.ntiArbol;
-  const ntiDocs =
-    nti && Array.isArray(nti.documentos) && nti.documentos.length
+  const ntiDocs = Array.isArray(v.ntiDocumentosMuestra)
+    ? v.ntiDocumentosMuestra
+    : nti && Array.isArray(nti.documentos) && nti.documentos.length
       ? nti.documentos
       : nti && Array.isArray(nti.documentosMuestra)
         ? nti.documentosMuestra
         : [];
+  const ntiTotal =
+    typeof v.ntiDocumentosTotal === "number"
+      ? v.ntiDocumentosTotal
+      : nti && typeof nti.documentosTotal === "number"
+        ? nti.documentosTotal
+        : null;
   return {
     visorFetchedAt: generatedAt,
     visorUrl: v.visorUrlUsada?.trim() || null,
@@ -114,8 +126,7 @@ function parseViso(v: VisoRecord | undefined, generatedAt: string | null) {
     tramitacion: Array.isArray(v.tramitacion) ? v.tramitacion : [],
     documentacionUrls: Array.isArray(v.documentacionUrls) ? v.documentacionUrls : [],
     ntiListadoUrl: v.ntiListadoUrl?.trim() || null,
-    ntiDocumentosTotal:
-      nti && typeof nti.documentosTotal === "number" ? nti.documentosTotal : null,
+    ntiDocumentosTotal: ntiTotal,
     ntiDocumentosMuestra: ntiDocs.slice(0, 80),
   };
 }

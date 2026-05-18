@@ -1286,8 +1286,43 @@ if (existsSync(madridSigmaIndexPath)) {
   console.log("OK: madrid-sigma.json copiado");
 }
 if (existsSync(madridVisoExpedientesPath)) {
-  copyFileSync(madridVisoExpedientesPath, join(outDir, "madrid-viso-expedientes.json"));
-  console.log("OK: madrid-viso-expedientes.json copiado");
+  const visoRaw = JSON.parse(readFileSync(madridVisoExpedientesPath, "utf-8"));
+  const byG = visoRaw.byGrupoExpediente || {};
+  const slim = {};
+  for (const [grupo, rec] of Object.entries(byG)) {
+    if (!rec || typeof rec !== "object") continue;
+    const nti = rec.ntiArbol || {};
+    const docs = nti.documentos || nti.documentosMuestra || [];
+    slim[grupo] = {
+      expedienteGrupo: grupo,
+      sinDatosVisor: rec.sinDatosVisor,
+      visorUrlUsada: rec.visorUrlUsada,
+      visorCabecera: rec.visorCabecera,
+      visorFicha: rec.visorFicha,
+      tramitacion: rec.tramitacion,
+      documentacionUrls: rec.documentacionUrls,
+      ntiListadoUrl: rec.ntiListadoUrl,
+      ntiDocumentosTotal:
+        typeof nti.documentosTotal === "number" ? nti.documentosTotal : null,
+      ntiDocumentosMuestra: Array.isArray(docs) ? docs.slice(0, 15) : [],
+    };
+  }
+  const slimPath = join(outDir, "madrid-sigma-visor-slim.json");
+  writeFileSync(
+    slimPath,
+    JSON.stringify(
+      {
+        generatedAt: visoRaw.generatedAt,
+        conVisorFicha: visoRaw.conVisorFicha,
+        byGrupoExpediente: slim,
+      },
+      null,
+      0,
+    ),
+  );
+  console.log(
+    `OK: madrid-sigma-visor-slim.json (${Object.keys(slim).length} expedientes, sin árboles NTI completos)`,
+  );
 }
 if (existsSync(madridAytoIpGeoPath)) {
   copyFileSync(madridAytoIpGeoPath, join(outDir, "madrid-sigma-ip.geojson"));
