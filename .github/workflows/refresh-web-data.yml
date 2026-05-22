@@ -1,0 +1,152 @@
+name: Refresh web data
+
+on:
+  workflow_dispatch:
+    inputs:
+      sync_supabase:
+        description: "Sync regenerated SQLite data to Supabase when SUPABASE_DB_URL is configured."
+        required: false
+        type: boolean
+        default: true
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-web-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore generated data cache
+        id: data-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            output
+            db/poc_local.sqlite
+          key: poc-bocm-data-${{ github.run_id }}
+          restore-keys: |
+            poc-bocm-data-
+
+      - name: Bootstrap generated data snapshot
+        env:
+          DATA_SNAPSHOT_URL: ${{ secrets.DATA_SNAPSHOT_URL }}
+          DATA_SNAPSHOT_RELEASE_TAG: ${{ vars.DATA_SNAPSHOT_RELEASE_TAG || 'web-data-baseline' }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f output/history_parsed_incremental.csv ]; then
+            echo "Generated data baseline restored from cache."
+            exit 0
+          fi
+          if [ -z "$DATA_SNAPSHOT_URL" ]; then
+            echo "No DATA_SNAPSHOT_URL configured; trying release asset ${DATA_SNAPSHOT_RELEASE_TAG}."
+            if gh release download "$DATA_SNAPSHOT_RELEASE_TAG" \
+              --pattern poc-bocm-web-baseline.tgz \
+              --output /tmp/poc-bocm-data.tgz; then
+              tar -xzf /tmp/poc-bocm-data.tgz
+              test -f output/history_parsed_incremental.csv
+              exit 0
+            fi
+            echo "No release snapshot found; continuing to baseline guard."
+          else
+            curl --fail --location --show-error "$DATA_SNAPSHOT_URL" --output /tmp/poc-bocm-data.tgz
+            tar -xzf /tmp/poc-bocm-data.tgz
+            test -f output/history_parsed_incremental.csv
+          fi
+
+      - name: Check generated data baseline
+        run: |
+          if [ ! -f output/history_parsed_incremental.csv ]; then
+            echo "Missing output/history_parsed_incremental.csv." >&2
+            echo "" >&2
+            echo "The refresh job needs the generated source-data baseline in the GitHub Actions cache," >&2
+            echo "or a DATA_SNAPSHOT_URL secret pointing to a tar.gz with output/ and" >&2
+            echo "optionally db/poc_local.sqlite. This guard avoids overwriting web/public/data with" >&2
+            echo "an empty first-run dataset." >&2
+            exit 1
+          fi
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: requirements-data-refresh.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && pip install -r requirements-data-refresh.txt
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install web dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Refresh Madrid public datasets
+        run: |
+          python3 -m sector_geometry.madrid_ayto_sync
+          python3 -m sector_geometry.madrid_licencias_download
+          python3 db/migrate_sqlite.py --fresh --ubicacion
+          if [ -f output/madrid_viso_expedientes.json ]; then
+            python3 db/ingest_visor_sqlite.py --preserve-nti-local
+          fi
+
+      - name: Build public data files
+        working-directory: web
+        run: npm run build-data:public
+
+      - name: Verify production build
+        working-directory: web
+        env:
+          NEXT_PUBLIC_EDITION: public
+          SKIP_BUILD_DATA: "1"
+        run: npm run build
+
+      - name: Sync Supabase
+        if: ${{ inputs.sync_supabase || github.event_name == 'schedule' }}
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "SUPABASE_DB_URL is not configured; skipping Supabase sync."
+            exit 0
+          fi
+          python3 db/sync_sqlite_to_supabase.py --truncate
+
+      - name: Commit refreshed web data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web/public/data
+          if git diff --cached --quiet; then
+            echo "No web data changes to commit."
+          else
+            git commit -m "Refresh web data"
+            git push
+          fi
+
+      - name: Save generated data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            output
+            db/poc_local.sqlite
+          key: poc-bocm-data-${{ github.run_id }}
