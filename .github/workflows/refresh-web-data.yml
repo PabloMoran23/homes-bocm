@@ -110,7 +110,9 @@ jobs:
 
       - name: Build public data files
         working-directory: web
-        run: npm run build-data:public
+        env:
+          BUILD_DATA_SCOPE: madrid-public
+        run: npm run build-data
 
       - name: Verify production build
         working-directory: web
