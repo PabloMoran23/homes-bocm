@@ -1,13 +1,7 @@
 name: Refresh web data
 
 on:
-  workflow_dispatch:
-    inputs:
-      sync_supabase:
-        description: "Sync regenerated SQLite data to Supabase when SUPABASE_DB_URL is configured."
-        required: false
-        type: boolean
-        default: true
+  workflow_dispatch: {}
   schedule:
     - cron: "17 3 * * *"
 
@@ -33,9 +27,7 @@ jobs:
         id: data-cache
         uses: actions/cache/restore@v4
         with:
-          path: |
-            output
-            db/poc_local.sqlite
+          path: output
           key: poc-bocm-data-${{ github.run_id }}
           restore-keys: |
             poc-bocm-data-
@@ -72,8 +64,8 @@ jobs:
             echo "Missing output/history_parsed_incremental.csv." >&2
             echo "" >&2
             echo "The refresh job needs the generated source-data baseline in the GitHub Actions cache," >&2
-            echo "or a DATA_SNAPSHOT_URL secret pointing to a tar.gz with output/ and" >&2
-            echo "optionally db/poc_local.sqlite. This guard avoids overwriting web/public/data with" >&2
+            echo "or a DATA_SNAPSHOT_URL secret pointing to a tar.gz with output/." >&2
+            echo "This guard avoids overwriting web/public/data with" >&2
             echo "an empty first-run dataset." >&2
             exit 1
           fi
@@ -100,13 +92,16 @@ jobs:
         run: npm ci
 
       - name: Refresh Madrid public datasets
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "SUPABASE_DB_URL is required for direct public data sync." >&2
+            exit 1
+          fi
           python3 -m sector_geometry.madrid_ayto_sync
           python3 -m sector_geometry.madrid_licencias_download
-          python3 db/migrate_sqlite.py --fresh --ubicacion
-          if [ -f output/madrid_viso_expedientes.json ]; then
-            python3 db/ingest_visor_sqlite.py --preserve-nti-local
-          fi
+          python3 db/sync_madrid_public_to_supabase.py
 
       - name: Build public data files
         working-directory: web
@@ -120,17 +115,6 @@ jobs:
           NEXT_PUBLIC_EDITION: public
           SKIP_BUILD_DATA: "1"
         run: npm run build
-
-      - name: Sync Supabase
-        if: ${{ inputs.sync_supabase || github.event_name == 'schedule' }}
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: |
-          if [ -z "$SUPABASE_DB_URL" ]; then
-            echo "SUPABASE_DB_URL is not configured; skipping Supabase sync."
-            exit 0
-          fi
-          python3 db/sync_sqlite_to_supabase.py --truncate
 
       - name: Commit refreshed web data
         run: |
@@ -148,7 +132,5 @@ jobs:
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: |
-            output
-            db/poc_local.sqlite
+          path: output
           key: poc-bocm-data-${{ github.run_id }}

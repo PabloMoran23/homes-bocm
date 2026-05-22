@@ -20,24 +20,25 @@ Vercel: cada commit a `main` dispara un nuevo deploy.
 
 El workflow `.github/workflows/refresh-web-data.yml` corre cada dia a las
 `03:17 UTC` y tambien se puede lanzar manualmente. Esta es la version barata:
-no descarga ni parsea boletines BOCM nuevos con LLM.
+no descarga ni parsea boletines BOCM nuevos con LLM y no recalcula el cruce
+caro `link_licencia_sigma`.
 
 El flujo es:
 
-1. Restaura la cache de datos generados (`output/`, `db/poc_local.sqlite`).
-2. Refresca datasets publicos de Madrid: SIGMA, licencias, SQLite y Supabase
-   cuando haya secreto.
-3. Regenera `web/public/data/`.
-4. Ejecuta `npm run build`.
-5. Hace commit de `web/public/data/` si hay cambios. Ese commit dispara Vercel.
+1. Restaura la cache de datos generados (`output/`).
+2. Refresca datasets publicos de Madrid: SIGMA y licencias.
+3. Sincroniza esos datasets directamente a Supabase, sin SQLite intermedio.
+4. Regenera `web/public/data/`.
+5. Ejecuta `npm run build`.
+6. Hace commit de `web/public/data/` si hay cambios. Ese commit dispara Vercel.
 
 ## Secretos necesarios
 
 En GitHub, configura:
 
-- `SUPABASE_DB_URL`: opcional, para sincronizar SQLite con Supabase.
+- `SUPABASE_DB_URL`: connection string Postgres de Supabase para el sync directo.
 - `DATA_SNAPSHOT_URL`: opcional, solo para bootstrap. Debe apuntar a un
-  `.tar.gz` con `output/` y opcionalmente `db/poc_local.sqlite`.
+  `.tar.gz` con `output/`.
 
 Si no existe `DATA_SNAPSHOT_URL`, el workflow intenta descargar el release asset
 `poc-bocm-web-baseline.tgz` desde el tag `web-data-baseline`. El tag se puede
@@ -53,7 +54,6 @@ Para inicializarlo, sube un snapshot privado con esta estructura:
 
 ```text
 output/
-db/poc_local.sqlite
 ```
 
 Despues configura `DATA_SNAPSHOT_URL` temporalmente, lanza el workflow manual y
