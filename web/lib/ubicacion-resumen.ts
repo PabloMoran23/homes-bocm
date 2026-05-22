@@ -26,9 +26,9 @@ export function categoriaExpedienteLabel(cat: UbicacionExpedienteCategoria): str
     case "local":
       return "Actuación en la zona";
     case "sector":
-      return "Planeamiento de sector";
+      return "Cambios en el entorno";
     case "normativa_ciudad":
-      return "Normas generales (PGOUM)";
+      return "Normas generales de ciudad";
   }
 }
 
@@ -42,7 +42,10 @@ export function faseEnLenguajeClaro(fase: string | null): string {
     return "En información pública";
   }
   if (f.includes("proyecto") || f.includes("redacción")) return "En redacción";
-  return fase;
+  if (f.includes("inicial")) return "Aprobado inicialmente";
+  if (f.includes("provisional")) return "Pendiente de aprobación final";
+  if (f.includes("archivo") || f.includes("archiv") || f.includes("desist")) return "Archivado";
+  return "En tramitación";
 }
 
 import {
@@ -65,6 +68,28 @@ export {
 
 export function licenciaResumenCorto(lic: UbicacionLicencia): string {
   return licenciaTituloDesdeTipo(lic.tipo_expediente);
+}
+
+function procedimientoEnLenguajeClaro(raw: string | null | undefined): string | null {
+  const s = String(raw || "").trim();
+  if (!s) return null;
+  const n = s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (n.includes("declaracion responsable")) return "Trámite rápido municipal";
+  if (n.includes("licencia") && n.includes("funcionamiento")) {
+    return "Autorización de uso o apertura";
+  }
+  if (n.includes("licencia urban")) return "Obra o actuación autorizada";
+  if (n.includes("comunicacion previa")) return "Obra comunicada al Ayuntamiento";
+  return s;
+}
+
+export function licenciaDetalleCorto(lic: UbicacionLicencia): string {
+  return [lic.uso, procedimientoEnLenguajeClaro(lic.procedimiento)]
+    .filter(Boolean)
+    .join(" · ") || "Obra o actuación autorizada";
 }
 
 export function parseFechaEs(raw: string | null): Date | null {
@@ -197,22 +222,22 @@ export function buildUbicacionResumen(
       `Última actuación en el edificio: ${licenciaResumenCorto(ultimaLic)}${uso}${cuando ? `, ${cuando}` : ""}.`,
     );
   } else {
-    bullets.push("No hay licencias recientes registradas en esta dirección en el open data del Ayuntamiento.");
+    bullets.push("No hemos encontrado actividad reciente de obra o apertura en esta dirección.");
   }
 
   const nLocal = expedientesPorCategoria.local.length + expedientesPorCategoria.sector.length;
   if (nLocal > 0) {
     bullets.push(
-      `${nLocal} proyecto${nLocal > 1 ? "s" : ""} de planeamiento del sector afectan a esta ubicación.`,
+      `${nLocal} proyecto${nLocal > 1 ? "s" : ""} urbanístico${nLocal > 1 ? "s" : ""} afectan al entorno de esta dirección.`,
     );
   }
   if (hayNormativaPgoum) {
     bullets.push(
-      `Además, ${expedientesPorCategoria.normativa_ciudad.length} cambio${expedientesPorCategoria.normativa_ciudad.length > 1 ? "s" : ""} de normas del Plan General (PGOUM) pasan por aquí: regulan usos a escala de ciudad, no una obra concreta en tu parcela.`,
+      `También hay ${expedientesPorCategoria.normativa_ciudad.length} cambio${expedientesPorCategoria.normativa_ciudad.length > 1 ? "s" : ""} de normas generales: suelen regular usos de ciudad, no una obra concreta en tu edificio.`,
     );
   }
   if (ficha.expedientesSigma.length === 0 && !hayObraReciente) {
-    bullets.push("No hemos detectado proyectos de planeamiento ni licencias en esta coordenada.");
+    bullets.push("No hemos detectado proyectos urbanísticos ni actividad municipal relevante en este punto.");
   }
 
   const conViviendas = ficha.expedientesSigma.filter(
@@ -223,18 +248,18 @@ export function buildUbicacionResumen(
       ...conViviendas.map((e) => metricsByExpediente[e.expediente_grupo]!.num_viviendas_max!),
     );
     bullets.push(
-      `Algún proyecto cercano contempla hasta ${max.toLocaleString("es-ES")} viviendas nuevas (cifra orientativa del proyecto, no solo de este edificio).`,
+      `Algún proyecto cercano menciona hasta ${max.toLocaleString("es-ES")} viviendas nuevas. Es una cifra del ámbito, no necesariamente de este edificio.`,
     );
   }
 
   const parrafo =
     ficha.expedientesSigma.length > 0 && hayObraReciente
-      ? `En ${ficha.inmueble.direccion || "esta ubicación"} conviven actividad de obra/licencia en el edificio y varias capas de planeamiento que definen qué se puede hacer en el entorno.`
+      ? `En ${ficha.inmueble.direccion || "esta ubicación"} hay señales de actividad en el edificio y proyectos urbanísticos que pueden influir en el entorno.`
       : ficha.expedientesSigma.length > 0
-        ? `Esta dirección está dentro de ${ficha.expedientesSigma.length} ámbito${ficha.expedientesSigma.length > 1 ? "s" : ""} de planeamiento aprobado${ficha.expedientesSigma.length > 1 ? "s" : ""}; en muchos casos son normas de ciudad, no un proyecto de obra en tu puerta.`
+        ? `Esta dirección cae dentro de ${ficha.expedientesSigma.length} ámbito${ficha.expedientesSigma.length > 1 ? "s" : ""} urbanístico${ficha.expedientesSigma.length > 1 ? "s" : ""}. Algunos pueden ser cambios generales de normativa, no obras en tu puerta.`
         : hayObraReciente
-          ? `Aquí constan ${ficha.stats.licenciasTotal} licencias en el registro municipal; revisa la actividad reciente en el edificio.`
-          : `De momento no hay señales claras de obra ni de proyectos de planeamiento en este punto.`;
+          ? `Aquí constan ${ficha.stats.licenciasTotal} actuaciones municipales en el edificio; revisa la actividad reciente para entender qué tipo de cambios se han registrado.`
+          : `De momento no vemos señales claras de obra, apertura o proyectos urbanísticos en este punto.`;
 
   const hitos: UbicacionResumen["hitos"] = [];
 
@@ -244,7 +269,7 @@ export function buildUbicacionResumen(
       fecha: f,
       fechaSort: parseFechaEs(f)?.getTime() ?? 0,
       titulo: licenciaResumenCorto(lic),
-      detalle: [lic.uso, lic.procedimiento].filter(Boolean).join(" · ") || "Licencia urbanística",
+      detalle: licenciaDetalleCorto(lic),
       tipo: "licencia",
       nota: licenciaNotaDesdeTipo(lic.tipo_expediente),
     });

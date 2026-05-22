@@ -7,11 +7,25 @@
  */
 import { createHash } from "node:crypto";
 import { execSync, spawnSync } from "node:child_process";
-import { readFileSync, mkdirSync, writeFileSync, existsSync, copyFileSync } from "node:fs";
+import {
+  readFileSync,
+  mkdirSync,
+  writeFileSync,
+  existsSync,
+  copyFileSync,
+  readdirSync,
+  unlinkSync,
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "csv-parse/sync";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
+import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
+import {
+  sanitizeSigmaExpedienteMetric,
+  sanitizeMetricsByExpediente,
+  viviendasCoherentesConSuperficie,
+} from "../lib/vivienda-plausible.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const webRoot = join(__dirname, "..");
@@ -32,6 +46,17 @@ const madridLicenciasJsonlPath = join(pocRoot, "output/madrid_licencias.jsonl");
 const madridVisoExpedientesPath = join(pocRoot, "output/madrid_viso_expedientes.json");
 const madridSigmaExpMetricsPath = join(pocRoot, "output/madrid_sigma_expediente_metrics.json");
 const outDir = join(webRoot, "public/data");
+
+/** `madrid-public`: solo Madrid capital en projects + licencias recientes (deploy MVP). */
+const buildScope = process.env.BUILD_DATA_SCOPE || "full";
+const isMadridPublicBuild = buildScope === "madrid-public";
+const LICENCIAS_MIN_YEAR_PUBLIC = 2022;
+
+if (isMadridPublicBuild) {
+  console.log(
+    `BUILD_DATA_SCOPE=madrid-public (proyectos Madrid capital; licencias desde ${LICENCIAS_MIN_YEAR_PUBLIC})`,
+  );
+}
 
 const TERRITORIO_BY_SOURCE = {
   bocm: { id: "comunidad-madrid", label: "Comunidad de Madrid" },
@@ -134,6 +159,10 @@ function buildMadridSigmaMetricsWeb() {
         encoding: "utf-8",
       });
       if (r.status === 0) {
+        const metricsPath = join(outDir, "madrid-sigma-metrics.json");
+        const payload = JSON.parse(readFileSync(metricsPath, "utf-8"));
+        payload.byExpediente = sanitizeMetricsByExpediente(payload.byExpediente);
+        writeFileSync(metricsPath, JSON.stringify(payload));
         console.log((r.stdout || "").trim() || "OK: madrid-sigma-metrics.json (SQLite)");
         return null;
       }
@@ -152,7 +181,7 @@ function buildMadridSigmaMetricsWeb() {
     if (!row || typeof row !== "object") continue;
     const m = row.metrics || {};
     const hechos = Array.isArray(m.hechos) ? m.hechos : [];
-    byExpediente[grupo] = {
+    byExpediente[grupo] = sanitizeSigmaExpedienteMetric({
       num_viviendas_max: m.num_viviendas_max ?? null,
       sup_total_m2: m.sup_total_m2 ?? null,
       sup_edificable_m2: m.sup_edificable_m2 ?? null,
@@ -167,13 +196,13 @@ function buildMadridSigmaMetricsWeb() {
             : null,
       doc_role_principal: m.doc_role_principal ?? null,
       hechos: hechos.slice(0, 6).map((h) => ({
-        metric: h.metric ?? null,
-        value: h.value ?? null,
+        metric: h.metric ?? h.metrica ?? null,
+        value: h.value ?? h.valor ?? null,
         confianza: h.confianza ?? null,
         doc_role: h.doc_role ?? null,
         pdf_name: h.pdf_name ?? null,
       })),
-    };
+    });
   }
   const payload = {
     generatedAt: raw.generatedAt || new Date().toISOString(),
@@ -249,10 +278,15 @@ function dekForSpotlight(catalog, metric, n) {
 }
 
 function scoreSpotlight(metric, catalog) {
-  const n = Number(metric?.num_viviendas_max) || 0;
+  const sanitized = sanitizeSigmaExpedienteMetric(metric);
+  const n = Number(sanitized?.num_viviendas_max) || 0;
   if (n <= 0) return 0;
+  const sup = sanitized?.sup_total_m2;
+  const edif = sanitized?.sup_edificable_m2;
+  if (!viviendasCoherentesConSuperficie(n, sup, edif)) return 0;
+
   let score = n;
-  const g = metric?.genera_vivienda_nueva;
+  const g = sanitized?.genera_vivienda_nueva;
   if (g === "si") score *= 1.35;
   else if (g === "probable_si") score *= 1.15;
   else if (g === "stock_existente_o_rehabilitacion") score *= 0.55;
@@ -290,19 +324,20 @@ function buildLandingNewsSpotlight() {
 
   const candidates = [];
   for (const [grupo, metric] of Object.entries(metrics.byExpediente || {})) {
-    const n = Number(metric?.num_viviendas_max);
+    const sanitized = sanitizeSigmaExpedienteMetric(metric);
+    const n = Number(sanitized?.num_viviendas_max);
     if (!Number.isFinite(n) || n < 50) continue;
     const catalog = catalogByGrupo.get(grupo) || catalogByGrupo.get(expedienteGrupoKeyFromVariant(grupo));
-    const score = scoreSpotlight(metric, catalog);
+    const score = scoreSpotlight(sanitized, catalog);
     if (score < 40) continue;
     const denom = catalog?.EXP_TX_DENOM || grupo;
     candidates.push({
       id: `sigma-${sigmaSlugFromGrupo(grupo)}`,
       href: `/sigma/${encodeURIComponent(sigmaSlugFromGrupo(grupo))}`,
-      tag: tagForSpotlight(metric, catalog),
+      tag: tagForSpotlight(sanitized, catalog),
       dateLabel: dateLabelForExpediente(catalog?.EXP_TX_NUMERO || grupo),
       title: titleForSpotlight(denom, n),
-      dek: dekForSpotlight(catalog, metric, n),
+      dek: dekForSpotlight(catalog, sanitized, n),
       score,
       numViviendas: n,
       expedienteGrupo: grupo,
@@ -331,7 +366,8 @@ function buildLandingNewsSpotlight() {
   const payload = {
     generatedAt: new Date().toISOString(),
     source: "madrid-sigma-metrics + madrid-sigma.json",
-    criteria: "Mayor num_viviendas_max en expedientes con métricas PDF (Madrid)",
+    criteria:
+      "Mayor num_viviendas_max coherente con m² de ámbito/edificabilidad (Madrid, métricas PDF)",
     items,
   };
   writeFileSync(join(outDir, "landing-news.json"), JSON.stringify(payload, null, 2));
@@ -1156,7 +1192,11 @@ const seenIds = new Set();
 const statsBySource = new Map();
 
 ingestRows(parseCsv(bocmCsv), "bocm", projects, seenIds, statsBySource, madridAytoLinks, madridSigmaCentroids);
-ingestRows(parseCsv(ccaaCsv), "", projects, seenIds, statsBySource, madridAytoLinks, madridSigmaCentroids);
+if (!isMadridPublicBuild && existsSync(ccaaCsv)) {
+  ingestRows(parseCsv(ccaaCsv), "", projects, seenIds, statsBySource, madridAytoLinks, madridSigmaCentroids);
+} else if (!isMadridPublicBuild) {
+  console.log("Aviso: sin ccaa_history_parsed_incremental.csv");
+}
 
 projects.sort((a, b) => {
   if (a.bocmDate !== b.bocmDate) return b.bocmDate.localeCompare(a.bocmDate);
@@ -1183,7 +1223,19 @@ const madridVisorTramitacionProyectos = projects.filter(
   (p) => (p.sigmaVisorTramitacion?.length ?? 0) > 0,
 ).length;
 
-const adminCoverage = buildAdminCoverage(statsBySource, projects);
+const exportProjects = isMadridPublicBuild
+  ? projects.filter((p) => normText(p.municipio) === "madrid")
+  : projects;
+
+if (isMadridPublicBuild) {
+  console.log(
+    `Export web: ${exportProjects.length.toLocaleString("es-ES")} proyectos Madrid capital (de ${projects.length.toLocaleString("es-ES")} filas BOCM ingestadas)`,
+  );
+}
+
+const adminCoverage = isMadridPublicBuild
+  ? null
+  : buildAdminCoverage(statsBySource, projects);
 
 const byMunicipio = new Map();
 const byTipo = new Map();
@@ -1200,7 +1252,7 @@ let totalRelevanceUnknown = 0;
 let coordSigmaIp = 0;
 let coordSigmaAd = 0;
 
-for (const p of projects) {
+for (const p of exportProjects) {
   if (p.lat != null && p.lng != null) withCoords += 1;
   if (p.coordSource === "sigma_madrid_ip") coordSigmaIp += 1;
   if (p.coordSource === "sigma_madrid_ad") coordSigmaAd += 1;
@@ -1235,7 +1287,8 @@ const sortEntries = (m) =>
 
 const summary = {
   generatedAt: new Date().toISOString(),
-  total: projects.length,
+  total: exportProjects.length,
+  buildScope: isMadridPublicBuild ? "madrid-public" : "full",
   totalRelevant,
   totalNotRelevant,
   totalRelevanceUnknown,
@@ -1263,12 +1316,14 @@ const summary = {
   },
 };
 
-const madridSigmaBocmByExp = buildMadridSigmaBocmProjectsByExpediente(projects);
+const madridSigmaBocmByExp = buildMadridSigmaBocmProjectsByExpediente(exportProjects);
 
 mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, "projects.json"), JSON.stringify(projects));
+writeFileSync(join(outDir, "projects.json"), JSON.stringify(exportProjects));
 writeFileSync(join(outDir, "summary.json"), JSON.stringify(summary, null, 2));
-writeFileSync(join(outDir, "admin-coverage.json"), JSON.stringify(adminCoverage, null, 2));
+if (adminCoverage) {
+  writeFileSync(join(outDir, "admin-coverage.json"), JSON.stringify(adminCoverage, null, 2));
+}
 writeFileSync(
   join(outDir, "madrid-sigma-bocm-projects.json"),
   JSON.stringify({
@@ -1347,9 +1402,28 @@ buildMadridSigmaMetricsWeb();
 buildLandingNewsSpotlight();
 
 try {
-  await buildMadridLicenciasWeb({ jsonlPath: madridLicenciasJsonlPath, outDir });
+  await buildMadridLicenciasWeb({
+    jsonlPath: madridLicenciasJsonlPath,
+    outDir,
+    minYear: isMadridPublicBuild ? LICENCIAS_MIN_YEAR_PUBLIC : undefined,
+  });
+  if (isMadridPublicBuild) {
+    for (const name of readdirSync(outDir)) {
+      const m = /^madrid-licencias-(\d{4})\.(json|geojson)$/.exec(name);
+      if (m && Number(m[1]) < LICENCIAS_MIN_YEAR_PUBLIC) {
+        unlinkSync(join(outDir, name));
+        console.log(`OK: eliminado ${name} (fuera de alcance público)`);
+      }
+    }
+  }
 } catch (err) {
   console.warn("Licencias urbanísticas (web):", err?.message || err);
+}
+
+try {
+  buildMadridDashboardStats({ outDir });
+} catch (err) {
+  console.warn("Dashboard Madrid (stats):", err?.message || err);
 }
 
 const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");
@@ -1402,10 +1476,10 @@ if (existsSync(sectorGeoPath)) {
 }
 
 console.log(
-  `OK: ${projects.length} projects (${totalRelevant} relevantes, ${withCoords} con coords; ` +
+  `OK: ${exportProjects.length} projects (${totalRelevant} relevantes, ${withCoords} con coords; ` +
     `Madrid visor tramitación ${madridVisorTramitacionProyectos}) → public/data/`,
 );
-const mc = adminCoverage.madridCapital;
+const mc = adminCoverage?.madridCapital;
 if (mc?.bocmCoordsDesdeSigmaPoligono != null) {
   console.log(
     `    Madrid · ubicación desde polígono SIGMA: ${mc.bocmCoordsDesdeSigmaPoligono} (` +
@@ -1416,4 +1490,8 @@ if (mc?.bocmCoordsDesdeSigmaPoligono != null) {
 console.log(
   `    Global · coordsDesdeSigmaPolygon (todos los territorios): ip=${coordSigmaIp}, ad=${coordSigmaAd}, total=${coordSigmaIp + coordSigmaAd}`,
 );
-console.log(`OK: admin-coverage.json (${adminCoverage.sources.length} fuentes, ${adminCoverage.gaps.length} alertas)`);
+if (adminCoverage) {
+  console.log(
+    `OK: admin-coverage.json (${adminCoverage.sources.length} fuentes, ${adminCoverage.gaps.length} alertas)`,
+  );
+}

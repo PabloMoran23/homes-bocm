@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   boletinResumenParrafo,
   MONTHS_OPTIONS,
@@ -24,6 +25,14 @@ const BoletinMiniMap = dynamic(
     ),
   },
 );
+
+type GeocodeResult = {
+  lat: number;
+  lng: number;
+  label: string;
+  rawLabel?: string;
+  error?: string;
+};
 
 function norm(s: string) {
   return s
@@ -112,6 +121,10 @@ function EventoFila({ ev }: { ev: BoletinEvento }) {
 }
 
 export function BoletinAreaApp() {
+  const searchParams = useSearchParams();
+  const ndpFromUrl = searchParams.get("ndp")?.trim() || null;
+  const autoLoadedNdp = useRef<string | null>(null);
+
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [searchReady, setSearchReady] = useState(false);
   const [q, setQ] = useState("");
@@ -155,33 +168,64 @@ export function BoletinAreaApp() {
       .slice(0, 10);
   }, [q, searchIndex]);
 
-  const buscar = useCallback(async () => {
-    const ndp = selected?.ndp;
-    if (!ndp) {
-      setError("Elige una dirección de la lista");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    setData(null);
-    try {
-      const params = new URLSearchParams({
-        ndp,
-        radiusM: String(radiusM),
-        months: String(months),
-      });
-      const res = await fetch(`/api/boletin-area?${params}`);
-      const json = (await res.json()) as BoletinAreaResult & { error?: string };
-      if (!res.ok || json.error) {
-        throw new Error(json.error || "No se pudo cargar el boletín");
+  const buscar = useCallback(
+    async (ndpOverride?: string) => {
+      const ndp = ndpOverride ?? selected?.ndp;
+      const freeText = q.trim();
+      if (!ndp && freeText.length < 3) {
+        setError("Escribe una dirección o elige una sugerencia");
+        return;
       }
-      setData(json);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Error al consultar");
-    } finally {
-      setLoading(false);
-    }
-  }, [selected, radiusM, months]);
+      setLoading(true);
+      setError(null);
+      setData(null);
+      try {
+        const params = new URLSearchParams({
+          radiusM: String(radiusM),
+          months: String(months),
+        });
+        if (ndp) {
+          params.set("ndp", ndp);
+        } else {
+          const geoRes = await fetch(`/api/geocode-address?q=${encodeURIComponent(freeText)}`);
+          const geo = (await geoRes.json()) as GeocodeResult;
+          if (!geoRes.ok || geo.error) {
+            throw new Error(geo.error || "No se pudo localizar esa dirección");
+          }
+          params.set("lat", String(geo.lat));
+          params.set("lng", String(geo.lng));
+          params.set("label", geo.label);
+          setQ(geo.label);
+          setSelected(null);
+          setOpenSuggest(false);
+        }
+        const res = await fetch(`/api/boletin-area?${params}`);
+        const json = (await res.json()) as BoletinAreaResult & { error?: string };
+        if (!res.ok || json.error) {
+          throw new Error(json.error || "No se pudo cargar el boletín");
+        }
+        setData(json);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Error al consultar");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [selected, q, radiusM, months],
+  );
+
+  useEffect(() => {
+    if (!searchReady || !ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
+    const item = searchIndex.find((i) => i.ndp === ndpFromUrl);
+    if (!item) return;
+    autoLoadedNdp.current = ndpFromUrl;
+    queueMicrotask(() => {
+      setSelected(item);
+      setQ(item.label);
+      setOpenSuggest(false);
+      void buscar(ndpFromUrl);
+    });
+  }, [searchReady, ndpFromUrl, searchIndex, buscar]);
 
   const pickSuggestion = useCallback((item: UbicacionSearchItem) => {
     setSelected(item);
@@ -192,6 +236,7 @@ export function BoletinAreaApp() {
   }, []);
 
   const radioLabel = RADIUS_OPTIONS.find((o) => o.m === (data?.params.radiusM ?? radiusM))?.label;
+  const canSearch = searchReady && !loading && (selected != null || q.trim().length >= 3);
 
   return (
     <div className="min-h-[calc(100dvh-3.5rem)] bg-[#f8f6f1]">
@@ -251,16 +296,33 @@ export function BoletinAreaApp() {
                     </li>
                   ))}
                 </ul>
+              ) : openSuggest && q.trim().length >= 3 ? (
+                <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white p-2 text-sm shadow-lg">
+                  <button
+                    type="button"
+                    className="w-full rounded-md px-3 py-2 text-left hover:bg-slate-50"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      setOpenSuggest(false);
+                      void buscar();
+                    }}
+                  >
+                    <span className="font-medium text-slate-900">Buscar “{q.trim()}” en Madrid</span>
+                    <span className="mt-0.5 block text-xs text-slate-500">
+                      Si no está en nuestra base, intentaremos localizarla por coordenadas.
+                    </span>
+                  </button>
+                </div>
               ) : null}
             </label>
 
             <button
               type="button"
-              onClick={buscar}
-              disabled={!searchReady || loading || !selected}
+              onClick={() => void buscar()}
+              disabled={!canSearch}
               className="h-[42px] shrink-0 rounded-lg bg-[var(--portal-accent)] px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Buscando…" : "Buscar"}
+              {loading ? "Buscando…" : selected ? "Buscar" : "Buscar dirección"}
             </button>
           </div>
 

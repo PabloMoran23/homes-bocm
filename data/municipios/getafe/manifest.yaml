@@ -1,0 +1,23 @@
+slug: getafe
+nombre: Getafe
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.getafe.es"
+  adapter: municipio.adapters.getafe:GetafeAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.getafe.es"
+    gobierno_abierto_base: "https://gobiernoabierto.getafe.es"
+    request_delay_s: 0.5
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-getafe/1.0 (+urbanismo research)"
+  notes: |
+    Fuentes: sede STA tablón (dataset JSON embebido), Gobierto IP sectorial y convenios.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

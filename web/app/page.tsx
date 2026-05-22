@@ -3,10 +3,12 @@ import { LandingMap } from "@/components/LandingMap";
 import { LandingNewsSection } from "@/components/LandingNewsSection";
 import { loadLandingNews } from "@/lib/landing-news";
 import { loadSummary } from "@/lib/load-summary";
+import { isPublicEdition } from "@/lib/edition";
 
 export default async function Home() {
   const summary = await loadSummary();
   const news = loadLandingNews();
+  const isPublic = isPublicEdition();
 
   return (
     <main className="flex-1">
@@ -14,33 +16,57 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-12 xl:gap-14">
             <div className="min-w-0">
-              <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
-                La ciudad que viene, antes que nadie
-              </p>
+              {isPublic ? (
+                <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
+                  Madrid · versión beta
+                </p>
+              ) : (
+                <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
+                  La ciudad que viene, antes que nadie
+                </p>
+              )}
               <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-[var(--portal-ink)] sm:text-5xl">
                 Proyectos urbanísticos en tu zona,{" "}
                 <span className="text-[var(--portal-accent)]">sin perseguir mil sitios distintos</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-                Homes centraliza lo que cambia el tejido alrededor de ti: qué se tramita, dónde y con
-                qué intensidad. Sigue proyectos, configura alertas, estudia un ámbito y entiende el
-                pulso del suelo en minutos — no en tardes de buscar a mano.
+                {isPublic ? (
+                  <>
+                    Homes concentra en un solo mapa lo que ocurre en Madrid capital: licencias de
+                    obra, expedientes SIGMA y anuncios del BOCM enlazados. Introduce tu dirección en
+                    el boletín, explora el territorio y consulta estadísticas agregadas.
+                  </>
+                ) : (
+                  <>
+                    Homes centraliza lo que cambia el tejido alrededor de ti: qué se tramita, dónde y
+                    con qué intensidad. Sigue proyectos, configura alertas, estudia un ámbito y
+                    entiende el pulso del suelo en minutos — no en tardes de buscar a mano.
+                  </>
+                )}
               </p>
               <p className="mt-4 max-w-xl text-sm font-medium text-slate-700">
-                Más de 1.000 fuentes cruzadas para una sola vista. Para tu claridad y acción rápida.
+                {isPublic
+                  ? "Datos del Ayuntamiento de Madrid y del BOCM, unificados para lectura rápida."
+                  : "Más de 1.000 fuentes cruzadas para una sola vista. Para tu claridad y acción rápida."}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
                   href="/boletin"
                   className="inline-flex items-center justify-center rounded-lg bg-[var(--portal-accent)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)]"
                 >
-                  Boletín de tu zona
+                  Qué ocurre en tu zona
                 </Link>
                 <Link
                   href="/explore"
                   className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
                 >
                   Explorar Madrid
+                </Link>
+                <Link
+                  href="/madrid/estadisticas"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
+                >
+                  Ver estadísticas
                 </Link>
               </div>
             </div>
@@ -65,15 +91,28 @@ export default async function Home() {
           <div>
             <h3 className="font-semibold text-slate-900">Si analizas suelo</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Cruza municipio, instrumento y texto en segundos; prepara informes y compara escenarios
-              con datos exportables.
+              Cruza licencias, planeamiento y anuncios en segundos; compara distritos y evolución
+              temporal desde el panel de estadísticas.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Si escalas un equipo</h3>
+            <h3 className="font-semibold text-slate-900">
+              {isPublic ? "Próximamente" : "Si escalas un equipo"}
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Misma inteligencia para varias zonas: alertas compartidas, API e integraciones en
-              roadmap — todo sobre el mismo núcleo de datos.
+              {isPublic ? (
+                <>
+                  Alertas por correo y planes de suscripción llegarán en próximas versiones.{" "}
+                  <Link href="/en-desarrollo?from=/planes" className="font-medium text-[var(--portal-accent)] hover:underline">
+                    Ver roadmap
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Misma inteligencia para varias zonas: alertas compartidas, API e integraciones en
+                  roadmap — todo sobre el mismo núcleo de datos.
+                </>
+              )}
             </p>
           </div>
         </div>

@@ -30,6 +30,10 @@ import {
   LICENCIA_TIPOS_FILTRABLES,
   passesLicenciaTipoFilter,
 } from "@/lib/map-licencia-filters";
+import {
+  filterUbicacionesMadridCapital,
+  type UbicacionesMapGeoJson,
+} from "@/lib/madrid-ubicaciones-map";
 import { ambitosProyectosEnVista, PROYECTOS_URBANISTICOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
@@ -52,23 +56,87 @@ const SIGMA_LAYER_URL: Record<Exclude<SigmaMapMode, "ambitos" | "ip">, string> =
   urbanizacion: "/data/madrid-sigma-urbanizacion.geojson",
 };
 
-type UbicacionGeo = {
-  type: "FeatureCollection";
-  features: Array<{
-    type: "Feature";
-    geometry: { type: "Point"; coordinates: [number, number] };
-    properties: {
-      ndp: string;
-      direccion: string | null;
-      distrito: string | null;
-      barrio: string | null;
-      licencias: number;
-      sigma: number;
-      ultimaLicenciaFecha?: string | null;
-      ultimaLicenciaTipo?: string | null;
-    };
-  }>;
-};
+const SIGMA_MAP_MODES: { id: SigmaMapMode; label: string }[] = [
+  { id: "ambitos", label: "Todos en mapa" },
+  { id: "ip", label: "Inf. pública" },
+  { id: "ad", label: "En curso" },
+  { id: "gestion", label: "Gestión" },
+  { id: "urbanizacion", label: "Urbanización" },
+];
+
+function layerToggleClass(active: boolean) {
+  return active
+    ? "bg-[var(--portal-accent)] text-white shadow-sm"
+    : "text-slate-600 hover:bg-slate-100";
+}
+
+function MapLayerToolbar({
+  showSigma,
+  onToggleSigma,
+  showUbicaciones,
+  onToggleUbicaciones,
+  mapMode,
+  onMapModeChange,
+  layerLoading,
+}: {
+  showSigma: boolean;
+  onToggleSigma: () => void;
+  showUbicaciones: boolean;
+  onToggleUbicaciones: () => void;
+  mapMode: SigmaMapMode;
+  onMapModeChange: (mode: SigmaMapMode) => void;
+  layerLoading: boolean;
+}) {
+  return (
+    <div
+      className="pointer-events-none absolute left-1/2 top-3 z-[1100] flex w-[min(100%,36rem)] -translate-x-1/2 justify-center px-3 sm:top-4"
+      role="toolbar"
+      aria-label="Capas del mapa"
+    >
+      <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md">
+        <button
+          type="button"
+          aria-pressed={showSigma}
+          onClick={onToggleSigma}
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${layerToggleClass(showSigma)}`}
+        >
+          {PROYECTOS_URBANISTICOS}
+          {layerLoading && showSigma ? (
+            <span className="ml-1 font-normal opacity-80">…</span>
+          ) : null}
+        </button>
+        <button
+          type="button"
+          aria-pressed={showUbicaciones}
+          onClick={onToggleUbicaciones}
+          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${layerToggleClass(showUbicaciones)}`}
+        >
+          Licencias
+        </button>
+        {showSigma ? (
+          <>
+            <span className="mx-0.5 hidden h-5 w-px bg-slate-200 sm:block" aria-hidden />
+            <label className="sr-only" htmlFor="sigma-map-mode">
+              Vista de proyectos
+            </label>
+            <select
+              id="sigma-map-mode"
+              value={mapMode}
+              onChange={(e) => onMapModeChange(e.target.value as SigmaMapMode)}
+              className="max-w-[11rem] rounded-lg border-0 bg-slate-50 py-1.5 pl-2 pr-7 text-xs font-medium text-slate-800 ring-1 ring-slate-200/90 focus:ring-2 focus:ring-[var(--portal-accent)]/30 sm:max-w-none sm:text-sm"
+            >
+              {SIGMA_MAP_MODES.map(({ id, label }) => (
+                <option key={id} value={id}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 function norm(s: string) {
   return s
@@ -83,7 +151,7 @@ function Div({ className, children }: { className?: string; children: React.Reac
 
 export function ExploreMadridApp() {
   const router = useRouter();
-  const [ubicGeo, setUbicGeo] = useState<UbicacionGeo | null>(null);
+  const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [sigmaData, setSigmaData] = useState<MadridSigmaDataset | null>(null);
   const [ambitosGeo, setAmbitosGeo] = useState<SectorFeatureCollection | null>(null);
@@ -93,6 +161,13 @@ export function ExploreMadridApp() {
   const [metricsBundle, setMetricsBundle] = useState<MadridSigmaMetricsFile | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
+
+  /** En escritorio el panel lateral arranca abierto (solo al montar, sin forzar al redimensionar). */
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 640px)").matches) {
+      setPanelOpen(true);
+    }
+  }, []);
 
   const [q, setQ] = useState("");
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
@@ -138,7 +213,7 @@ export function ExploreMadridApp() {
         ]);
         if (!mapRes.ok || !searchRes.ok) throw new Error("ubicaciones");
         if (!cancelled) {
-          setUbicGeo((await mapRes.json()) as UbicacionGeo);
+          setUbicGeo((await mapRes.json()) as UbicacionesMapGeoJson);
           setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
           setDataReady({ ubic: true, search: true });
         }
@@ -234,11 +309,7 @@ export function ExploreMadridApp() {
 
   const filteredUbicGeo = useMemo(() => {
     if (!ubicGeo) return null;
-    const madridOnly = ubicGeo.features.filter((f) => {
-      const [lng, lat] = f.geometry.coordinates;
-      return lat >= 39.5 && lat <= 41.2 && lng >= -4.5 && lng <= -3.0;
-    });
-    let feats = madridOnly;
+    let feats = filterUbicacionesMadridCapital(ubicGeo).features;
     const nq = norm(q.trim());
     if (nq.length >= 2) {
       const ndpSet = new Set(
@@ -414,11 +485,21 @@ export function ExploreMadridApp() {
         ) : null}
       </div>
 
+      <MapLayerToolbar
+        showSigma={showSigma}
+        onToggleSigma={() => setShowSigma((v) => !v)}
+        showUbicaciones={showUbicaciones}
+        onToggleUbicaciones={() => setShowUbicaciones((v) => !v)}
+        mapMode={mapMode}
+        onMapModeChange={setMapMode}
+        layerLoading={layerLoading}
+      />
+
       {!panelOpen ? (
         <button
           type="button"
           onClick={() => setPanelOpen(true)}
-          className="absolute bottom-5 right-5 z-[1100] rounded-full border border-slate-200 bg-white/95 px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-lg backdrop-blur-sm"
+          className="absolute bottom-5 right-5 z-[1100] rounded-full border border-slate-200 bg-white/95 px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-lg backdrop-blur-sm sm:bottom-auto sm:right-auto sm:left-4 sm:top-4"
         >
           Filtros
         </button>
@@ -429,7 +510,7 @@ export function ExploreMadridApp() {
           <button
             type="button"
             aria-label="Cerrar filtros"
-            className="absolute inset-0 z-[1040] bg-slate-900/40"
+            className="absolute inset-0 z-[1040] bg-slate-900/40 sm:hidden"
             onClick={() => setPanelOpen(false)}
           />
           <aside className="absolute inset-x-0 bottom-0 z-[1050] flex max-h-[min(72dvh,28rem)] flex-col overflow-hidden rounded-t-2xl border border-slate-200/90 border-b-0 bg-white shadow-xl sm:inset-x-auto sm:bottom-auto sm:left-4 sm:top-4 sm:max-h-[calc(100%-2rem)] sm:w-[min(calc(100%-1.5rem),22rem)] sm:rounded-2xl sm:border-b">
@@ -440,8 +521,7 @@ export function ExploreMadridApp() {
           <div className="min-w-0">
             <h1 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h1>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-              {PROYECTOS_URBANISTICOS} y edificios con licencias. Clic en un ámbito → ficha del proyecto; en un
-              punto → ubicación.
+              Activa capas arriba del mapa. Busca aquí; clic en ámbito → ficha del proyecto, en punto → ubicación.
             </p>
           </div>
           <button
@@ -506,33 +586,6 @@ export function ExploreMadridApp() {
               Ver ficha ubicación
             </button>
           ) : null}
-
-          <fieldset className="space-y-2">
-            <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-              Capas
-            </legend>
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                className="accent-[var(--portal-accent)]"
-                checked={showSigma}
-                onChange={(e) => setShowSigma(e.target.checked)}
-              />
-              {PROYECTOS_URBANISTICOS}
-              {layerLoading ? (
-                <span className="text-xs text-slate-400">(cargando…)</span>
-              ) : null}
-            </label>
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                className="accent-[var(--portal-accent)]"
-                checked={showUbicaciones}
-                onChange={(e) => setShowUbicaciones(e.target.checked)}
-              />
-              Edificios (licencias)
-            </label>
-          </fieldset>
 
           {showUbicaciones ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">
@@ -631,28 +684,8 @@ export function ExploreMadridApp() {
           {showSigma ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">
               <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Capas de proyectos
+                Proyectos
               </legend>
-              {(["ambitos", "ip", "ad", "gestion", "urbanizacion"] as const).map((mode) => (
-                <label key={mode} className="flex cursor-pointer items-center gap-2 text-xs text-slate-700">
-                  <input
-                    type="radio"
-                    name="sigma-layer"
-                    className="accent-[var(--portal-accent)]"
-                    checked={mapMode === mode}
-                    onChange={() => setMapMode(mode)}
-                  />
-                  {mode === "ambitos"
-                    ? "Todos los proyectos en mapa"
-                    : mode === "ip"
-                      ? "En información pública"
-                      : mode === "ad"
-                        ? "Planeamiento en curso"
-                        : mode === "gestion"
-                          ? "Gestión urbanística"
-                          : "Urbanización"}
-                </label>
-              ))}
               <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
                 <input
                   type="checkbox"

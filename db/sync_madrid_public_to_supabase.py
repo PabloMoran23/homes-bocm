@@ -31,6 +31,7 @@ POC_ROOT = Path(__file__).resolve().parents[1]
 DB_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(DB_DIR))
 
+from direccion import build_direccion  # noqa: E402
 from geo_utils import (  # noqa: E402
     geom_area_approx_m2,
     geom_bbox,
@@ -256,21 +257,6 @@ def licencia_key(row: dict[str, Any], *, anio: int | None) -> str:
         str(row.get("fecha_concesin") or row.get("fechaConcesion") or ""),
     ]
     return sha256("|".join(parts).encode()).hexdigest()[:32]
-
-
-def build_direccion(row: dict[str, Any]) -> str | None:
-    if row.get("direccion"):
-        return str(row["direccion"]).strip() or None
-    via = " ".join(
-        p
-        for p in [
-            row.get("tipo_via"),
-            row.get("nombre_via"),
-            str(row.get("nmero") or row.get("numero") or ""),
-        ]
-        if p
-    ).strip()
-    return via or None
 
 
 def iter_licencias_rows() -> Iterable[dict[str, Any]]:

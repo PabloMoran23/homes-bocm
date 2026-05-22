@@ -19,6 +19,7 @@ import {
   createLicenciaDivIcon,
   licenciaMapTooltipLabel,
 } from "@/lib/licencia-mapa";
+import { HOMES_MAP_ATTRIBUTION, HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 import type { UbicacionMapProperties } from "@/lib/ubicacion";
 
 type LeafletWithCluster = typeof L & {
@@ -27,7 +28,6 @@ type LeafletWithCluster = typeof L & {
 const Lc = L as LeafletWithCluster;
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 
 type GeoFeature = {
   type: "Feature";
@@ -158,7 +158,7 @@ export function UbicacionesMap({
 
   return (
     <div
-      className={`overflow-hidden rounded-xl border border-slate-200 shadow-sm ${className}`}
+      className={`homes-map-shell overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/40 shadow-sm ${className}`}
     >
       <MapContainer
         center={MADRID_CENTER}
@@ -167,7 +167,7 @@ export function UbicacionesMap({
         zoomControl={false}
         scrollWheelZoom
       >
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> · CARTO' url={TILE_URL} />
+        <TileLayer attribution={HOMES_MAP_ATTRIBUTION} url={HOMES_MAP_TILE_URL} />
         <ZoomControl position="topright" />
         <ScaleControl position="bottomleft" imperial={false} />
         {bounds ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import type { SigmaVisorTramite } from "@/lib/types";
+import { tramiteShortLabel } from "@/lib/sigma-user-labels";
 import { tramiteBadgeClass, tramiteDotClass, tramiteKind } from "@/lib/tramite-style";
 
 export function TramitacionTimeline({
@@ -29,6 +30,7 @@ export function TramitacionTimeline({
         <ol className="relative flex snap-x snap-mandatory gap-0">
           {rows.map((row, i) => {
             const kind = tramiteKind(row.tramite);
+            const tramiteLabel = tramiteShortLabel(row.tramite);
             const isLast = i === rows.length - 1;
             return (
               <li
@@ -57,11 +59,12 @@ export function TramitacionTimeline({
                       Sin fecha
                     </span>
                   )}
-                  {row.tramite ? (
+                  {tramiteLabel ? (
                     <span
+                      title={row.tramite ?? undefined}
                       className={`mt-2 inline-flex w-fit rounded-full px-2.5 py-0.5 font-semibold ring-1 ${tramiteBadgeClass(kind)} ${compact ? "text-[10px]" : "text-xs"}`}
                     >
-                      {row.tramite}
+                      {tramiteLabel}
                     </span>
                   ) : null}
                   {row.organo ? (

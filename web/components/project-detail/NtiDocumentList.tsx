@@ -5,6 +5,7 @@ import type { SigmaNtiLinkedGrupo } from "@/lib/sigma-nti-linked";
 import { formatBytes } from "@/lib/sigma-nti-linked";
 import type { SigmaVisorNtiDoc } from "@/lib/types";
 import { hasValue } from "@/lib/project-display";
+import { sigmaDocumentosLabel } from "@/lib/sigma-user-labels";
 
 type DocRow = {
   key: string;
@@ -63,6 +64,7 @@ export function NtiDocumentList({
   const [q, setQ] = useState("");
   const docs = useMemo(() => mergeDocs(linked, muestra), [linked, muestra]);
   const stats = linked?.stats;
+  const visibleTotal = stats?.total ?? totalVisor ?? docs.length;
 
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -79,21 +81,13 @@ export function NtiDocumentList({
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
-        {stats ? (
-          <>
-            <StatPill label="Indexados" value={String(stats.total)} />
-            <StatPill label="En disco" value={String(stats.downloaded)} accent />
-            {stats.errors > 0 ? (
-              <StatPill label="Errores" value={String(stats.errors)} warn />
-            ) : null}
-            {stats.bytesTotal > 0 ? (
-              <StatPill label="Volumen" value={formatBytes(stats.bytesTotal)} />
-            ) : null}
-          </>
-        ) : totalVisor ? (
-          <StatPill label="PDF en árbol NTI" value={String(totalVisor)} />
-        ) : null}
+      <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
+        <p className="text-sm font-semibold text-slate-900">
+          {sigmaDocumentosLabel(visibleTotal, stats?.downloaded)}
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Memorias, informes y anexos publicados por el Ayuntamiento.
+        </p>
       </div>
 
       {docs.length > 8 ? (
@@ -134,6 +128,20 @@ export function NtiDocumentList({
             </>
           ) : null}
         </p>
+      ) : null}
+
+      {stats ? (
+        <details className="rounded-xl border border-slate-200 bg-slate-50/60">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+            Estado de la descarga
+          </summary>
+          <div className="flex flex-wrap gap-3 border-t border-slate-200 px-4 py-3">
+            <StatPill label="Documentos detectados" value={String(stats.total)} />
+            <StatPill label="Descargados" value={String(stats.downloaded)} accent />
+            {stats.errors > 0 ? <StatPill label="Errores" value={String(stats.errors)} warn /> : null}
+            {stats.bytesTotal > 0 ? <StatPill label="Volumen" value={formatBytes(stats.bytesTotal)} /> : null}
+          </div>
+        </details>
       ) : null}
     </div>
   );
@@ -182,7 +190,7 @@ function NtiRow({ doc }: { doc: DocRow }) {
         <div className="flex shrink-0 flex-wrap gap-1.5">
           {isLocal ? (
             <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-emerald-900">
-              Local
+              Disponible
             </span>
           ) : null}
           {doc.tipodocNti ? (

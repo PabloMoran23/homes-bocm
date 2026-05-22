@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ficha) return { title: "Ubicación no encontrada" };
   return {
     title: ficha.inmueble.direccion || `NDP ${ndp}`,
-    description: `Licencias y expedientes urbanísticos en ${ficha.inmueble.distrito || "Madrid"}.`,
+    description: `Actividad urbanística y proyectos cercanos en ${ficha.inmueble.distrito || "Madrid"}.`,
   };
 }
 

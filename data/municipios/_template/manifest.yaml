@@ -1,0 +1,31 @@
+# Objetivo: licencias + proyectos desde el PORTAL del ayuntamiento (no BOCM).
+# El subagente rellena este YAML e implementa AyuntamientoAdapter.
+# El orquestador solo lee y ejecuta.
+
+slug: ejemplo-slug
+nombre: "Nombre oficial del municipio"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ejemplo.es"
+  adapter: municipio.adapters.ejemplo:EjemploAyuntamientoAdapter
+  config: {}
+  notes: |
+    URLs de sede electrónica, visor urbanístico, API o datos abiertos.
+    Documentar cómo se listan licencias y expedientes.
+
+licencias:
+  enabled: true
+  notes: Usa portal.adapter (backfill_licencias / update_licencias)
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Usa portal.adapter (backfill_proyectos / update_proyectos)
+
+# Solo para depuración local — NO es el objetivo del subagente:
+# proyectos:
+#   enabled: true
+#   source: bocm_legacy
+#   municipio_aliases: ["Nombre en CSV BOCM"]

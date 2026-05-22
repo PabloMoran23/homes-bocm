@@ -11,11 +11,9 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
-import type { CircleMarkerOptions, LatLngExpression, PathOptions } from "leaflet";
+import type { LatLngExpression, PathOptions } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "leaflet.markercluster";
+import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import { collectMapBounds } from "@/lib/map-bounds";
 import {
@@ -26,42 +24,23 @@ import {
   type SectorFeatureCollection,
 } from "@/lib/sector-geo";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
-import {
-  createLicenciaDivIcon,
-  clasificarLicenciaMapa,
-  licenciaMapTooltipLabel,
-} from "@/lib/licencia-mapa";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
 import { MapBoundsReporter } from "@/components/map/MapBoundsReporter";
 import { MapSizeFix } from "@/components/map/MapSizeFix";
 import type { MapBounds } from "@/lib/map-viewport";
-import type { UbicacionMapProperties } from "@/lib/ubicacion";
-import { LICENCIA_MAPA_CONFIG, type LicenciaMapaCategoria } from "@/lib/licencia-mapa";
+import type { UbicacionesMapGeoJson } from "@/lib/madrid-ubicaciones-map";
+import { SIGMA_MAP_LEGEND } from "@/lib/map-sigma-colors";
 import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
-
-type LeafletWithCluster = typeof L & {
-  markerClusterGroup: (options?: object) => L.LayerGroup;
-};
-const Lc = L as LeafletWithCluster;
+import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
-
-type UbicacionGeo = {
-  type: "FeatureCollection";
-  features: Array<{
-    type: "Feature";
-    geometry: { type: "Point"; coordinates: [number, number] };
-    properties: UbicacionMapProperties;
-  }>;
-};
 
 function UnifiedFitBounds({
   ubicaciones,
   sigma,
 }: {
-  ubicaciones: UbicacionGeo | null;
+  ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
 }) {
   const map = useMap();
@@ -93,7 +72,7 @@ function FlyToNdp({
   geojson,
   ndp,
 }: {
-  geojson: UbicacionGeo | null;
+  geojson: UbicacionesMapGeoJson | null;
   ndp: string | null;
 }) {
   const map = useMap();
@@ -104,98 +83,6 @@ function FlyToNdp({
     const [lng, lat] = f.geometry.coordinates;
     map.flyTo([lat, lng], 17, { duration: 0.55 });
   }, [map, geojson, ndp]);
-  return null;
-}
-
-function circleStyleFor(cat: LicenciaMapaCategoria, hi: boolean): CircleMarkerOptions {
-  const bg = LICENCIA_MAPA_CONFIG[cat]?.bg ?? "#64748b";
-  return {
-    radius: hi ? 8 : 5,
-    fillColor: bg,
-    color: "#fff",
-    weight: hi ? 2 : 1,
-    fillOpacity: hi ? 1 : 0.85,
-  };
-}
-
-function UbicacionesCluster({
-  geojson,
-  highlightNdp,
-  onSelectNdp,
-  visible,
-}: {
-  geojson: UbicacionGeo | null;
-  highlightNdp: string | null;
-  onSelectNdp: (ndp: string) => void;
-  visible: boolean;
-}) {
-  const map = useMap();
-  const clusterRef = useRef<L.LayerGroup | null>(null);
-  const zoomRef = useRef(map.getZoom());
-
-  useEffect(() => {
-    const onZoom = () => {
-      zoomRef.current = map.getZoom();
-    };
-    map.on("zoomend", onZoom);
-    return () => {
-      map.off("zoomend", onZoom);
-    };
-  }, [map]);
-
-  useEffect(() => {
-    if (!visible || !geojson?.features?.length) {
-      if (clusterRef.current) {
-        map.removeLayer(clusterRef.current);
-        clusterRef.current = null;
-      }
-      return;
-    }
-
-    const cluster = Lc.markerClusterGroup({
-      chunkedLoading: true,
-      chunkInterval: 200,
-      chunkDelay: 30,
-      maxClusterRadius: 52,
-      spiderfyOnMaxZoom: false,
-      showCoverageOnHover: false,
-      disableClusteringAtZoom: 16,
-    });
-
-    const useSimple = map.getZoom() < 14;
-
-    const layer = L.geoJSON(geojson as GeoJSON.FeatureCollection, {
-      pointToLayer(feature, latlng) {
-        const p = feature.properties as UbicacionMapProperties;
-        const isHi = Boolean(highlightNdp && p.ndp === highlightNdp);
-        const cat = clasificarLicenciaMapa(p.ultimaLicenciaTipo);
-        if (useSimple && !isHi) {
-          return L.circleMarker(latlng, circleStyleFor(cat, isHi));
-        }
-        return L.marker(latlng, {
-          icon: createLicenciaDivIcon(cat, isHi),
-        });
-      },
-      onEachFeature(feature, lyr) {
-        const p = feature.properties as UbicacionMapProperties;
-        lyr.on("click", () => onSelectNdp(p.ndp));
-        if (map.getZoom() >= 14) {
-          const label = licenciaMapTooltipLabel(p.ultimaLicenciaTipo, p.direccion);
-          lyr.bindTooltip(label, { direction: "top", opacity: 0.95, sticky: true });
-        }
-      },
-    });
-
-    cluster.addLayer(layer);
-    map.addLayer(cluster);
-    clusterRef.current = cluster;
-
-    return () => {
-      map.removeLayer(cluster);
-      clusterRef.current = null;
-    };
-  }, [map, geojson, highlightNdp, onSelectNdp, visible]);
-
   return null;
 }
 
@@ -233,9 +120,8 @@ function SigmaPolygons({
       key={`sigma-${geojson.features.length}`}
       data={geojson as never}
       style={(feature) => {
-        const geomType = feature?.geometry?.type;
         const props = feature?.properties;
-        return featureLayerStyle(props, geomType) as PathOptions;
+        return featureLayerStyle(props) as PathOptions;
       }}
       pointToLayer={(feature, latlng) =>
         L.circleMarker(
@@ -259,8 +145,9 @@ export function MadridUnifiedMap({
   onBoundsChange,
   statsHint,
   className = "",
+  interactive = true,
 }: {
-  ubicacionesGeojson: UbicacionGeo | null;
+  ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
   highlightNdp: string | null;
   onSelectNdp: (ndp: string) => void;
@@ -270,6 +157,8 @@ export function MadridUnifiedMap({
   onBoundsChange?: (bounds: MapBounds) => void;
   statsHint?: string | null;
   className?: string;
+  /** Vista previa (inicio): sin pan/zoom; el contenedor padre enlaza a /explore. */
+  interactive?: boolean;
 }) {
   const { ready: mapReady, mapKey } = useLeafletMount();
   const nSigma = sigmaGeojson?.features?.length ?? 0;
@@ -281,11 +170,11 @@ export function MadridUnifiedMap({
         {showSigma ? (
           <>
             <span className="flex items-center gap-2">
-              <span className="h-2.5 w-4 rounded-sm bg-sky-400/90 ring-1 ring-sky-700" />
+              <span className={SIGMA_MAP_LEGEND.planeamiento} />
               {PROYECTOS} · planeamiento
             </span>
             <span className="flex items-center gap-2">
-              <span className="h-2.5 w-4 rounded-sm bg-amber-400/90 ring-1 ring-amber-700" />
+              <span className={SIGMA_MAP_LEGEND.tramitacion} />
               {PROYECTOS} · en tramitación
             </span>
           </>
@@ -302,7 +191,7 @@ export function MadridUnifiedMap({
         className="pointer-events-none absolute inset-0 z-[500] rounded-none ring-1 ring-black/[0.05] ring-inset"
         aria-hidden
       />
-      <div className="relative h-full w-full overflow-hidden bg-slate-100">
+      <div className="relative h-full w-full overflow-hidden bg-teal-50/40">
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-[1000] flex items-start justify-between gap-2 p-2 sm:gap-3 sm:p-4">
           <div className="pointer-events-auto max-w-[min(100%,14rem)] rounded-xl border border-white/80 bg-white/90 px-2.5 py-1.5 shadow-md backdrop-blur-md sm:max-w-none sm:px-3 sm:py-2">
             <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--portal-accent)]">
@@ -340,18 +229,25 @@ export function MadridUnifiedMap({
             className="z-0 h-full w-full"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
-            scrollWheelZoom
+            scrollWheelZoom={interactive}
+            dragging={interactive}
+            doubleClickZoom={interactive}
+            touchZoom={interactive}
+            boxZoom={interactive}
+            keyboard={interactive}
             attributionControl={false}
           >
-            <TileLayer url={TILE_URL} />
+            <TileLayer url={HOMES_MAP_TILE_URL} />
             <MapSizeFix />
-            {onBoundsChange ? <MapBoundsReporter onBoundsChange={onBoundsChange} /> : null}
+            {interactive && onBoundsChange ? (
+              <MapBoundsReporter onBoundsChange={onBoundsChange} />
+            ) : null}
             <SigmaPolygons
               geojson={sigmaGeojson}
               popupOptions={sigmaPopupOptions ?? null}
               visible={showSigma}
             />
-            <UbicacionesCluster
+            <LicenciasClusterLayer
               geojson={ubicacionesGeojson}
               highlightNdp={highlightNdp}
               onSelectNdp={onSelectNdp}
@@ -359,8 +255,8 @@ export function MadridUnifiedMap({
             />
             <UnifiedFitBounds ubicaciones={ubicacionesGeojson} sigma={sigmaGeojson} />
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
-            <ZoomControl position="topright" />
-            <ScaleControl position="bottomleft" imperial={false} />
+            {interactive ? <ZoomControl position="topright" /> : null}
+            {interactive ? <ScaleControl position="bottomleft" imperial={false} /> : null}
           </MapContainer>
         ) : (
           <div className="flex h-full w-full items-center justify-center text-sm text-slate-500">

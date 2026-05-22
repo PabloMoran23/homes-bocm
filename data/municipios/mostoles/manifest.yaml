@@ -1,0 +1,23 @@
+slug: mostoles
+nombre: Móstoles
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.mostoles.es"
+  adapter: municipio.adapters.mostoles:MostolesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mostoles/1.0 (+urbanismo research)"
+    seed_urls:
+      - "https://www.mostoles.es/SEDE_ELECTRONICA/es/tablon-anuncios/historico-tablon-anuncios-ayuntamiento-mostoles/10-02-2012-gerencia-municipal-urbanismo-solicitud-licencia-"
+  notes: |
+    Fuentes: tablón (actual, histórico, planes urbanísticos), búsqueda sede,
+    GMU documentos (convenios, edictos, EIA, acústicos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

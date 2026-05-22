@@ -32,6 +32,7 @@ import {
   type SectorFeatureCollection,
   type SectorFeatureProperties,
 } from "@/lib/sector-geo";
+import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 export type MapPoint = {
   municipio: string;
@@ -42,9 +43,6 @@ export type MapPoint = {
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
 const DEFAULT_ZOOM = 9;
-
-/** Carto Positron: mapa claro, poco ruido; deja brillar el color de marca. */
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 
 const detailPinIcon = L.divIcon({
   className: "",
@@ -207,9 +205,8 @@ export function ProjectsMap({
         key={`sectors-${nSectors}-${dataScope}-${variant}`}
         data={sectorGeoJson as never}
         style={(feature) => {
-          const geomType = feature?.geometry?.type;
           const props = feature?.properties as SectorFeatureProperties | undefined;
-          return featureLayerStyle(props, geomType) as PathOptions;
+          return featureLayerStyle(props) as PathOptions;
         }}
         pointToLayer={(feature, latlng) => {
           const props = feature?.properties as SectorFeatureProperties | undefined;
@@ -232,7 +229,7 @@ export function ProjectsMap({
         }}
       />
     );
-  }, [sectorGeoJson, nSectors, dataScope, variant, sectorCountLabel, sigmaPopupOptions]);
+  }, [sectorGeoJson, nSectors, dataScope, variant, sigmaPopupOptions]);
 
   return (
     <div className="homes-map-shell group relative">
@@ -245,7 +242,7 @@ export function ProjectsMap({
         aria-hidden
       />
 
-      <div className="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-b from-slate-50 to-slate-100/90 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_20px_50px_-24px_rgba(15,118,110,0.25)]">
+      <div className="relative overflow-hidden rounded-2xl border border-teal-100/80 bg-gradient-to-b from-white to-teal-50/45 shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,0_24px_60px_-26px_rgba(15,118,110,0.35)]">
         {!isDetail ? (
           <div className="pointer-events-none absolute left-0 right-0 top-0 z-[1000] flex items-start justify-between gap-3 p-3 sm:p-4">
             <div className="pointer-events-auto flex max-w-[min(100%,20rem)] flex-col gap-1 rounded-xl border border-white/80 bg-white/90 px-3 py-2 shadow-md shadow-slate-900/5 backdrop-blur-md sm:max-w-none sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-2.5">
@@ -330,7 +327,7 @@ export function ProjectsMap({
                 scrollWheelZoom
                 zoomControl={false}
               >
-                <TileLayer attribution="" url={TILE_URL} />
+                <TileLayer attribution="" url={HOMES_MAP_TILE_URL} />
                 {sectorLayer}
                 <FitBounds points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
                 <MapResizeFix points={points} sectorGeoJson={sectorGeoJson} variant={variant} />

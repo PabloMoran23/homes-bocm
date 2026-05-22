@@ -1,5 +1,7 @@
 /** Métricas agregadas por expediente (PDF pipeline). */
 
+import { sanitizeSigmaMetric } from "./vivienda-plausible";
+
 export type SigmaMetricHecho = {
   metric: string | null;
   value: string | number | null;
@@ -99,5 +101,6 @@ export function lookupSigmaMetric(
   expedienteGrupo: string,
 ): SigmaExpedienteMetric | null {
   if (!bundle?.byExpediente) return null;
-  return bundle.byExpediente[expedienteGrupo] ?? null;
+  const raw = bundle.byExpediente[expedienteGrupo] ?? null;
+  return sanitizeSigmaMetric(raw);
 }

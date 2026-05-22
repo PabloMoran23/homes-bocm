@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { BoletinAreaResult } from "@/lib/boletin-area";
+import { normalizeDireccion } from "@/lib/direccion";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 export async function GET(req: Request) {
@@ -7,6 +8,7 @@ export async function GET(req: Request) {
   const ndp = url.searchParams.get("ndp");
   const latParam = url.searchParams.get("lat");
   const lngParam = url.searchParams.get("lng");
+  const labelParam = url.searchParams.get("label")?.trim() || null;
   const radiusM = Number(url.searchParams.get("radiusM") || "600");
   const months = Number(url.searchParams.get("months") || "24");
 
@@ -63,6 +65,18 @@ export async function GET(req: Request) {
   }
   if ("error" in result && result.error) {
     return NextResponse.json(result, { status: 422 });
+  }
+  if (!ndp && labelParam) {
+    result.center.direccion = labelParam;
+  } else if (result.center.direccion) {
+    result.center.direccion = normalizeDireccion(result.center.direccion);
+  }
+  for (const ev of [
+    ...result.licencias,
+    ...result.expedientesSigma,
+    ...result.timeline,
+  ]) {
+    if (ev.direccion) ev.direccion = normalizeDireccion(ev.direccion);
   }
 
   return NextResponse.json(result);

@@ -4,11 +4,10 @@
 
 import { hasValue } from "@/lib/project-display";
 import {
-  familiaExpedienteMessage,
   formatM2,
   type SigmaExpedienteMetric,
 } from "@/lib/sigma-metrics";
-import { sigmaFaseLabel, sigmaTipoActuacion } from "@/lib/sigma-user-labels";
+import { sigmaFaseShortLabel, sigmaTipoActuacion } from "@/lib/sigma-user-labels";
 import type { SigmaVisorFicha, SigmaVisorTramite } from "@/lib/types";
 
 export type SigmaPresentationInput = {
@@ -145,22 +144,14 @@ export function sigmaPickDisplayHeadline(input: SigmaPresentationInput): SigmaDi
 }
 
 export function buildSigmaProjectLead(input: SigmaPresentationInput): string {
-  const fase = sigmaFaseLabel(input.fase);
+  const fase = sigmaFaseShortLabel(input.fase);
   const tipo = figureKindFromAbrev(input.tfigAbrev, input.figEtiq);
-  const denom = input.denominacion?.trim() || null;
-  const organo = input.organo?.trim() || null;
   const { planRef } = sigmaPickDisplayHeadline(input);
   const metric = input.metric;
-  const familia = metric?.familia_expediente
-    ? familiaExpedienteMessage(metric.familia_expediente)
-    : null;
-  const lastTram = input.tramitacion?.[input.tramitacion.length - 1];
 
   const sentences: string[] = [];
 
-  if (isSigmaLocationDenom(denom) && tipo) {
-    sentences.push(`${tipo} sobre el ámbito indicado (${denom}).`);
-  } else if (tipo && planRef) {
+  if (tipo && planRef) {
     sentences.push(`${tipo} en el marco del plan urbanístico ${planRef} de Madrid.`);
   } else if (tipo) {
     sentences.push(`${tipo} tramitado en la ciudad de Madrid.`);
@@ -170,40 +161,14 @@ export function buildSigmaProjectLead(input: SigmaPresentationInput): string {
     );
   }
 
-  if (fase) {
-    const fLower = fase.toLowerCase();
-    if (fLower.includes("aprobación definitiva") || fLower.includes("aprobacion definitiva")) {
-      sentences.push("El proyecto ha alcanzado la aprobación definitiva en planeamiento.");
-    } else if (fLower.includes("información pública") || fLower.includes("informacion publica")) {
-      sentences.push(
-        "Está en periodo de información pública: puedes consultar la documentación y presentar alegaciones.",
-      );
-    } else {
-      sentences.push(`En este momento consta en fase de «${fase}».`);
-    }
-  }
-
-  if (organo) {
-    const oLower = organo.toLowerCase();
-    if (oLower.includes("comunidad")) {
-      sentences.push("La Comunidad de Madrid figura como órgano tramitador.");
-    } else {
-      sentences.push(`${organo} figura como órgano tramitador.`);
-    }
-  }
+  if (fase) sentences.push(`Estado actual: ${fase.toLowerCase()}.`);
 
   if (metric?.num_viviendas_max != null && metric.num_viviendas_max > 0) {
     sentences.push(
-      `De la documentación analizada se desprende un máximo de ${metric.num_viviendas_max.toLocaleString("es-ES")} viviendas.`,
+      `En la documentación aparecen hasta ${metric.num_viviendas_max.toLocaleString("es-ES")} viviendas.`,
     );
   } else if (formatM2(metric?.sup_total_m2)) {
     sentences.push(`El ámbito afectado ronda los ${formatM2(metric!.sup_total_m2)}.`);
-  }
-
-  if (familia) sentences.push(familia);
-
-  if (lastTram?.tramite && lastTram?.fecha) {
-    sentences.push(`Último hito registrado: ${lastTram.tramite} (${lastTram.fecha}).`);
   }
 
   const bocmN = input.bocmCount ?? 0;
@@ -302,7 +267,7 @@ export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImp
     return {
       title: "Uso y actuación previstos",
       body: `Según memorias e informes analizados: ${uso}.${viviendas ? ` Hasta ${viviendas.toLocaleString("es-ES")} viviendas en el ámbito.` : ""}${sup ? ` Superficie de referencia: ${sup}.` : ""}`,
-      source: "Documentación del expediente (PDF)",
+      source: "Basado en documentos oficiales del expediente",
       confidence: "media",
     };
   }
@@ -323,7 +288,7 @@ export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImp
     return {
       title: prefijos.length ? prefijos.join(" · ") : "Objeto del expediente",
       body: `${resumenVisor}${supTxt}`,
-      source: "Ficha oficial del visor del Ayuntamiento de Madrid",
+      source: "Basado en la ficha oficial del Ayuntamiento",
       confidence: "alta",
     };
   }
@@ -350,8 +315,8 @@ export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImp
     title: plantilla.title,
     body,
     source: input.metric?.pdfs_procesados
-      ? "Tipo de actuación + PDFs parciales"
-      : "Tipo de actuación (catálogo SIGMA)",
+      ? "Basado en el tipo de proyecto y documentos oficiales"
+      : "Basado en el tipo de proyecto publicado",
     confidence: input.metric?.pdfs_procesados ? "media" : "baja",
     ejemplos: plantilla.ejemplos,
   };

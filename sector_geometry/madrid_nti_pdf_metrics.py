@@ -13,6 +13,7 @@ from sector_geometry.madrid_nti_doc_roles import (
     metric_role_priority,
     role_extract_priority,
 )
+from sector_geometry.madrid_nti_vivienda_sanity import sanitize_viviendas_en_metrics
 
 __all__ = [
     "DOC_TYPE_PRIORITY",
@@ -305,8 +306,9 @@ def merge_expediente_metrics(
         if m and m not in metodos:
             metodos.append(m)
 
-    metrics["genera_vivienda_nueva"] = infer_genera_vivienda_nueva(familia, metrics, rows=rows)
     metrics["familia_expediente"] = familia
+    metrics["genera_vivienda_nueva"] = infer_genera_vivienda_nueva(familia, metrics, rows=rows)
+    metrics = sanitize_viviendas_en_metrics(metrics)
 
     # Resumen y tipo instrumento del mejor doc
     best_doc = min(

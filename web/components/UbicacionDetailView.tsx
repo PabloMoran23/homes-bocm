@@ -11,9 +11,11 @@ import {
   buildUbicacionResumen,
   categoriaExpedienteLabel,
   faseEnLenguajeClaro,
+  licenciaDetalleCorto,
 } from "@/lib/ubicacion-resumen";
 import { LicenciaTitulo } from "@/components/LicenciaTitulo";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import { boletinPath } from "@/lib/boletin-area";
 import type { UbicacionFicha, UbicacionSigmaExpediente } from "@/lib/ubicacion";
 import { sigmaSlugFromExpediente } from "@/lib/ubicacion";
 
@@ -56,9 +58,7 @@ function ExpedienteCard({
         </p>
       ) : null}
       <p className="mt-2 text-xs text-slate-500">
-        {tramCount > 0 ? `${tramCount} pasos en tramitación` : "Sin historial en visor"}
-        <span className="mx-1.5 text-slate-300">·</span>
-        <span className="font-mono">{exp.exp_numero_original}</span>
+        {tramCount > 0 ? `${tramCount} hito${tramCount !== 1 ? "s" : ""} publicado${tramCount !== 1 ? "s" : ""}` : "Sin cronología publicada"}
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
@@ -78,12 +78,82 @@ function ExpedienteCard({
           </a>
         ) : null}
       </div>
+      <details className="mt-3 rounded-lg bg-slate-50/80 px-3 py-2">
+        <summary className="cursor-pointer text-xs font-medium text-slate-500 hover:text-slate-800">
+          Ver referencia municipal
+        </summary>
+        <p className="mt-2 font-mono text-xs text-slate-500">{exp.exp_numero_original}</p>
+      </details>
     </article>
   );
 }
 
 function Div({ className, children }: { className?: string; children: React.ReactNode }) {
   return <div className={className}>{children}</div>;
+}
+
+function QuickStat({
+  label,
+  value,
+  detail,
+  tone = "teal",
+}: {
+  label: string;
+  value: string;
+  detail: string;
+  tone?: "teal" | "amber" | "sky";
+}) {
+  const toneClass =
+    tone === "amber"
+      ? "border-amber-200 bg-amber-50/80 text-amber-950"
+      : tone === "sky"
+        ? "border-sky-200 bg-sky-50/80 text-sky-950"
+        : "border-teal-200 bg-teal-50/80 text-teal-950";
+
+  return (
+    <div className={`rounded-2xl border px-4 py-3 shadow-sm ${toneClass}`}>
+      <p className="text-[10px] font-semibold uppercase tracking-wide opacity-70">{label}</p>
+      <p className="mt-1 text-2xl font-bold tabular-nums">{value}</p>
+      <p className="mt-1 text-xs leading-snug opacity-75">{detail}</p>
+    </div>
+  );
+}
+
+function SectionHeader({
+  label,
+  title,
+  description,
+}: {
+  label?: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <div>
+      {label ? (
+        <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--portal-accent)]">
+          {label}
+        </p>
+      ) : null}
+      <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">{title}</h2>
+      {description ? <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">{description}</p> : null}
+    </div>
+  );
+}
+
+function SignalCard({ text, index }: { text: string; index: number }) {
+  const tone =
+    index % 3 === 0
+      ? "border-teal-100 bg-teal-50/65"
+      : index % 3 === 1
+        ? "border-amber-100 bg-amber-50/60"
+        : "border-sky-100 bg-sky-50/60";
+  return (
+    <li className={`rounded-2xl border px-4 py-3 text-sm leading-relaxed text-slate-700 shadow-sm ${tone}`}>
+      <span className="mb-2 block h-1.5 w-8 rounded-full bg-[var(--portal-accent)]/70" aria-hidden />
+      {text}
+    </li>
+  );
 }
 
 export function UbicacionDetailView({
@@ -96,6 +166,8 @@ export function UbicacionDetailView({
   const inv = ficha.inmueble;
   const ndp = inv.ndp_edificio;
   const resumen = buildUbicacionResumen(ficha, metricsByExpediente);
+  const proyectosEntorno = ficha.stats.expedientesSigma;
+  const actuacionesEdificio = ficha.stats.licenciasTotal;
 
   const mapPoints =
     inv.lat != null && inv.lng != null
@@ -103,31 +175,57 @@ export function UbicacionDetailView({
       : [];
 
   const hero = (
-    <header className="portal-hero-bg rounded-2xl border border-teal-200/40 px-5 py-6 sm:px-7">
-      <p className="text-xs font-semibold uppercase tracking-wider text-[var(--portal-warm)]">
-        Tu dirección · Madrid
-      </p>
-      <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-        {inv.direccion || "Sin dirección registrada"}
-      </h1>
-      <p className="mt-2 text-slate-600">
-        {[inv.distrito, inv.barrio].filter(Boolean).join(" · ")}
-      </p>
+    <header className="portal-hero-bg overflow-hidden rounded-3xl border border-teal-200/50 shadow-sm">
+      <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,20rem)] lg:items-end">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-[var(--portal-warm)]">
+            Ficha de ubicación · Madrid
+          </p>
+          <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+            {inv.direccion || "Sin dirección registrada"}
+          </h1>
+          <p className="mt-2 text-slate-600">
+            {[inv.distrito, inv.barrio].filter(Boolean).join(" · ") || "Madrid"}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-white/80 bg-white/75 p-4 shadow-sm backdrop-blur">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Lectura rápida</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700">
+            Actividad del edificio, proyectos cercanos y normas urbanísticas que pueden afectar a esta zona.
+          </p>
+        </div>
+      </div>
     </header>
   );
 
   const aside =
     mapPoints.length > 0 ? (
-      <Div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-        <p className="border-b border-slate-100 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-          Ubicación en el mapa
-        </p>
+      <Div className="overflow-hidden rounded-2xl border border-teal-100/80 bg-white shadow-sm">
+        <div className="border-b border-teal-100 bg-teal-50/60 px-3 py-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-teal-900">Ubicación en el mapa</p>
+          <p className="mt-0.5 text-[11px] text-teal-900/70">Centro aproximado del edificio.</p>
+        </div>
         <ProjectsMap points={mapPoints} sectorGeoJson={null} variant="detail" heightClassName="h-52" />
-        <p className="px-3 py-2 text-center text-xs">
-          <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
-            Explorar alrededor
+        <div className="grid grid-cols-2 gap-2 border-t border-slate-100 p-3">
+          <div className="rounded-xl bg-amber-50 px-3 py-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-900/70">
+              Edificio
+            </p>
+            <p className="mt-1 text-lg font-bold text-amber-950">{actuacionesEdificio}</p>
+          </div>
+          <div className="rounded-xl bg-sky-50 px-3 py-2">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-sky-900/70">
+              Entorno
+            </p>
+            <p className="mt-1 text-lg font-bold text-sky-950">{proyectosEntorno}</p>
+          </div>
+          <Link
+            href={boletinPath(ndp)}
+            className="col-span-2 rounded-xl bg-[var(--portal-accent)] px-3 py-2 text-center text-xs font-semibold text-white hover:bg-[var(--portal-accent-hover)]"
+          >
+            Explora los alrededores
           </Link>
-        </p>
+        </div>
       </Div>
     ) : null;
 
@@ -146,88 +244,134 @@ export function UbicacionDetailView({
       aside={aside}
       footer={
         <p className="text-center text-xs text-slate-400">
-          Datos: licencias open data Ayto. Madrid · proyectos de planeamiento · NDP{" "}
-          <span className="font-mono">{ndp}</span>
+          Datos del Ayuntamiento de Madrid y expedientes urbanísticos enlazados.
         </p>
       }
     >
       {/* Resumen principal */}
-      <section className="rounded-2xl border border-teal-200/60 bg-gradient-to-br from-teal-50/90 via-white to-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-lg font-bold text-slate-900">Qué está pasando aquí</h2>
-        <p className="mt-3 text-base leading-relaxed text-slate-700">{resumen.parrafo}</p>
-        <ul className="mt-4 space-y-2">
+      <section className="rounded-3xl border border-teal-200/60 bg-gradient-to-br from-teal-50/90 via-white to-sky-50/60 p-5 shadow-sm sm:p-7">
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+          <div>
+            <SectionHeader label="Resumen" title="Qué está pasando aquí" />
+            <p className="mt-3 text-base leading-relaxed text-slate-700">{resumen.parrafo}</p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+            <QuickStat
+              label="Edificio"
+              value={String(actuacionesEdificio)}
+              detail={actuacionesEdificio === 1 ? "actuación localizada" : "actuaciones localizadas"}
+              tone="amber"
+            />
+            <QuickStat
+              label="Entorno"
+              value={String(proyectosEntorno)}
+              detail={proyectosEntorno === 1 ? "proyecto cercano" : "proyectos cercanos"}
+              tone="sky"
+            />
+            <QuickStat
+              label="Lectura"
+              value={resumen.hayNormativaPgoum ? "Mixta" : proyectosEntorno > 0 ? "Zona" : "Edificio"}
+              detail={resumen.hayNormativaPgoum ? "incluye normas generales" : "principalmente actividad local"}
+            />
+          </div>
+        </div>
+        <ul className="mt-5 grid gap-3 sm:grid-cols-2">
           {resumen.bullets.map((b, i) => (
-            <li key={i} className="flex gap-2 text-sm leading-relaxed text-slate-600">
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--portal-accent)]" />
-              {b}
-            </li>
+            <SignalCard key={i} text={b} index={i} />
           ))}
         </ul>
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-2 border-t border-white/80 pt-4">
           {resumen.hayObraReciente ? (
             <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-              {ficha.stats.licenciasTotal} licencia{ficha.stats.licenciasTotal !== 1 ? "s" : ""} en el edificio
+              {ficha.stats.licenciasTotal} actuación{ficha.stats.licenciasTotal !== 1 ? "es" : ""} en el edificio
             </span>
           ) : null}
           {ficha.stats.expedientesSigma > 0 ? (
             <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-              {ficha.stats.expedientesSigma} ámbito{ficha.stats.expedientesSigma !== 1 ? "s" : ""} de planeamiento
+              {ficha.stats.expedientesSigma} proyecto{ficha.stats.expedientesSigma !== 1 ? "s" : ""} en el entorno
             </span>
           ) : null}
         </div>
       </section>
 
       {/* Actividad en el edificio */}
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-lg font-semibold text-slate-900">Actividad en este edificio</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Obras y tramitaciones con licencia en esta dirección (no incluye normas generales de toda la ciudad).
-        </p>
+      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <SectionHeader
+            label="Edificio"
+            title="Actividad en este edificio"
+            description="Obras, aperturas o cambios registrados para esta dirección. No incluye normas generales de toda la ciudad."
+          />
+          {resumen.licenciasRecientes.length > 0 ? (
+            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900 ring-1 ring-amber-200">
+              Últimas {resumen.licenciasRecientes.length}
+            </span>
+          ) : null}
+        </div>
         {resumen.licenciasRecientes.length === 0 ? (
-          <p className="mt-5 text-sm text-slate-500">Sin licencias en el registro municipal para este NDP.</p>
+          <div className="mt-5 rounded-2xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-6 text-center text-sm text-slate-500">
+            Sin actividad municipal localizada para esta dirección.
+          </div>
         ) : (
-          <ul className="mt-4 space-y-3">
+          <ul className="mt-5 grid gap-3 md:grid-cols-2">
             {resumen.licenciasRecientes.map((lic) => (
               <li
                 key={lic.id}
-                className="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-slate-50/80 px-4 py-3 ring-1 ring-slate-100"
+                className="rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50/70 to-white p-4 shadow-sm"
               >
-                <div>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="mt-1 h-9 w-9 shrink-0 rounded-full bg-amber-100 ring-4 ring-white" aria-hidden />
+                  <time className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-semibold tabular-nums text-slate-500 ring-1 ring-amber-100">
+                    {lic.fecha_concesion || lic.fecha_alta || "Sin fecha"}
+                  </time>
+                </div>
+                <div className="mt-3">
                   <LicenciaTitulo tipoExpediente={lic.tipo_expediente} />
                   <p className="mt-0.5 text-sm text-slate-600">
-                    {[lic.uso, lic.procedimiento?.replace(/Procedimiento\s+/i, "")]
-                      .filter(Boolean)
-                      .join(" · ") || "Sin detalle de uso"}
+                    {licenciaDetalleCorto(lic)}
                   </p>
                 </div>
-                <time className="shrink-0 text-sm tabular-nums text-slate-500">
-                  {lic.fecha_concesion || lic.fecha_alta || "—"}
-                </time>
               </li>
             ))}
           </ul>
         )}
         {ficha.stats.licenciasTotal > resumen.licenciasRecientes.length ? (
           <p className="mt-3 text-xs text-slate-500">
-            +{ficha.stats.licenciasTotal - resumen.licenciasRecientes.length} licencias más en el histórico.
+            +{ficha.stats.licenciasTotal - resumen.licenciasRecientes.length} actuaciones más en el histórico.
           </p>
         ) : null}
       </section>
 
       {/* Línea de tiempo mezclada */}
       {resumen.hitos.length > 0 ? (
-        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-          <h2 className="text-lg font-semibold text-slate-900">Cronología reciente</h2>
-          <p className="mt-1 text-sm text-slate-600">Lo más reciente primero (licencias y hitos de planeamiento).</p>
-          <ol className="relative mt-5 space-y-0 border-l-2 border-teal-100 pl-5">
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <SectionHeader
+            label="Tiempo"
+            title="Cronología reciente"
+            description="Lo más reciente primero: actividad del edificio e hitos de proyectos urbanísticos cercanos."
+          />
+          <ol className="mt-5 grid gap-3 md:grid-cols-2">
             {resumen.hitos.map((h, i) => (
-              <li key={i} className="relative pb-5 last:pb-0">
-                <span
-                  className={`absolute -left-[1.35rem] top-1 flex h-3 w-3 rounded-full ring-2 ring-white ${
-                    h.tipo === "licencia" ? "bg-amber-400" : "bg-sky-500"
-                  }`}
-                />
-                <p className="text-xs tabular-nums text-slate-400">{h.fecha || "Sin fecha"}</p>
+              <li
+                key={i}
+                className={`rounded-2xl border p-4 shadow-sm ${
+                  h.tipo === "licencia"
+                    ? "border-amber-100 bg-amber-50/45"
+                    : "border-sky-100 bg-sky-50/45"
+                }`}
+              >
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${
+                      h.tipo === "licencia"
+                        ? "bg-amber-100 text-amber-900"
+                        : "bg-sky-100 text-sky-900"
+                    }`}
+                  >
+                    {h.tipo === "licencia" ? "Edificio" : "Entorno"}
+                  </span>
+                  <p className="text-xs tabular-nums text-slate-500">{h.fecha || "Sin fecha"}</p>
+                </div>
                 {h.href ? (
                   <Link href={h.href} className="mt-0.5 block font-medium text-slate-900 hover:text-[var(--portal-accent)]">
                     {h.titulo}
@@ -245,16 +389,15 @@ export function UbicacionDetailView({
 
       {/* Planeamiento por categoría */}
       {ficha.expedientesSigma.length > 0 ? (
-        <section className="space-y-6">
-          <div>
-            <h2 className="text-lg font-semibold text-slate-900">Planeamiento que afecta a la zona</h2>
-            <p className="mt-1 max-w-2xl text-sm text-slate-600">
-              El punto cae dentro de estos proyectos de planeamiento. Los cambios del PGOUM suelen regular toda la ciudad; los
-              planes de sector o actuaciones locales son los que más suelen explicar un proyecto concreto cerca.
-            </p>
-          </div>
+        <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <SectionHeader
+            label="Entorno"
+            title="Proyectos y normas que afectan a la zona"
+            description="Esta dirección cae dentro de estos ámbitos. Algunas fichas son proyectos cercanos; otras son cambios generales de normativa que pueden afectar a muchas zonas de Madrid."
+          />
 
-          {categoriasOrden.map((cat) => {
+          <div className="mt-5 space-y-6">
+            {categoriasOrden.map((cat) => {
             const items = resumen.expedientesPorCategoria[cat];
             if (!items.length) return null;
             return (
@@ -277,6 +420,7 @@ export function UbicacionDetailView({
               </div>
             );
           })}
+          </div>
         </section>
       ) : null}
 
@@ -289,7 +433,25 @@ export function UbicacionDetailView({
           </span>
         </summary>
         <div className="border-t border-slate-200 px-5 pb-5 pt-4 sm:px-6">
-          <p className="mb-3 text-xs text-slate-500">Tabla original de licencias (open data 300193).</p>
+          <dl className="mb-5 grid gap-3 text-sm sm:grid-cols-2">
+            <div className="rounded-lg bg-white px-3 py-2 ring-1 ring-slate-200">
+              <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                Identificador municipal del edificio
+              </dt>
+              <dd className="mt-1 font-mono text-xs text-slate-800">{ndp}</dd>
+            </div>
+            {inv.lat != null && inv.lng != null ? (
+              <div className="rounded-lg bg-white px-3 py-2 ring-1 ring-slate-200">
+                <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                  Coordenadas
+                </dt>
+                <dd className="mt-1 font-mono text-xs text-slate-800">
+                  {inv.lat.toFixed(5)}, {inv.lng.toFixed(5)}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+          <p className="mb-3 text-xs text-slate-500">Tabla fuente de actuaciones municipales asociadas a esta dirección.</p>
           <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
             <table className="w-full border-collapse text-left text-xs">
               <thead className="bg-slate-50 font-semibold uppercase tracking-wide text-slate-500">

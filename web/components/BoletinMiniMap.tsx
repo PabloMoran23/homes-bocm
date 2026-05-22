@@ -12,9 +12,8 @@ import {
   createLicenciaDivIcon,
   createSigmaDivIcon,
 } from "@/lib/licencia-mapa";
+import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
-
-const TILE_URL = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
 
 /** Leaflet necesita invalidateSize cuando el contenedor obtiene altura real (grid, sticky, dynamic import). */
 function MapSizeFix() {
@@ -163,8 +162,8 @@ export function BoletinMiniMap({
       <div
         className={
           isPanel
-            ? "relative w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 shadow-lg ring-1 ring-slate-900/5"
-            : "relative h-52 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-100 sm:h-60"
+            ? "relative w-full overflow-hidden rounded-2xl border border-teal-100/80 bg-teal-50/50 shadow-lg ring-1 ring-teal-900/5"
+            : "relative h-52 w-full overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/50 sm:h-60"
         }
         style={isPanel ? { height: panelHeight, minHeight: 420 } : undefined}
       >
@@ -178,7 +177,7 @@ export function BoletinMiniMap({
           attributionControl={false}
           scrollWheelZoom={isPanel}
         >
-          <TileLayer url={TILE_URL} />
+          <TileLayer url={HOMES_MAP_TILE_URL} />
           <MapSizeFix />
           <FitCircleView lat={lat} lng={lng} radiusM={radiusM} />
           <Circle

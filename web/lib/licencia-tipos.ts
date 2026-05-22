@@ -4,13 +4,13 @@
  */
 
 export const NOTA_DECLARACION_RESPONSABLE =
-  "Hemos detectado una declaración responsable en esta ubicación.";
+  "Trámite municipal simplificado registrado en esta ubicación; no indica si la obra ha empezado o terminado.";
 
 export const NOTA_LICENCIA_URBANISTICA =
   "Permiso municipal concedido en esta ubicación; no indica si la obra ha empezado o terminado.";
 
 export const NOTA_LICENCIA_FUNCIONAMIENTO =
-  "Autorización de uso o apertura registrada; no indica si el local o la vivienda ya está en uso.";
+  "Autorización de uso o apertura registrada; no indica si el local o la vivienda ya está funcionando.";
 
 export const NOTA_OBRA_LICENCIA =
   "Permiso de obra registrado; no indica si los trabajos han empezado o terminado.";
@@ -67,13 +67,13 @@ const REGLAS: ReglaTipo[] = [
   // —— Declaración responsable (específicas) ——
   {
     when: (t) => t.includes("declaracion responsable residencial"),
-    titulo: "Reforma o obra menor en vivienda (Declaración Responsable Residencial)",
+    titulo: "Obras menores en vivienda",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
   {
     when: (t) => t.includes("declaracion responsable actividad"),
-    titulo: "Apertura o cambio de actividad en un local (Declaración Responsable Actividad)",
+    titulo: "Apertura o cambio en local",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
@@ -81,31 +81,31 @@ const REGLAS: ReglaTipo[] = [
     when: (t) =>
       t.includes("declaracion responsable") &&
       (t.includes("primera ocupacion") || t.includes("ocupacion")),
-    titulo: "Primera ocupación del inmueble (declaración responsable)",
+    titulo: "Edificio listo para ocupar",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
   {
     when: (t) => t.includes("declaracion responsable") && t.includes("funcionamiento"),
-    titulo: "Uso o apertura autorizada (declaración responsable de funcionamiento)",
+    titulo: "Uso o apertura autorizada",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
   {
     when: (t) => t.includes("declaracion responsable") && t.includes("obra"),
-    titulo: "Obra autorizada por declaración responsable",
+    titulo: "Obra registrada por trámite rápido",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
   {
     when: (t) => t.includes("declaracion responsable") && t.includes("sin certificado"),
-    titulo: "Trámite por declaración responsable (sin certificado de conformidad)",
+    titulo: "Trámite rápido de obra o actividad",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
   {
     when: (t) => t.includes("declaracion responsable"),
-    titulo: "Declaración responsable registrada",
+    titulo: "Trámite rápido de obra o actividad",
     familia: "declaracion_responsable",
     nota: NOTA_DECLARACION_RESPONSABLE,
   },
@@ -113,13 +113,13 @@ const REGLAS: ReglaTipo[] = [
   // —— Licencia urbanística ——
   {
     when: (t) => t.includes("licencia urbanistica") && t.includes("actividad"),
-    titulo: "Obra o actividad en local (licencia urbanística de actividad)",
+    titulo: "Obras o actividad en local",
     familia: "licencia_urbanistica",
     nota: NOTA_LICENCIA_URBANISTICA,
   },
   {
     when: (t) => t.includes("licencia urbanistica") && t.includes("residencial"),
-    titulo: "Reforma u obra en vivienda (licencia urbanística)",
+    titulo: "Obras con licencia en vivienda",
     familia: "licencia_urbanistica",
     nota: NOTA_LICENCIA_URBANISTICA,
   },
@@ -127,19 +127,19 @@ const REGLAS: ReglaTipo[] = [
     when: (t) =>
       (t.includes("licencia urbanistica") || t.includes("lic. urbanistica")) &&
       !t.includes("funcionamiento"),
-    titulo: "Obra o actuación autorizada (licencia urbanística)",
+    titulo: "Obra o actuación autorizada",
     familia: "licencia_urbanistica",
     nota: NOTA_LICENCIA_URBANISTICA,
   },
   {
     when: (t) => t.includes("licencia basica urbanistica") && t.includes("actividad"),
-    titulo: "Actividad en local (licencia básica urbanística de actividad)",
+    titulo: "Obras o actividad en local",
     familia: "licencia_urbanistica",
     nota: NOTA_LICENCIA_URBANISTICA,
   },
   {
     when: (t) => t.includes("licencia basica urbanistica"),
-    titulo: "Obra en vivienda (licencia básica urbanística)",
+    titulo: "Obras con licencia en vivienda",
     familia: "licencia_urbanistica",
     nota: NOTA_LICENCIA_URBANISTICA,
   },
@@ -147,7 +147,7 @@ const REGLAS: ReglaTipo[] = [
   // —— Funcionamiento (no DR) ——
   {
     when: (t) => t.includes("funcionamiento") && t.includes("residencial"),
-    titulo: "Uso autorizado de la vivienda (licencia de funcionamiento residencial)",
+    titulo: "Vivienda autorizada para uso",
     familia: "funcionamiento",
     nota: NOTA_LICENCIA_FUNCIONAMIENTO,
   },
@@ -155,13 +155,13 @@ const REGLAS: ReglaTipo[] = [
     when: (t) =>
       t.includes("funcionamiento") &&
       (t.includes("actividad") || t.includes("ecu")),
-    titulo: "Apertura o actividad en local (licencia de funcionamiento)",
+    titulo: "Local autorizado para abrir",
     familia: "funcionamiento",
     nota: NOTA_LICENCIA_FUNCIONAMIENTO,
   },
   {
     when: (t) => t.includes("funcionamiento"),
-    titulo: "Autorización de uso del inmueble (licencia de funcionamiento)",
+    titulo: "Inmueble autorizado para uso",
     familia: "funcionamiento",
     nota: NOTA_LICENCIA_FUNCIONAMIENTO,
   },
@@ -177,7 +177,7 @@ const REGLAS: ReglaTipo[] = [
   // —— Comunicación previa ——
   {
     when: (t) => t.includes("comunicacion previa"),
-    titulo: "Obra comunicada al Ayuntamiento (comunicación previa)",
+    titulo: "Obra comunicada al Ayuntamiento",
     familia: "comunicacion_previa",
     nota: NOTA_OBRA_LICENCIA,
   },
@@ -185,7 +185,7 @@ const REGLAS: ReglaTipo[] = [
   // —— Primera ocupación ——
   {
     when: (t) => t.includes("primera ocupacion"),
-    titulo: "Primera ocupación del edificio o local",
+    titulo: "Edificio listo para ocupar",
     familia: "primera_ocupacion",
   },
 
@@ -195,7 +195,7 @@ const REGLAS: ReglaTipo[] = [
       t.includes("transformacion") &&
       (t.includes("local") || t.includes("locales")) &&
       t.includes("vivienda"),
-    titulo: "Cambio de local a vivienda",
+    titulo: "Local convertido en vivienda",
     familia: "obra",
     nota: NOTA_OBRA_LICENCIA,
   },

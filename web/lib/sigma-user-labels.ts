@@ -72,6 +72,28 @@ export function sigmaFaseLabel(fase: string | null | undefined): string | null {
   return fase.trim();
 }
 
+/** Fase simplificada para badges, KPIs y lectura rápida. */
+export function sigmaFaseShortLabel(fase: string | null | undefined): string | null {
+  if (!hasValue(fase)) return null;
+  const f = fase.toLowerCase();
+  if (f.includes("información pública") || f.includes("informacion publica")) {
+    return "En información pública";
+  }
+  if (f.includes("aprobación definitiva") || f.includes("aprobacion definitiva")) {
+    return "Aprobado definitivamente";
+  }
+  if (f.includes("aprobación provisional") || f.includes("aprobacion provisional")) {
+    return "Pendiente de aprobación final";
+  }
+  if (f.includes("aprobación inicial") || f.includes("aprobacion inicial")) {
+    return "Aprobado inicialmente";
+  }
+  if (f.includes("inicio") || f.includes("incoado")) return "Expediente abierto";
+  if (f.includes("archiv") || f.includes("desist")) return "Archivado o detenido";
+  if (f.includes("suspend")) return "Suspendido";
+  return "En tramitación";
+}
+
 /** Una frase de contexto para la fase vigente. */
 export function sigmaFaseContext(fase: string | null | undefined): string | null {
   if (!hasValue(fase)) return null;
@@ -96,6 +118,49 @@ export function sigmaFaseContext(fase: string | null | undefined): string | null
     return "El expediente no sigue activo en la fase indicada.";
   }
   return "Estado según el registro urbanístico municipal; consulta la cronología para ver hitos concretos.";
+}
+
+export function sigmaVisorFieldLabel(field: string): string {
+  const labels: Record<string, string> = {
+    figuraTipo: "Tipo de proyecto",
+    tipoPlaneamiento: "Clase de plan",
+    superficieAmbito: "Superficie afectada",
+    sistemaActuacion: "Cómo se ejecuta",
+    unidadTramitadora: "Quién lo tramita",
+    ambitoOrdenacion: "Zona afectada",
+    archivoPlanos: "Planos oficiales",
+    figuraCodigo: "Código municipal",
+    expedienteVisor: "Referencia municipal",
+    denominacionVisor: "Nombre oficial",
+    iniciativa: "Iniciativa",
+    promotor: "Promotor",
+    distrito: "Distrito",
+  };
+  return labels[field] || field;
+}
+
+export function tramiteShortLabel(tramite: string | null | undefined): string | null {
+  if (!hasValue(tramite)) return null;
+  const t = tramite.toLowerCase();
+  if (t.includes("aprobación definitiva") || t.includes("aprobacion definitiva")) {
+    return "Aprobación definitiva";
+  }
+  if (t.includes("aprobación provisional") || t.includes("aprobacion provisional")) {
+    return "Aprobación provisional";
+  }
+  if (t.includes("aprobación inicial") || t.includes("aprobacion inicial")) {
+    return "Aprobación inicial";
+  }
+  if (t.includes("información pública") || t.includes("informacion publica")) {
+    return "Información pública";
+  }
+  if (t.includes("publicación") || t.includes("publicacion")) return "Publicado oficialmente";
+  if (t.includes("informe")) return "Informe técnico";
+  if (t.includes("junta de gobierno")) return "Junta de Gobierno";
+  if (t.includes("pleno")) return "Pleno municipal";
+  if (t.includes("archivo") || t.includes("archiv")) return "Archivo del expediente";
+  const clean = tramite.replace(/\s+/g, " ").trim();
+  return clean.length > 54 ? `${clean.slice(0, 51)}…` : clean;
 }
 
 export type SigmaInfoPublicaPeriod = {

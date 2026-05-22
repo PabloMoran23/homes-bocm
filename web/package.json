@@ -4,20 +4,25 @@
   "private": true,
   "scripts": {
     "build-data": "node scripts/build-data.mjs",
-    "prebuild": "node -e \"if(!process.env.SKIP_BUILD_DATA) require('child_process').execSync('npm run build-data',{stdio:'inherit'})\"",
+    "build-data:public": "BUILD_DATA_SCOPE=madrid-public node scripts/build-data.mjs",
+    "prebuild": "node -e \"if(!process.env.SKIP_BUILD_DATA){const e={...process.env};if(e.NEXT_PUBLIC_EDITION==='public'&&!e.BUILD_DATA_SCOPE)e.BUILD_DATA_SCOPE='madrid-public';require('child_process').execSync('npm run build-data',{stdio:'inherit',env:e})}\"",
     "dev": "next dev",
+    "dev:public": "NEXT_PUBLIC_EDITION=public next dev",
     "build": "next build",
+    "build:public": "NEXT_PUBLIC_EDITION=public BUILD_DATA_SCOPE=madrid-public npm run build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
+    "chart.js": "^4.5.1",
     "csv-parse": "^6.2.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "next": "16.2.6",
     "proj4": "^2.20.8",
     "react": "19.2.4",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.4",
     "react-leaflet": "^5.0.0"
   },

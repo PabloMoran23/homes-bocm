@@ -2,15 +2,11 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { ensureProject } from "@/lib/ensure-project";
-import type { Project } from "@/lib/types";
-import { filterSectorGeoJsonForProjects } from "@/lib/filter-sector-geo";
-import type { SectorFeatureCollection } from "@/lib/sector-geo";
-import type { MapPoint } from "./ProjectsMap";
+import { useSigmaAmbitosMapGeo } from "@/lib/madrid-sigma-map";
+import { ambitosProyectosEnVista } from "@/lib/ui-labels";
 
-const ProjectsMap = dynamic(
-  () => import("./ProjectsMap").then((m) => ({ default: m.ProjectsMap })),
+const MadridUnifiedMap = dynamic(
+  () => import("./MadridUnifiedMap").then((m) => ({ default: m.MadridUnifiedMap })),
   {
     ssr: false,
     loading: () => (
@@ -21,58 +17,17 @@ const ProjectsMap = dynamic(
   },
 );
 
+const MAP_HEIGHT =
+  "min-h-[280px] h-[min(40vh,440px)] sm:min-h-[320px] sm:h-[min(44vh,500px)] lg:min-h-[360px] lg:h-[min(52vh,580px)]";
+
 export function LandingMap() {
-  const [projects, setProjects] = useState<Project[] | null>(null);
-  const [sectorGeoJson, setSectorGeoJson] = useState<SectorFeatureCollection | null>(null);
-  const [err, setErr] = useState<string | null>(null);
+  const { geo, err, ready, loading } = useSigmaAmbitosMapGeo();
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const [projRes, geoRes] = await Promise.all([
-          fetch("/data/projects.json"),
-          fetch("/data/sector-geometries.geojson"),
-        ]);
-        if (!projRes.ok) throw new Error(String(projRes.status));
-        const data = (await projRes.json()) as Partial<Project>[];
-        if (!cancelled)
-          setProjects(
-            data.map((row) => ensureProject(row as Partial<Project> & { id: string })),
-          );
-        if (geoRes.ok && !cancelled) {
-          setSectorGeoJson((await geoRes.json()) as SectorFeatureCollection);
-        }
-      } catch {
-        if (!cancelled) setErr("No se pudo cargar el mapa.");
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const mapPoints: MapPoint[] = useMemo(() => {
-    if (!projects?.length) return [];
-    const m = new Map<string, { count: number; lat: number; lng: number }>();
-    for (const p of projects) {
-      if (p.lat == null || p.lng == null || !p.municipio) continue;
-      const cur = m.get(p.municipio);
-      if (cur) cur.count += 1;
-      else m.set(p.municipio, { count: 1, lat: p.lat, lng: p.lng });
-    }
-    return [...m.entries()].map(([municipio, v]) => ({
-      municipio,
-      count: v.count,
-      lat: v.lat,
-      lng: v.lng,
-    }));
-  }, [projects]);
-
-  const sectorGeoForMap = useMemo(
-    () => (projects?.length ? filterSectorGeoJsonForProjects(sectorGeoJson, projects) : null),
-    [projects, sectorGeoJson],
-  );
+  const statsHint = loading
+    ? "Cargando proyectos…"
+    : ready && geo
+      ? ambitosProyectosEnVista(geo.features.length)
+      : undefined;
 
   if (err) {
     return (
@@ -87,24 +42,31 @@ export function LandingMap() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <ProjectsMap
-        points={mapPoints}
-        sectorGeoJson={sectorGeoForMap}
-        dataScope="full"
-        heightClassName="min-h-[280px] h-[min(40vh,440px)] sm:min-h-[320px] sm:h-[min(44vh,500px)] lg:min-h-[360px] lg:h-[min(52vh,580px)]"
-      />
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-relaxed text-slate-500">
-          Círculos: volumen por municipio. Azul: ámbito planeamiento (CM). Gris: centro aproximado (resto CCAA).
-        </p>
-        <Link
-          href="/explore"
-          className="shrink-0 text-sm font-semibold text-[var(--portal-accent)] underline-offset-4 hover:underline"
-        >
-          Abrir explorador con filtros →
-        </Link>
-      </div>
+    <div className="flex flex-col gap-2">
+      <Link
+        href="/explore"
+        className="group relative block overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--portal-accent)]"
+        aria-label="Abrir mapa explorar Madrid"
+      >
+        <MadridUnifiedMap
+          ubicacionesGeojson={null}
+          sigmaGeojson={ready ? geo : null}
+          highlightNdp={null}
+          onSelectNdp={() => {}}
+          showUbicaciones={false}
+          showSigma={ready}
+          interactive={false}
+          statsHint={statsHint}
+          className={`rounded-2xl ${MAP_HEIGHT}`}
+        />
+        <span
+          className="absolute inset-0 z-[2000] cursor-pointer bg-transparent"
+          aria-hidden
+        />
+        <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-white/90 bg-white/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
+          Explorar →
+        </span>
+      </Link>
     </div>
   );
 }

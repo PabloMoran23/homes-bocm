@@ -7,6 +7,7 @@ import {
   sigmaTipoActuacion,
 } from "@/lib/sigma-user-labels";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
+import { SIGMA_MAP_POINT, SIGMA_MAP_POLYGON } from "@/lib/map-sigma-colors";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
 export type SectorFeatureProperties = {
@@ -105,7 +106,7 @@ export function featurePopupHtml(
       bits.push(`<div class="text-xs text-slate-500">${escapeHtml(String(r.procedimiento).slice(0, 100))}</div>`);
     }
     bits.push(
-      `<div style="color:#047857;font-size:11px">Licencia urbanística otorgada (datos abiertos Ayto.)</div>`,
+      `<div style="color:#047857;font-size:11px">Obra o actuación autorizada (datos abiertos Ayto.)</div>`,
     );
     return bits.join("<br/>");
   }
@@ -210,36 +211,29 @@ export function featurePopupHtml(
 
 export function featureLayerStyle(
   p: SectorFeatureProperties | undefined,
-  geomType?: string,
 ): Record<string, unknown> {
   if (isLicenciaFeature(p)) {
-    return { color: "#047857", weight: 1, fillColor: "#10b981", fillOpacity: 0.55 };
+    return { color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.62 };
   }
   if (isSigmaFeature(p)) {
     const kind = String(propsRecord(p).sigma_layer_kind || "");
-    if (kind === "tramitados_ad") {
-      return { color: "#b45309", weight: 1, fillColor: "#f59e0b", fillOpacity: 0.15 };
-    }
-    if (kind === "gestion") {
-      return { color: "#6d28d9", weight: 2, fillColor: "#8b5cf6", fillOpacity: 0.3 };
-    }
-    if (kind === "urbanizacion") {
-      return { color: "#b45309", weight: 2, fillColor: "#f59e0b", fillOpacity: 0.28 };
-    }
-    return { color: "#0369a1", weight: 2.5, fillColor: "#0ea5e9", fillOpacity: 0.32 };
+    if (kind === "tramitados_ad") return SIGMA_MAP_POLYGON.tramitados_ad;
+    if (kind === "gestion") return SIGMA_MAP_POLYGON.gestion;
+    if (kind === "urbanizacion") return SIGMA_MAP_POLYGON.urbanizacion;
+    return SIGMA_MAP_POLYGON.default;
   }
   return sectorLayerStyle(p?.resolver_id) as Record<string, unknown>;
 }
 
 export function featurePointStyle(p: SectorFeatureProperties | undefined): Record<string, unknown> {
   if (isLicenciaFeature(p)) {
-    return { radius: 5, color: "#047857", weight: 1, fillColor: "#10b981", fillOpacity: 0.75 };
+    return { radius: 5, color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.82 };
   }
   if (isSigmaFeature(p)) {
     if (String(propsRecord(p).sigma_layer_kind || "") === "tramitados_ad") {
-      return { radius: 7, color: "#b45309", weight: 2, fillColor: "#f59e0b", fillOpacity: 0.85 };
+      return SIGMA_MAP_POINT.tramitados_ad;
     }
-    return { radius: 8, color: "#0369a1", weight: 2, fillColor: "#0ea5e9", fillOpacity: 0.9 };
+    return SIGMA_MAP_POINT.default;
   }
   return sectorPointStyle(p?.resolver_id) as Record<string, unknown>;
 }
@@ -255,46 +249,27 @@ export type SectorFeatureCollection = {
 
 export function sectorLayerStyle(resolverId: string | null | undefined) {
   if (resolverId?.startsWith("madrid_ayto")) {
-    return {
-      color: "#0369a1",
-      weight: 2,
-      fillColor: "#0ea5e9",
-      fillOpacity: 0.28,
-    };
+    return SIGMA_MAP_POLYGON.default;
   }
   const isCm = resolverId?.startsWith("cm_sitcm");
   if (isCm) {
-    return {
-      color: "#1d4ed8",
-      weight: 2,
-      fillColor: "#3b82f6",
-      fillOpacity: 0.22,
-    };
+    return SIGMA_MAP_POLYGON.gestion;
   }
   return {
-    color: "#64748b",
+    color: "#0f766e",
     weight: 1.5,
-    fillColor: "#94a3b8",
-    fillOpacity: 0.35,
+    fillColor: "#99f6e4",
+    fillOpacity: 0.18,
   };
 }
 
 export function sectorPointStyle(resolverId: string | null | undefined) {
   if (resolverId?.startsWith("madrid_ayto")) {
-    return {
-      radius: 7,
-      color: "#0369a1",
-      weight: 2,
-      fillColor: "#0ea5e9",
-      fillOpacity: 0.9,
-    };
+    return SIGMA_MAP_POINT.default;
   }
   const isCm = resolverId?.startsWith("cm_sitcm");
-  return {
-    radius: isCm ? 7 : 5,
-    color: isCm ? "#1d4ed8" : "#64748b",
-    weight: 2,
-    fillColor: isCm ? "#3b82f6" : "#94a3b8",
-    fillOpacity: 0.85,
-  };
+  if (isCm) {
+    return { ...SIGMA_MAP_POINT.default, radius: 7, fillColor: "#14b8a6" };
+  }
+  return { radius: 5, color: "#0f766e", weight: 2, fillColor: "#99f6e4", fillOpacity: 0.72 };
 }

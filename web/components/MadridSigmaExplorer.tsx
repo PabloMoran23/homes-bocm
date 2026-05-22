@@ -14,6 +14,7 @@ import {
 } from "@/lib/madrid-sigma-filters";
 import { projectPath } from "@/lib/project-display";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { SIGMA_MAP_LEGEND } from "@/lib/map-sigma-colors";
 import { filterSigmaMapFeaturesByBBox, SIGMA_MAP_DEFAULT_MAX_BBOX_KM2 } from "@/lib/sigma-map-geometry";
 import type { SigmaBocmPopupLink, SectorFeatureCollection } from "@/lib/sector-geo";
 import type { MadridSigmaDataset, SigmaExpediente } from "@/lib/types";
@@ -555,15 +556,15 @@ export function MadridSigmaExplorer() {
                 </span>
               ) : null}
               <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2.5 w-4 rounded-sm bg-sky-400/80 ring-1 ring-sky-700" />
+                <span className={`inline-block ${SIGMA_MAP_LEGEND.planeamiento}`} />
                 Planeamiento
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2.5 w-4 rounded-sm bg-violet-400/80 ring-1 ring-violet-700" />
+                <span className={`inline-block ${SIGMA_MAP_LEGEND.gestion}`} />
                 Gestión
               </span>
               <span className="inline-flex items-center gap-1">
-                <span className="inline-block h-2.5 w-4 rounded-sm bg-amber-400/80 ring-1 ring-amber-700" />
+                <span className={`inline-block ${SIGMA_MAP_LEGEND.urbanizacion}`} />
                 Urbanización
               </span>
             </p>

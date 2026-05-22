@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { BoletinAreaApp } from "@/components/BoletinAreaApp";
 
 export const metadata: Metadata = {
@@ -8,5 +9,15 @@ export const metadata: Metadata = {
 };
 
 export default function BoletinPage() {
-  return <BoletinAreaApp />;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[calc(100dvh-3.5rem)] items-center justify-center bg-[#f8f6f1] text-sm text-slate-500">
+          Cargando boletín…
+        </div>
+      }
+    >
+      <BoletinAreaApp />
+    </Suspense>
+  );
 }

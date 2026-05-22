@@ -8,6 +8,7 @@ import sqlite3
 import sys
 from pathlib import Path
 
+from direccion import normalize_direccion
 from geo_utils import is_valid_wgs84_madrid
 
 POC_ROOT = Path(__file__).resolve().parents[1]
@@ -93,9 +94,10 @@ def main() -> None:
         if not is_valid_wgs84_madrid(lng, lat):
             skipped_invalid += 1
             continue
+        direccion = normalize_direccion(r["direccion"])
         props = {
             "ndp": ndp,
-            "direccion": r["direccion"],
+            "direccion": direccion,
             "distrito": r["distrito"],
             "barrio": r["barrio"],
             "licencias": r["licencias_count"],
@@ -113,12 +115,12 @@ def main() -> None:
         search.append(
             {
                 "ndp": ndp,
-                "direccion": r["direccion"] or "",
+                "direccion": direccion or "",
                 "distrito": r["distrito"] or "",
                 "barrio": r["barrio"] or "",
                 "label": " · ".join(
                     p
-                    for p in [r["direccion"], r["distrito"], f"NDP {ndp}"]
+                    for p in [direccion, r["distrito"], f"NDP {ndp}"]
                     if p
                 ),
             }

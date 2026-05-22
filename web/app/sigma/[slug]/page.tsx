@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SigmaExpedienteDetailView } from "@/components/SigmaExpedienteDetailView";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
 import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
+import { sigmaFaseShortLabel } from "@/lib/sigma-user-labels";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -27,7 +27,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
   return {
     title: title.length > 72 ? `${title.slice(0, 69)}…` : title,
-    description: `Proyecto urbanístico del Ayuntamiento de Madrid · ${ficha.expedienteGrupo}`,
+    description: [
+      "Proyecto urbanístico en Madrid",
+      sigmaFaseShortLabel(ficha.catalog?.FAS_TX_DENOM),
+    ].filter(Boolean).join(" · "),
   };
 }
 

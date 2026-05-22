@@ -302,6 +302,93 @@ export type MadridLicenciasIndex = {
   topUso: { name: string; count: number }[];
   topDistrito: { name: string; count: number }[];
   topProcedimiento: { name: string; count: number }[];
+  topTipoExpediente?: { name: string; count: number }[];
+  byYearUso?: Record<string, { name: string; count: number }[]>;
+  byYearMapaTipo?: MadridDashboardMapaYear[];
+  topMapaTipo?: MadridDashboardMapaTipo[];
+};
+
+export type MadridDashboardMapaTipo = {
+  id: string;
+  label: string;
+  count: number;
+};
+
+export type MadridDashboardMapaYear = {
+  year: number;
+  tipos: MadridDashboardMapaTipo[];
+};
+
+export type MadridDashboardMapaMonth = {
+  month: string;
+  tipos: MadridDashboardMapaTipo[];
+};
+
+export type MadridDashboardMonthPoint = {
+  month: string;
+  total: number;
+};
+
+export type LicenciasTimeGranularity = "year" | "month";
+
+export type MadridDashboardCount = { name: string; count: number };
+
+export type MadridDashboardDistritoPoint = {
+  name: string;
+  count: number;
+  lat: number | null;
+  lng: number | null;
+  withCoords?: number;
+};
+
+export type MadridDashboardDistritoCentroid = {
+  lat: number;
+  lng: number;
+  label: string;
+};
+
+export type MadridDashboardStats = {
+  generatedAt: string;
+  distritoCentroids?: Record<string, MadridDashboardDistritoCentroid>;
+  licencias: {
+    generatedAt: string;
+    totalRows: number;
+    withCoords: number;
+    years: number[];
+    months?: string[];
+    seriesByYear: { year: number; total: number; uso: MadridDashboardCount[] }[];
+    seriesByMonth?: MadridDashboardMonthPoint[];
+    seriesByYearMapaTipo: MadridDashboardMapaYear[];
+    seriesByMonthMapaTipo?: MadridDashboardMapaMonth[];
+    topMapaTipo: MadridDashboardMapaTipo[];
+    topUso: MadridDashboardCount[];
+    topDistrito: MadridDashboardCount[];
+    topDistritoMap?: MadridDashboardDistritoPoint[];
+    topProcedimiento: MadridDashboardCount[];
+    topTipoExpediente: MadridDashboardCount[];
+  } | null;
+  sigma: {
+    total: number;
+    conVisorFicha: number;
+    conTramitacion: number;
+    conGeometry: number;
+    conMetricasPdf: number;
+    viviendasEnMetricas: number;
+    expedientesConViviendas: number;
+    seriesByYear: { year: number; count: number }[];
+    byFase: MadridDashboardCount[];
+    byFiguraTipo: MadridDashboardCount[];
+    byTipoFiguraAbrev: MadridDashboardCount[];
+    byTipoPlaneamiento: MadridDashboardCount[];
+    byPromotor: MadridDashboardCount[];
+    byDistrito: MadridDashboardCount[];
+    byIniciativa: MadridDashboardCount[];
+    byTramite: MadridDashboardCount[];
+    byLayer: MadridDashboardCount[];
+    byOrgano: MadridDashboardCount[];
+    superficieBuckets: MadridDashboardCount[];
+    topViviendas: { expedienteGrupo: string; viviendas: number; supM2: number | null }[];
+  };
 };
 
 export type PipelineStatusPayload = {

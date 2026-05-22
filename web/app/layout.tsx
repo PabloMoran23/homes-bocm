@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { NavBar } from "@/components/NavBar";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TierProvider } from "@/components/TierProvider";
+import { isPublicEdition } from "@/lib/edition";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,13 +16,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const isPublic = isPublicEdition();
+
 export const metadata: Metadata = {
   title: {
-    default: "Homes · Urbanismo — proyectos en tu zona",
+    default: isPublic
+      ? "Homes · Urbanismo Madrid"
+      : "Homes · Urbanismo — proyectos en tu zona",
     template: "%s · Homes Urbanismo",
   },
-  description:
-    "Seguimiento de proyectos urbanísticos cerca de ti: mapa, alertas, estudio por zona y lectura clara. Cruzamos más de 1.000 fuentes para que no tengas que hacerlo tú.",
+  description: isPublic
+    ? "Mapa unificado de licencias, planeamiento SIGMA y anuncios BOCM en Madrid capital. Explora, abre fichas y consulta estadísticas."
+    : "Seguimiento de proyectos urbanísticos cerca de ti: mapa, alertas, estudio por zona y lectura clara. Cruzamos más de 1.000 fuentes para que no tengas que hacerlo tú.",
 };
 
 export default function RootLayout({

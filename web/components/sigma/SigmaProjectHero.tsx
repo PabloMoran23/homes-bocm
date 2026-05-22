@@ -2,15 +2,12 @@
 
 import Link from "next/link";
 import { projectPath } from "@/lib/project-display";
-import { SigmaQueImplicaBlock } from "@/components/sigma/SigmaQueImplicaBlock";
-import { SigmaVisorFichaHighlights } from "@/components/sigma/SigmaVisorFichaHighlights";
 import {
   buildSigmaProjectLead,
   sigmaPickDisplayHeadline,
-  sigmaPresentationMetaLine,
   type SigmaPresentationInput,
 } from "@/lib/sigma-presentation";
-import { sigmaFaseLabel, sigmaStatusBadge } from "@/lib/sigma-user-labels";
+import { sigmaFaseShortLabel, sigmaStatusBadge } from "@/lib/sigma-user-labels";
 
 export function SigmaProjectHero({
   presentation,
@@ -29,8 +26,7 @@ export function SigmaProjectHero({
   const status = sigmaStatusBadge(presentation.source);
   const { title, subtitle } = sigmaPickDisplayHeadline(presentation);
   const lead = buildSigmaProjectLead({ ...presentation, bocmCount });
-  const meta = sigmaPresentationMetaLine(presentation);
-  const fase = sigmaFaseLabel(presentation.fase);
+  const fase = sigmaFaseShortLabel(presentation.fase);
 
   return (
     <header className="portal-hero-bg overflow-hidden rounded-2xl border border-teal-200/50 shadow-sm">
@@ -69,25 +65,13 @@ export function SigmaProjectHero({
           </p>
         ) : null}
 
-        {presentation.visorFicha ? (
-          <SigmaVisorFichaHighlights ficha={presentation.visorFicha} />
-        ) : null}
-
-        <SigmaQueImplicaBlock presentation={{ ...presentation, bocmCount }} compact={compact} />
-
         <p
           className={`mt-3 max-w-3xl leading-relaxed text-slate-600 ${
-            compact ? "line-clamp-3 text-xs" : "line-clamp-4 text-sm"
+            compact ? "text-sm" : "text-base"
           }`}
         >
           {lead}
         </p>
-
-        {meta ? (
-          <p className={`text-slate-400 ${compact ? "mt-2 text-[11px]" : "mt-4 text-xs"}`}>
-            {meta}
-          </p>
-        ) : null}
 
         <div className={`flex flex-wrap gap-2 ${compact ? "mt-3" : "mt-6"}`}>
           {visorUrl ? (

@@ -14,6 +14,22 @@ function formatGeneratedAt(iso: string): string {
   }
 }
 
+function NewsMetaValue({
+  value,
+  className = "tabular-nums text-teal-100",
+}: {
+  value?: string;
+  className?: string;
+}) {
+  if (!value) return null;
+  return (
+    <>
+      <span className="text-slate-500">·</span>
+      <span className={className}>{value}</span>
+    </>
+  );
+}
+
 export function LandingNewsSection({
   summary,
   news,
@@ -47,7 +63,7 @@ export function LandingNewsSection({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-300/80 opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-200" />
               </span>
-              Mayores actuaciones · Madrid
+              Señales urbanas · Madrid
             </p>
             <h2
               id="landing-news-heading"
@@ -56,14 +72,15 @@ export function LandingNewsSection({
               Noticias del territorio
             </h2>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300/95 sm:text-base">
-              Titulares automáticos a partir de los proyectos con más viviendas previstas en la
-              documentación analizada. Se actualizan al regenerar los datos.
+              Titulares automáticos a partir de licencias recientes, cambios de uso y expedientes
+              con superficie relevante. Se actualizan al regenerar los datos.
               {updated ? ` Última actualización: ${updated}.` : null}
             </p>
             {summary?.total ? (
               <p className="mt-4 max-w-xl border-l-2 border-teal-400/50 pl-4 text-sm text-teal-50/90">
-                {news.items.length} macroactuaciones destacadas entre{" "}
-                {summary.total.toLocaleString("es-ES")} anuncios indexados en el territorio.
+                {news.items.length} señales priorizadas sobre{" "}
+                {summary.total.toLocaleString("es-ES")} anuncios y los datos municipales de
+                licencias.
               </p>
             ) : null}
           </div>
@@ -82,6 +99,7 @@ export function LandingNewsSection({
           >
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal-100/90">
               <span className="rounded-md bg-teal-400/15 px-2 py-0.5 text-teal-50">{featured.tag}</span>
+              <NewsMetaValue value={featured.valueLabel} />
               {featured.numViviendas != null ? (
                 <>
                   <span className="text-slate-500">·</span>
@@ -96,9 +114,14 @@ export function LandingNewsSection({
             <h3 className="mt-4 max-w-3xl text-xl font-semibold leading-snug tracking-tight text-white transition group-hover:text-teal-50 sm:text-2xl">
               {featured.title}
             </h3>
+            {featured.trendLabel ? (
+              <p className="mt-3 inline-flex rounded-full border border-teal-200/15 bg-teal-300/10 px-3 py-1 text-xs font-semibold text-teal-50">
+                {featured.trendLabel}
+              </p>
+            ) : null}
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300/95 sm:text-base">{featured.dek}</p>
             <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-teal-200/95 transition group-hover:gap-2">
-              Ver proyecto
+              {featured.ctaLabel ?? "Ver proyecto"}
               <span aria-hidden>→</span>
             </span>
           </Link>
@@ -114,6 +137,7 @@ export function LandingNewsSection({
                 >
                   <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
                     <span className="text-teal-200/90">{item.tag}</span>
+                    <NewsMetaValue value={item.valueLabel} className="tabular-nums text-slate-400" />
                     {item.numViviendas != null ? (
                       <>
                         <span className="text-slate-600">·</span>
@@ -129,8 +153,11 @@ export function LandingNewsSection({
                     {item.title}
                   </h3>
                   <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-400">{item.dek}</p>
+                  {item.trendLabel ? (
+                    <p className="mt-3 text-[11px] font-semibold text-teal-100/80">{item.trendLabel}</p>
+                  ) : null}
                   <span className="mt-4 text-xs font-semibold text-teal-300/90 group-hover:text-teal-200">
-                    Ver ficha →
+                    {item.ctaLabel ?? "Ver ficha"} →
                   </span>
                 </Link>
               </li>
@@ -139,8 +166,8 @@ export function LandingNewsSection({
         ) : null}
 
         <p className="mt-6 text-center text-[11px] text-slate-500">
-          Criterio: proyectos con cifra de viviendas en documentación PDF · No es previsión
-          oficial de obra terminada
+          Criterio: señales recientes de licencias y planeamiento · No es previsión oficial de obra
+          terminada
         </p>
       </div>
     </section>

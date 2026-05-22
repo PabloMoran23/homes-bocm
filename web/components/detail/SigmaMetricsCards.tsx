@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  familiaExpedienteMessage,
   formatM2,
   metricCoverageBadge,
   type SigmaExpedienteMetric,
@@ -57,7 +56,6 @@ export function SigmaMetricsPanel({
   compact?: boolean;
 }) {
   const cov = metricCoverageBadge(Boolean(metric));
-  const familiaMsg = metric ? familiaExpedienteMessage(metric.familia_expediente) : null;
 
   return (
     <div className="space-y-4">
@@ -89,14 +87,11 @@ export function SigmaMetricsPanel({
           {formatM2(metric.sup_total_m2) ? (
             <KpiTile label="Superficie ámbito" value={formatM2(metric.sup_total_m2)!} />
           ) : null}
-          {formatM2(metric.sup_edificable_m2) ? (
-            <KpiTile label="Edificabilidad" value={formatM2(metric.sup_edificable_m2)!} />
+          {formatM2(metric.sup_edificable_m2) && !compact ? (
+            <KpiTile label="Superficie edificable aprox." value={formatM2(metric.sup_edificable_m2)!} />
           ) : null}
-          {metric.tipo_vivienda ? (
+          {metric.tipo_vivienda && !compact ? (
             <KpiTile label="Tipo vivienda" value={metric.tipo_vivienda} />
-          ) : null}
-          {metric.pdfs_procesados != null ? (
-            <KpiTile label="Documentos revisados" value={String(metric.pdfs_procesados)} />
           ) : null}
         </div>
       ) : (
@@ -106,17 +101,12 @@ export function SigmaMetricsPanel({
         </p>
       )}
 
-      {familiaMsg ? (
-        <div className="rounded-xl border border-sky-100 bg-sky-50/60 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Qué implica</p>
-          <p className="mt-1 text-sm leading-relaxed text-sky-950">{familiaMsg}</p>
-        </div>
-      ) : null}
-
-      {metric?.hechos?.length && !compact ? (
-        <div className="rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Fuentes</p>
-          <ul className="mt-2 space-y-2">
+      {metric?.hechos?.length ? (
+        <details className="rounded-xl border border-slate-200 bg-slate-50/50">
+          <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+            Ver fuentes y cifras extraídas
+          </summary>
+          <ul className="space-y-2 border-t border-slate-200 px-4 py-3">
             {metric.hechos.map((h, i) => (
               <li key={i} className="text-xs text-slate-700">
                 <span className="font-medium text-slate-900">{h.metric}</span>
@@ -133,10 +123,10 @@ export function SigmaMetricsPanel({
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-[11px] text-slate-400">
+          <p className="border-t border-slate-200 px-4 py-3 text-[11px] text-slate-400">
             No es resolución vinculante; consulta los documentos oficiales.
           </p>
-        </div>
+        </details>
       ) : null}
     </div>
   );

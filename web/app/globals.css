@@ -36,7 +36,11 @@ body {
 /* Leaflet: mapa de marca (ProjectsMap) */
 .homes-map-shell .leaflet-container {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  background: #f1f5f9;
+  background: #f8faf9;
+}
+
+.homes-map-shell .leaflet-tile-pane img {
+  filter: saturate(1.08) contrast(1.02) brightness(1.01);
 }
 
 .homes-map-shell .leaflet-control-zoom {
@@ -83,4 +87,11 @@ body {
 
 .homes-map-shell .leaflet-popup-tip {
   box-shadow: none !important;
+}
+
+/* DivIcon: Leaflet ya ancla con iconAnchor; quitar caja blanca por defecto */
+.homes-map-shell .leaflet-marker-icon.leaflet-div-icon,
+.homes-map-shell .leaflet-marker-icon.homes-licencia-marker {
+  background: transparent !important;
+  border: none !important;
 }

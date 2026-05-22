@@ -8,6 +8,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from sector_geometry.madrid_nti_vivienda_sanity import sanitize_viviendas_en_metrics
+
 
 def main() -> int:
     db_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent / "poc_local.sqlite"
@@ -40,17 +42,20 @@ def main() -> int:
                     tipo_vivienda = mj.get("tipo_vivienda")
             except json.JSONDecodeError:
                 pass
-        by[r["expediente_grupo"]] = {
-            "num_viviendas_max": r["num_viviendas_max"],
-            "sup_total_m2": r["sup_total_m2"],
-            "sup_edificable_m2": r["sup_edificable_m2"],
-            "tipo_vivienda": tipo_vivienda,
-            "genera_vivienda_nueva": r["genera_vivienda_nueva"],
-            "familia_expediente": r["familia_expediente"],
-            "pdfs_procesados": r["pdfs_procesados"],
-            "doc_role_principal": r["doc_role_principal"],
-            "hechos": hechos,
-        }
+        row = sanitize_viviendas_en_metrics(
+            {
+                "num_viviendas_max": r["num_viviendas_max"],
+                "sup_total_m2": r["sup_total_m2"],
+                "sup_edificable_m2": r["sup_edificable_m2"],
+                "tipo_vivienda": tipo_vivienda,
+                "genera_vivienda_nueva": r["genera_vivienda_nueva"],
+                "familia_expediente": r["familia_expediente"],
+                "pdfs_procesados": r["pdfs_procesados"],
+                "doc_role_principal": r["doc_role_principal"],
+                "hechos": hechos,
+            }
+        )
+        by[r["expediente_grupo"]] = row
 
     payload = {
         "generatedAt": datetime.now(timezone.utc).isoformat(),

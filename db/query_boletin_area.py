@@ -78,12 +78,16 @@ def query_boletin(
     for row in con.execute(
         """
         SELECT ae.id, ae.fecha_concesion, ae.fecha_alta, ae.tipo_expediente, ae.uso,
-               ae.procedimiento, ae.lat, ae.lng,
+               ae.procedimiento,
+               COALESCE(i.lat, ae.lat) AS lat,
+               COALESCE(i.lng, ae.lng) AS lng,
                i.ndp_edificio, i.direccion, i.distrito
         FROM actuacion_edificacion ae
         LEFT JOIN inmueble i ON i.id = ae.inmueble_id
-        WHERE ae.lat IS NOT NULL AND ae.lng IS NOT NULL
-          AND ae.lat BETWEEN ? AND ? AND ae.lng BETWEEN ? AND ?
+        WHERE COALESCE(i.lat, ae.lat) IS NOT NULL
+          AND COALESCE(i.lng, ae.lng) IS NOT NULL
+          AND COALESCE(i.lat, ae.lat) BETWEEN ? AND ?
+          AND COALESCE(i.lng, ae.lng) BETWEEN ? AND ?
         """,
         (min_lat, max_lat, min_lng, max_lng),
     ):

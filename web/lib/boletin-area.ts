@@ -54,6 +54,10 @@ export const MONTHS_OPTIONS = [
   { months: 36, label: "3 años" },
 ] as const;
 
+export function boletinPath(ndp: string) {
+  return `/boletin?ndp=${encodeURIComponent(ndp)}`;
+}
+
 export function boletinResumenParrafo(data: BoletinAreaResult): string {
   const { stats, params } = data;
   const r = params.radiusM;

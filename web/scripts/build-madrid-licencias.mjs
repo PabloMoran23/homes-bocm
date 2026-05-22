@@ -5,6 +5,11 @@ import { createReadStream, existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { createInterface } from "node:readline";
 import { join } from "node:path";
 import proj4 from "proj4";
+import {
+  clasificarLicenciaMapa,
+  labelMapaCategoria,
+  LICENCIA_MAPA_LEYENDA,
+} from "./lib/licencia-mapa-categoria.mjs";
 
 const UTM30 =
   "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
@@ -69,8 +74,26 @@ function parseYearFromDate(raw) {
   if (!raw || typeof raw !== "string") return null;
   const parts = raw.trim().split(/[/.-]/);
   if (parts.length < 3) return null;
-  const y = Number(parts[parts.length - 1]);
+  let y = Number(parts[parts.length - 1]);
+  if (y < 100) y += 2000;
   return Number.isFinite(y) && y >= 1990 && y <= 2100 ? y : null;
+}
+
+/** Fecha D/M/YYYY o DD/MM/YYYY → `YYYY-MM` (prioriza fecha de concesión). */
+function parseMonthKey(concesion, alta) {
+  for (const raw of [concesion, alta]) {
+    if (!raw || typeof raw !== "string") continue;
+    const parts = raw.trim().split(/[/.-]/);
+    if (parts.length < 3) continue;
+    let d = Number(parts[0]);
+    let m = Number(parts[1]);
+    let y = Number(parts[2]);
+    if (y < 100) y += 2000;
+    if (!Number.isFinite(d) || !Number.isFinite(m) || !Number.isFinite(y)) continue;
+    if (m < 1 || m > 12 || y < 1990 || y > 2100) continue;
+    return `${y}-${String(m).padStart(2, "0")}`;
+  }
+  return null;
 }
 
 function normKey(s) {
@@ -79,13 +102,7 @@ function normKey(s) {
     .toLowerCase();
 }
 
-function buildDireccion(row) {
-  const via = [row.tipo_via, row.nombre_via, row.nmero != null ? String(row.nmero) : ""]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-  return via || null;
-}
+import { buildDireccion } from "./direccion.mjs";
 
 function compactRow(row, coords) {
   return {
@@ -111,7 +128,7 @@ function compactRow(row, coords) {
  * @param {{ jsonlPath: string; outDir: string; summaryPath?: string }} opts
  */
 export async function buildMadridLicenciasWeb(opts) {
-  const { jsonlPath, outDir } = opts;
+  const { jsonlPath, outDir, minYear } = opts;
   if (!existsSync(jsonlPath)) {
     console.log("Aviso: sin madrid_licencias.jsonl — ejecuta madrid_licencias_download");
     return null;
@@ -119,12 +136,30 @@ export async function buildMadridLicenciasWeb(opts) {
 
   mkdirSync(outDir, { recursive: true });
 
+  function topEntries(map, n = 24) {
+    return [...map.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([name, count]) => ({ name, count }));
+  }
+
   /** @type {Map<number, { features: object[]; rows: object[] }>} */
   const byYear = new Map();
   const byYearCount = {};
   const byUso = new Map();
   const byDistrito = new Map();
   const byProcedimiento = new Map();
+  const byTipoExpediente = new Map();
+  const byMapaCategoria = new Map();
+  /** @type {Map<string, { count: number; latSum: number; lngSum: number; n: number }>} */
+  const distritoGeo = new Map();
+  /** @type {Map<number, Map<string, number>>} */
+  const yearUsoMaps = new Map();
+  /** @type {Map<number, Map<string, number>>} */
+  const yearMapaMaps = new Map();
+  const byMonth = new Map();
+  /** @type {Map<string, Map<string, number>>} */
+  const monthMapaMaps = new Map();
   let total = 0;
   let withCoords = 0;
 
@@ -143,6 +178,7 @@ export async function buildMadridLicenciasWeb(opts) {
       parseYearFromDate(row.fecha_concesin) ||
       parseYearFromDate(row.fecha_de_alta) ||
       0;
+    if (minYear != null && year > 0 && year < minYear) continue;
     if (!byYear.has(year)) byYear.set(year, { features: [], rows: [] });
     const bucket = byYear.get(year);
 
@@ -155,9 +191,44 @@ export async function buildMadridLicenciasWeb(opts) {
     const uso = normKey(compact.uso);
     if (uso) byUso.set(uso, (byUso.get(uso) || 0) + 1);
     const dist = normKey(compact.distrito);
-    if (dist) byDistrito.set(dist, (byDistrito.get(dist) || 0) + 1);
+    if (dist) {
+      byDistrito.set(dist, (byDistrito.get(dist) || 0) + 1);
+      if (coords) {
+        let dg = distritoGeo.get(dist);
+        if (!dg) {
+          dg = { count: 0, latSum: 0, lngSum: 0, n: 0 };
+          distritoGeo.set(dist, dg);
+        }
+        dg.count += 1;
+        dg.latSum += coords.lat;
+        dg.lngSum += coords.lng;
+        dg.n += 1;
+      }
+    }
     const proc = normKey(compact.procedimiento);
     if (proc) byProcedimiento.set(proc, (byProcedimiento.get(proc) || 0) + 1);
+    const tipo = normKey(compact.tipoExpediente);
+    if (tipo) byTipoExpediente.set(tipo, (byTipoExpediente.get(tipo) || 0) + 1);
+    if (year > 0 && uso) {
+      if (!yearUsoMaps.has(year)) yearUsoMaps.set(year, new Map());
+      const ym = yearUsoMaps.get(year);
+      ym.set(uso, (ym.get(uso) || 0) + 1);
+    }
+    const mapaCat = clasificarLicenciaMapa(compact.tipoExpediente);
+    byMapaCategoria.set(mapaCat, (byMapaCategoria.get(mapaCat) || 0) + 1);
+    if (year > 0) {
+      if (!yearMapaMaps.has(year)) yearMapaMaps.set(year, new Map());
+      const ym = yearMapaMaps.get(year);
+      ym.set(mapaCat, (ym.get(mapaCat) || 0) + 1);
+    }
+
+    const monthKey = parseMonthKey(row.fecha_concesin, row.fecha_de_alta);
+    if (monthKey) {
+      byMonth.set(monthKey, (byMonth.get(monthKey) || 0) + 1);
+      if (!monthMapaMaps.has(monthKey)) monthMapaMaps.set(monthKey, new Map());
+      const mm = monthMapaMaps.get(monthKey);
+      mm.set(mapaCat, (mm.get(mapaCat) || 0) + 1);
+    }
 
     if (coords) {
       bucket.features.push({
@@ -178,6 +249,71 @@ export async function buildMadridLicenciasWeb(opts) {
   }
 
   const years = [...byYear.keys()].filter((y) => y > 0).sort((a, b) => b - a);
+  const topUsoNames = topEntries(byUso, 8).map((x) => x.name);
+  const byYearUso = {};
+  for (const y of years) {
+    const ym = yearUsoMaps.get(y) || new Map();
+    byYearUso[String(y)] = topUsoNames.map((name) => ({
+      name,
+      count: ym.get(name) || 0,
+    }));
+  }
+
+  const mapaCatsOrdered = [
+    ...LICENCIA_MAPA_LEYENDA,
+    ...[...byMapaCategoria.keys()].filter((c) => !LICENCIA_MAPA_LEYENDA.includes(c)),
+  ];
+  const byYearMapaTipo = years
+    .slice()
+    .sort((a, b) => a - b)
+    .map((y) => {
+      const ym = yearMapaMaps.get(y) || new Map();
+      return {
+        year: y,
+        tipos: mapaCatsOrdered.map((id) => ({
+          id,
+          label: labelMapaCategoria(id),
+          count: ym.get(id) || 0,
+        })),
+      };
+    });
+  const topDistritoMap = topEntries(byDistrito, 22).map(({ name, count }) => {
+    const g = distritoGeo.get(name);
+    return {
+      name,
+      count,
+      lat: g?.n ? g.latSum / g.n : null,
+      lng: g?.n ? g.lngSum / g.n : null,
+      withCoords: g?.count ?? 0,
+    };
+  });
+
+  const topMapaTipo = mapaCatsOrdered
+    .map((id) => ({
+      id,
+      label: labelMapaCategoria(id),
+      count: byMapaCategoria.get(id) || 0,
+    }))
+    .filter((x) => x.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  const months = [...byMonth.keys()].sort();
+  const seriesByMonth = months.map((month) => ({
+    month,
+    total: byMonth.get(month) || 0,
+  }));
+  const seriesByMonthMapaTipo = months.map((month) => {
+    const mm = monthMapaMaps.get(month) || new Map();
+    return {
+      month,
+      tipos: mapaCatsOrdered.map((id) => ({
+        id,
+        label: labelMapaCategoria(id),
+        count: mm.get(id) || 0,
+      })),
+    };
+  });
+
   for (const y of years) {
     const { features, rows } = byYear.get(y);
     byYearCount[String(y)] = rows.length;
@@ -191,13 +327,6 @@ export async function buildMadridLicenciasWeb(opts) {
     );
   }
 
-  function topEntries(map, n = 24) {
-    return [...map.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, n)
-      .map(([name, count]) => ({ name, count }));
-  }
-
   const index = {
     generatedAt: new Date().toISOString(),
     source: "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
@@ -207,7 +336,15 @@ export async function buildMadridLicenciasWeb(opts) {
     years,
     topUso: topEntries(byUso),
     topDistrito: topEntries(byDistrito),
+    topDistritoMap,
     topProcedimiento: topEntries(byProcedimiento),
+    topTipoExpediente: topEntries(byTipoExpediente, 20),
+    byYearUso,
+    byYearMapaTipo,
+    topMapaTipo,
+    months,
+    seriesByMonth,
+    seriesByMonthMapaTipo,
   };
 
   writeFileSync(join(outDir, "madrid-licencias-index.json"), JSON.stringify(index, null, 2));

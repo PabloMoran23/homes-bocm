@@ -1,5 +1,6 @@
 import { fetchStaticJson } from "@/lib/fetch-static-json";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import { sanitizeSigmaMetric } from "@/lib/vivienda-plausible";
 
 type MadridSigmaMetricsFile = {
   generatedAt?: string;
@@ -20,5 +21,5 @@ export async function getSigmaMetricForGrupo(
   expedienteGrupo: string,
 ): Promise<SigmaExpedienteMetric | null> {
   const file = await loadMetricsFile();
-  return file?.byExpediente?.[expedienteGrupo] ?? null;
+  return sanitizeSigmaMetric(file?.byExpediente?.[expedienteGrupo] ?? null);
 }

@@ -6,11 +6,12 @@ import { formatSigmaArcgisMs, hasValue } from "@/lib/project-display";
 import {
   sigmaCatalogSourceUserLabel,
   sigmaFaseContext,
-  sigmaFaseLabel,
+  sigmaFaseShortLabel,
   sigmaInfoPublicaFromArcgis,
   sigmaInfoPublicaFromYmd,
   sigmaLayerKindUserLabel,
   sigmaTipoActuacion,
+  sigmaVisorFieldLabel,
 } from "@/lib/sigma-user-labels";
 import type { SigmaVisorFicha, SigmaVisorTramite } from "@/lib/types";
 
@@ -65,7 +66,7 @@ export function SigmaUserResumen({
   const [techOpen, setTechOpen] = useState(false);
 
   const tipo = sigmaTipoActuacion(fields.figEtiq, fields.tfigAbrev);
-  const fase = sigmaFaseLabel(fields.fase);
+  const fase = sigmaFaseShortLabel(fields.fase);
   const faseCtx = sigmaFaseContext(fields.fase);
   const ipPeriod =
     sigmaInfoPublicaFromArcgis(fields.infopubIniMs, fields.infopubFinMs) ??
@@ -82,6 +83,40 @@ export function SigmaUserResumen({
   }
   if (origenUser) techRows.push({ label: "Registro", value: origenUser });
   if (capaUser) techRows.push({ label: "Tipo en mapa", value: capaUser });
+  if (hasValue(fields.fase)) techRows.push({ label: "Fase oficial", value: fields.fase! });
+  if (hasValue(fields.denominacion)) {
+    techRows.push({ label: sigmaVisorFieldLabel("denominacionVisor"), value: fields.denominacion! });
+  }
+  if (hasValue(visorFicha?.figuraCodigo)) {
+    techRows.push({ label: sigmaVisorFieldLabel("figuraCodigo"), value: visorFicha!.figuraCodigo! });
+  }
+  if (hasValue(visorFicha?.tipoPlaneamiento)) {
+    techRows.push({
+      label: sigmaVisorFieldLabel("tipoPlaneamiento"),
+      value: visorFicha!.tipoPlaneamiento!,
+    });
+  }
+  if (hasValue(visorFicha?.sistemaActuacion)) {
+    techRows.push({
+      label: sigmaVisorFieldLabel("sistemaActuacion"),
+      value: visorFicha!.sistemaActuacion!,
+    });
+  }
+  if (hasValue(visorFicha?.unidadTramitadora)) {
+    techRows.push({
+      label: sigmaVisorFieldLabel("unidadTramitadora"),
+      value: visorFicha!.unidadTramitadora!,
+    });
+  }
+  if (hasValue(visorFicha?.ambitoOrdenacion)) {
+    techRows.push({
+      label: sigmaVisorFieldLabel("ambitoOrdenacion"),
+      value: visorFicha!.ambitoOrdenacion!,
+    });
+  }
+  if (hasValue(visorFicha?.archivoPlanos)) {
+    techRows.push({ label: sigmaVisorFieldLabel("archivoPlanos"), value: visorFicha!.archivoPlanos! });
+  }
 
   return (
     <div className={compact ? "space-y-4" : "space-y-6"}>
@@ -104,34 +139,28 @@ export function SigmaUserResumen({
         </div>
       ) : null}
 
-      {fase && !compact ? (
-        <div className="rounded-xl border border-sky-100 bg-sky-50/60 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-sky-800">Estado actual</p>
-          <p className="mt-1 text-base font-semibold text-sky-950">{fase}</p>
-          {faseCtx ? <p className="mt-2 text-sm leading-relaxed text-sky-900/90">{faseCtx}</p> : null}
-        </div>
-      ) : null}
-
       <dl className={`grid gap-3 sm:grid-cols-2 ${compact ? "gap-2" : "gap-4"}`}>
         <ResumenCell label="Tipo de actuación" value={visorFicha?.figuraTipo ?? tipo} />
-        <ResumenCell label="Órgano que tramita" value={fields.organo} />
+        <ResumenCell label="Estado actual" value={fase} />
         <ResumenCell label="Fecha de aprobación" value={aprobacion ?? undefined} />
         <ResumenCell label="Promotor" value={visorFicha?.promotor} />
         <ResumenCell label="Distrito" value={visorFicha?.distrito} />
-        <ResumenCell label="Iniciativa" value={visorFicha?.iniciativa} />
+        <ResumenCell label={sigmaVisorFieldLabel("iniciativa")} value={visorFicha?.iniciativa} />
         <ResumenCell
-          label="Superficie ámbito"
+          label={sigmaVisorFieldLabel("superficieAmbito")}
           value={
             visorFicha?.superficieAmbitoM2 != null && visorFicha.superficieAmbitoM2 > 0
               ? `${visorFicha.superficieAmbitoM2.toLocaleString("es-ES")} m²`
               : visorFicha?.superficieAmbitoTexto
           }
         />
-        <ResumenCell label="Tipo planeamiento" value={visorFicha?.tipoPlaneamiento} />
-        {hasValue(fields.denominacion) && fields.denominacion !== tipo ? (
-          <ResumenCell label="Denominación oficial" value={fields.denominacion} />
-        ) : null}
       </dl>
+
+      {faseCtx ? (
+        <p className="rounded-xl border border-sky-100 bg-sky-50/60 px-4 py-3 text-sm leading-relaxed text-sky-950">
+          {faseCtx}
+        </p>
+      ) : null}
 
       {tramPreview.length > 0 ? (
         <div>

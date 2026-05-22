@@ -1,0 +1,7 @@
+node_modules
+.next
+.env*
+*.tsbuildinfo
+# Incluir datos estáticos aunque estén en .gitignore
+!public/data
+!public/data/**

@@ -1,0 +1,22 @@
+slug: pozuelo-de-alarcon
+nombre: Pozuelo de Alarcón
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.pozuelodealarcon.org"
+  adapter: municipio.adapters.pozuelo:PozueloAyuntamientoAdapter
+  config:
+    request_delay_s: 0.25
+    user_agent: "poc-bocm-pozuelo/1.0 (+urbanismo research)"
+    max_crawl_pages: 80
+  notes: |
+    Fuentes: expedientes urbanísticos en información pública (Drupal),
+    PGOU/planeamiento, transparencia urbanismo. Sin tablón tipo sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
