@@ -1,9 +1,15 @@
 name: Refresh web data
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      refresh_licencias:
+        description: "Forzar descarga y sync de licencias (por defecto solo dia 1 del mes)"
+        type: boolean
+        default: false
   schedule:
-    - cron: "17 3 * * *"
+    # Lunes 03:17 UTC (~05:17 CEST en verano)
+    - cron: "17 3 * * 1"
 
 permissions:
   contents: write
@@ -100,14 +106,41 @@ jobs:
             exit 1
           fi
           python3 -m sector_geometry.madrid_ayto_sync
-          python3 -m sector_geometry.madrid_licencias_download
-          python3 db/sync_madrid_public_to_supabase.py
+          YEAR=$(date -u +%Y)
+          PREV=$((YEAR - 1))
+          REFRESH_LIC=0
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "true" ]; then
+            REFRESH_LIC=1
+          elif [ "$(date -u +%d)" = "01" ]; then
+            REFRESH_LIC=1
+          fi
+          if [ "$REFRESH_LIC" = "1" ]; then
+            echo "Licencias: descarga ${PREV},${YEAR} y upsert incremental."
+            python3 -m sector_geometry.madrid_licencias_download --years "${PREV},${YEAR}" --merge-jsonl
+            python3 db/sync_madrid_public_to_supabase.py --licencias-years "${PREV},${YEAR}"
+          else
+            echo "Licencias: omitidas (SIGMA + build web)."
+            python3 db/sync_madrid_public_to_supabase.py --skip-licencias
+          fi
 
       - name: Build public data files
         working-directory: web
         env:
           BUILD_DATA_SCOPE: madrid-public
         run: npm run build-data
+
+      - name: Verify Madrid dashboard stats
+        run: |
+          test -s web/public/data/madrid-dashboard-stats.json
+          node -e "
+          const s = require('./web/public/data/madrid-dashboard-stats.json');
+          if (!s.sigma?.total) throw new Error('madrid-dashboard-stats.json sin agregados SIGMA');
+          console.log(
+            'Dashboard OK — sigma:', s.sigma.total,
+            '| licencias:', s.licencias?.totalRows ?? 'n/a',
+            '| generado:', s.generatedAt
+          );
+          "
 
       - name: Verify production build
         working-directory: web
@@ -121,10 +154,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add web/public/data
+          git add -f web/public/data/madrid-dashboard-stats.json
           if git diff --cached --quiet; then
             echo "No web data changes to commit."
           else
-            git commit -m "Refresh web data"
+            git commit -m "$(cat <<'EOF'
+Refresh web data
+
+Regenera artefactos public/data (incl. madrid-dashboard-stats.json para /madrid/estadisticas).
+EOF
+)"
             git push
           fi
 

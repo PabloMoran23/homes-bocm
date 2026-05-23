@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-/** Origen para /data/* en SSR (evita empaquetar JSON grandes en el bundle serverless). */
+/** Origen para /data/* cuando el fichero no está en el deployment (fallback HTTP). */
 export function staticDataOrigin(): string {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
   if (fromEnv) return fromEnv;
@@ -9,21 +9,26 @@ export function staticDataOrigin(): string {
   return "http://localhost:3000";
 }
 
+function readDiskJson<T>(diskPath: string): T | null {
+  if (!existsSync(diskPath)) return null;
+  try {
+    return JSON.parse(readFileSync(diskPath, "utf-8")) as T;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Carga JSON desde public/data vía HTTP en Vercel/producción.
- * En desarrollo local lee del disco si el servidor no está levantado aún.
+ * Carga JSON desde public/data.
+ * En Vercel/producción prioriza lectura del disco (public/ va en el deployment).
+ * El fetch HTTP queda como fallback si el fichero no está en el bundle.
  */
 export async function fetchStaticJson<T>(relFromPublic: string): Promise<T | null> {
   const rel = relFromPublic.startsWith("/") ? relFromPublic : `/${relFromPublic}`;
   const diskPath = join(process.cwd(), "public", rel.replace(/^\//, ""));
 
-  if (process.env.NODE_ENV === "development" && existsSync(diskPath)) {
-    try {
-      return JSON.parse(readFileSync(diskPath, "utf-8")) as T;
-    } catch {
-      /* fetch fallback */
-    }
-  }
+  const fromDisk = readDiskJson<T>(diskPath);
+  if (fromDisk) return fromDisk;
 
   try {
     const url = new URL(rel, staticDataOrigin());
@@ -31,13 +36,6 @@ export async function fetchStaticJson<T>(relFromPublic: string): Promise<T | nul
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
-    if (existsSync(diskPath)) {
-      try {
-        return JSON.parse(readFileSync(diskPath, "utf-8")) as T;
-      } catch {
-        return null;
-      }
-    }
     return null;
   }
 }

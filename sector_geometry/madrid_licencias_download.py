@@ -21,6 +21,7 @@ import json
 import re
 import urllib.request
 from datetime import date, datetime, timezone
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
@@ -71,6 +72,17 @@ def _norm_col(name: str) -> str:
     return s or "col"
 
 
+def licencia_key(row: dict[str, Any], *, anio: int | None) -> str:
+    parts = [
+        str(anio or row.get("anio_dataset") or row.get("anioDataset") or ""),
+        str(row.get("ndp_edificio") or row.get("ndpEdificio") or ""),
+        str(row.get("fecha_de_alta") or row.get("fechaAlta") or ""),
+        str(row.get("tipo_de_expediente") or row.get("tipoExpediente") or ""),
+        str(row.get("fecha_concesin") or row.get("fechaConcesion") or ""),
+    ]
+    return sha256("|".join(parts).encode()).hexdigest()[:32]
+
+
 def _rows_from_xlsx(path: Path, year: int) -> list[dict[str, Any]]:
     try:
         import pandas as pd
@@ -114,6 +126,11 @@ def main() -> None:
         help="Años coma-separados (default: todos 2015-2026)",
     )
     ap.add_argument("--skip-download", action="store_true", help="Sólo convertir XLSX ya en raw/")
+    ap.add_argument(
+        "--merge-jsonl",
+        action="store_true",
+        help="Fusionar filas descargadas en madrid_licencias.jsonl existente (por licencia_key).",
+    )
     args = ap.parse_args()
 
     years = sorted(LICENCIAS_RESOURCE_SLUG_BY_YEAR.keys())
@@ -156,14 +173,35 @@ def main() -> None:
         all_rows.extend(rows)
         print(f"    {len(rows)} filas", flush=True)
 
-    with JSONL_OUT.open("w", encoding="utf-8") as lf:
+    rows_to_write = all_rows
+    if args.merge_jsonl and JSONL_OUT.is_file():
+        merged: dict[str, dict[str, Any]] = {}
+        with JSONL_OUT.open(encoding="utf-8") as lf:
+            for line in lf:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                anio = row.get("anio_dataset") or row.get("anioDataset")
+                try:
+                    anio_i = int(anio) if anio is not None else None
+                except (TypeError, ValueError):
+                    anio_i = None
+                merged[licencia_key(row, anio=anio_i)] = row
         for row in all_rows:
+            anio_i = int(row["anio_dataset"]) if row.get("anio_dataset") is not None else None
+            merged[licencia_key(row, anio=anio_i)] = row
+        rows_to_write = list(merged.values())
+        print(f"  JSONL merge: {len(rows_to_write)} filas totales", flush=True)
+
+    with JSONL_OUT.open("w", encoding="utf-8") as lf:
+        for row in rows_to_write:
             lf.write(json.dumps(row, ensure_ascii=False, default=str) + "\n")
 
     summary = {
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
-        "totalRows": len(all_rows),
+        "totalRows": len(rows_to_write),
         "byYear": per_year,
         "columns": sorted(columns_seen),
         "rawDir": str(RAW_DIR),
@@ -175,7 +213,7 @@ def main() -> None:
         json.dumps(
             {
                 "ok": True,
-                "totalRows": len(all_rows),
+                "totalRows": len(rows_to_write),
                 "byYear": per_year,
                 "jsonl": str(JSONL_OUT),
             },

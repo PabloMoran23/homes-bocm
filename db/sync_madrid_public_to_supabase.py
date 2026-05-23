@@ -269,12 +269,19 @@ def iter_licencias_rows() -> Iterable[dict[str, Any]]:
                 yield json.loads(line)
 
 
-def load_licencias() -> tuple[list[tuple], list[tuple], dict[str, int]]:
+def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, tuple], dict[str, int]]:
     inmuebles: dict[str, dict[str, Any]] = {}
     actuaciones_by_key: dict[str, tuple] = {}
     stats = {"rows": 0, "skipped": 0, "with_coords": 0}
 
     for row in iter_licencias_rows():
+        anio = row.get("anio_dataset") or row.get("anioDataset")
+        try:
+            anio_i = int(anio) if anio is not None else None
+        except (TypeError, ValueError):
+            anio_i = None
+        if years is not None and anio_i not in years:
+            continue
         ndp_raw = row.get("ndp_edificio") or row.get("ndpEdificio")
         if ndp_raw is None or ndp_raw == "":
             stats["skipped"] += 1
@@ -306,12 +313,6 @@ def load_licencias() -> tuple[list[tuple], list[tuple], dict[str, int]]:
                 "coord_source": coord_src or current.get("coord_source"),
             }
 
-        anio = row.get("anio_dataset") or row.get("anioDataset")
-        try:
-            anio_i = int(anio) if anio is not None else None
-        except (TypeError, ValueError):
-            anio_i = None
-
         stats["rows"] += 1
         key = licencia_key(row, anio=anio_i)
         actuaciones_by_key[key] = (
@@ -331,9 +332,145 @@ def load_licencias() -> tuple[list[tuple], list[tuple], dict[str, int]]:
             Json(row),
         )
 
+    stats["inmuebles"] = len(inmuebles)
+    stats["actuaciones"] = len(actuaciones_by_key)
+    stats["duplicated_licencia_keys"] = stats["rows"] - len(actuaciones_by_key)
+    if years is not None:
+        stats["years"] = sorted(years)
+    return inmuebles, actuaciones_by_key, stats
+
+
+INMUEBLE_UPSERT = (
+    "(ndp_edificio) DO UPDATE SET "
+    "direccion = COALESCE(EXCLUDED.direccion, {s}.inmueble.direccion), "
+    "distrito = COALESCE(EXCLUDED.distrito, {s}.inmueble.distrito), "
+    "barrio = COALESCE(EXCLUDED.barrio, {s}.inmueble.barrio), "
+    "lat = COALESCE(EXCLUDED.lat, {s}.inmueble.lat), "
+    "lng = COALESCE(EXCLUDED.lng, {s}.inmueble.lng), "
+    "coord_source = COALESCE(EXCLUDED.coord_source, {s}.inmueble.coord_source), "
+    "updated_at = EXCLUDED.updated_at"
+).format(s=SCHEMA)
+
+ACTUACION_UPSERT = (
+    "(licencia_key) DO UPDATE SET "
+    "inmueble_id = EXCLUDED.inmueble_id, "
+    "anio_dataset = EXCLUDED.anio_dataset, "
+    "fecha_alta = EXCLUDED.fecha_alta, "
+    "fecha_concesion = EXCLUDED.fecha_concesion, "
+    "procedimiento = EXCLUDED.procedimiento, "
+    "tipo_expediente = EXCLUDED.tipo_expediente, "
+    "uso = EXCLUDED.uso, "
+    "interesado = EXCLUDED.interesado, "
+    "objeto = EXCLUDED.objeto, "
+    "unidad = EXCLUDED.unidad, "
+    "lat = EXCLUDED.lat, "
+    "lng = EXCLUDED.lng, "
+    "raw_json = EXCLUDED.raw_json"
+)
+
+
+def sync_licencias_incremental(cur, years: set[int]) -> dict[str, int]:
+    inmuebles, actuaciones_by_key, stats = collect_licencias(years=years)
+    now = datetime.now(UTC).isoformat()
+
+    inmueble_rows = [
+        (
+            ndp,
+            rec.get("direccion"),
+            rec.get("distrito"),
+            rec.get("barrio"),
+            rec.get("lat"),
+            rec.get("lng"),
+            rec.get("coord_source"),
+            now,
+            now,
+        )
+        for ndp, rec in sorted(inmuebles.items())
+    ]
+    insert_values(
+        cur,
+        "inmueble",
+        ["ndp_edificio", "direccion", "distrito", "barrio", "lat", "lng", "coord_source", "inserted_at", "updated_at"],
+        inmueble_rows,
+        conflict=INMUEBLE_UPSERT,
+    )
+
+    ndps = list(inmuebles.keys())
+    id_by_ndp: dict[str, int] = {}
+    if ndps:
+        cur.execute(f"SELECT id, ndp_edificio FROM {SCHEMA}.inmueble WHERE ndp_edificio = ANY(%s)", (ndps,))
+        id_by_ndp = {str(row[1]): int(row[0]) for row in cur.fetchall()}
+
+    actuacion_rows = [
+        (
+            key,
+            id_by_ndp[ndp],
+            anio,
+            fecha_alta,
+            fecha_concesion,
+            procedimiento,
+            tipo_expediente,
+            uso,
+            interesado,
+            objeto,
+            unidad,
+            lat,
+            lng,
+            raw,
+            now,
+        )
+        for key, (
+            key,
+            ndp,
+            anio,
+            fecha_alta,
+            fecha_concesion,
+            procedimiento,
+            tipo_expediente,
+            uso,
+            interesado,
+            objeto,
+            unidad,
+            lat,
+            lng,
+            raw,
+        ) in actuaciones_by_key.items()
+        if ndp in id_by_ndp
+    ]
+    insert_values(
+        cur,
+        "actuacion_edificacion",
+        [
+            "licencia_key",
+            "inmueble_id",
+            "anio_dataset",
+            "fecha_alta",
+            "fecha_concesion",
+            "procedimiento",
+            "tipo_expediente",
+            "uso",
+            "interesado",
+            "objeto",
+            "unidad",
+            "lat",
+            "lng",
+            "raw_json",
+            "inserted_at",
+        ],
+        actuacion_rows,
+        conflict=ACTUACION_UPSERT,
+    )
+    stats["mode"] = "incremental"
+    stats["links"] = 0
+    return stats
+
+
+def sync_licencias_full(cur) -> dict[str, int]:
+    inmuebles, actuaciones_by_key, stats = collect_licencias()
+    now = datetime.now(UTC).isoformat()
+
     inmueble_rows: list[tuple] = []
     inmueble_id_by_ndp: dict[str, int] = {}
-    now = datetime.now(UTC).isoformat()
     for idx, (ndp, rec) in enumerate(sorted(inmuebles.items()), start=1):
         inmueble_id_by_ndp[ndp] = idx
         inmueble_rows.append(
@@ -389,14 +526,6 @@ def load_licencias() -> tuple[list[tuple], list[tuple], dict[str, int]]:
         if ndp in inmueble_id_by_ndp
     ]
 
-    stats["inmuebles"] = len(inmueble_rows)
-    stats["duplicated_licencia_keys"] = stats["rows"] - len(actuaciones_by_key)
-    return inmueble_rows, actuacion_rows, stats
-
-
-def sync_licencias(cur) -> dict[str, int]:
-    inmueble_rows, actuacion_rows, stats = load_licencias()
-
     cur.execute(f"TRUNCATE TABLE {SCHEMA}.link_licencia_sigma, {SCHEMA}.actuacion_edificacion, {SCHEMA}.inmueble RESTART IDENTITY CASCADE")
 
     insert_values(
@@ -435,6 +564,7 @@ def sync_licencias(cur) -> dict[str, int]:
         )
     stats["actuaciones"] = len(actuacion_rows)
     stats["links"] = 0
+    stats["mode"] = "full"
     return stats
 
 
@@ -453,10 +583,34 @@ def summarize(cur) -> dict[str, int | None]:
     return out
 
 
+def parse_years(raw: str) -> set[int]:
+    years: set[int] = set()
+    for part in raw.split(","):
+        part = part.strip()
+        if part:
+            years.add(int(part))
+    if not years:
+        raise SystemExit("--licencias-years requiere al menos un año")
+    return years
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Sync Madrid public datasets directly to Supabase.")
     ap.add_argument("--skip-licencias", action="store_true", help="Only sync SIGMA catalog/geometries.")
+    ap.add_argument(
+        "--licencias-years",
+        type=str,
+        default="",
+        help="Upsert incremental de licencias para estos años (coma-separados).",
+    )
+    ap.add_argument(
+        "--licencias-full",
+        action="store_true",
+        help="Recarga completa de licencias desde JSONL (TRUNCATE inmueble/actuacion).",
+    )
     args = ap.parse_args()
+    if args.skip_licencias and (args.licencias_years.strip() or args.licencias_full):
+        raise SystemExit("No combines --skip-licencias con opciones de licencias.")
 
     with psycopg2.connect(pg_url()) as con:
         with con.cursor() as cur:
@@ -464,8 +618,12 @@ def main() -> None:
             out["source"] = sync_sources(cur)
             out["sigma_catalog"] = sync_sigma_catalog(cur)
             out["sigma_ambito_geom"] = sync_sigma_ambitos(cur)
-            if not args.skip_licencias:
-                out["licencias"] = sync_licencias(cur)
+            if args.licencias_full:
+                out["licencias"] = sync_licencias_full(cur)
+            elif args.licencias_years.strip():
+                out["licencias"] = sync_licencias_incremental(cur, parse_years(args.licencias_years))
+            elif not args.skip_licencias:
+                out["licencias"] = sync_licencias_full(cur)
             out["counts"] = summarize(cur)
             cur.execute(f"ANALYZE {SCHEMA}.sigma_catalog_expediente")
             cur.execute(f"ANALYZE {SCHEMA}.sigma_ambito_geom")
