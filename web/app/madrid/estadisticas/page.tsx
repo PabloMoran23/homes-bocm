@@ -3,6 +3,9 @@ import Link from "next/link";
 import { MadridDashboard } from "@/components/madrid/dashboard/MadridDashboard";
 import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
 
+/** Evita HTML estático vacío si el JSON no existía en un build anterior. */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Estadísticas Madrid · Licencias y planeamiento",
   description:
