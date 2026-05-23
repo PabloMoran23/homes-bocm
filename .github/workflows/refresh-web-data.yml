@@ -158,12 +158,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No web data changes to commit."
           else
-            git commit -m "$(cat <<'EOF'
-Refresh web data
-
-Regenera artefactos public/data (incl. madrid-dashboard-stats.json para /madrid/estadisticas).
-EOF
-)"
+            git commit -m "Refresh web data (incl. madrid-dashboard-stats.json)"
             git push
           fi
 
