@@ -1,3 +1,5 @@
+import type { ActuacionEdificioInput } from "@/lib/actuacion-edificio";
+
 export type UbicacionMapProperties = {
   ndp: string;
   direccion: string | null;
@@ -7,6 +9,12 @@ export type UbicacionMapProperties = {
   sigma: number;
   /** Tipo de la licencia más reciente en el edificio (open data Ayto.). */
   ultimaLicenciaTipo?: string | null;
+  ultimaLicenciaObjeto?: string | null;
+  ultimaLicenciaUso?: string | null;
+  ultimaLicenciaProcedimiento?: string | null;
+  /** Código normalizado «qué se va a hacer» (ver actuacion-edificio). */
+  actuacionQue?: string | null;
+  actuacionQueLabel?: string | null;
   /** Fecha de la licencia más reciente (YYYY-MM-DD). */
   ultimaLicenciaFecha?: string | null;
 };
@@ -71,6 +79,15 @@ export type UbicacionFicha = {
     expedientesSigma: number;
   };
 };
+
+export function actuacionDesdeMapProps(p: UbicacionMapProperties): ActuacionEdificioInput {
+  return {
+    tipo_expediente: p.ultimaLicenciaTipo,
+    objeto: p.ultimaLicenciaObjeto,
+    uso: p.ultimaLicenciaUso,
+    procedimiento: p.ultimaLicenciaProcedimiento,
+  };
+}
 
 export function ubicacionPath(ndp: string) {
   return `/ubicacion/${encodeURIComponent(ndp)}`;

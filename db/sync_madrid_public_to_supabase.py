@@ -40,11 +40,15 @@ from geo_utils import (  # noqa: E402
     ring_centroid,
 )
 from migrate_sqlite import expediente_grupo_from_num, ms_to_iso_date, null_if_empty  # noqa: E402
+from sigma_classification import classify_sigma_project  # noqa: E402
+from visor_resumen import resumen_contenido_from_visor_ficha  # noqa: E402
 
 SCHEMA = "homes"
 BATCH = 5000
 JSONL_LIC = POC_ROOT / "output/madrid_licencias.jsonl"
 SIGMA_INDEX = POC_ROOT / "output/madrid_ayto_expedientes_index.json"
+VISOR_JSON = POC_ROOT / "output/madrid_viso_expedientes.json"
+SIGMA_METRICS = POC_ROOT / "output/madrid_sigma_expediente_metrics.json"
 GEOJSON_SOURCES = (
     POC_ROOT / "output/madrid_ayto_expedientes_ad.geojson",
     POC_ROOT / "output/madrid_ayto_expedientes_gestion.geojson",
@@ -167,6 +171,213 @@ def sync_sigma_catalog(cur) -> int:
           has_geometry = EXCLUDED.has_geometry,
           synced_at = EXCLUDED.synced_at,
           raw_features_json = EXCLUDED.raw_features_json""",
+    )
+
+
+def load_sigma_catalog_context() -> dict[str, dict[str, Any]]:
+    if not SIGMA_INDEX.is_file():
+        return {}
+    raw = json.loads(SIGMA_INDEX.read_text(encoding="utf-8"))
+    out: dict[str, dict[str, Any]] = {}
+    for item in raw.get("expedientes") or []:
+        grupo = expediente_grupo_from_num(str(item.get("EXP_TX_NUMERO") or ""))
+        if grupo:
+            out[grupo] = item
+    return out
+
+
+def load_sigma_area_context() -> dict[str, float]:
+    out: dict[str, float] = {}
+    for path in GEOJSON_SOURCES:
+        if not path.is_file():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for feat in data.get("features") or []:
+            props = feat.get("properties") or {}
+            grupo = expediente_grupo_from_num(str(props.get("EXP_TX_NUMERO") or ""))
+            geom = feat.get("geometry")
+            if not grupo or not geom:
+                continue
+            area = geom_area_approx_m2(geom)
+            if area and area > 0:
+                out[grupo] = area
+    return out
+
+
+def load_sigma_viviendas_context() -> dict[str, int]:
+    if not SIGMA_METRICS.is_file():
+        return {}
+    raw = json.loads(SIGMA_METRICS.read_text(encoding="utf-8"))
+    out: dict[str, int] = {}
+    for grupo, row in (raw.get("expedientes") or {}).items():
+        if not isinstance(row, dict):
+            continue
+        metrics = row.get("metrics") if isinstance(row.get("metrics"), dict) else row
+        n = metrics.get("num_viviendas_max")
+        try:
+            if n is not None and int(n) > 0:
+                out[grupo] = int(n)
+        except (TypeError, ValueError):
+            pass
+    return out
+
+
+def _json_array(value: Any, limit: int | None = None) -> Json:
+    rows = value if isinstance(value, list) else []
+    if limit is not None:
+        rows = rows[:limit]
+    return Json(rows)
+
+
+def _json_object(value: Any) -> Json | None:
+    return Json(value) if isinstance(value, dict) else None
+
+
+def _nti_docs(rec: dict[str, Any]) -> list[dict[str, Any]]:
+    nti = rec.get("ntiArbol") if isinstance(rec.get("ntiArbol"), dict) else None
+    if not nti:
+        return []
+    docs = nti.get("documentos")
+    if isinstance(docs, list) and docs:
+        return [d for d in docs if isinstance(d, dict)]
+    sample = nti.get("documentosMuestra")
+    if isinstance(sample, list):
+        return [d for d in sample if isinstance(d, dict)]
+    return []
+
+
+def load_sigma_visor() -> tuple[list[tuple], list[tuple]]:
+    if not VISOR_JSON.is_file():
+        return [], []
+    raw = json.loads(VISOR_JSON.read_text(encoding="utf-8"))
+    generated_at = raw.get("generatedAt") or datetime.now(UTC).isoformat()
+    catalog_by_grupo = load_sigma_catalog_context()
+    area_by_grupo = load_sigma_area_context()
+    viviendas_by_grupo = load_sigma_viviendas_context()
+    rows: list[tuple] = []
+    stubs: dict[str, tuple] = {}
+    for grupo, rec_raw in (raw.get("byGrupoExpediente") or {}).items():
+        if not grupo or not isinstance(rec_raw, dict):
+            continue
+        rec = dict(rec_raw)
+        visor_ficha = rec.get("visorFicha") if isinstance(rec.get("visorFicha"), dict) else None
+        visor_url = null_if_empty(str(rec.get("visorUrlUsada") or ""))
+        layer_kind = null_if_empty(str(rec.get("sigmaLayerKind") or ""))
+        resumen_contenido = resumen_contenido_from_visor_ficha(visor_ficha)
+        catalog = catalog_by_grupo.get(grupo) or {}
+        classification = classify_sigma_project(
+            visor_ficha=visor_ficha,
+            resumen_contenido=resumen_contenido,
+            sigma_layer_kind=layer_kind or catalog.get("sigma_layer_kind") or catalog.get("source"),
+            catalog=catalog,
+            area_approx_m2=area_by_grupo.get(grupo),
+            num_viviendas_max=viviendas_by_grupo.get(grupo),
+        )
+        nti_docs = _nti_docs(rec)
+        nti_total = None
+        nti = rec.get("ntiArbol") if isinstance(rec.get("ntiArbol"), dict) else None
+        if isinstance(rec.get("ntiDocumentosTotal"), int):
+            nti_total = rec.get("ntiDocumentosTotal")
+        elif nti and isinstance(nti.get("documentosTotal"), int):
+            nti_total = nti.get("documentosTotal")
+
+        stubs[grupo] = (
+            grupo,
+            grupo,
+            layer_kind,
+            visor_url,
+            generated_at,
+        )
+        rows.append(
+            (
+                grupo,
+                bool(rec.get("sinDatosVisor")),
+                visor_url,
+                _json_object(rec.get("visorCabecera")),
+                _json_object(visor_ficha),
+                resumen_contenido,
+                classification["tipo_legal"],
+                classification["escala"],
+                classification["contenido_principal"],
+                classification["fase_normalizada"],
+                classification["categoria_proyecto"],
+                classification["clasificacion_confianza"],
+                Json(classification["clasificacion_fuentes"]),
+                _json_array(rec.get("tramitacion")),
+                _json_array(rec.get("documentacionUrls")),
+                null_if_empty(str(rec.get("ntiListadoUrl") or "")),
+                nti_total,
+                Json(nti_docs[:80]),
+                generated_at,
+                Json(rec),
+                datetime.now(UTC).isoformat(),
+            )
+        )
+    return rows, list(stubs.values())
+
+
+def sync_sigma_visor(cur) -> int:
+    rows, stubs = load_sigma_visor()
+    if not rows:
+        return 0
+    insert_values(
+        cur,
+        "sigma_catalog_expediente",
+        ["expediente_grupo", "exp_numero_original", "sigma_layer_kind", "enlace", "synced_at"],
+        stubs,
+        conflict="""(expediente_grupo) DO UPDATE SET
+          sigma_layer_kind = COALESCE(homes.sigma_catalog_expediente.sigma_layer_kind, EXCLUDED.sigma_layer_kind),
+          enlace = COALESCE(homes.sigma_catalog_expediente.enlace, EXCLUDED.enlace),
+          synced_at = COALESCE(homes.sigma_catalog_expediente.synced_at, EXCLUDED.synced_at)""",
+    )
+    return insert_values(
+        cur,
+        "sigma_visor_expediente",
+        [
+            "expediente_grupo",
+            "sin_datos_visor",
+            "visor_url",
+            "visor_cabecera",
+            "visor_ficha",
+            "resumen_contenido",
+            "tipo_legal",
+            "escala",
+            "contenido_principal",
+            "fase_normalizada",
+            "categoria_proyecto",
+            "clasificacion_confianza",
+            "clasificacion_fuentes",
+            "tramitacion",
+            "documentacion_urls",
+            "nti_listado_url",
+            "nti_documentos_total",
+            "nti_documentos_muestra",
+            "fetched_at",
+            "raw_json",
+            "updated_at",
+        ],
+        rows,
+        conflict="""(expediente_grupo) DO UPDATE SET
+          sin_datos_visor = EXCLUDED.sin_datos_visor,
+          visor_url = EXCLUDED.visor_url,
+          visor_cabecera = EXCLUDED.visor_cabecera,
+          visor_ficha = EXCLUDED.visor_ficha,
+          resumen_contenido = EXCLUDED.resumen_contenido,
+          tipo_legal = EXCLUDED.tipo_legal,
+          escala = EXCLUDED.escala,
+          contenido_principal = EXCLUDED.contenido_principal,
+          fase_normalizada = EXCLUDED.fase_normalizada,
+          categoria_proyecto = EXCLUDED.categoria_proyecto,
+          clasificacion_confianza = EXCLUDED.clasificacion_confianza,
+          clasificacion_fuentes = EXCLUDED.clasificacion_fuentes,
+          tramitacion = EXCLUDED.tramitacion,
+          documentacion_urls = EXCLUDED.documentacion_urls,
+          nti_listado_url = EXCLUDED.nti_listado_url,
+          nti_documentos_total = EXCLUDED.nti_documentos_total,
+          nti_documentos_muestra = EXCLUDED.nti_documentos_muestra,
+          fetched_at = EXCLUDED.fetched_at,
+          raw_json = EXCLUDED.raw_json,
+          updated_at = EXCLUDED.updated_at""",
     )
 
 
@@ -571,6 +782,7 @@ def sync_licencias_full(cur) -> dict[str, int]:
 def summarize(cur) -> dict[str, int | None]:
     tables = [
         "sigma_catalog_expediente",
+        "sigma_visor_expediente",
         "sigma_ambito_geom",
         "inmueble",
         "actuacion_edificacion",
@@ -617,6 +829,7 @@ def main() -> None:
             out: dict[str, Any] = {}
             out["source"] = sync_sources(cur)
             out["sigma_catalog"] = sync_sigma_catalog(cur)
+            out["sigma_visor"] = sync_sigma_visor(cur)
             out["sigma_ambito_geom"] = sync_sigma_ambitos(cur)
             if args.licencias_full:
                 out["licencias"] = sync_licencias_full(cur)
@@ -626,6 +839,7 @@ def main() -> None:
                 out["licencias"] = sync_licencias_full(cur)
             out["counts"] = summarize(cur)
             cur.execute(f"ANALYZE {SCHEMA}.sigma_catalog_expediente")
+            cur.execute(f"ANALYZE {SCHEMA}.sigma_visor_expediente")
             cur.execute(f"ANALYZE {SCHEMA}.sigma_ambito_geom")
             if not args.skip_licencias:
                 cur.execute(f"ANALYZE {SCHEMA}.inmueble")

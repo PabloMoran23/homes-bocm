@@ -15,12 +15,12 @@ import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import {
-  clasificarLicenciaMapa,
+  clasificarLicenciaMapaDesdeActuacion,
   createLicenciaDivIcon,
   licenciaMapTooltipLabel,
 } from "@/lib/licencia-mapa";
 import { HOMES_MAP_ATTRIBUTION, HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
-import type { UbicacionMapProperties } from "@/lib/ubicacion";
+import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
 
 type LeafletWithCluster = typeof L & {
   markerClusterGroup: (options?: object) => L.LayerGroup;
@@ -67,14 +67,14 @@ function MarkerClusterLayer({
       pointToLayer(feature, latlng) {
         const p = feature.properties as UbicacionMapProperties;
         const isHi = Boolean(highlightNdp && p.ndp === highlightNdp);
-        const cat = clasificarLicenciaMapa(p.ultimaLicenciaTipo);
+        const cat = clasificarLicenciaMapaDesdeActuacion(actuacionDesdeMapProps(p));
         return L.marker(latlng, {
           icon: createLicenciaDivIcon(cat, isHi),
         });
       },
       onEachFeature(feature, layer) {
         const p = feature.properties as UbicacionMapProperties;
-        const label = licenciaMapTooltipLabel(p.ultimaLicenciaTipo, p.direccion);
+        const label = licenciaMapTooltipLabel(actuacionDesdeMapProps(p), p.direccion);
         const extra = [p.distrito, p.licencias ? `${p.licencias} lic.` : null]
           .filter(Boolean)
           .join(" · ");
@@ -101,7 +101,7 @@ function MarkerClusterLayer({
         const p = feat?.properties;
         if (!p) return;
         const isHi = p.ndp === highlightNdp;
-        const cat = clasificarLicenciaMapa(p.ultimaLicenciaTipo);
+        const cat = clasificarLicenciaMapaDesdeActuacion(actuacionDesdeMapProps(p));
         layer.setIcon(createLicenciaDivIcon(cat, isHi));
         return;
       }

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SigmaExpedienteDetailView } from "@/components/SigmaExpedienteDetailView";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
+import { normalizeResumenContenido } from "@/lib/normalize-resumen-contenido";
 import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
 import { sigmaFaseShortLabel } from "@/lib/sigma-user-labels";
 
@@ -27,10 +28,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
   return {
     title: title.length > 72 ? `${title.slice(0, 69)}…` : title,
-    description: [
-      "Proyecto urbanístico en Madrid",
-      sigmaFaseShortLabel(ficha.catalog?.FAS_TX_DENOM),
-    ].filter(Boolean).join(" · "),
+    description: (() => {
+      const resumen = normalizeResumenContenido(ficha.resumenContenido);
+      if (resumen) {
+        return resumen.length > 160 ? `${resumen.slice(0, 157).trim()}…` : resumen;
+      }
+      return ["Proyecto urbanístico en Madrid", sigmaFaseShortLabel(ficha.catalog?.FAS_TX_DENOM)]
+        .filter(Boolean)
+        .join(" · ");
+    })(),
   };
 }
 

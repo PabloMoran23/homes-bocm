@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 
 import { normSearch } from "@/lib/madrid";
 import { sigmaPassesPortalLink } from "@/lib/madrid-sigma-filters";
@@ -23,13 +23,23 @@ import type { SigmaBocmPopupLink, SectorFeatureCollection } from "@/lib/sector-g
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
 import { ubicacionPath } from "@/lib/ubicacion";
 import type { MadridSigmaDataset } from "@/lib/types";
-import { LICENCIA_MAPA_CONFIG } from "@/lib/licencia-mapa-config";
-import type { LicenciaMapaCategoria } from "@/lib/licencia-tipos";
+import type { ActuacionQueCodigo } from "@/lib/actuacion-edificio";
+import { getActuacionQueMapStyle } from "@/lib/actuacion-que-config";
 import {
-  allLicenciaTiposEnabled,
-  LICENCIA_TIPOS_FILTRABLES,
-  passesLicenciaTipoFilter,
+  ACTUACION_QUE_FILTRABLES,
+  allActuacionQueEnabled,
+  passesActuacionQueFilter,
 } from "@/lib/map-licencia-filters";
+import { SigmaClassificationFilterPanel } from "@/components/sigma/SigmaClassificationFilterPanel";
+import {
+  allSigmaClassificationEnabled,
+  buildSigmaClassificationAllowedSet,
+  buildSigmaClassificationAxisMeta,
+  isSigmaClassificationFilterActive,
+  type MadridSigmaClasificacionFile,
+  sigmaExpedienteKeyFromFeatureProps,
+  type SigmaClassificationFilters,
+} from "@/lib/sigma-classification-filters";
 import {
   filterUbicacionesMadridCapital,
   type UbicacionesMapGeoJson,
@@ -159,6 +169,12 @@ export function ExploreMadridApp() {
   const [geoCache, setGeoCache] = useState<Partial<Record<SigmaMapMode, SectorFeatureCollection>>>({});
   const [bocmByExp, setBocmByExp] = useState<Record<string, SigmaBocmPopupLink[]> | null>(null);
   const [metricsBundle, setMetricsBundle] = useState<MadridSigmaMetricsFile | null>(null);
+  const [clasificacionIndex, setClasificacionIndex] = useState<
+    MadridSigmaClasificacionFile["byExpediente"] | null
+  >(null);
+  const [clasificacionFilters, setClasificacionFilters] = useState<SigmaClassificationFilters | null>(
+    null,
+  );
   const [err, setErr] = useState<string | null>(null);
   const [panelOpen, setPanelOpen] = useState(false);
 
@@ -188,17 +204,40 @@ export function ExploreMadridApp() {
     [dateFrom, dateTo],
   );
   const dateFilterActive = Boolean(dateFrom || dateTo);
-  const [licenciaTiposEnabled, setLicenciaTiposEnabled] = useState<Set<LicenciaMapaCategoria>>(
-    () => allLicenciaTiposEnabled(),
+  const [actuacionQueEnabled, setActuacionQueEnabled] = useState<Set<ActuacionQueCodigo>>(
+    () => allActuacionQueEnabled(),
   );
-  const licenciaTipoFilterActive =
-    licenciaTiposEnabled.size < LICENCIA_TIPOS_FILTRABLES.length;
+  const actuacionQueFilterActive =
+    actuacionQueEnabled.size < ACTUACION_QUE_FILTRABLES.length;
+  const clasificacionAxisMeta = useMemo(
+    () => (clasificacionIndex ? buildSigmaClassificationAxisMeta(clasificacionIndex) : null),
+    [clasificacionIndex],
+  );
+  const clasificacionFilterActive = useMemo(
+    () =>
+      clasificacionAxisMeta && clasificacionFilters
+        ? isSigmaClassificationFilterActive(clasificacionFilters, clasificacionAxisMeta.totals)
+        : false,
+    [clasificacionFilters, clasificacionAxisMeta],
+  );
+  const deferredClasificacionFilters = useDeferredValue(clasificacionFilters);
+  const clasificacionMapPending =
+    clasificacionFilters !== deferredClasificacionFilters && clasificacionFilterActive;
 
-  const toggleLicenciaTipo = useCallback((cat: LicenciaMapaCategoria) => {
-    setLicenciaTiposEnabled((prev) => {
+  const clasificacionAllowedSet = useMemo(() => {
+    if (!clasificacionIndex || !deferredClasificacionFilters || !clasificacionAxisMeta) return null;
+    return buildSigmaClassificationAllowedSet(
+      clasificacionIndex,
+      deferredClasificacionFilters,
+      clasificacionAxisMeta.totals,
+    );
+  }, [clasificacionIndex, deferredClasificacionFilters, clasificacionAxisMeta]);
+
+  const toggleActuacionQue = useCallback((codigo: ActuacionQueCodigo) => {
+    setActuacionQueEnabled((prev) => {
       const next = new Set(prev);
-      if (next.has(cat)) next.delete(cat);
-      else next.add(cat);
+      if (next.has(codigo)) next.delete(codigo);
+      else next.add(codigo);
       return next;
     });
   }, []);
@@ -256,14 +295,16 @@ export function ExploreMadridApp() {
     };
   }, [showSigma, ambitosGeo]);
 
-  /** Popups SIGMA: BOCM + métricas solo si hace falta. */
+  /** Popups SIGMA: BOCM + métricas + clasificación solo si hace falta. */
   useEffect(() => {
-    if (!showSigma || (bocmByExp && metricsBundle)) return;
+    if (!showSigma) return;
+    if (bocmByExp && metricsBundle && clasificacionIndex) return;
     let cancelled = false;
     (async () => {
-      const [bocmRes, mb] = await Promise.all([
+      const [bocmRes, mb, clRes] = await Promise.all([
         bocmByExp ? Promise.resolve(null) : fetch("/data/madrid-sigma-bocm-projects.json"),
         metricsBundle ? Promise.resolve(null) : loadSigmaMetricsBundle(),
+        clasificacionIndex ? Promise.resolve(null) : fetch("/data/madrid-sigma-clasificacion.json"),
       ]);
       if (!cancelled) {
         if (bocmRes?.ok) {
@@ -271,12 +312,21 @@ export function ExploreMadridApp() {
           if (j.byExpediente) setBocmByExp(j.byExpediente);
         }
         if (mb) setMetricsBundle(mb);
+        if (clRes?.ok) {
+          const j = (await clRes.json()) as MadridSigmaClasificacionFile;
+          const byExp = j.byExpediente;
+          if (byExp) {
+            const meta = buildSigmaClassificationAxisMeta(byExp);
+            setClasificacionIndex(byExp);
+            setClasificacionFilters((prev) => prev ?? allSigmaClassificationEnabled(meta));
+          }
+        }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [showSigma, bocmByExp, metricsBundle]);
+  }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex]);
 
   useEffect(() => {
     if (mapMode === "ambitos" || mapMode === "ip" || geoCache[mapMode]) return;
@@ -326,10 +376,8 @@ export function ExploreMadridApp() {
         passesMapDateRange(ubicacionActivityMs(f.properties), dateRange),
       );
     }
-    if (showUbicaciones && licenciaTipoFilterActive) {
-      feats = feats.filter((f) =>
-        passesLicenciaTipoFilter(f.properties.ultimaLicenciaTipo, licenciaTiposEnabled),
-      );
+    if (showUbicaciones && actuacionQueFilterActive) {
+      feats = feats.filter((f) => passesActuacionQueFilter(f.properties, actuacionQueEnabled));
     }
     feats = filterPointFeaturesInView(feats, mapBounds);
     return { ...ubicGeo, features: feats };
@@ -341,8 +389,8 @@ export function ExploreMadridApp() {
     dateFilterActive,
     dateRange,
     showUbicaciones,
-    licenciaTipoFilterActive,
-    licenciaTiposEnabled,
+    actuacionQueFilterActive,
+    actuacionQueEnabled,
   ]);
 
   const polygonGeo =
@@ -379,6 +427,12 @@ export function ExploreMadridApp() {
         ),
       );
     }
+    if (clasificacionAllowedSet) {
+      feats = feats.filter((f) => {
+        const key = sigmaExpedienteKeyFromFeatureProps((f.properties || {}) as Record<string, unknown>);
+        return Boolean(key && clasificacionAllowedSet.has(key));
+      });
+    }
     if (!feats.length) return { type: "FeatureCollection" as const, features: [] };
     if (!showHugeSigmaPolygons) {
       const { visible } = filterSigmaMapFeaturesByBBox(
@@ -398,6 +452,7 @@ export function ExploreMadridApp() {
     dateRange,
     showHugeSigmaPolygons,
     mapBounds,
+    clasificacionAllowedSet,
   ]);
 
   const mapStatsHint = useMemo(() => {
@@ -411,7 +466,9 @@ export function ExploreMadridApp() {
     if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
     if (dateFilterActive) parts.push("filtro de fecha activo");
-    if (showUbicaciones && licenciaTipoFilterActive) parts.push("filtro por tipo de licencia");
+    if (showUbicaciones && actuacionQueFilterActive) parts.push("filtro por actuación");
+    if (showSigma && clasificacionFilterActive) parts.push("filtro por clasificación");
+    if (clasificacionMapPending) parts.push("actualizando mapa…");
     return parts.length ? parts.join(" · ") : "Sin datos en esta zona";
   }, [
     showUbicaciones,
@@ -421,7 +478,9 @@ export function ExploreMadridApp() {
     mapBounds,
     dataReady.ubic,
     dateFilterActive,
-    licenciaTipoFilterActive,
+    actuacionQueFilterActive,
+    clasificacionFilterActive,
+    clasificacionMapPending,
   ]);
 
   const onBoundsChange = useCallback((b: MapBounds) => {
@@ -590,41 +649,42 @@ export function ExploreMadridApp() {
           {showUbicaciones ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">
               <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Tipo de licencia
+                Qué se va a hacer
               </legend>
               <p className="text-xs leading-relaxed text-slate-500">
-                Según la licencia más reciente de cada edificio. Desmarca las que no quieras ver.
+                Según la última licencia del edificio (objeto, uso, tipo y procedimiento). Desmarca
+                las que no quieras ver.
               </p>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
-                  onClick={() => setLicenciaTiposEnabled(allLicenciaTiposEnabled())}
+                  onClick={() => setActuacionQueEnabled(allActuacionQueEnabled())}
                   className="text-xs font-medium text-[var(--portal-accent)] hover:underline"
                 >
                   Todas
                 </button>
                 <button
                   type="button"
-                  onClick={() => setLicenciaTiposEnabled(new Set())}
+                  onClick={() => setActuacionQueEnabled(new Set())}
                   className="text-xs font-medium text-slate-500 hover:underline"
                 >
                   Ninguna
                 </button>
               </div>
-              <div className="max-h-44 space-y-1.5 overflow-y-auto pr-1">
-                {LICENCIA_TIPOS_FILTRABLES.map((cat) => {
-                  const cfg = LICENCIA_MAPA_CONFIG[cat];
-                  const on = licenciaTiposEnabled.has(cat);
+              <div className="max-h-52 space-y-1.5 overflow-y-auto pr-1">
+                {ACTUACION_QUE_FILTRABLES.map((codigo) => {
+                  const cfg = getActuacionQueMapStyle(codigo);
+                  const on = actuacionQueEnabled.has(codigo);
                   return (
                     <label
-                      key={cat}
+                      key={codigo}
                       className="flex cursor-pointer items-center gap-2 text-xs text-slate-700"
                     >
                       <input
                         type="checkbox"
                         className="accent-[var(--portal-accent)]"
                         checked={on}
-                        onChange={() => toggleLicenciaTipo(cat)}
+                        onChange={() => toggleActuacionQue(codigo)}
                       />
                       <span
                         className="h-2.5 w-2.5 shrink-0 rounded-full ring-1 ring-white"
@@ -682,32 +742,46 @@ export function ExploreMadridApp() {
           </fieldset>
 
           {showSigma ? (
-            <fieldset className="space-y-2 border-t border-slate-100 pt-3">
-              <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Proyectos
-              </legend>
-              <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 accent-[var(--portal-accent)]"
-                  checked={sigmaMapOnlyWithPortal}
-                  onChange={(e) => setSigmaMapOnlyWithPortal(e.target.checked)}
+            <>
+              <fieldset className="space-y-2 border-t border-slate-100 pt-3">
+                <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                  Proyectos
+                </legend>
+                <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 accent-[var(--portal-accent)]"
+                    checked={sigmaMapOnlyWithPortal}
+                    onChange={(e) => setSigmaMapOnlyWithPortal(e.target.checked)}
+                  />
+                  Solo con anuncio BOCM
+                </label>
+                <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 accent-[var(--portal-accent)]"
+                    checked={showHugeSigmaPolygons}
+                    onChange={(e) => setShowHugeSigmaPolygons(e.target.checked)}
+                  />
+                  Polígonos muy extensos
+                </label>
+                {layerLoading ? (
+                  <p className="text-xs text-slate-400">Cargando capa…</p>
+                ) : null}
+              </fieldset>
+
+              {clasificacionAxisMeta && clasificacionFilters ? (
+                <SigmaClassificationFilterPanel
+                  meta={clasificacionAxisMeta}
+                  filters={clasificacionFilters}
+                  onChange={setClasificacionFilters}
                 />
-                Solo con anuncio BOCM
-              </label>
-              <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
-                <input
-                  type="checkbox"
-                  className="mt-0.5 accent-[var(--portal-accent)]"
-                  checked={showHugeSigmaPolygons}
-                  onChange={(e) => setShowHugeSigmaPolygons(e.target.checked)}
-                />
-                Polígonos muy extensos
-              </label>
-              {layerLoading ? (
-                <p className="text-xs text-slate-400">Cargando capa…</p>
+              ) : layerLoading ? (
+                <p className="border-t border-slate-100 pt-3 text-xs text-slate-400">
+                  Cargando clasificación…
+                </p>
               ) : null}
-            </fieldset>
+            </>
           ) : null}
         </div>
 

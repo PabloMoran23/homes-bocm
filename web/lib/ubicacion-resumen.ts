@@ -48,6 +48,7 @@ export function faseEnLenguajeClaro(fase: string | null): string {
   return "En tramitación";
 }
 
+import { normalizarActuacionEdificio } from "@/lib/actuacion-edificio";
 import {
   licenciaNotaDesdeTipo,
   licenciaTituloDesdeTipo,
@@ -67,7 +68,7 @@ export {
 } from "@/lib/licencia-tipos";
 
 export function licenciaResumenCorto(lic: UbicacionLicencia): string {
-  return licenciaTituloDesdeTipo(lic.tipo_expediente);
+  return normalizarActuacionEdificio(lic).etiqueta;
 }
 
 function procedimientoEnLenguajeClaro(raw: string | null | undefined): string | null {
@@ -87,9 +88,10 @@ function procedimientoEnLenguajeClaro(raw: string | null | undefined): string | 
 }
 
 export function licenciaDetalleCorto(lic: UbicacionLicencia): string {
-  return [lic.uso, procedimientoEnLenguajeClaro(lic.procedimiento)]
-    .filter(Boolean)
-    .join(" · ") || "Obra o actuación autorizada";
+  const norm = normalizarActuacionEdificio(lic);
+  if (norm.detalle) return norm.detalle;
+  const proc = procedimientoEnLenguajeClaro(lic.procedimiento);
+  return [lic.uso, proc].filter(Boolean).join(" · ") || "Obra o actuación autorizada";
 }
 
 export function parseFechaEs(raw: string | null): Date | null {

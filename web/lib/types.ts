@@ -246,6 +246,9 @@ export type SigmaFicha = {
   visorUrl: string | null;
   visorCabecera: { h1: string | null; h2: string | null } | null;
   visorFicha: SigmaVisorFicha | null;
+  /** Objeto del plan, normalizado desde visor HTML. */
+  resumenContenido: string | null;
+  clasificacion: import("@/lib/sigma-classification").SigmaClassification | null;
   tramitacion: SigmaVisorTramite[];
   documentacionUrls: string[];
   ntiListadoUrl: string | null;
@@ -306,6 +309,9 @@ export type MadridLicenciasIndex = {
   byYearUso?: Record<string, { name: string; count: number }[]>;
   byYearMapaTipo?: MadridDashboardMapaYear[];
   topMapaTipo?: MadridDashboardMapaTipo[];
+  byYearActuacionQue?: MadridDashboardMapaYear[];
+  topActuacionQue?: MadridDashboardMapaTipo[];
+  seriesByMonthActuacionQue?: MadridDashboardMapaMonth[];
 };
 
 export type MadridDashboardMapaTipo = {
@@ -358,9 +364,12 @@ export type MadridDashboardStats = {
     months?: string[];
     seriesByYear: { year: number; total: number; uso: MadridDashboardCount[] }[];
     seriesByMonth?: MadridDashboardMonthPoint[];
-    seriesByYearMapaTipo: MadridDashboardMapaYear[];
+    seriesByYearMapaTipo?: MadridDashboardMapaYear[];
     seriesByMonthMapaTipo?: MadridDashboardMapaMonth[];
-    topMapaTipo: MadridDashboardMapaTipo[];
+    topMapaTipo?: MadridDashboardMapaTipo[];
+    seriesByYearActuacionQue?: MadridDashboardMapaYear[];
+    seriesByMonthActuacionQue?: MadridDashboardMapaMonth[];
+    topActuacionQue?: MadridDashboardMapaTipo[];
     topUso: MadridDashboardCount[];
     topDistrito: MadridDashboardCount[];
     topDistritoMap?: MadridDashboardDistritoPoint[];

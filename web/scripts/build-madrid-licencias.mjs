@@ -5,11 +5,11 @@ import { createReadStream, existsSync, mkdirSync, writeFileSync } from "node:fs"
 import { createInterface } from "node:readline";
 import { join } from "node:path";
 import proj4 from "proj4";
+import { normalizarActuacionEdificio } from "./lib/actuacion-edificio.mjs";
 import {
-  clasificarLicenciaMapa,
-  labelMapaCategoria,
-  LICENCIA_MAPA_LEYENDA,
-} from "./lib/licencia-mapa-categoria.mjs";
+  ACTUACION_QUE_LEYENDA,
+  labelActuacionQue,
+} from "./lib/actuacion-que-config.mjs";
 
 const UTM30 =
   "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
@@ -150,16 +150,16 @@ export async function buildMadridLicenciasWeb(opts) {
   const byDistrito = new Map();
   const byProcedimiento = new Map();
   const byTipoExpediente = new Map();
-  const byMapaCategoria = new Map();
+  const byActuacionQue = new Map();
   /** @type {Map<string, { count: number; latSum: number; lngSum: number; n: number }>} */
   const distritoGeo = new Map();
   /** @type {Map<number, Map<string, number>>} */
   const yearUsoMaps = new Map();
   /** @type {Map<number, Map<string, number>>} */
-  const yearMapaMaps = new Map();
+  const yearActuacionMaps = new Map();
   const byMonth = new Map();
   /** @type {Map<string, Map<string, number>>} */
-  const monthMapaMaps = new Map();
+  const monthActuacionMaps = new Map();
   let total = 0;
   let withCoords = 0;
 
@@ -214,20 +214,26 @@ export async function buildMadridLicenciasWeb(opts) {
       const ym = yearUsoMaps.get(year);
       ym.set(uso, (ym.get(uso) || 0) + 1);
     }
-    const mapaCat = clasificarLicenciaMapa(compact.tipoExpediente);
-    byMapaCategoria.set(mapaCat, (byMapaCategoria.get(mapaCat) || 0) + 1);
+    const actuacionNorm = normalizarActuacionEdificio({
+      tipo_expediente: compact.tipoExpediente,
+      objeto: compact.objeto,
+      uso: compact.uso,
+      procedimiento: compact.procedimiento,
+    });
+    const actuacionCodigo = actuacionNorm.codigo;
+    byActuacionQue.set(actuacionCodigo, (byActuacionQue.get(actuacionCodigo) || 0) + 1);
     if (year > 0) {
-      if (!yearMapaMaps.has(year)) yearMapaMaps.set(year, new Map());
-      const ym = yearMapaMaps.get(year);
-      ym.set(mapaCat, (ym.get(mapaCat) || 0) + 1);
+      if (!yearActuacionMaps.has(year)) yearActuacionMaps.set(year, new Map());
+      const ym = yearActuacionMaps.get(year);
+      ym.set(actuacionCodigo, (ym.get(actuacionCodigo) || 0) + 1);
     }
 
     const monthKey = parseMonthKey(row.fecha_concesin, row.fecha_de_alta);
     if (monthKey) {
       byMonth.set(monthKey, (byMonth.get(monthKey) || 0) + 1);
-      if (!monthMapaMaps.has(monthKey)) monthMapaMaps.set(monthKey, new Map());
-      const mm = monthMapaMaps.get(monthKey);
-      mm.set(mapaCat, (mm.get(mapaCat) || 0) + 1);
+      if (!monthActuacionMaps.has(monthKey)) monthActuacionMaps.set(monthKey, new Map());
+      const mm = monthActuacionMaps.get(monthKey);
+      mm.set(actuacionCodigo, (mm.get(actuacionCodigo) || 0) + 1);
     }
 
     if (coords) {
@@ -239,10 +245,13 @@ export async function buildMadridLicenciasWeb(opts) {
           anio_dataset: compact.anioDataset,
           fecha_concesion: compact.fechaConcesion,
           tipo_expediente: compact.tipoExpediente,
+          objeto: compact.objeto,
           uso: compact.uso,
           distrito: compact.distrito,
           direccion: compact.direccion,
           procedimiento: compact.procedimiento,
+          actuacion_que: actuacionNorm.codigo,
+          actuacion_que_label: actuacionNorm.etiqueta,
         },
       });
     }
@@ -259,20 +268,20 @@ export async function buildMadridLicenciasWeb(opts) {
     }));
   }
 
-  const mapaCatsOrdered = [
-    ...LICENCIA_MAPA_LEYENDA,
-    ...[...byMapaCategoria.keys()].filter((c) => !LICENCIA_MAPA_LEYENDA.includes(c)),
+  const actuacionQueOrdered = [
+    ...ACTUACION_QUE_LEYENDA,
+    ...[...byActuacionQue.keys()].filter((c) => !ACTUACION_QUE_LEYENDA.includes(c)),
   ];
-  const byYearMapaTipo = years
+  const byYearActuacionQue = years
     .slice()
     .sort((a, b) => a - b)
     .map((y) => {
-      const ym = yearMapaMaps.get(y) || new Map();
+      const ym = yearActuacionMaps.get(y) || new Map();
       return {
         year: y,
-        tipos: mapaCatsOrdered.map((id) => ({
+        tipos: actuacionQueOrdered.map((id) => ({
           id,
-          label: labelMapaCategoria(id),
+          label: labelActuacionQue(id),
           count: ym.get(id) || 0,
         })),
       };
@@ -288,11 +297,11 @@ export async function buildMadridLicenciasWeb(opts) {
     };
   });
 
-  const topMapaTipo = mapaCatsOrdered
+  const topActuacionQue = actuacionQueOrdered
     .map((id) => ({
       id,
-      label: labelMapaCategoria(id),
-      count: byMapaCategoria.get(id) || 0,
+      label: labelActuacionQue(id),
+      count: byActuacionQue.get(id) || 0,
     }))
     .filter((x) => x.count > 0)
     .sort((a, b) => b.count - a.count);
@@ -302,13 +311,13 @@ export async function buildMadridLicenciasWeb(opts) {
     month,
     total: byMonth.get(month) || 0,
   }));
-  const seriesByMonthMapaTipo = months.map((month) => {
-    const mm = monthMapaMaps.get(month) || new Map();
+  const seriesByMonthActuacionQue = months.map((month) => {
+    const mm = monthActuacionMaps.get(month) || new Map();
     return {
       month,
-      tipos: mapaCatsOrdered.map((id) => ({
+      tipos: actuacionQueOrdered.map((id) => ({
         id,
-        label: labelMapaCategoria(id),
+        label: labelActuacionQue(id),
         count: mm.get(id) || 0,
       })),
     };
@@ -340,11 +349,11 @@ export async function buildMadridLicenciasWeb(opts) {
     topProcedimiento: topEntries(byProcedimiento),
     topTipoExpediente: topEntries(byTipoExpediente, 20),
     byYearUso,
-    byYearMapaTipo,
-    topMapaTipo,
+    byYearActuacionQue,
+    topActuacionQue,
     months,
     seriesByMonth,
-    seriesByMonthMapaTipo,
+    seriesByMonthActuacionQue,
   };
 
   writeFileSync(join(outDir, "madrid-licencias-index.json"), JSON.stringify(index, null, 2));

@@ -20,7 +20,7 @@ const DistritosCountMap = dynamic(
 import { DashboardSection } from "@/components/madrid/dashboard/DashboardSection";
 import { KpiCard } from "@/components/madrid/dashboard/KpiCard";
 import { GranularityToggle } from "@/components/madrid/dashboard/GranularityToggle";
-import { LicenciaMapaLineChart } from "@/components/madrid/dashboard/LicenciaMapaLineChart";
+import { ActuacionQueLineChart } from "@/components/madrid/dashboard/ActuacionQueLineChart";
 import { YearEvolutionChart } from "@/components/madrid/dashboard/YearEvolutionChart";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import type { LicenciasTimeGranularity, MadridDashboardStats } from "@/lib/types";
@@ -131,7 +131,7 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
 
             <DashboardSection
               title="Evolución temporal"
-              description="Tendencia global y desglose por tipo de licencia (mismos iconos que en el mapa)."
+              description="Tendencia global y desglose por actuación prevista (objeto, uso, tipo y procedimiento)."
             >
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <p className="text-xs text-slate-500">
@@ -149,11 +149,11 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
                   granularity={licGranularity}
                   valueLabel="licencias"
                 />
-                {lic.seriesByYearMapaTipo?.length ? (
-                  <LicenciaMapaLineChart
-                    title="Por tipo de licencia"
-                    seriesByYear={lic.seriesByYearMapaTipo}
-                    seriesByMonth={lic.seriesByMonthMapaTipo}
+                {(lic.seriesByYearActuacionQue?.length ?? lic.seriesByYearMapaTipo?.length) ? (
+                  <ActuacionQueLineChart
+                    title="Qué se va a hacer"
+                    seriesByYear={lic.seriesByYearActuacionQue ?? lic.seriesByYearMapaTipo ?? []}
+                    seriesByMonth={lic.seriesByMonthActuacionQue ?? lic.seriesByMonthMapaTipo}
                     granularity={licGranularity}
                   />
                 ) : null}

@@ -2,21 +2,24 @@
 
 import Link from "next/link";
 import { projectPath } from "@/lib/project-display";
+import { sigmaPickDisplayHeadline, type SigmaPresentationInput } from "@/lib/sigma-presentation";
 import {
-  buildSigmaProjectLead,
-  sigmaPickDisplayHeadline,
-  type SigmaPresentationInput,
-} from "@/lib/sigma-presentation";
+  sigmaClassificationLabel,
+  sigmaClassificationTone,
+  type SigmaClassification,
+} from "@/lib/sigma-classification";
 import { sigmaFaseShortLabel, sigmaStatusBadge } from "@/lib/sigma-user-labels";
 
 export function SigmaProjectHero({
   presentation,
+  clasificacion,
   visorUrl,
   bocmFirstId,
   bocmCount = 0,
   compact = false,
 }: {
   presentation: SigmaPresentationInput;
+  clasificacion?: SigmaClassification | null;
   visorUrl?: string | null;
   bocmFirstId?: string | null;
   bocmCount?: number;
@@ -25,27 +28,33 @@ export function SigmaProjectHero({
 }) {
   const status = sigmaStatusBadge(presentation.source);
   const { title, subtitle } = sigmaPickDisplayHeadline(presentation);
-  const lead = buildSigmaProjectLead({ ...presentation, bocmCount });
   const fase = sigmaFaseShortLabel(presentation.fase);
+  const category = sigmaClassificationLabel(clasificacion?.categoriaProyecto);
+  const categoryTone = sigmaClassificationTone(clasificacion?.categoriaProyecto);
+  const categoryClass = {
+    teal: "bg-teal-100 text-teal-900",
+    violet: "bg-violet-50 text-violet-900 ring-1 ring-violet-200",
+    amber: "bg-amber-50 text-amber-900 ring-1 ring-amber-200",
+    sky: "bg-sky-50 text-sky-900 ring-1 ring-sky-200",
+    slate: "bg-slate-100 text-slate-700",
+  }[categoryTone];
 
   return (
     <header className="portal-hero-bg overflow-hidden rounded-2xl border border-teal-200/50 shadow-sm">
       <div className={compact ? "p-4 sm:p-5" : "p-5 sm:p-8"}>
         <div className="flex flex-wrap gap-2">
-          <span className="rounded-full bg-teal-100 px-3 py-0.5 text-xs font-semibold text-teal-900">
-            Proyecto urbanístico
-          </span>
-          <span className={`rounded-full px-3 py-0.5 text-xs font-semibold ${status.className}`}>
-            {status.label}
-          </span>
-          {fase ? (
-            <span className="rounded-full bg-sky-50 px-3 py-0.5 text-xs font-semibold text-sky-900 ring-1 ring-sky-200">
-              {fase}
+          {category ? (
+            <span className={`rounded-full px-3 py-0.5 text-xs font-semibold ${categoryClass}`}>
+              {category}
             </span>
           ) : null}
-          {bocmCount > 0 ? (
-            <span className="rounded-full bg-violet-50 px-3 py-0.5 text-xs font-semibold text-violet-900 ring-1 ring-violet-200">
-              {bocmCount === 1 ? "1 anuncio en el Boletín" : `${bocmCount} anuncios en el Boletín`}
+          {presentation.source === "informacion_publica" ? (
+            <span className={`rounded-full px-3 py-0.5 text-xs font-semibold ${status.className}`}>
+              {status.label}
+            </span>
+          ) : fase ? (
+            <span className="rounded-full bg-sky-50 px-3 py-0.5 text-xs font-semibold text-sky-900 ring-1 ring-sky-200">
+              {fase}
             </span>
           ) : null}
         </div>
@@ -65,15 +74,7 @@ export function SigmaProjectHero({
           </p>
         ) : null}
 
-        <p
-          className={`mt-3 max-w-3xl leading-relaxed text-slate-600 ${
-            compact ? "text-sm" : "text-base"
-          }`}
-        >
-          {lead}
-        </p>
-
-        <div className={`flex flex-wrap gap-2 ${compact ? "mt-3" : "mt-6"}`}>
+        <div className={`flex flex-wrap gap-2 ${compact ? "mt-4" : "mt-6"}`}>
           {visorUrl ? (
             <a
               href={visorUrl}

@@ -58,21 +58,25 @@ export function SigmaMetricsPanel({
   const cov = metricCoverageBadge(Boolean(metric));
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <span
-          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${
-            cov.tone === "teal"
-              ? "bg-teal-50 text-teal-900 ring-teal-200"
-              : "bg-slate-100 text-slate-600 ring-slate-200"
-          }`}
-        >
-          {cov.label}
-        </span>
-        {metric?.genera_vivienda_nueva ? (
-          <ViviendaBadge code={metric.genera_vivienda_nueva} />
-        ) : null}
-      </div>
+    <div className="space-y-3">
+      {!compact ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${
+              cov.tone === "teal"
+                ? "bg-teal-50 text-teal-900 ring-teal-200"
+                : "bg-slate-100 text-slate-600 ring-slate-200"
+            }`}
+          >
+            {cov.label}
+          </span>
+          {metric?.genera_vivienda_nueva ? (
+            <ViviendaBadge code={metric.genera_vivienda_nueva} />
+          ) : null}
+        </div>
+      ) : metric?.genera_vivienda_nueva ? (
+        <ViviendaBadge code={metric.genera_vivienda_nueva} />
+      ) : null}
 
       {metric ? (
         <div className={`grid gap-3 ${compact ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-2"}`}>
@@ -94,7 +98,7 @@ export function SigmaMetricsPanel({
             <KpiTile label="Tipo vivienda" value={metric.tipo_vivienda} />
           ) : null}
         </div>
-      ) : (
+      ) : compact ? null : (
         <p className="text-sm leading-relaxed text-slate-600">
           Todavía no hemos extraído cifras de viviendas o superficie de los documentos de este
           expediente. Puedes ver el estado y la tramitación en las otras pestañas.

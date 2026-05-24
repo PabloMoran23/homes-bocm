@@ -97,7 +97,11 @@ function yearToDateTypeCounts(
 }
 
 function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
-  const monthly = [...(stats.licencias?.seriesByMonthMapaTipo ?? [])].sort((a, b) =>
+  const monthly = [
+    ...(stats.licencias?.seriesByMonthActuacionQue ??
+      stats.licencias?.seriesByMonthMapaTipo ??
+      []),
+  ].sort((a, b) =>
     a.month.localeCompare(b.month),
   );
   const latest = monthly.at(-1);
@@ -110,10 +114,11 @@ function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
   const previousMonth = previous ? formatMonth(previous.month) : "el mes anterior";
 
   const housingSignalTypes = [
-    "lu_residencial",
-    "funcionamiento_residencial",
-    "obra_local_vivienda",
-    "primera_ocupacion",
+    "vivienda_obra",
+    "vivienda_obra_menor",
+    "vivienda_uso",
+    "local_a_vivienda",
+    "edificio_primera_ocupacion",
   ];
   const housingSignal = sumMonthTypeCounts(latest, housingSignalTypes);
   const prevHousingSignal = sumMonthTypeCounts(previous, housingSignalTypes);
@@ -130,10 +135,10 @@ function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
     latestMonthNumber,
     housingSignalTypes,
   );
-  const localToHousing = monthTypeCount(latest, "obra_local_vivienda");
-  const localYtd = yearToDateTypeCount(monthly, latestYear, latestMonthNumber, "obra_local_vivienda");
-  const residentialUse = monthTypeCount(latest, "funcionamiento_residencial");
-  const prevResidentialUse = monthTypeCount(previous, "funcionamiento_residencial");
+  const localToHousing = monthTypeCount(latest, "local_a_vivienda");
+  const localYtd = yearToDateTypeCount(monthly, latestYear, latestMonthNumber, "local_a_vivienda");
+  const residentialUse = monthTypeCount(latest, "vivienda_uso");
+  const prevResidentialUse = monthTypeCount(previous, "vivienda_uso");
   const residentialTrend = percentChange(residentialUse, prevResidentialUse);
 
   const items: LandingNewsSpotlight[] = [
@@ -151,8 +156,8 @@ function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
     },
   ];
 
-  const localActivity = monthTypeCount(latest, "dr_actividad");
-  const prevLocalActivity = monthTypeCount(previous, "dr_actividad");
+  const localActivity = monthTypeCount(latest, "local_actividad");
+  const prevLocalActivity = monthTypeCount(previous, "local_actividad");
   const localActivityTrend = percentChange(localActivity, prevLocalActivity);
   if (localActivityTrend && localActivity > prevLocalActivity) {
     items.push({
@@ -168,12 +173,12 @@ function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
     });
   }
 
-  const residentialWorksYtd = yearToDateTypeCount(monthly, latestYear, latestMonthNumber, "lu_residencial");
+  const residentialWorksYtd = yearToDateTypeCount(monthly, latestYear, latestMonthNumber, "vivienda_obra");
   const residentialWorksPrevYtd = yearToDateTypeCount(
     monthly,
     String(Number(latestYear) - 1),
     latestMonthNumber,
-    "lu_residencial",
+    "vivienda_obra",
   );
   const residentialWorksTrend = percentChange(residentialWorksYtd, residentialWorksPrevYtd);
   if (residentialWorksTrend && residentialWorksYtd > residentialWorksPrevYtd) {

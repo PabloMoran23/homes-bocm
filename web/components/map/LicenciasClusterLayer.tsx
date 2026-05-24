@@ -8,10 +8,10 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import "leaflet.markercluster";
 import {
   createLicenciaDivIcon,
-  clasificarLicenciaMapa,
+  clasificarLicenciaMapaDesdeActuacion,
   licenciaMapTooltipLabel,
 } from "@/lib/licencia-mapa";
-import type { UbicacionMapProperties } from "@/lib/ubicacion";
+import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
 
 type LeafletWithCluster = typeof L & {
   markerClusterGroup: (options?: object) => L.LayerGroup;
@@ -60,7 +60,7 @@ export function LicenciasClusterLayer({
       pointToLayer(feature, latlng) {
         const p = feature.properties as UbicacionMapProperties;
         const isHi = Boolean(highlightNdp && p.ndp === highlightNdp);
-        const cat = clasificarLicenciaMapa(p.ultimaLicenciaTipo);
+        const cat = clasificarLicenciaMapaDesdeActuacion(actuacionDesdeMapProps(p));
         return L.marker(latlng, {
           icon: createLicenciaDivIcon(cat, isHi),
           zIndexOffset: isHi ? 1000 : 0,
@@ -69,7 +69,7 @@ export function LicenciasClusterLayer({
       onEachFeature(feature, lyr) {
         const p = feature.properties as UbicacionMapProperties;
         lyr.on("click", () => onSelectNdp(p.ndp));
-        const label = licenciaMapTooltipLabel(p.ultimaLicenciaTipo, p.direccion);
+        const label = licenciaMapTooltipLabel(actuacionDesdeMapProps(p), p.direccion);
         lyr.bindTooltip(label, { direction: "top", opacity: 0.95, sticky: true });
         const lic = p.licencias;
         if (lic > 1) {
@@ -101,7 +101,7 @@ export function LicenciasClusterLayer({
         ).feature?.properties;
         if (!props) return;
         const isHi = props.ndp === highlightNdp;
-        const cat = clasificarLicenciaMapa(props.ultimaLicenciaTipo);
+        const cat = clasificarLicenciaMapaDesdeActuacion(actuacionDesdeMapProps(props));
         layer.setIcon(createLicenciaDivIcon(cat, isHi));
         layer.setZIndexOffset(isHi ? 1000 : 0);
         return;

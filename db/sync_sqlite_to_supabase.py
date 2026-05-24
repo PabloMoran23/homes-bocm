@@ -25,8 +25,13 @@ from typing import Any, Iterable
 
 POC_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SQLITE = POC_ROOT / "db" / "poc_local.sqlite"
+VISOR_JSON = POC_ROOT / "output" / "madrid_viso_expedientes.json"
 SCHEMA = "homes"
 BATCH = 4000
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from sigma_classification import classify_sigma_project  # noqa: E402
+from visor_resumen import resumen_contenido_from_visor_ficha  # noqa: E402
 
 
 def pg_url() -> str:
@@ -104,6 +109,7 @@ def truncate_all(cur) -> None:
         "inmueble",
         "sigma_pdf_metric",
         "sigma_expediente_metric",
+        "sigma_visor_expediente",
         "sigma_ambito_geom",
         "link_project_sigma",
         "sigma_catalog_expediente",
@@ -176,6 +182,193 @@ def sync_sigma_catalog(sqlite: sqlite3.Connection, cur) -> int:
         ],
         rows,
         conflict="(expediente_grupo) DO NOTHING",
+    )
+
+
+def _json_array(value: Any, limit: int | None = None) -> Any:
+    rows = value if isinstance(value, list) else []
+    return rows[:limit] if limit is not None else rows
+
+
+def _json_object(value: Any) -> Any | None:
+    return value if isinstance(value, dict) else None
+
+
+def _nti_docs(rec: dict[str, Any]) -> list[dict[str, Any]]:
+    nti = rec.get("ntiArbol") if isinstance(rec.get("ntiArbol"), dict) else None
+    if not nti:
+        return []
+    docs = nti.get("documentos")
+    if isinstance(docs, list) and docs:
+        return [d for d in docs if isinstance(d, dict)]
+    sample = nti.get("documentosMuestra")
+    if isinstance(sample, list):
+        return [d for d in sample if isinstance(d, dict)]
+    return []
+
+
+def _sqlite_catalog_context(sqlite: sqlite3.Connection) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for r in sqlite.execute("SELECT * FROM sigma_catalog_expediente"):
+        out[r["expediente_grupo"]] = {
+            "sigma_layer_kind": r["sigma_layer_kind"],
+            "source": r["catalog_source"],
+            "tipo_figura": r["tipo_figura"],
+            "figura_codigo": r["figura_codigo"],
+            "fase": r["fase"],
+            "FAS_TX_DENOM": r["fase"],
+            "TFIG_TX_ABREV": r["tipo_figura"],
+            "FIG_TX_ETIQ": r["figura_codigo"],
+        }
+    return out
+
+
+def _sqlite_area_context(sqlite: sqlite3.Connection) -> dict[str, float]:
+    out: dict[str, float] = {}
+    try:
+        rows = sqlite.execute("SELECT expediente_grupo, area_approx_m2 FROM sigma_ambito_geom")
+    except sqlite3.OperationalError:
+        return out
+    for r in rows:
+        if r["area_approx_m2"] is not None:
+            out[r["expediente_grupo"]] = float(r["area_approx_m2"])
+    return out
+
+
+def _sqlite_viviendas_context(sqlite: sqlite3.Connection) -> dict[str, int]:
+    out: dict[str, int] = {}
+    try:
+        rows = sqlite.execute(
+            "SELECT expediente_grupo, num_viviendas_max FROM sigma_expediente_metric"
+        )
+    except sqlite3.OperationalError:
+        return out
+    for r in rows:
+        if r["num_viviendas_max"] is not None and int(r["num_viviendas_max"]) > 0:
+            out[r["expediente_grupo"]] = int(r["num_viviendas_max"])
+    return out
+
+
+def sync_sigma_visor(sqlite: sqlite3.Connection, cur) -> int:
+    if not VISOR_JSON.is_file():
+        return 0
+    raw = json.loads(VISOR_JSON.read_text(encoding="utf-8"))
+    generated_at = raw.get("generatedAt") or datetime.now(UTC).isoformat()
+    catalog_by_grupo = _sqlite_catalog_context(sqlite)
+    area_by_grupo = _sqlite_area_context(sqlite)
+    viviendas_by_grupo = _sqlite_viviendas_context(sqlite)
+    rows = []
+    stubs = []
+    for grupo, rec_raw in (raw.get("byGrupoExpediente") or {}).items():
+        if not grupo or not isinstance(rec_raw, dict):
+            continue
+        rec = dict(rec_raw)
+        visor_ficha = rec.get("visorFicha") if isinstance(rec.get("visorFicha"), dict) else None
+        visor_url = str(rec.get("visorUrlUsada") or "").strip() or None
+        layer_kind = str(rec.get("sigmaLayerKind") or "").strip() or None
+        resumen_contenido = resumen_contenido_from_visor_ficha(visor_ficha)
+        catalog = catalog_by_grupo.get(grupo) or {}
+        classification = classify_sigma_project(
+            visor_ficha=visor_ficha,
+            resumen_contenido=resumen_contenido,
+            sigma_layer_kind=layer_kind or catalog.get("sigma_layer_kind") or catalog.get("source"),
+            catalog=catalog,
+            area_approx_m2=area_by_grupo.get(grupo),
+            num_viviendas_max=viviendas_by_grupo.get(grupo),
+        )
+        nti = rec.get("ntiArbol") if isinstance(rec.get("ntiArbol"), dict) else None
+        nti_total = (
+            rec.get("ntiDocumentosTotal")
+            if isinstance(rec.get("ntiDocumentosTotal"), int)
+            else nti.get("documentosTotal")
+            if nti and isinstance(nti.get("documentosTotal"), int)
+            else None
+        )
+        stubs.append((grupo, grupo, layer_kind, visor_url, generated_at))
+        rows.append(
+            (
+                grupo,
+                bool(rec.get("sinDatosVisor")),
+                visor_url,
+                pg_json(_json_object(rec.get("visorCabecera"))),
+                pg_json(_json_object(visor_ficha)),
+                resumen_contenido,
+                classification["tipo_legal"],
+                classification["escala"],
+                classification["contenido_principal"],
+                classification["fase_normalizada"],
+                classification["categoria_proyecto"],
+                classification["clasificacion_confianza"],
+                pg_json(classification["clasificacion_fuentes"]),
+                pg_json(_json_array(rec.get("tramitacion"))),
+                pg_json(_json_array(rec.get("documentacionUrls"))),
+                str(rec.get("ntiListadoUrl") or "").strip() or None,
+                nti_total,
+                pg_json(_nti_docs(rec)[:80]),
+                as_ts(generated_at),
+                pg_json(rec),
+                datetime.now(UTC).isoformat(),
+            )
+        )
+
+    insert_batch(
+        cur,
+        "sigma_catalog_expediente",
+        ["expediente_grupo", "exp_numero_original", "sigma_layer_kind", "enlace", "synced_at"],
+        stubs,
+        conflict="""(expediente_grupo) DO UPDATE SET
+          sigma_layer_kind = COALESCE(homes.sigma_catalog_expediente.sigma_layer_kind, EXCLUDED.sigma_layer_kind),
+          enlace = COALESCE(homes.sigma_catalog_expediente.enlace, EXCLUDED.enlace),
+          synced_at = COALESCE(homes.sigma_catalog_expediente.synced_at, EXCLUDED.synced_at)""",
+    )
+    return insert_batch(
+        cur,
+        "sigma_visor_expediente",
+        [
+            "expediente_grupo",
+            "sin_datos_visor",
+            "visor_url",
+            "visor_cabecera",
+            "visor_ficha",
+            "resumen_contenido",
+            "tipo_legal",
+            "escala",
+            "contenido_principal",
+            "fase_normalizada",
+            "categoria_proyecto",
+            "clasificacion_confianza",
+            "clasificacion_fuentes",
+            "tramitacion",
+            "documentacion_urls",
+            "nti_listado_url",
+            "nti_documentos_total",
+            "nti_documentos_muestra",
+            "fetched_at",
+            "raw_json",
+            "updated_at",
+        ],
+        rows,
+        conflict="""(expediente_grupo) DO UPDATE SET
+          sin_datos_visor = EXCLUDED.sin_datos_visor,
+          visor_url = EXCLUDED.visor_url,
+          visor_cabecera = EXCLUDED.visor_cabecera,
+          visor_ficha = EXCLUDED.visor_ficha,
+          resumen_contenido = EXCLUDED.resumen_contenido,
+          tipo_legal = EXCLUDED.tipo_legal,
+          escala = EXCLUDED.escala,
+          contenido_principal = EXCLUDED.contenido_principal,
+          fase_normalizada = EXCLUDED.fase_normalizada,
+          categoria_proyecto = EXCLUDED.categoria_proyecto,
+          clasificacion_confianza = EXCLUDED.clasificacion_confianza,
+          clasificacion_fuentes = EXCLUDED.clasificacion_fuentes,
+          tramitacion = EXCLUDED.tramitacion,
+          documentacion_urls = EXCLUDED.documentacion_urls,
+          nti_listado_url = EXCLUDED.nti_listado_url,
+          nti_documentos_total = EXCLUDED.nti_documentos_total,
+          nti_documentos_muestra = EXCLUDED.nti_documentos_muestra,
+          fetched_at = EXCLUDED.fetched_at,
+          raw_json = EXCLUDED.raw_json,
+          updated_at = EXCLUDED.updated_at""",
     )
 
 
@@ -557,6 +750,7 @@ def sync_sigma_pdf_metric(sqlite: sqlite3.Connection, cur) -> int:
 SYNC_STEPS: dict[str, Any] = {
     "source": sync_source,
     "sigma": sync_sigma_catalog,
+    "visor": sync_sigma_visor,
     "ambito": sync_sigma_ambito,
     "projects": sync_project_boletin,
     "link_project": sync_link_project_sigma,
@@ -570,6 +764,7 @@ SYNC_STEPS: dict[str, Any] = {
 ORDER = [
     "source",
     "sigma",
+    "visor",
     "ambito",
     "projects",
     "link_project",
@@ -589,7 +784,7 @@ def main() -> None:
         "--only",
         type=str,
         default="",
-        help="Subset comma-separated: source,sigma,ambito,projects,link_project,inmueble,licencias,links,metrics,pdf_metrics",
+        help="Subset comma-separated: source,sigma,visor,ambito,projects,link_project,inmueble,licencias,links,metrics,pdf_metrics",
     )
     args = ap.parse_args()
 

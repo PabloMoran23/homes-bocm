@@ -1,19 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
 import { formatSigmaArcgisMs, hasValue } from "@/lib/project-display";
+import type { SigmaClassification } from "@/lib/sigma-classification";
 import {
   sigmaCatalogSourceUserLabel,
-  sigmaFaseContext,
-  sigmaFaseShortLabel,
   sigmaInfoPublicaFromArcgis,
   sigmaInfoPublicaFromYmd,
   sigmaLayerKindUserLabel,
-  sigmaTipoActuacion,
   sigmaVisorFieldLabel,
 } from "@/lib/sigma-user-labels";
-import type { SigmaVisorFicha, SigmaVisorTramite } from "@/lib/types";
+import type { SigmaVisorFicha } from "@/lib/types";
 
 export type SigmaResumenFields = {
   expedienteGrupo: string;
@@ -31,51 +27,45 @@ export type SigmaResumenFields = {
   layerKind?: string | null;
 };
 
-function ResumenCell({
-  label,
-  value,
-  mono,
-}: {
-  label: string;
-  value?: string | null;
-  mono?: boolean;
-}) {
-  if (!hasValue(value)) return null;
+export function SigmaInfoPublicaBanner({ fields }: { fields: SigmaResumenFields }) {
+  const ipPeriod =
+    sigmaInfoPublicaFromArcgis(fields.infopubIniMs, fields.infopubFinMs) ??
+    sigmaInfoPublicaFromYmd(fields.infopubIniYmd, fields.infopubFinYmd);
+
+  if (!ipPeriod) return null;
+
   return (
-    <div className="rounded-lg bg-slate-50/80 px-3 py-2.5">
-      <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">{label}</dt>
-      <dd className={`mt-1 text-sm text-slate-900 ${mono ? "font-mono text-xs" : ""}`}>{value}</dd>
+    <div
+      className={`rounded-xl border px-4 py-3 ${
+        ipPeriod.isOpen
+          ? "border-violet-200 bg-violet-50/80"
+          : "border-slate-200 bg-slate-50/80"
+      }`}
+    >
+      <p className="text-sm font-semibold text-slate-900">{ipPeriod.short}</p>
+      {ipPeriod.range ? <p className="mt-1 text-sm text-slate-600">{ipPeriod.range}</p> : null}
+      {ipPeriod.isOpen ? (
+        <p className="mt-2 text-xs leading-relaxed text-slate-600">
+          Puedes revisar la documentación y presentar alegaciones ante el ayuntamiento durante este
+          periodo.
+        </p>
+      ) : null}
     </div>
   );
 }
 
-export function SigmaUserResumen({
+export function SigmaTechnicalDetails({
   fields,
   visorFicha,
-  tramitacion = [],
-  onVerTramitacion,
-  compact,
+  clasificacion,
 }: {
   fields: SigmaResumenFields;
   visorFicha?: SigmaVisorFicha | null;
-  tramitacion?: SigmaVisorTramite[];
-  onVerTramitacion?: () => void;
-  /** Vista densa: sin bloque de fase duplicado, menos márgenes. */
-  compact?: boolean;
+  clasificacion?: SigmaClassification | null;
 }) {
-  const [techOpen, setTechOpen] = useState(false);
-
-  const tipo = sigmaTipoActuacion(fields.figEtiq, fields.tfigAbrev);
-  const fase = sigmaFaseShortLabel(fields.fase);
-  const faseCtx = sigmaFaseContext(fields.fase);
-  const ipPeriod =
-    sigmaInfoPublicaFromArcgis(fields.infopubIniMs, fields.infopubFinMs) ??
-    sigmaInfoPublicaFromYmd(fields.infopubIniYmd, fields.infopubFinYmd);
-  const aprobacion = formatSigmaArcgisMs(fields.aprobacionMs);
   const origenUser = sigmaCatalogSourceUserLabel(fields.source);
   const capaUser = sigmaLayerKindUserLabel(fields.layerKind);
-
-  const tramPreview = tramitacion.length > 3 ? tramitacion.slice(-3) : tramitacion;
+  const aprobacion = formatSigmaArcgisMs(fields.aprobacionMs);
 
   const techRows: { label: string; value: string }[] = [];
   if (hasValue(fields.expedienteGrupo)) {
@@ -86,6 +76,16 @@ export function SigmaUserResumen({
   if (hasValue(fields.fase)) techRows.push({ label: "Fase oficial", value: fields.fase! });
   if (hasValue(fields.denominacion)) {
     techRows.push({ label: sigmaVisorFieldLabel("denominacionVisor"), value: fields.denominacion! });
+  }
+  if (aprobacion) techRows.push({ label: "Fecha de aprobación", value: aprobacion });
+  if (hasValue(visorFicha?.iniciativa)) {
+    techRows.push({ label: sigmaVisorFieldLabel("iniciativa"), value: visorFicha!.iniciativa! });
+  }
+  if (hasValue(fields.organo ?? visorFicha?.unidadTramitadora)) {
+    techRows.push({
+      label: "Órgano tramitador",
+      value: (fields.organo ?? visorFicha?.unidadTramitadora)!,
+    });
   }
   if (hasValue(visorFicha?.figuraCodigo)) {
     techRows.push({ label: sigmaVisorFieldLabel("figuraCodigo"), value: visorFicha!.figuraCodigo! });
@@ -102,12 +102,6 @@ export function SigmaUserResumen({
       value: visorFicha!.sistemaActuacion!,
     });
   }
-  if (hasValue(visorFicha?.unidadTramitadora)) {
-    techRows.push({
-      label: sigmaVisorFieldLabel("unidadTramitadora"),
-      value: visorFicha!.unidadTramitadora!,
-    });
-  }
   if (hasValue(visorFicha?.ambitoOrdenacion)) {
     techRows.push({
       label: sigmaVisorFieldLabel("ambitoOrdenacion"),
@@ -118,103 +112,51 @@ export function SigmaUserResumen({
     techRows.push({ label: sigmaVisorFieldLabel("archivoPlanos"), value: visorFicha!.archivoPlanos! });
   }
 
+  if (!techRows.length) return null;
+
   return (
-    <div className={compact ? "space-y-4" : "space-y-6"}>
-      {ipPeriod ? (
-        <div
-          className={`rounded-xl border px-4 py-3 ${
-            ipPeriod.isOpen
-              ? "border-violet-200 bg-violet-50/80"
-              : "border-slate-200 bg-slate-50/80"
-          }`}
-        >
-          <p className="text-sm font-semibold text-slate-900">{ipPeriod.short}</p>
-          {ipPeriod.range ? (
-            <p className="mt-1 text-sm text-slate-600">{ipPeriod.range}</p>
-          ) : null}
-          <p className="mt-2 text-xs leading-relaxed text-slate-600">
-            Durante este periodo puedes revisar la documentación y presentar alegaciones ante el
-            ayuntamiento.
-          </p>
-        </div>
-      ) : null}
-
-      <dl className={`grid gap-3 sm:grid-cols-2 ${compact ? "gap-2" : "gap-4"}`}>
-        <ResumenCell label="Tipo de actuación" value={visorFicha?.figuraTipo ?? tipo} />
-        <ResumenCell label="Estado actual" value={fase} />
-        <ResumenCell label="Fecha de aprobación" value={aprobacion ?? undefined} />
-        <ResumenCell label="Promotor" value={visorFicha?.promotor} />
-        <ResumenCell label="Distrito" value={visorFicha?.distrito} />
-        <ResumenCell label={sigmaVisorFieldLabel("iniciativa")} value={visorFicha?.iniciativa} />
-        <ResumenCell
-          label={sigmaVisorFieldLabel("superficieAmbito")}
-          value={
-            visorFicha?.superficieAmbitoM2 != null && visorFicha.superficieAmbitoM2 > 0
-              ? `${visorFicha.superficieAmbitoM2.toLocaleString("es-ES")} m²`
-              : visorFicha?.superficieAmbitoTexto
-          }
-        />
-      </dl>
-
-      {faseCtx ? (
-        <p className="rounded-xl border border-sky-100 bg-sky-50/60 px-4 py-3 text-sm leading-relaxed text-sky-950">
-          {faseCtx}
-        </p>
-      ) : null}
-
-      {tramPreview.length > 0 ? (
-        <div>
-          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
-            <h3 className="text-sm font-semibold text-slate-900">Últimos hitos</h3>
-            {onVerTramitacion && tramitacion.length > tramPreview.length ? (
-              <button
-                type="button"
-                onClick={onVerTramitacion}
-                className="text-xs font-medium text-[var(--portal-accent)] hover:underline"
-              >
-                Ver toda la cronología ({tramitacion.length})
-              </button>
-            ) : onVerTramitacion && tramitacion.length > 0 ? (
-              <button
-                type="button"
-                onClick={onVerTramitacion}
-                className="text-xs font-medium text-[var(--portal-accent)] hover:underline"
-              >
-                Ver cronología completa
-              </button>
-            ) : null}
+    <details className="rounded-xl border border-slate-200 bg-slate-50/40">
+      <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900">
+        Detalles técnicos e informes
+      </summary>
+      <dl className="grid gap-2 border-t border-slate-200 px-4 py-3 sm:grid-cols-2">
+        {techRows.map((row) => (
+          <div key={row.label} className="text-sm">
+            <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+              {row.label}
+            </dt>
+            <dd
+              className={`mt-0.5 text-slate-800 ${
+                row.label === "Referencia municipal" ? "font-mono text-xs" : ""
+              }`}
+            >
+              {row.value}
+            </dd>
           </div>
-          <TramitacionTimeline rows={tramPreview} compact />
-        </div>
-      ) : null}
+        ))}
+      </dl>
+    </details>
+  );
+}
 
-      {techRows.length > 0 ? (
-        <details
-          open={techOpen}
-          onToggle={(e) => setTechOpen((e.target as HTMLDetailsElement).open)}
-          className="rounded-xl border border-slate-200 bg-slate-50/40"
-        >
-          <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-slate-600 hover:text-slate-900">
-            Detalles técnicos
-          </summary>
-          <dl className="grid gap-2 border-t border-slate-200 px-4 py-3 sm:grid-cols-2">
-            {techRows.map((row) => (
-              <div key={row.label} className="text-sm">
-                <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                  {row.label}
-                </dt>
-                <dd
-                  className={`mt-0.5 text-slate-800 ${
-                    row.label === "Referencia municipal" ? "font-mono text-xs" : ""
-                  }`}
-                >
-                  {row.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </details>
-      ) : null}
+/** Resumen compacto para fichas BOCM enlazadas a SIGMA. */
+export function SigmaUserResumen({
+  fields,
+  visorFicha,
+  clasificacion,
+}: {
+  fields: SigmaResumenFields;
+  visorFicha?: SigmaVisorFicha | null;
+  clasificacion?: SigmaClassification | null;
+}) {
+  return (
+    <div className="space-y-4">
+      <SigmaInfoPublicaBanner fields={fields} />
+      <SigmaTechnicalDetails
+        fields={fields}
+        visorFicha={visorFicha}
+        clasificacion={clasificacion}
+      />
     </div>
   );
 }

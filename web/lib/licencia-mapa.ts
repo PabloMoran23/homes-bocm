@@ -1,5 +1,9 @@
 import L from "leaflet";
 import {
+  normalizarActuacionEdificio,
+  type ActuacionEdificioInput,
+} from "@/lib/actuacion-edificio";
+import {
   clasificarLicenciaMapa,
   licenciaTituloDesdeTipo,
   type LicenciaMapaCategoria,
@@ -58,21 +62,33 @@ export function createSigmaDivIcon(size: "sm" | "md" = "md"): L.DivIcon {
   });
 }
 
+export function clasificarLicenciaMapaDesdeActuacion(
+  input: ActuacionEdificioInput | string | null | undefined,
+): LicenciaMapaCategoria {
+  if (input == null || typeof input === "string") {
+    return clasificarLicenciaMapa(input);
+  }
+  return normalizarActuacionEdificio(input).mapaCategoria;
+}
+
 export function createLicenciaMapMarker(
   latlng: L.LatLngExpression,
-  tipoExpediente: string | null | undefined,
+  actuacion: ActuacionEdificioInput | string | null | undefined,
   options?: { highlighted?: boolean },
 ): L.Marker {
-  const cat = clasificarLicenciaMapa(tipoExpediente);
+  const cat = clasificarLicenciaMapaDesdeActuacion(actuacion);
   return L.marker(latlng, {
     icon: createLicenciaDivIcon(cat, options?.highlighted),
   });
 }
 
 export function licenciaMapTooltipLabel(
-  tipoExpediente: string | null | undefined,
+  actuacion: ActuacionEdificioInput | string | null | undefined,
   direccion?: string | null,
 ): string {
-  const titulo = licenciaTituloDesdeTipo(tipoExpediente);
+  const titulo =
+    actuacion != null && typeof actuacion !== "string"
+      ? normalizarActuacionEdificio(actuacion).etiqueta
+      : licenciaTituloDesdeTipo(actuacion);
   return [direccion, titulo].filter(Boolean).join(" · ") || titulo;
 }

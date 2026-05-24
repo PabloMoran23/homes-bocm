@@ -326,7 +326,7 @@ export function UbicacionDetailView({
                   </time>
                 </div>
                 <div className="mt-3">
-                  <LicenciaTitulo tipoExpediente={lic.tipo_expediente} />
+                  <LicenciaTitulo licencia={lic} />
                   <p className="mt-0.5 text-sm text-slate-600">
                     {licenciaDetalleCorto(lic)}
                   </p>

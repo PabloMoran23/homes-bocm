@@ -1379,6 +1379,23 @@ if (existsSync(madridVisoExpedientesPath)) {
     `OK: madrid-sigma-visor-slim.json (${Object.keys(slim).length} expedientes, sin árboles NTI completos)`,
   );
 }
+
+const sigmaClasificacionExport = join(pocRoot, "db", "export_sigma_clasificacion_web.py");
+if (existsSync(sigmaClasificacionExport)) {
+  try {
+    const r = spawnSync("python3", [sigmaClasificacionExport, join(outDir, "madrid-sigma-clasificacion.json")], {
+      cwd: pocRoot,
+      encoding: "utf-8",
+    });
+    if (r.status === 0) {
+      console.log((r.stdout || "").trim() || "OK: madrid-sigma-clasificacion.json");
+    } else {
+      console.warn("SIGMA clasificación web:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
+    }
+  } catch (err) {
+    console.warn("SIGMA clasificación web:", err?.message || err);
+  }
+}
 if (existsSync(madridAytoIpGeoPath)) {
   copyFileSync(madridAytoIpGeoPath, join(outDir, "madrid-sigma-ip.geojson"));
   console.log("OK: madrid-sigma-ip.geojson copiado");

@@ -71,6 +71,30 @@ def main() -> None:
               ae.fecha_concesion DESC,
               ae.fecha_alta DESC
             LIMIT 1) AS ultima_licencia_tipo,
+          (SELECT ae.objeto
+             FROM actuacion_edificacion ae
+            WHERE ae.inmueble_id = i.id
+            ORDER BY
+              CASE WHEN ae.fecha_concesion IS NULL OR ae.fecha_concesion = '' THEN 1 ELSE 0 END,
+              ae.fecha_concesion DESC,
+              ae.fecha_alta DESC
+            LIMIT 1) AS ultima_licencia_objeto,
+          (SELECT ae.uso
+             FROM actuacion_edificacion ae
+            WHERE ae.inmueble_id = i.id
+            ORDER BY
+              CASE WHEN ae.fecha_concesion IS NULL OR ae.fecha_concesion = '' THEN 1 ELSE 0 END,
+              ae.fecha_concesion DESC,
+              ae.fecha_alta DESC
+            LIMIT 1) AS ultima_licencia_uso,
+          (SELECT ae.procedimiento
+             FROM actuacion_edificacion ae
+            WHERE ae.inmueble_id = i.id
+            ORDER BY
+              CASE WHEN ae.fecha_concesion IS NULL OR ae.fecha_concesion = '' THEN 1 ELSE 0 END,
+              ae.fecha_concesion DESC,
+              ae.fecha_alta DESC
+            LIMIT 1) AS ultima_licencia_procedimiento,
           (SELECT COALESCE(NULLIF(ae.fecha_concesion, ''), ae.fecha_alta)
              FROM actuacion_edificacion ae
             WHERE ae.inmueble_id = i.id
@@ -103,6 +127,9 @@ def main() -> None:
             "licencias": r["licencias_count"],
             "sigma": r["sigma_count"],
             "ultimaLicenciaTipo": r["ultima_licencia_tipo"],
+            "ultimaLicenciaObjeto": r["ultima_licencia_objeto"],
+            "ultimaLicenciaUso": r["ultima_licencia_uso"],
+            "ultimaLicenciaProcedimiento": r["ultima_licencia_procedimiento"],
             "ultimaLicenciaFecha": fecha_es_a_iso(r["ultima_licencia_fecha"]),
         }
         features.append(

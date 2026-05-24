@@ -17,11 +17,14 @@ export function SigmaVisorFichaPanel({
   ficha,
   compact,
   showFullText = true,
+  hideResumen = false,
 }: {
   ficha: SigmaVisorFicha;
   compact?: boolean;
   /** Muestra descripción, resumen y observaciones (aunque compact). */
   showFullText?: boolean;
+  /** Oculta resumenContenido si ya se muestra arriba. */
+  hideResumen?: boolean;
 }) {
   const sup =
     ficha.superficieAmbitoM2 != null && ficha.superficieAmbitoM2 > 0
@@ -42,7 +45,7 @@ export function SigmaVisorFichaPanel({
 
   const hasText =
     hasValue(ficha.descripcionAmbito) ||
-    hasValue(ficha.resumenContenido) ||
+    (!hideResumen && hasValue(ficha.resumenContenido)) ||
     hasValue(ficha.observaciones) ||
     hasValue(ficha.alegaciones);
 
@@ -93,7 +96,7 @@ export function SigmaVisorFichaPanel({
         </p>
       ) : null}
 
-      {hasValue(ficha.resumenContenido) ? (
+      {hasValue(ficha.resumenContenido) && !hideResumen ? (
         <p
           className={`mt-2 text-sm leading-relaxed text-slate-800 ${
             textVisible ? "" : "line-clamp-4"

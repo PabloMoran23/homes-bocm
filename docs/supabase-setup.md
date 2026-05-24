@@ -40,8 +40,9 @@ export SUPABASE_DB_URL='postgresql://...'
 # Primera carga completa (~5–15 min según red)
 python3 db/sync_sqlite_to_supabase.py --truncate
 
-# Solo Madrid / ubicaciones
-python3 db/sync_sqlite_to_supabase.py --only sigma,ambito,inmueble,licencias,links
+# Solo Madrid / ubicaciones + visor SIGMA
+python3 db/sync_sqlite_to_supabase.py --only sigma,visor,ambito,inmueble,licencias,links
+python3 db/sync_madrid_public_to_supabase.py --skip-licencias
 ```
 
 Volúmenes locales (referencia):
@@ -50,6 +51,7 @@ Volúmenes locales (referencia):
 |-------|------:|
 | project_boletin | 16k |
 | sigma_catalog + ámbitos | 3.9k |
+| sigma_visor_expediente | según `output/madrid_viso_expedientes.json` |
 | inmueble | 64k |
 | actuacion_edificacion | 160k |
 | link_licencia_sigma | 866k |

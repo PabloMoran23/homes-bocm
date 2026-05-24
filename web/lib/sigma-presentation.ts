@@ -7,6 +7,7 @@ import {
   formatM2,
   type SigmaExpedienteMetric,
 } from "@/lib/sigma-metrics";
+import { normalizeResumenContenido } from "@/lib/normalize-resumen-contenido";
 import { sigmaFaseShortLabel, sigmaTipoActuacion } from "@/lib/sigma-user-labels";
 import type { SigmaVisorFicha, SigmaVisorTramite } from "@/lib/types";
 
@@ -27,6 +28,8 @@ export type SigmaPresentationInput = {
   tieneDocumentos?: boolean;
   /** Ficha HTML del visor (promotor, resumen, m²…). */
   visorFicha?: SigmaVisorFicha | null;
+  /** Texto normalizado del objeto del plan (columna Supabase o visorFicha). */
+  resumenContenido?: string | null;
 };
 
 export type SigmaQueImplica = {
@@ -143,15 +146,25 @@ export function sigmaPickDisplayHeadline(input: SigmaPresentationInput): SigmaDi
   return { title, subtitle, planRef, figureCode };
 }
 
+export function sigmaResumenContenido(input: SigmaPresentationInput): string | null {
+  return (
+    normalizeResumenContenido(input.resumenContenido) ??
+    normalizeResumenContenido(input.visorFicha?.resumenContenido)
+  );
+}
+
 export function buildSigmaProjectLead(input: SigmaPresentationInput): string {
   const fase = sigmaFaseShortLabel(input.fase);
   const tipo = figureKindFromAbrev(input.tfigAbrev, input.figEtiq);
   const { planRef } = sigmaPickDisplayHeadline(input);
   const metric = input.metric;
+  const resumen = sigmaResumenContenido(input);
 
   const sentences: string[] = [];
 
-  if (tipo && planRef) {
+  if (resumen && resumen.length > 24) {
+    sentences.push(resumen.length > 360 ? `${resumen.slice(0, 357).trim()}…` : resumen);
+  } else if (tipo && planRef) {
     sentences.push(`${tipo} en el marco del plan urbanístico ${planRef} de Madrid.`);
   } else if (tipo) {
     sentences.push(`${tipo} tramitado en la ciudad de Madrid.`);
@@ -259,21 +272,8 @@ function usoPrincipalDesdeMetric(metric: SigmaExpedienteMetric): string | null {
 
 /** Respuesta a «¿de qué va?» / «¿qué obras implica?». */
 export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImplica {
-  const uso = input.metric ? usoPrincipalDesdeMetric(input.metric) : null;
-  const viviendas = input.metric?.num_viviendas_max;
-  const sup = formatM2(input.metric?.sup_total_m2);
-
-  if (uso) {
-    return {
-      title: "Uso y actuación previstos",
-      body: `Según memorias e informes analizados: ${uso}.${viviendas ? ` Hasta ${viviendas.toLocaleString("es-ES")} viviendas en el ámbito.` : ""}${sup ? ` Superficie de referencia: ${sup}.` : ""}`,
-      source: "Basado en documentos oficiales del expediente",
-      confidence: "media",
-    };
-  }
-
   const vf = input.visorFicha;
-  const resumenVisor = vf?.resumenContenido?.trim();
+  const resumenVisor = sigmaResumenContenido(input);
   if (resumenVisor && resumenVisor.length > 24) {
     const prefijos: string[] = [];
     if (vf?.figuraTipo) prefijos.push(vf.figuraTipo);
@@ -285,11 +285,29 @@ export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImp
         : vf?.superficieAmbitoTexto
           ? ` Ámbito: ${vf.superficieAmbitoTexto}.`
           : "";
+    const viviendas = input.metric?.num_viviendas_max;
+    const vivTxt =
+      viviendas != null && viviendas > 0
+        ? ` Hasta ${viviendas.toLocaleString("es-ES")} viviendas en documentación.`
+        : "";
     return {
       title: prefijos.length ? prefijos.join(" · ") : "Objeto del expediente",
-      body: `${resumenVisor}${supTxt}`,
+      body: `${resumenVisor}${supTxt}${vivTxt}`,
       source: "Basado en la ficha oficial del Ayuntamiento",
       confidence: "alta",
+    };
+  }
+
+  const uso = input.metric ? usoPrincipalDesdeMetric(input.metric) : null;
+  const viviendas = input.metric?.num_viviendas_max;
+  const sup = formatM2(input.metric?.sup_total_m2);
+
+  if (uso) {
+    return {
+      title: "Uso y actuación previstos",
+      body: `Según memorias e informes analizados: ${uso}.${viviendas ? ` Hasta ${viviendas.toLocaleString("es-ES")} viviendas en el ámbito.` : ""}${sup ? ` Superficie de referencia: ${sup}.` : ""}`,
+      source: "Basado en documentos oficiales del expediente",
+      confidence: "media",
     };
   }
 

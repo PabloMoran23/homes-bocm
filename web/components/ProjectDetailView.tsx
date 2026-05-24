@@ -428,7 +428,6 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                         source: p.sigmaCatalogSource,
                         layerKind: p.sigmaSigmaLayerKind,
                       }}
-                      tramitacion={p.sigmaVisorTramitacion ?? []}
                     />
                   </div>
                 </div>
