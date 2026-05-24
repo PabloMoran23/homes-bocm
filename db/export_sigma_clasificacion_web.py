@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exporta clasificación SIGMA (4 ejes + categoría) → web/public/data/madrid-sigma-clasificacion.json"""
+"""Exporta clasificación SIGMA (5 ejes + categoría) → web/public/data/madrid-sigma-clasificacion.json"""
 from __future__ import annotations
 
 import json
@@ -108,6 +108,7 @@ def main() -> int:
             "contenidoPrincipal": classification["contenido_principal"],
             "faseNormalizada": classification["fase_normalizada"],
             "categoriaProyecto": classification["categoria_proyecto"],
+            "tipoObra": classification["tipo_obra"],
             "confianza": classification["clasificacion_confianza"],
         }
 

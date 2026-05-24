@@ -28,6 +28,165 @@ def _has(text: str, *patterns: str) -> bool:
     return any(re.search(pattern, text, re.I) for pattern in patterns)
 
 
+def classify_tipo_obra(
+    *,
+    blob: str,
+    figura: Any,
+    viviendas: int,
+    tipo_legal: str,
+    contenido: str,
+    layer: Any,
+) -> str:
+    figura_blob = _norm(figura)
+
+    if _has(
+        blob,
+        r"garaj",
+        r"aparcam",
+        r"estacionam",
+        r"parkings?",
+        r"\bp\+p\b",
+        r"plaza de garaje",
+    ):
+        return "garaje_aparcamiento"
+
+    if _has(
+        blob,
+        r"terraza",
+        r"cerram",
+        r"mesas y sillas",
+        r"pecuau",
+        r"control urbanistico ambiental",
+        r"control urbanístico ambiental",
+        r"ordenacion de uso",
+        r"ordenación de uso",
+    ) or _has(figura_blob, r"pecuau"):
+        return "ordenacion_usos_actividad"
+
+    if _has(
+        blob,
+        r"\bacera",
+        r"via publica",
+        r"vía pública",
+        r"viario",
+        r"paviment",
+        r"calzada",
+        r"peaton",
+        r"peatonal",
+        r"intercambiador",
+        r"renaturalizacion de calle",
+    ):
+        return "infraestructura_viaria"
+
+    if _has(
+        blob,
+        r"bar[\s-]?restaurante",
+        r"\brestaurante\b",
+        r"\bbar\b",
+        r"hosteler",
+        r"\bhotel\b",
+        r"hospedaje",
+        r"\boficina",
+        r"comercial",
+        r"terciario",
+        r"actividad economica",
+        r"actividad económica",
+        r"local comercial",
+    ) or _has(figura_blob, r"plan especial de juntas", r"\bpej\b"):
+        return "uso_terciario"
+
+    if viviendas >= 100 or (
+        viviendas > 0
+        and _has(blob, r"viviend", r"residencial", r"bloque de viviend", r"unidades de viviend")
+    ):
+        return "vivienda_residencial"
+
+    if _has(
+        blob,
+        r"colegio",
+        r"centro de salud",
+        r"hospital",
+        r"equipamiento",
+        r"dotacional",
+        r"deportivo",
+        r"cultural",
+        r"tanatorio",
+        r"centro docente",
+    ):
+        return "equipamiento_publico"
+
+    if _has(blob, r"catalog", r"protecci", r"patrimonial", r"bien de interes", r"\bbic\b"):
+        return "proteccion_patrimonio"
+
+    if layer == "gestion" or _has(
+        blob,
+        r"reparcelaci",
+        r"junta de compensacion",
+        r"equidistribucion",
+        r"expropiacion",
+    ):
+        return "reparcelacion_gestion"
+
+    if tipo_legal == "modificacion_pgou" or _has(blob, r"modificacion del plan general", r"\bmpg\b"):
+        return "modificacion_planeamiento"
+
+    if layer == "urbanizacion" or _has(
+        blob,
+        r"proyecto de urbanizacion",
+        r"urbanizaci",
+        r"infraestructura",
+        r"\bredes\b",
+        r"servicios urbanos",
+        r"canalizacion",
+        r"alcantarill",
+    ):
+        return "urbanizacion_redes"
+
+    if viviendas > 0 or _has(
+        blob,
+        r"viviend",
+        r"residencial",
+        r"unifamiliar",
+        r"plurifamiliar",
+        r"bloque",
+    ):
+        return "vivienda_residencial"
+
+    if _has(
+        blob,
+        r"ampliacion",
+        r"ampliación",
+        r"reforma",
+        r"rehabilit",
+        r"edificabilidad",
+        r"volumen",
+        r"ordenacion de vol",
+        r"ordenación de vol",
+        r"edificio",
+        r"parcela",
+        r"solar",
+    ) or tipo_legal in {"estudio_detalle", "plan_especial", "plan_parcial"}:
+        return "edificio_ampliacion"
+
+    mapping = {
+        "vivienda_residencial": "vivienda_residencial",
+        "urbanizacion_infraestructura": "urbanizacion_redes",
+        "gestion_reparcelacion": "reparcelacion_gestion",
+        "proteccion_catalogo": "proteccion_patrimonio",
+        "dotacional_equipamiento": "equipamiento_publico",
+        "terciario_comercial_hotelero": "uso_terciario",
+        "uso_actividad_edificio_existente": "ordenacion_usos_actividad",
+        "ordenacion_parcela": "edificio_ampliacion",
+    }
+    if contenido in mapping:
+        return mapping[contenido]
+
+    if tipo_legal == "ajuste_administrativo":
+        return "sin_determinar"
+
+    return "sin_determinar"
+
+
 def classify_sigma_project(
     *,
     visor_ficha: dict[str, Any] | None,
@@ -47,6 +206,7 @@ def classify_sigma_project(
     area = area_approx_m2 or visor_m2
     viviendas = int(num_viviendas_max or 0)
 
+    denominacion = catalog.get("denominacion") or catalog.get("EXP_TX_DENOM")
     blob = _norm(
         " ".join(
             str(x or "")
@@ -55,6 +215,7 @@ def classify_sigma_project(
                 ficha.get("descripcionAmbito"),
                 ficha.get("denominacionVisor"),
                 ficha.get("ambitoOrdenacion"),
+                denominacion,
                 figura,
                 tipo_planeamiento,
                 layer,
@@ -167,6 +328,16 @@ def classify_sigma_project(
     else:
         categoria = "planeamiento_otros"
 
+    tipo_obra = classify_tipo_obra(
+        blob=blob,
+        figura=figura,
+        viviendas=viviendas,
+        tipo_legal=tipo_legal,
+        contenido=contenido,
+        layer=layer,
+    )
+    reasons.append(f"tipo_obra:{tipo_obra}")
+
     evidence = sum(
         1
         for ok in (
@@ -193,6 +364,7 @@ def classify_sigma_project(
         "contenido_principal": contenido,
         "fase_normalizada": fase_normalizada,
         "categoria_proyecto": categoria,
+        "tipo_obra": tipo_obra,
         "clasificacion_confianza": confianza,
         "clasificacion_fuentes": {
             "reasons": reasons,
@@ -204,5 +376,6 @@ def classify_sigma_project(
             "superficieVisorM2": visor_m2,
             "numViviendasMax": viviendas or None,
             "hasResumenContenido": bool(resumen_contenido),
+            "tipoObra": tipo_obra,
         },
     }

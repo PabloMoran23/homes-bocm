@@ -8,6 +8,8 @@ import sqlite3
 import sys
 from pathlib import Path
 
+from geo_utils import point_in_geom
+
 POC_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DB = POC_ROOT / "db" / "poc_local.sqlite"
 
@@ -54,7 +56,47 @@ def query(con: sqlite3.Connection, ndp: str) -> dict | None:
         (inv["id"],),
     ).fetchall()
 
-    expedientes = [dict(r) for r in sigma_rows]
+    expedientes_by_grupo: dict[str, dict] = {dict(r)["expediente_grupo"]: dict(r) for r in sigma_rows}
+
+    lat, lng = inv["lat"], inv["lng"]
+    if lat is not None and lng is not None:
+        for row in con.execute(
+            """
+            SELECT g.expediente_grupo, g.geom_geojson,
+                   c.exp_numero_original, c.sigma_layer_kind, c.denominacion, c.fase, c.enlace,
+                   g.area_approx_m2
+            FROM sigma_ambito_geom g
+            JOIN sigma_catalog_expediente c ON c.expediente_grupo = g.expediente_grupo
+            WHERE g.bbox_min_lng <= ? AND g.bbox_max_lng >= ?
+              AND g.bbox_min_lat <= ? AND g.bbox_max_lat >= ?
+            ORDER BY COALESCE(g.area_approx_m2, 1e18) ASC
+            """,
+            (lng, lng, lat, lat),
+        ):
+            grupo = row["expediente_grupo"]
+            if grupo in expedientes_by_grupo:
+                continue
+            try:
+                geom = json.loads(row["geom_geojson"])
+            except json.JSONDecodeError:
+                continue
+            if not point_in_geom(float(lng), float(lat), geom):
+                continue
+            expedientes_by_grupo[grupo] = {
+                "expediente_grupo": grupo,
+                "exp_numero_original": row["exp_numero_original"],
+                "sigma_layer_kind": row["sigma_layer_kind"],
+                "denominacion": row["denominacion"],
+                "fase": row["fase"],
+                "enlace": row["enlace"],
+                "match_method": "point_in_edificio",
+                "match_score": 1.0,
+            }
+
+    expedientes = sorted(
+        expedientes_by_grupo.values(),
+        key=lambda e: (e.get("sigma_layer_kind") or "", e.get("expediente_grupo") or ""),
+    )
 
     tramites: dict[str, list] = {}
     for exp in expedientes:

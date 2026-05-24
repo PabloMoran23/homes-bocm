@@ -72,6 +72,7 @@ type SupabaseVisorRow = {
   contenido_principal: string | null;
   fase_normalizada: string | null;
   categoria_proyecto: string | null;
+  tipo_obra: string | null;
   clasificacion_confianza: string | null;
   clasificacion_fuentes: Record<string, unknown> | null;
 };
@@ -263,6 +264,7 @@ function clasificacionFromRow(row: {
   contenido_principal?: string | null;
   fase_normalizada?: string | null;
   categoria_proyecto?: string | null;
+  tipo_obra?: string | null;
   clasificacion_confianza?: string | null;
   clasificacion_fuentes?: Record<string, unknown> | null;
 } | null | undefined): SigmaClassification | null {
@@ -273,6 +275,7 @@ function clasificacionFromRow(row: {
     contenidoPrincipal: row.contenido_principal ?? null,
     faseNormalizada: row.fase_normalizada ?? null,
     categoriaProyecto: row.categoria_proyecto,
+    tipoObra: row.tipo_obra ?? null,
     confianza: row.clasificacion_confianza ?? null,
     fuentes: row.clasificacion_fuentes ?? null,
   };

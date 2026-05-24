@@ -214,10 +214,7 @@ export function ProjectsMap({
             const cat = clasificarLicenciaMapa(props?.tipo_expediente);
             return L.marker(latlng, { icon: createLicenciaDivIcon(cat, false) });
           }
-          return L.circleMarker(
-            latlng,
-            featurePointStyle(props) as PathOptions,
-          );
+          return L.circleMarker(latlng, featurePointStyle(props) as PathOptions);
         }}
         onEachFeature={(feature, layer) => {
           const props = feature.properties as SectorFeatureProperties | undefined;

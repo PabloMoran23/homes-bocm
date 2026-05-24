@@ -57,7 +57,7 @@ export function SigmaAtAGlance({
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <h2 className="text-sm font-semibold text-slate-900">Qué está pasando</h2>
+      <h2 className="text-sm font-semibold text-slate-900">Resumen</h2>
       {body ? (
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-700">{body}</p>
       ) : null}

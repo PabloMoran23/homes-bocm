@@ -7,11 +7,13 @@ export type SigmaMapClassificationRow = {
   contenidoPrincipal: string | null;
   faseNormalizada: string | null;
   categoriaProyecto: string | null;
+  tipoObra: string | null;
   confianza?: string | null;
 };
 
 export type SigmaClassificationAxisId =
   | "categoriaProyecto"
+  | "tipoObra"
   | "tipoLegal"
   | "escala"
   | "contenidoPrincipal"
@@ -25,6 +27,7 @@ export const SIGMA_CLASSIFICATION_AXIS_ORDER: {
   defaultOpen?: boolean;
 }[] = [
   { id: "categoriaProyecto", label: "Categoría", defaultOpen: true },
+  { id: "tipoObra", label: "Tipo de obra", defaultOpen: true },
   { id: "tipoLegal", label: "Tipo legal" },
   { id: "escala", label: "Escala" },
   { id: "contenidoPrincipal", label: "Contenido" },

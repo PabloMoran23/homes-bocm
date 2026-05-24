@@ -1482,6 +1482,18 @@ if (existsSync(sigmaAmbitosExport) && existsSync(ubicacionesDb)) {
   }
 }
 
+const sigmaAmbitosPath = join(outDir, "madrid-sigma-ambitos.geojson");
+const landingScript = join(webRoot, "scripts", "build-madrid-sigma-ambitos-landing.mjs");
+if (existsSync(sigmaAmbitosPath) && existsSync(landingScript)) {
+  try {
+    const lr = spawnSync("node", [landingScript], { cwd: webRoot, encoding: "utf-8" });
+    if (lr.status === 0) console.log((lr.stdout || "").trim());
+    else console.warn("SIGMA landing map:", lr.stderr?.slice(0, 200) || lr.stdout?.slice(0, 200));
+  } catch (err) {
+    console.warn("SIGMA landing map:", err?.message || err);
+  }
+}
+
 if (existsSync(sectorGeoPath)) {
   copyFileSync(sectorGeoPath, join(outDir, "sector-geometries.geojson"));
   console.log("OK: sector-geometries.geojson copiado");

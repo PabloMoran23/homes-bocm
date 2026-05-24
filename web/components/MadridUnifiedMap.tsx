@@ -1,9 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef } from "react";
 import {
-  GeoJSON,
   MapContainer,
   ScaleControl,
   TileLayer,
@@ -11,19 +9,11 @@ import {
   useMap,
 } from "react-leaflet";
 import L from "leaflet";
-import type { LatLngExpression, PathOptions } from "leaflet";
+import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
-import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
-import { collectMapBounds } from "@/lib/map-bounds";
-import {
-  featureLayerStyle,
-  featurePointStyle,
-  featurePopupHtml,
-  type FeaturePopupOptions,
-  type SectorFeatureCollection,
-} from "@/lib/sector-geo";
-import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
+import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
 import { MapBoundsReporter } from "@/components/map/MapBoundsReporter";
 import { MapSizeFix } from "@/components/map/MapSizeFix";
@@ -39,32 +29,52 @@ const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
 function UnifiedFitBounds({
   ubicaciones,
   sigma,
+  fitToData = true,
 }: {
   ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
+  fitToData?: boolean;
 }) {
   const map = useMap();
-  const didFit = useRef(false);
+  const lastFitKey = useRef("");
+
   useEffect(() => {
-    if (didFit.current) return;
-    const hasUbic = Boolean(ubicaciones?.features?.length);
-    const hasSigma = Boolean(sigma?.features?.length);
-    if (!hasUbic && !hasSigma) {
+    if (!fitToData) {
       map.setView(MADRID_CENTER, 11, { animate: false });
       return;
     }
-    didFit.current = true;
+
+    const hasUbic = Boolean(ubicaciones?.features?.length);
+    const hasSigma = Boolean(sigma?.features?.length);
+    const key = `${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}`;
+
+    if (!hasUbic && !hasSigma) {
+      if (lastFitKey.current !== key) {
+        map.setView(MADRID_CENTER, 11, { animate: false });
+        lastFitKey.current = key;
+      }
+      return;
+    }
+
+    if (lastFitKey.current === key) return;
+    lastFitKey.current = key;
+
+    let bounds: L.LatLngBounds | null = null;
+    if (hasSigma) {
+      const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
+      if (sb.isValid()) bounds = sb;
+    }
     if (hasUbic) {
       const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
-      if (ub.isValid()) {
-        map.fitBounds(ub, { padding: [48, 48], maxZoom: 12, animate: false });
-        return;
-      }
+      if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
     }
-    const bounds = collectMapBounds([], sigma);
-    if (bounds) map.fitBounds(bounds, { padding: [48, 48], maxZoom: 11, animate: false });
-    else map.setView(MADRID_CENTER, 11, { animate: false });
-  }, [map, ubicaciones, sigma]);
+    if (bounds?.isValid()) {
+      map.fitBounds(bounds, { padding: [48, 48], maxZoom: 12, animate: false });
+      return;
+    }
+    map.setView(MADRID_CENTER, 11, { animate: false });
+  }, [map, ubicaciones, sigma, fitToData]);
+
   return null;
 }
 
@@ -86,54 +96,6 @@ function FlyToNdp({
   return null;
 }
 
-function SigmaPolygons({
-  geojson,
-  popupOptions,
-  visible,
-}: {
-  geojson: SectorFeatureCollection | null;
-  popupOptions: FeaturePopupOptions | null;
-  visible: boolean;
-}) {
-  const router = useRouter();
-
-  const onEach = useCallback(
-    (feature: GeoJSON.Feature, layer: L.Layer) => {
-      const props = feature.properties as Record<string, unknown> | undefined;
-      const pop = featurePopupHtml(props, popupOptions ?? undefined);
-      layer.bindPopup(pop, {
-        className: "homes-map-popup homes-map-popup-sigma",
-        maxWidth: 380,
-      });
-      layer.on("click", () => {
-        const expKey = expedienteGrupoKeyFromVariant(String(props?.EXP_TX_NUMERO || ""));
-        if (expKey) router.push(sigmaFichaPath(expKey));
-      });
-    },
-    [router, popupOptions],
-  );
-
-  if (!visible || !geojson?.features?.length) return null;
-
-  return (
-    <GeoJSON
-      key={`sigma-${geojson.features.length}`}
-      data={geojson as never}
-      style={(feature) => {
-        const props = feature?.properties;
-        return featureLayerStyle(props) as PathOptions;
-      }}
-      pointToLayer={(feature, latlng) =>
-        L.circleMarker(
-          latlng,
-          featurePointStyle(feature?.properties) as PathOptions,
-        )
-      }
-      onEachFeature={onEach}
-    />
-  );
-}
-
 export function MadridUnifiedMap({
   ubicacionesGeojson,
   sigmaGeojson,
@@ -146,6 +108,8 @@ export function MadridUnifiedMap({
   statsHint,
   className = "",
   interactive = true,
+  fitToData = true,
+  preferCanvas = false,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -159,6 +123,10 @@ export function MadridUnifiedMap({
   className?: string;
   /** Vista previa (inicio): sin pan/zoom; el contenedor padre enlaza a /explore. */
   interactive?: boolean;
+  /** Si false, vista fija sobre Madrid (evita getBounds sobre miles de polígonos). */
+  fitToData?: boolean;
+  /** Mejor rendimiento con muchos polígonos en móvil. */
+  preferCanvas?: boolean;
 }) {
   const { ready: mapReady, mapKey } = useLeafletMount();
   const nSigma = sigmaGeojson?.features?.length ?? 0;
@@ -236,24 +204,30 @@ export function MadridUnifiedMap({
             boxZoom={interactive}
             keyboard={interactive}
             attributionControl={false}
+            preferCanvas={preferCanvas}
           >
             <TileLayer url={HOMES_MAP_TILE_URL} />
             <MapSizeFix />
             {interactive && onBoundsChange ? (
               <MapBoundsReporter onBoundsChange={onBoundsChange} />
             ) : null}
-            <SigmaPolygons
-              geojson={sigmaGeojson}
-              popupOptions={sigmaPopupOptions ?? null}
-              visible={showSigma}
-            />
             <LicenciasClusterLayer
               geojson={ubicacionesGeojson}
               highlightNdp={highlightNdp}
               onSelectNdp={onSelectNdp}
               visible={showUbicaciones}
             />
-            <UnifiedFitBounds ubicaciones={ubicacionesGeojson} sigma={sigmaGeojson} />
+            <SigmaPolygonsLayer
+              geojson={sigmaGeojson}
+              popupOptions={sigmaPopupOptions ?? null}
+              visible={showSigma}
+              preview={!interactive}
+            />
+            <UnifiedFitBounds
+              ubicaciones={ubicacionesGeojson}
+              sigma={sigmaGeojson}
+              fitToData={fitToData}
+            />
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
             {interactive ? <ZoomControl position="topright" /> : null}
             {interactive ? <ScaleControl position="bottomleft" imperial={false} /> : null}

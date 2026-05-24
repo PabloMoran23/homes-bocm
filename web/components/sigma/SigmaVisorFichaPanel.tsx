@@ -61,7 +61,7 @@ export function SigmaVisorFichaPanel({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-[10px] font-semibold uppercase tracking-wide text-teal-800">
-          Ficha del visor municipal
+          Detalles
         </p>
         {hasValue(ficha.figuraCodigo) ? (
           <span className="font-mono text-[10px] text-teal-700/80">{ficha.figuraCodigo}</span>

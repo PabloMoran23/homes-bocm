@@ -189,7 +189,7 @@ export function ExploreMadridApp() {
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
   const [showUbicaciones, setShowUbicaciones] = useState(true);
-  const [showSigma, setShowSigma] = useState(false);
+  const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const [dataReady, setDataReady] = useState({ ubic: false, search: false });
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
@@ -526,7 +526,7 @@ export function ExploreMadridApp() {
           onSelectNdp={goUbicacion}
           sigmaPopupOptions={sigmaPopupOptions}
           showUbicaciones={showUbicaciones && dataReady.ubic}
-          showSigma={showSigma && !layerLoading}
+          showSigma={showSigma}
           onBoundsChange={onBoundsChange}
           statsHint={
             !dataReady.ubic

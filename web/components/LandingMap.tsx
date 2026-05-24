@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useSigmaAmbitosMapGeo } from "@/lib/madrid-sigma-map";
+import { useSigmaAmbitosLandingGeo } from "@/lib/madrid-sigma-map";
+import { useInViewport } from "@/lib/use-in-viewport";
 import { ambitosProyectosEnVista } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
@@ -20,8 +21,20 @@ const MadridUnifiedMap = dynamic(
 const MAP_HEIGHT =
   "min-h-[280px] h-[min(40vh,440px)] sm:min-h-[320px] sm:h-[min(44vh,500px)] lg:min-h-[360px] lg:h-[min(52vh,580px)]";
 
+function LandingMapPlaceholder({ hint }: { hint?: string }) {
+  return (
+    <div
+      className={`flex items-center justify-center rounded-2xl border border-dashed border-slate-200/90 bg-gradient-to-br from-teal-50/80 to-white/90 text-sm text-slate-500 shadow-inner ${MAP_HEIGHT}`}
+      aria-hidden
+    >
+      {hint ?? "Cargando mapa…"}
+    </div>
+  );
+}
+
 export function LandingMap() {
-  const { geo, err, ready, loading } = useSigmaAmbitosMapGeo();
+  const { ref, visible } = useInViewport();
+  const { geo, err, ready, loading } = useSigmaAmbitosLandingGeo(visible);
 
   const statsHint = loading
     ? "Cargando proyectos…"
@@ -42,23 +55,29 @@ export function LandingMap() {
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={ref} className="flex flex-col gap-2">
       <Link
         href="/explore"
         className="group relative block overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--portal-accent)]"
         aria-label="Abrir mapa explorar Madrid"
       >
-        <MadridUnifiedMap
-          ubicacionesGeojson={null}
-          sigmaGeojson={ready ? geo : null}
-          highlightNdp={null}
-          onSelectNdp={() => {}}
-          showUbicaciones={false}
-          showSigma={ready}
-          interactive={false}
-          statsHint={statsHint}
-          className={`rounded-2xl ${MAP_HEIGHT}`}
-        />
+        {!visible || !ready || !geo ? (
+          <LandingMapPlaceholder />
+        ) : (
+          <MadridUnifiedMap
+            ubicacionesGeojson={null}
+            sigmaGeojson={geo}
+            highlightNdp={null}
+            onSelectNdp={() => {}}
+            showUbicaciones={false}
+            showSigma
+            interactive={false}
+            fitToData={false}
+            preferCanvas
+            statsHint={statsHint}
+            className={`rounded-2xl ${MAP_HEIGHT}`}
+          />
+        )}
         <span
           className="absolute inset-0 z-[2000] cursor-pointer bg-transparent"
           aria-hidden
