@@ -43,3 +43,5 @@ yarn-error.log*
 public/data/*.json
 !public/data/madrid-sigma-visor-slim.json
 !public/data/madrid-dashboard-stats.json
+!public/data/madrid-licencias-filter-rows.json
+!public/data/madrid-sigma-filter-rows.json
