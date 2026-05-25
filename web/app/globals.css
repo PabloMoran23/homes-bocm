@@ -37,6 +37,8 @@ body {
 .homes-map-shell .leaflet-container {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   background: #f8faf9;
+  height: 100%;
+  width: 100%;
 }
 
 .homes-map-shell .leaflet-tile-pane img {

@@ -28,6 +28,21 @@ export function monthInYearRange(monthKey: string, fromYear: number, toYear: num
   return y >= fromYear && y <= toYear;
 }
 
+/** Comparación lexicográfica válida para claves `YYYY-MM`. */
+export function monthOnOrAfter(monthKey: string, minMonthKey: string): boolean {
+  return monthKey >= minMonthKey;
+}
+
+export function monthInDetailRange(
+  monthKey: string,
+  fromYear: number,
+  toYear: number,
+  minMonthKey: string,
+): boolean {
+  if (!monthOnOrAfter(monthKey, minMonthKey)) return false;
+  return monthInYearRange(monthKey, fromYear, toYear);
+}
+
 export function yearsFromMonths(months: string[]): number[] {
   const set = new Set<number>();
   for (const m of months) {

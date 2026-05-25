@@ -21,6 +21,9 @@ import { fileURLToPath } from "node:url";
 import { parse } from "csv-parse/sync";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
 import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
+import { buildMadridDistritos } from "./build-madrid-distritos.mjs";
+import { buildMadridLicenciasFilterRows } from "./build-madrid-licencias-filter-rows.mjs";
+import { buildMadridSigmaFilterRows } from "./build-madrid-sigma-filter-rows.mjs";
 import {
   sanitizeSigmaExpedienteMetric,
   sanitizeMetricsByExpediente,
@@ -333,7 +336,7 @@ function buildLandingNewsSpotlight() {
     const denom = catalog?.EXP_TX_DENOM || grupo;
     candidates.push({
       id: `sigma-${sigmaSlugFromGrupo(grupo)}`,
-      href: `/sigma/${encodeURIComponent(sigmaSlugFromGrupo(grupo))}`,
+      href: `/proyecto/${encodeURIComponent(sigmaSlugFromGrupo(grupo))}`,
       tag: tagForSpotlight(sanitized, catalog),
       dateLabel: dateLabelForExpediente(catalog?.EXP_TX_NUMERO || grupo),
       title: titleForSpotlight(denom, n),
@@ -1438,9 +1441,27 @@ try {
 }
 
 try {
+  await buildMadridDistritos({ outDir });
+} catch (err) {
+  console.warn("Distritos Madrid (mapa):", err?.message || err);
+}
+
+try {
+  buildMadridSigmaFilterRows({ outDir });
+} catch (err) {
+  console.warn("SIGMA filter-rows:", err?.message || err);
+}
+
+try {
   buildMadridDashboardStats({ outDir });
 } catch (err) {
   console.warn("Dashboard Madrid (stats):", err?.message || err);
+}
+
+try {
+  buildMadridLicenciasFilterRows({ outDir });
+} catch (err) {
+  console.warn("Licencias filter-rows:", err?.message || err);
 }
 
 const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");

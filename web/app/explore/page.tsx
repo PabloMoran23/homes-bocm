@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ExplorePage() {
   return (
-    <div className="fixed inset-x-0 bottom-0 top-14 z-0 overflow-hidden">
+    <div className="fixed inset-x-0 top-14 z-0 h-[calc(100dvh-3.5rem)] overflow-hidden">
       <ExploreMadridApp />
     </div>
   );

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { editionLabel, isPublicEdition } from "@/lib/edition";
 
 const navLinks = [
-  { href: "/", label: "Inicio" },
   { href: "/explore", label: "Explorar" },
   { href: "/madrid/estadisticas", label: "Estadísticas" },
   { href: "/boletin", label: "Tu zona" },
@@ -20,7 +19,11 @@ export function NavBar() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
         <Link
           href="/"
-          className="shrink-0 text-sm font-semibold tracking-tight text-slate-900 sm:text-base"
+          className={`shrink-0 rounded-md px-2 py-1.5 text-sm font-semibold tracking-tight transition sm:text-base ${
+            pathname === "/"
+              ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)]"
+              : "text-slate-900 hover:bg-slate-100"
+          }`}
         >
           <span className="text-[var(--portal-accent)]">Homes</span>
           <span className="text-slate-400"> · </span>
@@ -34,7 +37,6 @@ export function NavBar() {
               (href === "/explore" &&
                 (pathname.startsWith("/explore") ||
                   pathname.startsWith("/ubicacion") ||
-                  pathname.startsWith("/sigma") ||
                   pathname.startsWith("/proyecto"))) ||
               (href === "/madrid/estadisticas" &&
                 (pathname.startsWith("/madrid/estadisticas") ||

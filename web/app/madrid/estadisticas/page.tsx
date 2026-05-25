@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Estadísticas Madrid · Licencias y planeamiento",
   description:
-    "Dashboard de licencias urbanísticas y expedientes SIGMA del Ayuntamiento de Madrid: evolución anual, promotores, usos, trámites y distritos.",
+    "Dashboard de licencias urbanísticas y proyectos de planeamiento del Ayuntamiento de Madrid: evolución anual, promotores, usos, trámites y distritos.",
 };
 
 export default async function MadridEstadisticasPage() {

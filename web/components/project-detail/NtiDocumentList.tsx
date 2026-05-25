@@ -113,7 +113,7 @@ export function NtiDocumentList({
 
       {totalVisor && docs.length < totalVisor && !linked ? (
         <p className="text-xs text-slate-500">
-          Mostrando {docs.length} de {totalVisor} documentos del visor.
+          Mostrando {docs.length} de {totalVisor} documentos del expediente.
           {hasValue(listadoUrl) ? (
             <>
               {" "}

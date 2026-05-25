@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/sigma/:slug*",
+        destination: "/proyecto/:slug*",
+        permanent: true,
+      },
+    ];
+  },
   outputFileTracingExcludes: {
     "*": [
       "./public/data/madrid-licencias-*.geojson",

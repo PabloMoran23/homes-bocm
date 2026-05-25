@@ -384,7 +384,18 @@ export type MadridDashboardStats = {
     conMetricasPdf: number;
     viviendasEnMetricas: number;
     expedientesConViviendas: number;
+    conClasificacion?: number;
+    clasificacionGeneratedAt?: string | null;
     seriesByYear: { year: number; count: number }[];
+    byCategoriaProyecto?: MadridDashboardCount[];
+    byTipoObra?: MadridDashboardCount[];
+    byTipoLegal?: MadridDashboardCount[];
+    byEscala?: MadridDashboardCount[];
+    byFaseNormalizada?: MadridDashboardCount[];
+    byConfianza?: MadridDashboardCount[];
+    bySistemaActuacion?: MadridDashboardCount[];
+    byUnidadTramitadora?: MadridDashboardCount[];
+    byAmbitoOrdenacion?: MadridDashboardCount[];
     byFase: MadridDashboardCount[];
     byFiguraTipo: MadridDashboardCount[];
     byTipoFiguraAbrev: MadridDashboardCount[];

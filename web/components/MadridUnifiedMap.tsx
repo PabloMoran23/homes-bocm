@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import {
   MapContainer,
   ScaleControl,
@@ -25,6 +25,27 @@ import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
+/** Vista inicial y tope al encajar datos: ciudad, no calle. */
+const MADRID_CITY_ZOOM = 11;
+const MADRID_FIT_MAX_ZOOM = 14;
+const MADRID_CITY_BOUNDS = L.latLngBounds(
+  [40.348, -3.888],
+  [40.502, -3.518],
+);
+const MADRID_CITY_FIT: L.FitBoundsOptions = {
+  padding: [28, 28],
+  maxZoom: MADRID_CITY_ZOOM,
+  animate: false,
+};
+const MADRID_DATA_FIT: L.FitBoundsOptions = {
+  padding: [48, 48],
+  maxZoom: MADRID_FIT_MAX_ZOOM,
+  animate: false,
+};
+
+function frameMadridCity(map: L.Map) {
+  map.fitBounds(MADRID_CITY_BOUNDS, MADRID_CITY_FIT);
+}
 
 function UnifiedFitBounds({
   ubicaciones,
@@ -40,7 +61,7 @@ function UnifiedFitBounds({
 
   useEffect(() => {
     if (!fitToData) {
-      map.setView(MADRID_CENTER, 11, { animate: false });
+      frameMadridCity(map);
       return;
     }
 
@@ -50,7 +71,7 @@ function UnifiedFitBounds({
 
     if (!hasUbic && !hasSigma) {
       if (lastFitKey.current !== key) {
-        map.setView(MADRID_CENTER, 11, { animate: false });
+        frameMadridCity(map);
         lastFitKey.current = key;
       }
       return;
@@ -69,10 +90,10 @@ function UnifiedFitBounds({
       if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
     }
     if (bounds?.isValid()) {
-      map.fitBounds(bounds, { padding: [48, 48], maxZoom: 12, animate: false });
+      map.fitBounds(bounds, MADRID_DATA_FIT);
       return;
     }
-    map.setView(MADRID_CENTER, 11, { animate: false });
+    frameMadridCity(map);
   }, [map, ubicaciones, sigma, fitToData]);
 
   return null;
@@ -132,9 +153,32 @@ export function MadridUnifiedMap({
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
 
+  const statsLabel = useMemo((): ReactNode | null => {
+    if (statsHint) return statsHint;
+    const parts: ReactNode[] = [];
+    if (showSigma && nSigma > 0) {
+      parts.push(
+        <span key="sigma">
+          <span className="font-semibold text-slate-800">{nSigma.toLocaleString("es-ES")}</span> en vista
+        </span>,
+      );
+    }
+    if (showSigma && showUbicaciones && nSigma > 0 && nUbic > 0) {
+      parts.push(<span key="sep"> · </span>);
+    }
+    if (showUbicaciones && nUbic > 0) {
+      parts.push(
+        <span key="ubic">
+          <span className="font-semibold text-slate-800">{nUbic.toLocaleString("es-ES")}</span> edificios
+        </span>,
+      );
+    }
+    return parts.length > 0 ? parts : null;
+  }, [statsHint, showSigma, showUbicaciones, nSigma, nUbic]);
+
   const legend = useMemo(
     () => (
-      <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-white/90 bg-white/92 px-3 py-2.5 text-[11px] text-slate-600 shadow-md backdrop-blur-sm sm:flex">
+      <div className="pointer-events-none absolute bottom-12 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-white/90 bg-white/92 px-3 py-2.5 text-[11px] text-slate-600 shadow-md backdrop-blur-sm sm:bottom-14 sm:flex">
         {showSigma ? (
           <>
             <span className="flex items-center gap-2">
@@ -154,38 +198,19 @@ export function MadridUnifiedMap({
   );
 
   return (
-    <div className={`homes-map-shell group relative h-full min-h-0 w-full ${className}`}>
+    <div className={`homes-map-shell group relative w-full ${className}`}>
       <div
         className="pointer-events-none absolute inset-0 z-[500] rounded-none ring-1 ring-black/[0.05] ring-inset"
         aria-hidden
       />
-      <div className="relative h-full w-full overflow-hidden bg-teal-50/40">
-        <div className="pointer-events-none absolute left-0 right-0 top-0 z-[1000] flex items-start justify-between gap-2 p-2 sm:gap-3 sm:p-4">
-          <div className="pointer-events-auto max-w-[min(100%,14rem)] rounded-xl border border-white/80 bg-white/90 px-2.5 py-1.5 shadow-md backdrop-blur-md sm:max-w-none sm:px-3 sm:py-2">
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--portal-accent)]">
-              Madrid
-            </p>
-            <p className="text-xs text-slate-600">
-              {statsHint ?? (
-                <>
-                  {showSigma && nSigma > 0 ? (
-                    <span>
-                      <span className="font-semibold text-slate-800">{nSigma.toLocaleString("es-ES")}</span>{" "}
-                      en vista
-                    </span>
-                  ) : null}
-                  {showSigma && showUbicaciones && nSigma > 0 && nUbic > 0 ? " · " : null}
-                  {showUbicaciones && nUbic > 0 ? (
-                    <span>
-                      <span className="font-semibold text-slate-800">{nUbic.toLocaleString("es-ES")}</span>{" "}
-                      edificios
-                    </span>
-                  ) : null}
-                </>
-              )}
+      <div className="absolute inset-0 overflow-hidden bg-teal-50/40">
+        {statsLabel ? (
+          <div className="pointer-events-none absolute bottom-3 left-1/2 z-[1000] flex w-[min(calc(100%-1.5rem),28rem)] -translate-x-1/2 justify-center px-3 sm:bottom-4">
+            <p className="rounded-xl border border-white/90 bg-white/92 px-3 py-1.5 text-center text-xs leading-snug text-slate-600 shadow-md backdrop-blur-sm">
+              {statsLabel}
             </p>
           </div>
-        </div>
+        ) : null}
 
         {legend}
 
@@ -193,7 +218,7 @@ export function MadridUnifiedMap({
           <MapContainer
             key={mapKey}
             center={MADRID_CENTER}
-            zoom={11}
+            zoom={MADRID_CITY_ZOOM}
             className="z-0 h-full w-full"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}

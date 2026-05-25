@@ -13,7 +13,8 @@ import {
 } from "@/lib/boletin-area";
 import { LicenciaTitulo } from "@/components/LicenciaTitulo";
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
-import { sigmaSlugFromExpediente, ubicacionPath } from "@/lib/ubicacion";
+import { ubicacionPath } from "@/lib/ubicacion";
+import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import { fechaRelativaEs } from "@/lib/ubicacion-resumen";
 
 const BoletinMiniMap = dynamic(
@@ -54,7 +55,7 @@ function EventoFila({ ev }: { ev: BoletinEvento }) {
   const cuando = fechaRelativaEs(ev.fecha);
   const href =
     ev.tipo === "sigma" && ev.expedienteGrupo
-      ? `/sigma/${sigmaSlugFromExpediente(ev.expedienteGrupo)}`
+      ? sigmaFichaPath(ev.expedienteGrupo)
       : ev.ndp
         ? ubicacionPath(ev.ndp)
         : null;
@@ -454,7 +455,7 @@ export function BoletinAreaApp() {
 
               <footer className="mt-8 border-t border-slate-100 pt-4 text-[11px] leading-relaxed text-slate-400">
                 Datos: licencias urbanísticas del Ayuntamiento de Madrid y proyectos de planeamiento. Las
-                fechas de planeamiento corresponden al último trámite conocido en el visor. No
+                fechas de planeamiento corresponden al último trámite conocido en el registro municipal. No
                 indican inicio ni fin de obra salvo que se indique lo contrario.
               </footer>
             </article>

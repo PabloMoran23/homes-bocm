@@ -466,8 +466,8 @@ export function ExploreApp() {
 
       <p className="text-center text-xs text-slate-500">
         Haz clic en una fila para abrir la{" "}
-        <span className="font-medium text-slate-700">ficha completa del proyecto</span> (mapa, SIGMA,
-        PDF y todos los campos del CSV).
+        <span className="font-medium text-slate-700">ficha completa del proyecto</span> (mapa,
+        planeamiento, PDF y todos los campos del CSV).
       </p>
     </div>
   );

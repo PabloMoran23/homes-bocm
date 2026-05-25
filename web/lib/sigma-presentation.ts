@@ -319,10 +319,10 @@ export function buildSigmaQueImplica(input: SigmaPresentationInput): SigmaQueImp
     body +=
       " Homes no ha analizado aún los PDFs de este expediente" +
       (input.tieneDocumentos
-        ? "; puedes abrirlos en el visor municipal o en la pestaña Documentos."
+        ? "; puedes abrirlos en la web del Ayuntamiento o en la pestaña Documentos."
         : vf?.descripcionAmbito
           ? ` ${vf.descripcionAmbito}`
-          : ". Si hay documentación, suele publicarse en el visor del ayuntamiento.");
+          : ". Si hay documentación, suele publicarse en la ficha municipal.");
   }
 
   if (viviendas && viviendas > 0) {

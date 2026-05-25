@@ -16,5 +16,5 @@ export function sigmaFichaGrupoFromSlug(slug: string): string {
 }
 
 export function sigmaFichaPath(grupoOrVariant: string): string {
-  return `/sigma/${encodeURIComponent(sigmaFichaSlug(grupoOrVariant))}`;
+  return `/proyecto/${encodeURIComponent(sigmaFichaSlug(grupoOrVariant))}`;
 }

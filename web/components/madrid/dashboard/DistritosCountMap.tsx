@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
-import { CircleMarker, MapContainer, Popup, TileLayer, Tooltip, useMap } from "react-leaflet";
-import L from "leaflet";
+import { useEffect, useMemo, useState } from "react";
+import { MapContainer, TileLayer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { ChartCard } from "@/components/madrid/dashboard/ChartCard";
+import { DistritosGeoLayer } from "@/components/madrid/dashboard/DistritosGeoLayer";
+import { FitDistritosBounds } from "@/components/madrid/dashboard/FitDistritosBounds";
 import { fmtChart } from "@/lib/dashboard-chart-theme";
+import { distritoLegendGradient, distritoQuantileBreaks } from "@/lib/distrito-choropleth";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
-import { formatDistritoLabel, normDistritoKey } from "@/lib/madrid-distrito";
+import { normDistritoKey } from "@/lib/madrid-distrito";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import type {
   MadridDashboardCount,
@@ -15,7 +17,9 @@ import type {
   MadridDashboardDistritoPoint,
 } from "@/lib/types";
 
-const MADRID_CENTER: [number, number] = [40.4168, -3.7038];
+const MADRID_DISTRITOS_GEO_URL = "/data/madrid-distritos.geojson";
+/** Centro aproximado de Madrid capital (fitBounds lo ajusta al cargar). */
+const MADRID_CENTER: [number, number] = [40.42, -3.685];
 
 function MapSizeFix() {
   const map = useMap();
@@ -28,54 +32,17 @@ function MapSizeFix() {
   return null;
 }
 
-function FitDistritos({ points }: { points: { lat: number; lng: number }[] }) {
-  const map = useMap();
-  useEffect(() => {
-    if (!points.length) return;
-    const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]));
-    map.fitBounds(bounds.pad(0.12), { padding: [24, 24], maxZoom: 12, animate: false });
-  }, [map, points]);
-  return null;
-}
-
-function resolvePoints(
-  items: MadridDashboardCount[],
-  mapPoints?: MadridDashboardDistritoPoint[],
-  centroids?: Record<string, MadridDashboardDistritoCentroid>,
-) {
-  const byKey = new Map<string, MadridDashboardDistritoPoint>();
-  for (const p of mapPoints ?? []) {
-    byKey.set(normDistritoKey(p.name), p);
+function buildCountByKey(items: MadridDashboardCount[]): Map<string, number> {
+  const map = new Map<string, number>();
+  for (const item of items) {
+    map.set(normDistritoKey(item.name), item.count);
   }
-
-  return items
-    .map((item) => {
-      const key = normDistritoKey(item.name);
-      const fromMap = byKey.get(key);
-      const fromCentroid = centroids?.[key];
-      const lat = fromMap?.lat ?? fromCentroid?.lat ?? null;
-      const lng = fromMap?.lng ?? fromCentroid?.lng ?? null;
-      if (lat == null || lng == null) return null;
-      return {
-        name: formatDistritoLabel(fromMap?.name ?? fromCentroid?.label ?? item.name),
-        count: item.count,
-        lat,
-        lng,
-      };
-    })
-    .filter((p): p is NonNullable<typeof p> => p != null);
-}
-
-function radiusForCount(count: number, max: number) {
-  const t = max > 0 ? count / max : 0;
-  return 10 + Math.sqrt(t) * 22;
+  return map;
 }
 
 export function DistritosCountMap({
   title,
   items,
-  mapPoints,
-  centroids,
   valueLabel = "licencias",
 }: {
   title: string;
@@ -85,13 +52,40 @@ export function DistritosCountMap({
   valueLabel?: string;
 }) {
   const { ready, mapKey } = useLeafletMount();
+  const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [geoError, setGeoError] = useState(false);
 
-  const points = useMemo(
-    () => resolvePoints(items, mapPoints, centroids),
-    [items, mapPoints, centroids],
+  useEffect(() => {
+    let cancelled = false;
+    fetch(MADRID_DISTRITOS_GEO_URL)
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      })
+      .then((data) => {
+        if (!cancelled) setGeo(data as GeoJSON.FeatureCollection);
+      })
+      .catch(() => {
+        if (!cancelled) setGeoError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const countByKey = useMemo(() => buildCountByKey(items), [items]);
+  const quantileBreaks = useMemo(
+    () => distritoQuantileBreaks(items.map((i) => i.count)),
+    [items],
   );
 
-  const maxCount = useMemo(() => Math.max(1, ...points.map((p) => p.count)), [points]);
+  const matchedCount = useMemo(() => {
+    if (!geo?.features?.length) return 0;
+    return geo.features.filter((f) => {
+      const props = f.properties as { distrito_key?: string } | null;
+      return props?.distrito_key && countByKey.has(props.distrito_key);
+    }).length;
+  }, [geo, countByKey]);
 
   if (!items.length) {
     return (
@@ -104,58 +98,53 @@ export function DistritosCountMap({
   return (
     <ChartCard
       title={title}
-      subtitle={`${points.length} distritos en mapa · radio ∝ volumen de ${valueLabel}`}
+      subtitle={
+        geoError
+          ? "Límites de distrito no disponibles"
+          : `${matchedCount} distritos · color según ${valueLabel}`
+      }
       height={380}
-      className="md:col-span-2"
     >
       {!ready ? (
         <div className="flex h-full items-center justify-center text-sm text-slate-400">Cargando mapa…</div>
-      ) : points.length === 0 ? (
-        <p className="flex h-full items-center justify-center text-sm text-slate-500">
-          Sin coordenadas para ubicar distritos.
+      ) : geoError ? (
+        <p className="flex h-full items-center justify-center px-4 text-center text-sm text-slate-500">
+          Ejecuta <code className="rounded bg-slate-100 px-1 text-xs">npm run build-data</code> para generar{" "}
+          <code className="rounded bg-slate-100 px-1 text-xs">madrid-distritos.geojson</code>.
         </p>
+      ) : !geo ? (
+        <div className="flex h-full items-center justify-center text-sm text-slate-400">Cargando distritos…</div>
       ) : (
-        <div className="homes-map-shell h-full overflow-hidden rounded-lg border border-teal-100/70 bg-teal-50/40">
-          <MapContainer
-            key={mapKey}
-            center={MADRID_CENTER}
-            zoom={11}
-            className="h-full w-full"
-            scrollWheelZoom={false}
-            attributionControl={false}
-          >
-            <TileLayer url={HOMES_MAP_TILE_URL} />
-            <MapSizeFix />
-            <FitDistritos points={points} />
-            {points.map((p) => {
-              const r = radiusForCount(p.count, maxCount);
-              return (
-                <CircleMarker
-                  key={p.name}
-                  center={[p.lat, p.lng]}
-                  radius={r}
-                  pathOptions={{
-                    color: "#0f766e",
-                    weight: 2,
-                    fillColor: "#14b8a6",
-                    fillOpacity: 0.55,
-                  }}
-                >
-                  <Tooltip direction="top" offset={[0, -r]} opacity={0.95}>
-                    <span className="text-xs font-medium">{p.name}</span>
-                    <br />
-                    <span className="text-xs tabular-nums">{fmtChart(p.count)} {valueLabel}</span>
-                  </Tooltip>
-                  <Popup>
-                    <p className="font-semibold text-slate-900">{p.name}</p>
-                    <p className="mt-1 text-sm tabular-nums text-slate-600">
-                      {fmtChart(p.count)} {valueLabel}
-                    </p>
-                  </Popup>
-                </CircleMarker>
-              );
-            })}
-          </MapContainer>
+        <div className="flex h-full flex-col gap-2">
+          <div className="homes-map-shell min-h-0 flex-1 overflow-hidden rounded-lg border border-teal-100/70 bg-teal-50/40">
+            <MapContainer
+              key={`${mapKey}-${quantileBreaks.join(",")}`}
+              center={MADRID_CENTER}
+              zoom={10}
+              className="h-full w-full min-h-[280px]"
+              scrollWheelZoom={false}
+              attributionControl={false}
+            >
+              <TileLayer url={HOMES_MAP_TILE_URL} />
+              <MapSizeFix />
+              <FitDistritosBounds geojson={geo} />
+              <DistritosGeoLayer
+                geojson={geo}
+                countByKey={countByKey}
+                quantileBreaks={quantileBreaks}
+                valueLabel={valueLabel}
+              />
+            </MapContainer>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-[10px] text-slate-500">
+            <span>Menos</span>
+            <div
+              className="h-2.5 flex-1 max-w-[220px] rounded-full border border-slate-200/80"
+              style={{ background: distritoLegendGradient() }}
+              aria-hidden
+            />
+            <span>Más</span>
+          </div>
         </div>
       )}
     </ChartCard>

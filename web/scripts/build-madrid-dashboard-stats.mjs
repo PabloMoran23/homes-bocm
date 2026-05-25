@@ -86,6 +86,17 @@ export function buildMadridDashboardStats(opts) {
   const byTramite = new Map();
   const byLayer = new Map();
   const byOrgano = new Map();
+  const byCategoria = new Map();
+  const byTipoObra = new Map();
+  const byTipoLegal = new Map();
+  const byEscala = new Map();
+  const byFaseNorm = new Map();
+  const byConfianza = new Map();
+  const bySistemaAct = new Map();
+  const byUnidadTram = new Map();
+  const byAmbitoOrd = new Map();
+  let conClasificacion = 0;
+  let clasificacionGeneratedAt = null;
   const supBuckets = new Map([
     ["< 500 m²", 0],
     ["500 – 2.000 m²", 0],
@@ -99,6 +110,13 @@ export function buildMadridDashboardStats(opts) {
   let conMetricas = 0;
   let viviendasTotal = 0;
   let viviendasExpedientes = 0;
+
+  const clasPath = join(outDir, "madrid-sigma-clasificacion.json");
+  const clas = existsSync(clasPath)
+    ? JSON.parse(readFileSync(clasPath, "utf-8"))
+    : { byExpediente: {} };
+  clasificacionGeneratedAt = clas.generatedAt || null;
+  const byExpClas = clas.byExpediente || {};
 
   if (existsSync(sigmaPath)) {
     const sigma = JSON.parse(readFileSync(sigmaPath, "utf-8"));
@@ -121,6 +139,17 @@ export function buildMadridDashboardStats(opts) {
 
       if (e.has_geometry) conGeometry += 1;
 
+      const cl = byExpClas[grupo];
+      if (cl?.categoriaProyecto || cl?.tipoObra) {
+        conClasificacion += 1;
+        inc(byCategoria, cl.categoriaProyecto);
+        inc(byTipoObra, cl.tipoObra);
+        inc(byTipoLegal, cl.tipoLegal);
+        inc(byEscala, cl.escala);
+        inc(byFaseNorm, cl.faseNormalizada);
+        inc(byConfianza, cl.confianza);
+      }
+
       const v = viso[grupo];
       if (v?.tramitacion?.length) conTramitacion += 1;
       const f = v?.visorFicha;
@@ -131,6 +160,9 @@ export function buildMadridDashboardStats(opts) {
         inc(byIniciativa, f.iniciativa);
         if (f.promotor) inc(byPromotor, f.promotor);
         if (f.figuraTipo) inc(byFiguraTipo, f.figuraTipo);
+        inc(bySistemaAct, f.sistemaActuacion);
+        inc(byUnidadTram, f.unidadTramitadora);
+        inc(byAmbitoOrd, f.ambitoOrdenacion);
         const m2 = f.superficieAmbitoM2;
         if (m2 != null && m2 > 0) {
           if (m2 < 500) supBuckets.set("< 500 m²", supBuckets.get("< 500 m²") + 1);
@@ -190,10 +222,48 @@ export function buildMadridDashboardStats(opts) {
       conVisorFicha,
       conTramitacion,
       conGeometry,
+      conClasificacion,
+      clasificacionGeneratedAt,
       conMetricasPdf: conMetricas,
       viviendasEnMetricas: viviendasTotal,
       expedientesConViviendas: viviendasExpedientes,
       seriesByYear: sigmaYears,
+      byCategoriaProyecto: topEntries(byCategoria, 12).map((x) => ({
+        ...x,
+        name: titleCase(String(x.name).replace(/_/g, " ")),
+      })),
+      byTipoObra: topEntries(byTipoObra, 12).map((x) => ({
+        ...x,
+        name: titleCase(String(x.name).replace(/_/g, " ")),
+      })),
+      byTipoLegal: topEntries(byTipoLegal, 10).map((x) => ({
+        ...x,
+        name: titleCase(String(x.name).replace(/_/g, " ")),
+      })),
+      byEscala: topEntries(byEscala, 8).map((x) => ({
+        ...x,
+        name: titleCase(String(x.name).replace(/_/g, " ")),
+      })),
+      byFaseNormalizada: topEntries(byFaseNorm, 10).map((x) => ({
+        ...x,
+        name: titleCase(String(x.name).replace(/_/g, " ")),
+      })),
+      byConfianza: topEntries(byConfianza, 4).map((x) => ({
+        ...x,
+        name: titleCase(x.name),
+      })),
+      bySistemaActuacion: topEntries(bySistemaAct, 8).map((x) => ({
+        ...x,
+        name: titleCase(x.name),
+      })),
+      byUnidadTramitadora: topEntries(byUnidadTram, 8).map((x) => ({
+        ...x,
+        name: titleCase(x.name),
+      })),
+      byAmbitoOrdenacion: topEntries(byAmbitoOrd, 12).map((x) => ({
+        ...x,
+        name: String(x.name).toUpperCase(),
+      })),
       byFase: topEntries(byFase, 12).map((x) => ({ ...x, name: titleCase(x.name) })),
       byFiguraTipo: topEntries(byFiguraTipo, 14).map((x) => ({ ...x, name: titleCase(x.name) })),
       byTipoFiguraAbrev: topEntries(byTfig, 12).map((x) => ({ ...x, name: x.name.toUpperCase() })),

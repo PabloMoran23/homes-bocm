@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import type { MadridDashboardMapaMonth, MadridDashboardStats } from "@/lib/types";
 
 export type LandingNewsSpotlight = {
@@ -225,7 +226,7 @@ function yearFromExpediente(value: string | null | undefined) {
 }
 
 function sigmaHref(grupo: string) {
-  return `/sigma/${encodeURIComponent(grupo.replace(/\//g, "-"))}`;
+  return sigmaFichaPath(grupo);
 }
 
 function shortTitle(value: string | null | undefined, max = 58) {

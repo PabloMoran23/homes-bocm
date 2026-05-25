@@ -33,6 +33,7 @@ export function YearEvolutionChart({
   granularity = "year",
   valueLabel = "expedientes",
   color = PORTAL_TEAL,
+  height,
 }: {
   title: string;
   subtitle?: string;
@@ -43,6 +44,7 @@ export function YearEvolutionChart({
   granularity?: LicenciasTimeGranularity;
   valueLabel?: string;
   color?: string;
+  height?: number;
 }) {
   const yearSorted = useMemo(
     () => [...series].sort((a, b) => a.year - b.year),
@@ -114,7 +116,7 @@ export function YearEvolutionChart({
     <ChartCard
       title={title}
       subtitle={subtitle ?? defaultSubtitle}
-      height={granularity === "month" ? 300 : 280}
+      height={height ?? (granularity === "month" ? 300 : 280)}
       controls={
         <YearRangeControls years={years} from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
       }

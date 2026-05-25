@@ -1,4 +1,5 @@
 .venv/
+.venv-municipio/
 __pycache__/
 *.pyc
 .env

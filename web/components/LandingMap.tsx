@@ -58,11 +58,11 @@ export function LandingMap() {
     <div ref={ref} className="flex flex-col gap-2">
       <Link
         href="/explore"
-        className="group relative block overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--portal-accent)]"
+        className={`group relative block overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
         aria-label="Abrir mapa explorar Madrid"
       >
         {!visible || !ready || !geo ? (
-          <LandingMapPlaceholder />
+          <LandingMapPlaceholder hint={loading ? "Cargando mapa…" : undefined} />
         ) : (
           <MadridUnifiedMap
             ubicacionesGeojson={null}
@@ -75,7 +75,7 @@ export function LandingMap() {
             fitToData={false}
             preferCanvas
             statsHint={statsHint}
-            className={`rounded-2xl ${MAP_HEIGHT}`}
+            className="h-full w-full rounded-2xl"
           />
         )}
         <span

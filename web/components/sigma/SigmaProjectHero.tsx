@@ -38,7 +38,7 @@ export function SigmaProjectHero({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-semibold text-indigo-950 ring-1 ring-indigo-200">
-                Proyecto urbanístico · SIGMA
+                Proyecto urbanístico
               </span>
               {presentation.source === "informacion_publica" ? (
                 <span className={`rounded-full px-3 py-0.5 text-xs font-semibold ${status.className}`}>
@@ -99,7 +99,7 @@ export function SigmaProjectHero({
                   rel="noopener noreferrer"
                   className="inline-flex rounded-lg bg-[var(--portal-accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--portal-accent-hover)]"
                 >
-                  Visor municipal ↗
+                  Ayuntamiento ↗
                 </a>
               ) : null}
               {bocmFirstId ? (

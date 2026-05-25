@@ -31,7 +31,7 @@ function useSigmaAmbitosMapGeoFromUrl(url: string, prefiltered: boolean) {
       } catch {
         if (!cancelled) {
           setErr(
-            "Faltan datos SIGMA de Madrid. Ejecuta: npm run build-data en la carpeta web/.",
+            "Faltan datos de planeamiento de Madrid.",
           );
         }
       }

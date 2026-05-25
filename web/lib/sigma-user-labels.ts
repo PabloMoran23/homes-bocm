@@ -297,10 +297,10 @@ export const SIGMA_AYTO_INTRO =
   "Datos del registro urbanístico del Ayuntamiento de Madrid: qué se tramita, en qué fase está y qué documentos hay disponibles.";
 
 export const SIGMA_TRAMITACION_INTRO =
-  "Hitos publicados en el visor de seguimiento del ayuntamiento (fechas y órganos que intervienen).";
+  "Hitos publicados en el seguimiento del Ayuntamiento (fechas y órganos que intervienen).";
 
 export const SIGMA_TRAMITACION_EMPTY =
-  "No hay pasos detallados en el visor para este expediente. El estado actual refleja el catálogo municipal.";
+  "No hay pasos detallados publicados para este proyecto. El estado actual refleja el registro municipal.";
 
 export const SIGMA_DOCUMENTOS_INTRO =
   "Memorias, informes y anexos del expediente en el archivo electrónico del ayuntamiento.";

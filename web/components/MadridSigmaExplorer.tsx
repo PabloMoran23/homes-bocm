@@ -99,7 +99,7 @@ export function MadridSigmaExplorer() {
       } catch {
         if (!cancelled) {
           setErr(
-            "No se pudo cargar SIGMA. Ejecuta: python3 -m sector_geometry.madrid_ayto_sync && npm run build-data",
+            "No se pudieron cargar los proyectos de planeamiento. Ejecuta: python3 -m sector_geometry.madrid_ayto_sync && npm run build-data",
           );
         }
       }
@@ -351,7 +351,7 @@ export function MadridSigmaExplorer() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Stat label="Total SIGMA" value={(c?.total ?? data.expedientes.length).toLocaleString("es-ES")} />
+        <Stat label="Total proyectos" value={(c?.total ?? data.expedientes.length).toLocaleString("es-ES")} />
         <Stat label="Únicos" value={c?.expedientes_unicos?.toLocaleString("es-ES") ?? "—"} />
         <Stat label="Información pública" value={c?.informacion_publica ?? "—"} />
         <Stat label="Planeamiento AD" value={c?.tramitados_ad ?? "—"} />
@@ -417,16 +417,16 @@ export function MadridSigmaExplorer() {
         ) : null}
         <span className="mt-1 block text-xs text-slate-500">
           Listado y mapa comparten el filtro de portal y el umbral de año; el desplegable muestra{" "}
-          <strong>todos los años</strong> detectados en el catálogo SIGMA (fechas de servicio o año del
+          <strong>todos los años</strong> detectados en el catálogo municipal (fechas de servicio o año del
           expediente). Por defecto: desde {SIGMA_DEFAULT_MIN_YEAR_EXCLUSIVE_2020}{" "}
           <span className="whitespace-nowrap">(posterior al calendario 2020)</span>.
         </span>
       </p>
 
       <div>
-        <h2 className="mb-2 text-sm font-semibold text-slate-800">Mapa SIGMA</h2>
+        <h2 className="mb-2 text-sm font-semibold text-slate-800">Mapa de proyectos</h2>
         <p className="mb-3 text-xs text-slate-600">
-          Haz clic en un polígono: <strong>ficha del expediente</strong> (SIGMA + visor) para todos; enlace{" "}
+          Haz clic en un polígono: <strong>ficha del proyecto</strong> para todos; enlace{" "}
           <strong>BOCM</strong> si hay anuncio parseado. Índice regenerado con{" "}
           <code className="rounded bg-slate-100 px-1 text-[11px]">npm run build-data</code>.
         </p>
@@ -496,7 +496,7 @@ export function MadridSigmaExplorer() {
               Año mín.
             </span>
             <select
-              title="Incluir expedientes con actividad desde 1 ene de este año (SIGMA) o con nº expediente de ese año"
+              title="Incluir proyectos con actividad desde 1 ene de este año o con nº de expediente de ese año"
               value={sigmaMinYearInclusive === null ? "" : String(sigmaMinYearInclusive)}
               onChange={(e) => {
                 const raw = e.target.value;
@@ -597,7 +597,7 @@ export function MadridSigmaExplorer() {
               <th className="px-3 py-2">Fase</th>
               <th className="px-3 py-2">Figura</th>
               <th className="px-3 py-2">Origen</th>
-              <th className="px-3 py-2 text-right whitespace-nowrap min-w-[8rem]">Portal / visor</th>
+              <th className="px-3 py-2 text-right whitespace-nowrap min-w-[8rem]">Enlaces</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -687,7 +687,7 @@ function SigmaRow({
             rel="noopener noreferrer"
             className="text-xs font-medium text-slate-500 hover:underline"
           >
-            Visor ↗
+            Ayuntamiento ↗
           </a>
         ) : null}
       </td>

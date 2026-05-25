@@ -34,13 +34,13 @@ export function coordSourceLabel(source: string | null | undefined): string {
     case "sector_geometry_municipio":
       return "Centroide municipal (fallback sector_geometry)";
     case "sigma_madrid_ip":
-      return "Ubicación SIGMA (información pública, Ayto. Madrid)";
+      return "Ubicación del proyecto (información pública, Ayto. Madrid)";
     case "sigma_madrid_ad":
-      return "Ubicación SIGMA (catálogo planeamiento AD, polígono expediente)";
+      return "Ubicación del proyecto (planeamiento AD, polígono del expediente)";
     case "sigma_madrid_gestion":
-      return "Ubicación SIGMA (gestión, polígono expediente)";
+      return "Ubicación del proyecto (gestión, polígono del expediente)";
     case "sigma_madrid_urbanizacion":
-      return "Ubicación SIGMA (urbanización, polígono expediente)";
+      return "Ubicación del proyecto (urbanización, polígono del expediente)";
     default:
       return source ?? "Sin coordenadas";
   }
@@ -49,10 +49,10 @@ export function coordSourceLabel(source: string | null | undefined): string {
 export function sigmaCatalogSourceLabel(source: string | null | undefined): string | null {
   if (!hasValue(source)) return null;
   const s = source.trim();
-  if (s === "informacion_publica") return "Información pública (SIGMA)";
-  if (s === "tramitados_ad") return "Planeamiento — expedientes tramitados (SIGMA)";
-  if (s === "tramitados_gestion") return "Gestión — expedientes tramitados (SIGMA)";
-  if (s === "tramitados_urbanizacion") return "Urbanización — expedientes tramitados (SIGMA)";
+  if (s === "informacion_publica") return "Información pública";
+  if (s === "tramitados_ad") return "Planeamiento — expedientes tramitados";
+  if (s === "tramitados_gestion") return "Gestión — expedientes tramitados";
+  if (s === "tramitados_urbanizacion") return "Urbanización — expedientes tramitados";
   return s;
 }
 

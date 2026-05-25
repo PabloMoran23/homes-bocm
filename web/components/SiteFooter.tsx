@@ -21,7 +21,7 @@ export function SiteFooter() {
         <p className="leading-relaxed">
           <strong className="font-semibold text-slate-800">Homes · Urbanismo</strong>{" "}
           {isPublicEdition()
-            ? "concentra licencias, expedientes SIGMA y anuncios del BOCM en un mapa y fichas legibles para Madrid capital. Versión beta: más herramientas en camino."
+            ? "concentra licencias, proyectos de planeamiento y anuncios del BOCM en un mapa y fichas legibles para Madrid capital. Versión beta: más herramientas en camino."
             : "te acerca lo que importa del planeamiento alrededor de tu zona: seguimiento de proyectos, lectura clara y herramientas para comparar y reaccionar a tiempo."}
         </p>
       </div>

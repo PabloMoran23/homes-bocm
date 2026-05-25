@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const tabs = [
   {
     href: "/madrid/sigma",
-    label: "SIGMA",
+    label: "Proyectos",
     description: "Planeamiento, gestión y urbanización (~4k)",
   },
   {

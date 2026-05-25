@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { ChartCard } from "@/components/madrid/dashboard/ChartCard";
 import { registerDashboardCharts } from "@/components/madrid/dashboard/register-charts";
@@ -8,9 +8,14 @@ import { YearRangeControls } from "@/components/madrid/dashboard/YearRangeContro
 import {
   formatMonthLabel,
   granularityLabel,
-  monthInYearRange,
+  monthInDetailRange,
+  monthOnOrAfter,
   yearsFromMonths,
 } from "@/lib/dashboard-time";
+import {
+  LICENCIAS_DETALLE_MIN_MONTH,
+  LICENCIAS_DETALLE_MIN_YEAR,
+} from "@/lib/licencias-actuacion-familias";
 import { multiLineChartOptions } from "@/lib/dashboard-chart-theme";
 import {
   ACTUACION_QUE_LEYENDA,
@@ -52,45 +57,67 @@ export function ActuacionQueLineChart({
   seriesByYear,
   seriesByMonth,
   granularity = "year",
+  cutFromOrdenanza = false,
 }: {
   title: string;
   seriesByYear: MadridDashboardMapaYear[];
   seriesByMonth?: MadridDashboardMapaMonth[];
   granularity?: LicenciasTimeGranularity;
+  /** Excluye datos anteriores a 2023 (etiquetado homogéneo). */
+  cutFromOrdenanza?: boolean;
 }) {
   const yearSorted = useMemo(
     () => [...seriesByYear].sort((a, b) => a.year - b.year),
     [seriesByYear],
   );
-  const monthSorted = useMemo(
-    () => [...(seriesByMonth ?? [])].sort((a, b) => a.month.localeCompare(b.month)),
-    [seriesByMonth],
-  );
+  const monthSorted = useMemo(() => {
+    const rows = [...(seriesByMonth ?? [])].sort((a, b) => a.month.localeCompare(b.month));
+    if (!cutFromOrdenanza) return rows;
+    return rows.filter((m) => monthOnOrAfter(m.month, LICENCIAS_DETALLE_MIN_MONTH));
+  }, [seriesByMonth, cutFromOrdenanza]);
 
-  const activeRows = granularity === "year" ? yearSorted : monthSorted;
+  const yearSortedCut = useMemo(() => {
+    if (!cutFromOrdenanza) return yearSorted;
+    return yearSorted.filter((s) => s.year >= LICENCIAS_DETALLE_MIN_YEAR);
+  }, [yearSorted, cutFromOrdenanza]);
+
+  const activeRows = granularity === "year" ? yearSortedCut : monthSorted;
   const seriesIds = useMemo(() => collectSeriesIds(activeRows), [activeRows]);
 
   const years = useMemo(() => {
-    if (granularity === "year") return yearSorted.map((s) => s.year);
+    if (granularity === "year") return yearSortedCut.map((s) => s.year);
     return yearsFromMonths(monthSorted.map((m) => m.month));
-  }, [granularity, yearSorted, monthSorted]);
+  }, [granularity, yearSortedCut, monthSorted]);
 
-  const minY = years[0] ?? 2015;
+  const minY = years[0] ?? (cutFromOrdenanza ? LICENCIAS_DETALLE_MIN_YEAR : 2015);
   const maxY = years[years.length - 1] ?? new Date().getFullYear();
-  const [from, setFrom] = useState(minY);
+  const initialFrom = cutFromOrdenanza
+    ? Math.max(minY, LICENCIAS_DETALLE_MIN_YEAR)
+    : minY;
+  const [from, setFrom] = useState(initialFrom);
   const [to, setTo] = useState(maxY);
+
+  useEffect(() => {
+    if (!cutFromOrdenanza) return;
+    if (from < LICENCIAS_DETALLE_MIN_YEAR) setFrom(LICENCIAS_DETALLE_MIN_YEAR);
+  }, [cutFromOrdenanza, from]);
 
   const { labels, filteredRows } = useMemo(() => {
     if (granularity === "year") {
-      const rows = yearSorted.filter((s) => s.year >= from && s.year <= to);
+      const rows = yearSortedCut.filter((s) => s.year >= from && s.year <= to);
       return { labels: rows.map((r) => String(r.year)), filteredRows: rows };
     }
-    const rows = monthSorted.filter((m) => monthInYearRange(m.month, from, to));
+    const minMonth = cutFromOrdenanza ? LICENCIAS_DETALLE_MIN_MONTH : "0000-01";
+    const rows = monthSorted.filter((m) => monthInDetailRange(m.month, from, to, minMonth));
     return {
       labels: rows.map((r) => formatMonthLabel(r.month)),
       filteredRows: rows,
     };
-  }, [granularity, yearSorted, monthSorted, from, to]);
+  }, [granularity, yearSortedCut, monthSorted, from, to, cutFromOrdenanza]);
+
+  const detalleDesdeLabel = cutFromOrdenanza
+    ? String(LICENCIAS_DETALLE_MIN_YEAR)
+    : String(initialFrom);
 
   const chartData = useMemo(() => {
     const datasets = seriesIds.map((id) => {
@@ -122,16 +149,14 @@ export function ActuacionQueLineChart({
   );
 
   const hasData =
-    granularity === "year"
-      ? yearSorted.length > 0
-      : (seriesByMonth?.length ?? 0) > 0;
+    granularity === "year" ? yearSortedCut.length > 0 : monthSorted.length > 0;
 
   if (!hasData || !seriesIds.length) return null;
 
   return (
     <ChartCard
       title={title}
-      subtitle={`Qué se va a hacer (normalizado) · ${granularityLabel(granularity)} · pulsa la leyenda para ocultar una serie`}
+      subtitle={`Desde ${detalleDesdeLabel} · ${granularityLabel(granularity)} · pulsa la leyenda para ocultar una serie`}
       height={granularity === "month" ? 400 : 380}
       className="lg:col-span-2"
       controls={

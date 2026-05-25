@@ -27,7 +27,6 @@ export const PUBLIC_ROUTE_PREFIXES = [
   "/explore",
   "/boletin",
   "/ubicacion",
-  "/sigma",
   "/proyecto",
   "/madrid/estadisticas",
   "/estadisticas",

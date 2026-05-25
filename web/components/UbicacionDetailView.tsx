@@ -15,7 +15,7 @@ import { LicenciaTitulo } from "@/components/LicenciaTitulo";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import { boletinPath } from "@/lib/boletin-area";
 import type { UbicacionFicha, UbicacionSigmaExpediente } from "@/lib/ubicacion";
-import { sigmaSlugFromExpediente } from "@/lib/ubicacion";
+import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
 const ProjectsMap = dynamic(
   () => import("./ProjectsMap").then((m) => ({ default: m.ProjectsMap })),
@@ -74,7 +74,7 @@ function ExpedienteCard({
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
-          href={`/sigma/${sigmaSlugFromExpediente(exp.expediente_grupo)}`}
+          href={sigmaFichaPath(exp.expediente_grupo)}
           className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
         >
           Ficha del proyecto
@@ -181,7 +181,7 @@ export function UbicacionDetailView({
           </p>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
             Licencias y obras en este edificio, más proyectos de planeamiento y normas urbanísticas que
-            afectan a la zona — no es un expediente SIGMA, sino la foto de lo que ocurre en torno a esta
+            afectan a la zona — no es la ficha de un solo proyecto, sino la foto de lo que ocurre en torno a esta
             dirección.
           </p>
 
@@ -250,7 +250,7 @@ export function UbicacionDetailView({
           <div className="rounded-xl border border-amber-100 bg-amber-50/50 p-4 text-sm text-amber-950">
             <p className="font-semibold">¿Buscas un proyecto concreto?</p>
             <p className="mt-1 text-xs leading-relaxed text-amber-900/80">
-              Los expedientes SIGMA tienen ficha propia con su ámbito en mapa. Aquí ves el edificio y lo
+              Los proyectos de planeamiento tienen ficha propia con su ámbito en mapa. Aquí ves el edificio y lo
               que le rodea.
             </p>
           </div>
@@ -416,7 +416,7 @@ export function UbicacionDetailView({
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">Proyectos que aplican</h2>
                 <p className="mt-1 mb-4 text-sm text-slate-600">
-                  Expedientes de planeamiento (SIGMA) cuyo ámbito incluye esta dirección — también normas
+                  Proyectos de planeamiento cuyo ámbito incluye esta dirección — también normas
                   generales de ciudad (PGOUM, catálogos…) si el edificio cae dentro de su ámbito.
                 </p>
                 {ficha.expedientesSigma.length === 0 ? (

@@ -1,3 +1,4 @@
+import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import type {
   UbicacionFicha,
@@ -287,7 +288,7 @@ export function buildUbicacionResumen(
       titulo: (exp.denominacion || exp.expediente_grupo).slice(0, 72),
       detalle: `${categoriaExpedienteLabel(cat)} · ${faseEnLenguajeClaro(exp.fase)}`,
       tipo: "sigma",
-      href: `/sigma/${encodeURIComponent(exp.expediente_grupo.replace(/\//g, "-"))}`,
+      href: sigmaFichaPath(exp.expediente_grupo),
     });
   }
 

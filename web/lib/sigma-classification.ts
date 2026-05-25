@@ -78,7 +78,7 @@ const TIPO_OBRA_PLAIN: Record<string, string> = {
   modificacion_planeamiento:
     "Cambia normas del plan general de Madrid para este ámbito o para toda la ciudad.",
   sin_determinar:
-    "No hemos podido concretar qué tipo de obra plantea; conviene leer el resumen del visor.",
+    "No hemos podido concretar qué tipo de obra plantea; conviene leer el resumen del proyecto.",
 };
 
 const CATEGORY_PLAIN: Record<string, string> = {

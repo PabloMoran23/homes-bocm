@@ -1,13 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { headers } from "next/headers";
+import { getSiteUrl } from "@/lib/site-url";
 
 /** Origen para /data/* cuando el fichero no está en el deployment (fallback HTTP). */
 export function staticDataOrigin(): string {
-  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "http://localhost:3000";
+  return getSiteUrl();
 }
 
 async function requestOrigin(): Promise<string | null> {

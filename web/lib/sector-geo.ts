@@ -161,7 +161,7 @@ export function featurePopupHtml(
     }
     if (visorUrl) {
       bits.push(
-        `<a href="${escapeAttr(String(visorUrl))}" target="_blank" rel="noopener noreferrer" style="color:#64748b;font-weight:600;font-size:12px">Visor municipal ↗</a>`,
+        `<a href="${escapeAttr(String(visorUrl))}" target="_blank" rel="noopener noreferrer" style="color:#64748b;font-weight:600;font-size:12px">Ayuntamiento ↗</a>`,
       );
     }
 

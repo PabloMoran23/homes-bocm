@@ -26,28 +26,23 @@ export default async function Home() {
                 </p>
               )}
               <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-[var(--portal-ink)] sm:text-5xl">
-                Proyectos urbanísticos en tu zona,{" "}
-                <span className="text-[var(--portal-accent)]">sin perseguir mil sitios distintos</span>
+                Proyectos urbanísticos{" "}
+                <span className="text-[var(--portal-accent)]">en tu zona</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
                 {isPublic ? (
                   <>
                     Homes concentra en un solo mapa lo que ocurre en Madrid capital: licencias de
-                    obra, expedientes SIGMA y anuncios del BOCM enlazados. Introduce tu dirección en
+                    obra, proyectos de planeamiento y anuncios del BOCM enlazados. Introduce tu dirección en
                     el boletín, explora el territorio y consulta estadísticas agregadas.
                   </>
                 ) : (
                   <>
                     Homes centraliza lo que cambia el tejido alrededor de ti: qué se tramita, dónde y
                     con qué intensidad. Sigue proyectos, configura alertas, estudia un ámbito y
-                    entiende el pulso del suelo en minutos — no en tardes de buscar a mano.
+                    entiende el pulso del suelo en minutos.
                   </>
                 )}
-              </p>
-              <p className="mt-4 max-w-xl text-sm font-medium text-slate-700">
-                {isPublic
-                  ? "Datos del Ayuntamiento de Madrid y del BOCM, unificados para lectura rápida."
-                  : "Más de 1.000 fuentes cruzadas para una sola vista. Para tu claridad y acción rápida."}
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link

@@ -44,7 +44,7 @@ import {
   filterUbicacionesMadridCapital,
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
-import { ambitosProyectosEnVista, PROYECTOS_URBANISTICOS } from "@/lib/ui-labels";
+import { ambitosProyectosEnVista, PROYECTOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
   () => import("./MadridUnifiedMap").then((m) => ({ default: m.MadridUnifiedMap })),
@@ -85,32 +85,32 @@ function MapLayerToolbar({
   onToggleSigma,
   showUbicaciones,
   onToggleUbicaciones,
-  mapMode,
-  onMapModeChange,
   layerLoading,
 }: {
   showSigma: boolean;
   onToggleSigma: () => void;
   showUbicaciones: boolean;
   onToggleUbicaciones: () => void;
-  mapMode: SigmaMapMode;
-  onMapModeChange: (mode: SigmaMapMode) => void;
   layerLoading: boolean;
 }) {
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-3 z-[1100] flex w-[min(100%,36rem)] -translate-x-1/2 justify-center px-3 sm:top-4"
+      className="pointer-events-none absolute left-1/2 top-3 z-[1100] flex -translate-x-1/2 justify-center px-3 sm:top-4"
       role="toolbar"
       aria-label="Capas del mapa"
     >
-      <div className="pointer-events-auto flex max-w-full flex-wrap items-center justify-center gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md">
+      <div
+        className="pointer-events-auto grid grid-cols-2 gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md"
+        role="group"
+        aria-label="Capa visible"
+      >
         <button
           type="button"
           aria-pressed={showSigma}
           onClick={onToggleSigma}
-          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${layerToggleClass(showSigma)}`}
+          className={`rounded-lg px-3 py-2 text-xs font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showSigma)}`}
         >
-          {PROYECTOS_URBANISTICOS}
+          {PROYECTOS}
           {layerLoading && showSigma ? (
             <span className="ml-1 font-normal opacity-80">…</span>
           ) : null}
@@ -119,30 +119,10 @@ function MapLayerToolbar({
           type="button"
           aria-pressed={showUbicaciones}
           onClick={onToggleUbicaciones}
-          className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition sm:text-sm ${layerToggleClass(showUbicaciones)}`}
+          className={`rounded-lg px-3 py-2 text-xs font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showUbicaciones)}`}
         >
           Licencias
         </button>
-        {showSigma ? (
-          <>
-            <span className="mx-0.5 hidden h-5 w-px bg-slate-200 sm:block" aria-hidden />
-            <label className="sr-only" htmlFor="sigma-map-mode">
-              Vista de proyectos
-            </label>
-            <select
-              id="sigma-map-mode"
-              value={mapMode}
-              onChange={(e) => onMapModeChange(e.target.value as SigmaMapMode)}
-              className="max-w-[11rem] rounded-lg border-0 bg-slate-50 py-1.5 pl-2 pr-7 text-xs font-medium text-slate-800 ring-1 ring-slate-200/90 focus:ring-2 focus:ring-[var(--portal-accent)]/30 sm:max-w-none sm:text-sm"
-            >
-              {SIGMA_MAP_MODES.map(({ id, label }) => (
-                <option key={id} value={id}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </>
-        ) : null}
       </div>
     </div>
   );
@@ -188,7 +168,7 @@ export function ExploreMadridApp() {
   const [q, setQ] = useState("");
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
-  const [showUbicaciones, setShowUbicaciones] = useState(true);
+  const [showUbicaciones, setShowUbicaciones] = useState(false);
   const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const [dataReady, setDataReady] = useState({ ubic: false, search: false });
@@ -549,8 +529,6 @@ export function ExploreMadridApp() {
         onToggleSigma={() => setShowSigma((v) => !v)}
         showUbicaciones={showUbicaciones}
         onToggleUbicaciones={() => setShowUbicaciones((v) => !v)}
-        mapMode={mapMode}
-        onMapModeChange={setMapMode}
         layerLoading={layerLoading}
       />
 
@@ -747,6 +725,21 @@ export function ExploreMadridApp() {
                 <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                   Proyectos
                 </legend>
+                <label className="block space-y-1">
+                  <span className="text-xs text-slate-600">Vista en mapa</span>
+                  <select
+                    id="sigma-map-mode"
+                    value={mapMode}
+                    onChange={(e) => setMapMode(e.target.value as SigmaMapMode)}
+                    className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-800 outline-none focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/20"
+                  >
+                    {SIGMA_MAP_MODES.map(({ id, label }) => (
+                      <option key={id} value={id}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <label className="flex cursor-pointer items-start gap-2 text-xs text-slate-600">
                   <input
                     type="checkbox"

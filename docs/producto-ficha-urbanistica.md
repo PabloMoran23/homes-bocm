@@ -12,7 +12,7 @@ No promete un total municipal de viviendas; informa por **ámbito / expediente /
 | # | Pantalla | Ruta actual / propuesta | Usuario |
 |---|----------|-------------------------|---------|
 | 1 | **Mapa SIGMA** | `/explore` (Madrid) | “¿Qué hay cerca?” |
-| 2 | **Ficha expediente** | `/sigma/[slug]` | “¿Qué es esta actuación?” |
+| 2 | **Ficha expediente** | `/proyecto/[id]` | “¿Qué es esta actuación?” |
 | 3 | **Ficha parcela / edificio** | `/ubicacion/[ndp]` | “¿Qué pasa en mi dirección?” |
 | 4 | **Zona (futuro)** | `/madrid/zona?…` o bbox en mapa | “¿Qué se tramita en el barrio?” |
 
@@ -55,7 +55,7 @@ No promete un total municipal de viviendas; informa por **ámbito / expediente /
 
 ---
 
-## 2. Ficha expediente (`/sigma/[slug]`)
+## 2. Ficha expediente (`/proyecto/[id]`)
 
 Vista principal del producto. Pestañas actuales + **bloque nuevo “Qué implica”**.
 

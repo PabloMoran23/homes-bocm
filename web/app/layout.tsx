@@ -4,6 +4,7 @@ import { NavBar } from "@/components/NavBar";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TierProvider } from "@/components/TierProvider";
 import { isPublicEdition } from "@/lib/edition";
+import { getSiteUrl } from "@/lib/site-url";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,16 +19,35 @@ const geistMono = Geist_Mono({
 
 const isPublic = isPublicEdition();
 
+const siteName = isPublic ? "Homes · Urbanismo Madrid" : "Homes · Urbanismo";
+const siteDescription = isPublic
+  ? "Mapa unificado de licencias, proyectos de planeamiento y anuncios BOCM en Madrid capital. Explora, abre fichas y consulta estadísticas."
+  : "Seguimiento de proyectos urbanísticos cerca de ti: mapa, alertas, estudio por zona y lectura clara. Cruzamos más de 1.000 fuentes para que no tengas que hacerlo tú.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: {
-    default: isPublic
-      ? "Homes · Urbanismo Madrid"
-      : "Homes · Urbanismo — proyectos en tu zona",
+    default: isPublic ? siteName : "Homes · Urbanismo — proyectos en tu zona",
     template: "%s · Homes Urbanismo",
   },
-  description: isPublic
-    ? "Mapa unificado de licencias, planeamiento SIGMA y anuncios BOCM en Madrid capital. Explora, abre fichas y consulta estadísticas."
-    : "Seguimiento de proyectos urbanísticos cerca de ti: mapa, alertas, estudio por zona y lectura clara. Cruzamos más de 1.000 fuentes para que no tengas que hacerlo tú.",
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    locale: "es_ES",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+  },
+  ...(isPublic
+    ? {}
+    : {
+        robots: { index: false, follow: false },
+      }),
 };
 
 export default function RootLayout({

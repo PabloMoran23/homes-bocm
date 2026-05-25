@@ -168,7 +168,7 @@ export function MadridBocmExplorer() {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Anuncios BOCM" value={stats.total} hint="municipio=Madrid" />
         <Stat label="Relevantes" value={stats.relevant} />
-        <Stat label="Con SIGMA" value={stats.sigma} hint="match por nº exp." />
+        <Stat label="Con proyecto" value={stats.sigma} hint="match por nº exp." />
         <Stat label="Con coords" value={stats.coords} />
       </div>
 
@@ -184,7 +184,7 @@ export function MadridBocmExplorer() {
           />
         </label>
         <label className="min-w-[120px] space-y-1">
-          <span className="text-xs font-medium uppercase tracking-wide text-slate-500">SIGMA</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-slate-500">Proyecto</span>
           <select
             value={sigmaFilter}
             onChange={(e) => setSigmaFilter(e.target.value as typeof sigmaFilter)}
@@ -251,7 +251,7 @@ export function MadridBocmExplorer() {
               <th className="px-3 py-2">Instrumento</th>
               <th className="px-3 py-2">Sector</th>
               <th className="px-3 py-2">Rel.</th>
-              <th className="px-3 py-2">SIGMA</th>
+              <th className="px-3 py-2">Proyecto</th>
               <th className="px-3 py-2">Coords</th>
               <th className="w-14" />
             </tr>
@@ -314,9 +314,9 @@ export function MadridBocmExplorer() {
       <p className="text-xs text-slate-500">
         Comparar con el catálogo completo en{" "}
         <Link href="/madrid/sigma" className="font-medium text-[var(--portal-accent)] hover:underline">
-          SIGMA
+          proyectos de planeamiento
         </Link>
-        . El enlace SIGMA aquí solo aparece si el número de expediente coincide en el catálogo descargado.
+        . El enlace solo aparece si el número de expediente coincide en el catálogo descargado.
       </p>
     </div>
   );

@@ -275,7 +275,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded-lg border border-teal-300 bg-white/90 px-4 py-2.5 text-sm font-semibold text-teal-950 hover:bg-teal-50"
               >
-                Visor municipal
+                Ayuntamiento
               </a>
             ) : null}
             {p.sigmaEnlace && p.sigmaEnlace !== p.sigmaVisorUrl ? (
@@ -285,7 +285,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center rounded-lg border border-sky-200 bg-white/90 px-4 py-2.5 text-sm font-semibold text-sky-900 hover:bg-sky-50"
               >
-                Visor del Ayuntamiento (GIS)
+                Mapa del Ayuntamiento (GIS)
               </a>
             ) : null}
           </div>
@@ -303,7 +303,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             <KpiCard
               label="Hitos de tramitación"
               value={String(tramCount)}
-              sub="Visor municipal"
+              sub="Ayuntamiento"
               tone="teal"
             />
           ) : docTotal > 0 ? (
@@ -483,8 +483,8 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
                 !(p.sigmaVisorNtiDocumentosMuestra?.length) &&
                 !p.sigmaVisorNtiDocumentosTotal ? (
                   <p className="text-sm text-slate-500">
-                    No hay documentos descargados para este expediente en Homes. Puedes abrir el visor
-                    municipal si el ayuntamiento los publica.
+                    No hay documentos descargados para este expediente en Homes. Puedes consultarlos en
+                    la web del Ayuntamiento si los publica.
                   </p>
                 ) : null}
               </div>
