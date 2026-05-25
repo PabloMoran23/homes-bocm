@@ -34,7 +34,7 @@ export function SigmaProjectHero({
   return (
     <header className="portal-hero-bg overflow-hidden rounded-2xl border border-indigo-200/50 shadow-sm">
       <div className={compact ? "p-4 sm:p-5" : "p-5 sm:p-8"}>
-        <div className="flex items-start gap-4 sm:gap-5">
+        <div className="flex items-start gap-3 sm:gap-5">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-semibold text-indigo-950 ring-1 ring-indigo-200">
@@ -117,7 +117,7 @@ export function SigmaProjectHero({
             <SigmaClassificationIcon
               clasificacion={clasificacion}
               size="hero"
-              className="hidden sm:flex"
+              className="mt-0.5"
             />
           ) : null}
         </div>

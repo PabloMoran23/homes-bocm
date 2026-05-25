@@ -95,12 +95,12 @@ function MapLayerToolbar({
 }) {
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-3 z-[1100] flex -translate-x-1/2 justify-center px-3 sm:top-4"
+      className="pointer-events-none absolute inset-x-3 top-3 z-[1100] flex justify-center sm:inset-x-auto sm:left-1/2 sm:right-auto sm:top-4 sm:-translate-x-1/2 sm:px-0"
       role="toolbar"
       aria-label="Capas del mapa"
     >
       <div
-        className="pointer-events-auto grid grid-cols-2 gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md"
+        className="pointer-events-auto grid w-full max-w-[min(100%,18.5rem)] grid-cols-2 gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md sm:w-auto sm:max-w-none"
         role="group"
         aria-label="Capa visible"
       >
@@ -108,18 +108,20 @@ function MapLayerToolbar({
           type="button"
           aria-pressed={showSigma}
           onClick={onToggleSigma}
-          className={`rounded-lg px-3 py-2 text-xs font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showSigma)}`}
+          title={PROYECTOS}
+          className={`min-w-0 truncate rounded-lg px-2 py-2 text-center text-[11px] font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showSigma)}`}
         >
-          {PROYECTOS}
+          <span className="sm:hidden">Proyectos</span>
+          <span className="hidden sm:inline">{PROYECTOS}</span>
           {layerLoading && showSigma ? (
-            <span className="ml-1 font-normal opacity-80">…</span>
+            <span className="font-normal opacity-80"> …</span>
           ) : null}
         </button>
         <button
           type="button"
           aria-pressed={showUbicaciones}
           onClick={onToggleUbicaciones}
-          className={`rounded-lg px-3 py-2 text-xs font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showUbicaciones)}`}
+          className={`min-w-0 truncate rounded-lg px-2 py-2 text-center text-[11px] font-semibold transition sm:px-4 sm:py-1.5 sm:text-sm ${layerToggleClass(showUbicaciones)}`}
         >
           Licencias
         </button>
@@ -514,6 +516,8 @@ export function ExploreMadridApp() {
               : mapStatsHint
           }
           className="h-full w-full"
+          fitToData={false}
+          initialView="explore"
         />
         {!dataReady.ubic ? (
           <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/60 backdrop-blur-[1px]">

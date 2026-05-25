@@ -25,53 +25,139 @@ import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
-/** Vista inicial y tope al encajar datos: ciudad, no calle. */
+
+/** Vista por defecto al abrir /explore (ciudad entera). */
 const MADRID_CITY_ZOOM = 11;
 const MADRID_FIT_MAX_ZOOM = 14;
 const MADRID_CITY_BOUNDS = L.latLngBounds(
   [40.348, -3.888],
   [40.502, -3.518],
 );
-const MADRID_CITY_FIT: L.FitBoundsOptions = {
-  padding: [28, 28],
-  maxZoom: MADRID_CITY_ZOOM,
-  animate: false,
-};
-const MADRID_DATA_FIT: L.FitBoundsOptions = {
-  padding: [48, 48],
-  maxZoom: MADRID_FIT_MAX_ZOOM,
-  animate: false,
+
+/** Portada: zoom fijo (no fitBounds del GeoJSON completo). */
+const MADRID_PREVIEW_ZOOM = 11;
+
+/** Explorar: misma idea al entrar, sobre todo en móvil. */
+const MADRID_EXPLORE_ZOOM = 12;
+
+const MADRID_PREVIEW_BOUNDS = L.latLngBounds(
+  [40.402, -3.72],
+  [40.448, -3.68],
+);
+
+export type MapInitialView = "city" | "preview" | "explore";
+
+const FIXED_VIEW_ZOOM: Partial<Record<MapInitialView, number>> = {
+  preview: MADRID_PREVIEW_ZOOM,
+  explore: MADRID_EXPLORE_ZOOM,
 };
 
-function frameMadridCity(map: L.Map) {
-  map.fitBounds(MADRID_CITY_BOUNDS, MADRID_CITY_FIT);
+const FIT_PRESETS: Record<
+  MapInitialView,
+  { city: L.FitBoundsOptions; data: L.FitBoundsOptions; defaultZoom: number }
+> = {
+  city: {
+    city: { padding: [28, 28], maxZoom: MADRID_CITY_ZOOM, animate: false },
+    data: { padding: [48, 48], maxZoom: MADRID_FIT_MAX_ZOOM, animate: false },
+    defaultZoom: MADRID_CITY_ZOOM,
+  },
+  preview: {
+    city: { padding: [6, 6], maxZoom: MADRID_PREVIEW_ZOOM, animate: false },
+    data: { padding: [8, 8], maxZoom: MADRID_PREVIEW_ZOOM, animate: false },
+    defaultZoom: MADRID_PREVIEW_ZOOM,
+  },
+  explore: {
+    city: { padding: [20, 20], maxZoom: MADRID_EXPLORE_ZOOM, animate: false },
+    data: { padding: [24, 24], maxZoom: MADRID_EXPLORE_ZOOM, animate: false },
+    defaultZoom: MADRID_EXPLORE_ZOOM,
+  },
+};
+
+function frameMadridCity(map: L.Map, view: MapInitialView) {
+  const bounds = view === "preview" ? MADRID_PREVIEW_BOUNDS : MADRID_CITY_BOUNDS;
+  map.fitBounds(bounds, FIT_PRESETS[view].city);
+}
+
+/** Zoom fijo; no usar getBounds() del GeoJSON (cubre todo Madrid y aleja el mapa). */
+function frameFixedZoom(map: L.Map, view: MapInitialView) {
+  const zoom = FIXED_VIEW_ZOOM[view];
+  if (zoom == null) return;
+  map.setView(MADRID_CENTER, zoom, { animate: false });
+}
+
+function scheduleFixedZoom(map: L.Map, view: MapInitialView) {
+  const apply = () => frameFixedZoom(map, view);
+  apply();
+  const t1 = window.setTimeout(apply, 80);
+  const t2 = window.setTimeout(apply, 400);
+  return () => {
+    window.clearTimeout(t1);
+    window.clearTimeout(t2);
+  };
+}
+
+function fitLayerBounds(
+  map: L.Map,
+  bounds: L.LatLngBounds,
+  view: MapInitialView,
+  mode: "city" | "data",
+) {
+  if (!bounds.isValid()) return;
+  map.fitBounds(bounds, FIT_PRESETS[view][mode]);
 }
 
 function UnifiedFitBounds({
   ubicaciones,
   sigma,
   fitToData = true,
+  initialView = "city",
 }: {
   ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
   fitToData?: boolean;
+  initialView?: MapInitialView;
 }) {
   const map = useMap();
   const lastFitKey = useRef("");
 
   useEffect(() => {
+    const hasUbic = Boolean(ubicaciones?.features?.length);
+    const hasSigma = Boolean(sigma?.features?.length);
+    const key = `${initialView}:${fitToData}:${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}`;
+
+    const boundsFromLayers = (): L.LatLngBounds | null => {
+      let bounds: L.LatLngBounds | null = null;
+      if (hasSigma) {
+        const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
+        if (sb.isValid()) bounds = sb;
+      }
+      if (hasUbic) {
+        const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
+        if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
+      }
+      return bounds?.isValid() ? bounds : null;
+    };
+
     if (!fitToData) {
-      frameMadridCity(map);
+      if (lastFitKey.current === key) return;
+      lastFitKey.current = key;
+
+      if (initialView === "preview" || initialView === "explore") {
+        return scheduleFixedZoom(map, initialView);
+      }
+
+      const layerBounds = boundsFromLayers();
+      if (layerBounds) {
+        fitLayerBounds(map, layerBounds, initialView, "data");
+      } else {
+        frameMadridCity(map, initialView);
+      }
       return;
     }
 
-    const hasUbic = Boolean(ubicaciones?.features?.length);
-    const hasSigma = Boolean(sigma?.features?.length);
-    const key = `${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}`;
-
     if (!hasUbic && !hasSigma) {
       if (lastFitKey.current !== key) {
-        frameMadridCity(map);
+        frameMadridCity(map, initialView);
         lastFitKey.current = key;
       }
       return;
@@ -80,21 +166,13 @@ function UnifiedFitBounds({
     if (lastFitKey.current === key) return;
     lastFitKey.current = key;
 
-    let bounds: L.LatLngBounds | null = null;
-    if (hasSigma) {
-      const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
-      if (sb.isValid()) bounds = sb;
-    }
-    if (hasUbic) {
-      const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
-      if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
-    }
-    if (bounds?.isValid()) {
-      map.fitBounds(bounds, MADRID_DATA_FIT);
+    const layerBounds = boundsFromLayers();
+    if (layerBounds) {
+      fitLayerBounds(map, layerBounds, initialView, "data");
       return;
     }
-    frameMadridCity(map);
-  }, [map, ubicaciones, sigma, fitToData]);
+    frameMadridCity(map, initialView);
+  }, [map, ubicaciones, sigma, fitToData, initialView]);
 
   return null;
 }
@@ -130,6 +208,7 @@ export function MadridUnifiedMap({
   className = "",
   interactive = true,
   fitToData = true,
+  initialView = "city",
   preferCanvas = false,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
@@ -144,11 +223,17 @@ export function MadridUnifiedMap({
   className?: string;
   /** Vista previa (inicio): sin pan/zoom; el contenedor padre enlaza a /explore. */
   interactive?: boolean;
-  /** Si false, vista fija sobre Madrid (evita getBounds sobre miles de polígonos). */
+  /**
+   * Si false, encuadre fijo (p. ej. portada con `initialView="preview"` y sigma cargado).
+   * `city` = Madrid capital; `preview` = más zoom para la miniatura de inicio.
+   */
   fitToData?: boolean;
+  /** Zoom inicial: `preview` portada, `explore` mapa explorar, `city` encaje por datos. */
+  initialView?: MapInitialView;
   /** Mejor rendimiento con muchos polígonos en móvil. */
   preferCanvas?: boolean;
 }) {
+  const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
@@ -218,7 +303,7 @@ export function MadridUnifiedMap({
           <MapContainer
             key={mapKey}
             center={MADRID_CENTER}
-            zoom={MADRID_CITY_ZOOM}
+            zoom={fitPreset.defaultZoom}
             className="z-0 h-full w-full"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
@@ -252,6 +337,7 @@ export function MadridUnifiedMap({
               ubicaciones={ubicacionesGeojson}
               sigma={sigmaGeojson}
               fitToData={fitToData}
+              initialView={initialView}
             />
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
             {interactive ? <ZoomControl position="topright" /> : null}
