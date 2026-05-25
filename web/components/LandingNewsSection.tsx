@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { LandingNewsFile } from "@/lib/landing-news";
+import type { LandingNewsFile, LandingNewsSpotlight } from "@/lib/landing-news";
 import type { DataSummary } from "@/lib/types";
 
 function formatGeneratedAt(iso: string): string {
@@ -14,19 +14,90 @@ function formatGeneratedAt(iso: string): string {
   }
 }
 
-function NewsMetaValue({
-  value,
-  className = "tabular-nums text-teal-100",
-}: {
-  value?: string;
-  className?: string;
-}) {
-  if (!value) return null;
+function RadarBadge() {
   return (
-    <>
-      <span className="text-slate-500">·</span>
-      <span className={className}>{value}</span>
-    </>
+    <span className="inline-flex items-center gap-2 rounded-full border border-teal-200/90 bg-[var(--portal-accent-soft)]/60 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-teal-900">
+      <span className="relative flex h-2 w-2" aria-hidden>
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--portal-accent)] opacity-70" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--portal-accent)]" />
+      </span>
+      Radar activo · Madrid
+    </span>
+  );
+}
+
+function MetaLine({ item }: { item: LandingNewsSpotlight }) {
+  const parts: string[] = [item.dateLabel];
+  if (item.valueLabel) parts.push(item.valueLabel);
+  if (item.numViviendas != null) {
+    parts.push(`${item.numViviendas.toLocaleString("es-ES")} viviendas`);
+  }
+  return (
+    <p className="mt-3 text-xs text-slate-500">
+      {parts.join(" · ")}
+    </p>
+  );
+}
+
+function FeaturedCase({ item }: { item: LandingNewsSpotlight }) {
+  return (
+    <article className="min-w-0">
+      <Link
+        href={item.href}
+        className="group block rounded-2xl border border-teal-100/90 bg-gradient-to-br from-teal-50/70 via-white to-white p-6 ring-1 ring-teal-900/[0.04] transition hover:border-teal-200/90 hover:shadow-md hover:shadow-teal-900/5 sm:p-8"
+      >
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-md bg-[var(--portal-accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+            Destacado
+          </span>
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--portal-accent)]">
+            {item.tag}
+          </span>
+        </div>
+        <h3 className="mt-4 text-xl font-semibold leading-snug tracking-tight text-slate-900 transition group-hover:text-[var(--portal-accent)] sm:text-2xl">
+          {item.title}
+        </h3>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+          {item.dek}
+        </p>
+        {item.trendLabel ? (
+          <p className="mt-3 inline-flex rounded-lg border border-teal-200/80 bg-teal-50/80 px-3 py-1.5 text-xs font-medium text-teal-900">
+            {item.trendLabel}
+          </p>
+        ) : null}
+        <MetaLine item={item} />
+        <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-[var(--portal-accent)] transition group-hover:gap-2">
+          {item.ctaLabel ?? "Ver caso"}
+          <span aria-hidden>→</span>
+        </span>
+      </Link>
+    </article>
+  );
+}
+
+function BriefCase({ item }: { item: LandingNewsSpotlight }) {
+  return (
+    <article className="min-w-0">
+      <Link
+        href={item.href}
+        className="group flex h-full flex-col rounded-xl border border-slate-200/90 bg-white p-5 transition hover:border-teal-200/90 hover:shadow-sm hover:shadow-teal-900/5"
+      >
+        <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--portal-accent)]">
+          {item.tag}
+        </span>
+        <h3 className="mt-2 flex-1 text-base font-semibold leading-snug text-slate-900 transition group-hover:text-[var(--portal-accent)]">
+          {item.title}
+        </h3>
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">{item.dek}</p>
+        {item.trendLabel ? (
+          <p className="mt-2 text-[11px] font-medium text-teal-800/90">{item.trendLabel}</p>
+        ) : null}
+        <MetaLine item={item} />
+        <span className="mt-3 text-xs font-semibold text-[var(--portal-accent)]">
+          {item.ctaLabel ?? "Abrir ficha"} →
+        </span>
+      </Link>
+    </article>
   );
 }
 
@@ -43,132 +114,76 @@ export function LandingNewsSection({
 
   return (
     <section
-      className="relative mt-8 overflow-hidden rounded-3xl border border-[#2d3640]/85 bg-[#3e4b5a] text-slate-100 shadow-[0_24px_80px_-20px_rgba(15,118,110,0.28)]"
+      className="relative mt-10 overflow-hidden rounded-2xl border border-teal-100/90 bg-white shadow-sm ring-1 ring-slate-900/[0.03]"
       aria-labelledby="landing-news-heading"
     >
       <div
-        className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-teal-500/20 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -bottom-32 -left-16 h-72 w-72 rounded-full bg-cyan-400/12 blur-3xl"
+        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-teal-400/10 blur-3xl"
         aria-hidden
       />
 
-      <div className="relative px-5 py-10 sm:px-8 sm:py-12">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full border border-teal-300/25 bg-teal-400/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-teal-100/95">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-teal-300/80 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-200" />
-              </span>
-              Señales urbanas · Madrid
-            </p>
+      <div className="relative px-5 py-8 sm:px-8 sm:py-10">
+        <header className="flex flex-col gap-5 border-b border-teal-100/80 pb-6 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <RadarBadge />
             <h2
               id="landing-news-heading"
-              className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-white [text-wrap:balance] sm:text-4xl"
+              className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl"
             >
-              Noticias del territorio
+              En el radar{" "}
+              <span className="text-[var(--portal-accent)]">urbanístico</span>
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300/95 sm:text-base">
-              Titulares automáticos a partir de licencias recientes, cambios de uso y expedientes
-              con superficie relevante. Se actualizan al regenerar los datos.
-              {updated ? ` Última actualización: ${updated}.` : null}
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
+              Cada día cruzamos licencias y planeamiento de Madrid capital y sacamos a la superficie
+              los expedientes que más destacan: obra reciente, cambios de uso, densidad o superficie
+              llamativa.
+              {updated ? (
+                <span className="text-slate-500"> Actualizado el {updated}.</span>
+              ) : null}
             </p>
             {summary?.total ? (
-              <p className="mt-4 max-w-xl border-l-2 border-teal-400/50 pl-4 text-sm text-teal-50/90">
-                {news.items.length} señales priorizadas sobre{" "}
-                {summary.total.toLocaleString("es-ES")} anuncios y los datos municipales de
-                licencias.
+              <p className="mt-3 text-xs text-slate-500">
+                <span className="font-semibold text-teal-800">{news.items.length} casos</span> en
+                esta selección · analizamos{" "}
+                {summary.total.toLocaleString("es-ES")} registros y anuncios de referencia
               </p>
             ) : null}
           </div>
           <Link
             href="/explore"
-            className="shrink-0 self-start rounded-xl border border-white/12 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-teal-300/40 hover:bg-teal-500/15 lg:self-auto"
+            className="shrink-0 self-start rounded-lg border border-teal-200/80 bg-teal-50/50 px-4 py-2.5 text-sm font-semibold text-[var(--portal-accent)] transition hover:bg-[var(--portal-accent-soft)]"
           >
             Ver en el mapa →
           </Link>
-        </div>
+        </header>
 
         {featured ? (
-          <Link
-            href={featured.href}
-            className="group relative mt-10 block overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.1] to-white/[0.02] p-6 transition hover:border-teal-300/35 sm:p-8"
-          >
-            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal-100/90">
-              <span className="rounded-md bg-teal-400/15 px-2 py-0.5 text-teal-50">{featured.tag}</span>
-              <NewsMetaValue value={featured.valueLabel} />
-              {featured.numViviendas != null ? (
-                <>
-                  <span className="text-slate-500">·</span>
-                  <span className="tabular-nums text-teal-100">
-                    {featured.numViviendas.toLocaleString("es-ES")} viviendas
-                  </span>
-                </>
-              ) : null}
-              <span className="text-slate-500">·</span>
-              <time className="text-slate-400">{featured.dateLabel}</time>
-            </div>
-            <h3 className="mt-4 max-w-3xl text-xl font-semibold leading-snug tracking-tight text-white transition group-hover:text-teal-50 sm:text-2xl">
-              {featured.title}
-            </h3>
-            {featured.trendLabel ? (
-              <p className="mt-3 inline-flex rounded-full border border-teal-200/15 bg-teal-300/10 px-3 py-1 text-xs font-semibold text-teal-50">
-                {featured.trendLabel}
-              </p>
-            ) : null}
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300/95 sm:text-base">{featured.dek}</p>
-            <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-teal-200/95 transition group-hover:gap-2">
-              {featured.ctaLabel ?? "Ver proyecto"}
-              <span aria-hidden>→</span>
-            </span>
-          </Link>
+          <div className="mt-8">
+            <FeaturedCase item={featured} />
+          </div>
         ) : null}
 
         {rest.length > 0 ? (
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rest.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className="group flex h-full flex-col rounded-2xl border border-white/8 bg-[#323c48]/90 p-5 transition hover:-translate-y-0.5 hover:border-teal-300/30"
-                >
-                  <div className="flex flex-wrap items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                    <span className="text-teal-200/90">{item.tag}</span>
-                    <NewsMetaValue value={item.valueLabel} className="tabular-nums text-slate-400" />
-                    {item.numViviendas != null ? (
-                      <>
-                        <span className="text-slate-600">·</span>
-                        <span className="tabular-nums text-slate-400">
-                          {item.numViviendas.toLocaleString("es-ES")} viv.
-                        </span>
-                      </>
-                    ) : null}
-                    <span className="text-slate-600">·</span>
-                    <time className="text-slate-400">{item.dateLabel}</time>
-                  </div>
-                  <h3 className="mt-3 flex-1 text-base font-semibold leading-snug tracking-tight text-white transition group-hover:text-teal-50">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-400">{item.dek}</p>
-                  {item.trendLabel ? (
-                    <p className="mt-3 text-[11px] font-semibold text-teal-100/80">{item.trendLabel}</p>
-                  ) : null}
-                  <span className="mt-4 text-xs font-semibold text-teal-300/90 group-hover:text-teal-200">
-                    {item.ctaLabel ?? "Ver ficha"} →
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8">
+            <p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <span className="h-px flex-1 max-w-[2rem] bg-teal-300/80" aria-hidden />
+              Más en el radar
+              <span className="h-px flex-1 bg-teal-100" aria-hidden />
+            </p>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {rest.map((item) => (
+                <li key={item.id}>
+                  <BriefCase item={item} />
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
 
-        <p className="mt-6 text-center text-[11px] text-slate-500">
-          Criterio: señales recientes de licencias y planeamiento · No es previsión oficial de obra
-          terminada
-        </p>
+        <footer className="mt-8 border-t border-teal-50 pt-4 text-[11px] leading-relaxed text-slate-500">
+          Detección a partir de datos abiertos del Ayuntamiento. No es previsión oficial de obra
+          terminada.
+        </footer>
       </div>
     </section>
   );

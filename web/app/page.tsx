@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LandingMap } from "@/components/LandingMap";
 import { LandingNewsSection } from "@/components/LandingNewsSection";
+import { LandingTuZonaSection } from "@/components/LandingTuZonaSection";
 import { loadLandingNews } from "@/lib/landing-news";
 import { loadSummary } from "@/lib/load-summary";
 import { isPublicEdition } from "@/lib/edition";
@@ -71,6 +72,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <LandingTuZonaSection isPublic={isPublic} />
 
       <section className="mx-auto max-w-6xl px-4 pt-5 pb-10 sm:px-6 sm:pt-6 sm:pb-12">
         <LandingNewsSection summary={summary} news={news} />

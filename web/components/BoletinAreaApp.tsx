@@ -124,7 +124,9 @@ function EventoFila({ ev }: { ev: BoletinEvento }) {
 export function BoletinAreaApp() {
   const searchParams = useSearchParams();
   const ndpFromUrl = searchParams.get("ndp")?.trim() || null;
+  const qFromUrl = searchParams.get("q")?.trim() || null;
   const autoLoadedNdp = useRef<string | null>(null);
+  const appliedQFromUrl = useRef<string | null>(null);
 
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [searchReady, setSearchReady] = useState(false);
@@ -214,6 +216,16 @@ export function BoletinAreaApp() {
     },
     [selected, q, radiusM, months],
   );
+
+  useEffect(() => {
+    if (!qFromUrl || appliedQFromUrl.current === qFromUrl || ndpFromUrl) return;
+    appliedQFromUrl.current = qFromUrl;
+    queueMicrotask(() => {
+      setQ(qFromUrl);
+      setSelected(null);
+      setOpenSuggest(false);
+    });
+  }, [qFromUrl, ndpFromUrl]);
 
   useEffect(() => {
     if (!searchReady || !ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
