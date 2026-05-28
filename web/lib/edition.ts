@@ -46,6 +46,8 @@ export const DEV_ONLY_ROUTE_PREFIXES = [
 
 export function isPublicRoute(pathname: string): boolean {
   if (pathname === "/") return true;
+  /** Hub legacy: redirige a `/explore` (no confundir con `/madrid/bocm` etc., dev-only). */
+  if (pathname === "/madrid") return true;
   return PUBLIC_ROUTE_PREFIXES.some(
     (prefix) => prefix !== "/" && (pathname === prefix || pathname.startsWith(`${prefix}/`)),
   );

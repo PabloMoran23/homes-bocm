@@ -1,35 +1,40 @@
-# Web · BOCM Urbanismo (Madrid)
+# Web · Homes Urbanismo (Madrid)
 
-Portal estático para explorar y agregar anuncios de urbanismo ya parseados en `../output/history_parsed_incremental.csv`.
+Portal Next.js: mapa unificado (SIGMA + licencias + BOCM), boletín por zona, fichas y
+estadísticas. Datos estáticos en `public/data/`; Supabase para RPC dinámicos.
 
 ## Requisitos
 
 - Node 20+
-- CSV e índice de coordenadas en `poc-bocm/output/` (como en el resto del POC).
+- Para regenerar datos: CSV/artefactos en `poc-bocm/output/` (ver README raíz).
+- `web/.env.local` con `NEXT_PUBLIC_SUPABASE_*` (copiar de `.env.local.example`).
 
 ## Comandos
 
 ```bash
 npm install
-npm run build-data   # genera public/data/projects.json y summary.json
-npm run dev          # http://localhost:3000
+npm run dev:public      # MVP Madrid (como producción)
+npm run dev             # edición full (todas las rutas de desarrollo)
+npm run build-data      # regenera public/data (scope según BUILD_DATA_SCOPE)
+npm run build:public    # build producción con datos madrid-public
+npm run verify:production   # comprueba datos + build public
 ```
 
-`npm run build` ejecuta `build-data` antes de `next build` (script `prebuild`).
+En Vercel no se ejecuta `build-data` (`SKIP_BUILD_DATA=1`); los JSON deben estar en git.
+Ver `../docs/production-web.md`.
 
-## Rutas
+## Rutas (edición `public`)
 
 | Ruta | Descripción |
 |------|-------------|
-| `/` | Inicio y cifras del resumen |
-| `/explore` | Mapa (Leaflet/OSM), filtros y tabla |
-| `/estadisticas` | Barras por municipio, tipo y año |
-| `/planes` | Descripción de tiers y simulación de plan |
+| `/` | Landing |
+| `/explore` | Mapa unificado Madrid |
+| `/boletin` | Qué ocurre en tu zona |
+| `/madrid/estadisticas` | Panel SIGMA + licencias |
+| `/proyecto/[id]`, `/ubicacion/[ndp]` | Fichas |
 
-## Planes (tiers)
-
-El selector **Plan** en la cabecera guarda el nivel en `localStorage` y en la cookie `bocm-tier` (`free` \| `particular` \| `empresa`). Afecta a límites de tabla, exportación CSV, vista de estadísticas y longitud del resumen en la ficha (MVP sin pago real).
+Rutas `/madrid/bocm`, `/planes`, etc. están en desarrollo (redirigen a `/en-desarrollo`).
 
 ## Stack
 
-Next.js (App Router), Tailwind CSS v4, react-leaflet.
+Next.js 16 (App Router), Tailwind CSS v4, react-leaflet, Chart.js, Supabase.

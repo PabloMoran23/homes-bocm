@@ -1,83 +1,131 @@
-# Produccion web
+# Producción web
 
 La web se despliega desde `web/` como proyecto Next.js en Vercel. El build de
-produccion usa `web/vercel.json`, que deja `NEXT_PUBLIC_EDITION=public` y
-`SKIP_BUILD_DATA=1`; por tanto Vercel sirve los artefactos ya generados en
-`web/public/data/`.
+producción usa `web/vercel.json` (`NEXT_PUBLIC_EDITION=public`, `SKIP_BUILD_DATA=1`);
+Vercel sirve los artefactos ya generados en `web/public/data/` (no regenera en build).
+
+## Estado actual (revisión 2026-05-28)
+
+| Componente | Estado | Notas |
+| --- | --- | --- |
+| Repo GitHub | OK | `PabloMoran23/homes-bocm`, rama `main` |
+| Vercel proyecto | OK | `homes-bocm`, root `web/` |
+| URL producción | OK | https://homes-bocm.vercel.app |
+| Env Vercel (Production) | OK | `NEXT_PUBLIC_SUPABASE_*`, `NEXT_PUBLIC_EDITION`, `SKIP_BUILD_DATA` |
+| `NEXT_PUBLIC_SITE_URL` | Pendiente | Añadir cuando tengáis dominio propio (OG, sitemap) |
+| GitHub `SUPABASE_DB_URL` | OK | Workflow refresh |
+| Release baseline datos | OK | Tag `web-data-baseline` → `poc-bocm-web-baseline.tgz` |
+| Workflow refresh | OK | Último éxito 2026-05-25; lunes 03:17 UTC |
+| Build local `build:public` | OK | `npm run verify:production` en `web/` |
+
+### Rutas públicas (edición `public`)
+
+| Ruta | Uso |
+| --- | --- |
+| `/` | Landing |
+| `/explore` | Mapa unificado Madrid |
+| `/boletin` | Tu zona |
+| `/madrid/estadisticas`, `/estadisticas` | Panel estadísticas |
+| `/proyecto/[id]`, `/ubicacion/[ndp]` | Fichas |
+| `/madrid` | Redirige a `/explore` |
+| `/madrid/bocm`, `/madrid/sigma`, `/madrid/licencias` | Bloqueadas → «en desarrollo» (vistas legacy) |
+| `/planes`, `/fuentes`, `/admin` | Bloqueadas → «en desarrollo» |
+
+APIs en público: `/api/boletin-area`, `/api/geocode-address`, `/api/nti-asset`.
 
 ## Despliegue
 
-1. Conecta el repo en Vercel con root directory `web`.
-2. Configura las variables de entorno de la web:
-   - `NEXT_PUBLIC_SUPABASE_URL`
+1. Repo conectado en Vercel, **Root Directory** = `web`.
+2. Variables en Vercel (Production):
+   - `NEXT_PUBLIC_SUPABASE_URL` → proyecto `rjwcmbllrzqvsbgaajmp`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-3. Activa el deploy automatico de la rama de produccion (`main`).
+   - Opcional al tener dominio: `NEXT_PUBLIC_SITE_URL=https://tu-dominio.es`
+3. Deploy automático en cada push a `main`.
 
-No hace falta token de Vercel en GitHub Actions si se usa la integracion Git de
-Vercel: cada commit a `main` dispara un nuevo deploy.
+`vercel.json` fija edición pública y omite `build-data` en Vercel; los JSON/GeoJSON
+deben estar commiteados en `web/public/data/`.
+
+### Dominio propio (cuando lo elijas)
+
+1. Añade el dominio en Vercel → proyecto `homes-bocm`.
+2. Configura DNS (CNAME o registros que indique Vercel).
+3. En Vercel → Environment Variables → Production:
+   ```bash
+   NEXT_PUBLIC_SITE_URL=https://tu-dominio.es
+   ```
+4. Redeploy de producción (o push vacío a `main`).
+5. Comprueba `https://tu-dominio.es/sitemap.xml` y `robots.txt`.
+
+Sin `NEXT_PUBLIC_SITE_URL`, OG y sitemap usan `VERCEL_URL` (subdominio `*.vercel.app`).
+
+## Verificación antes de publicar cambios
+
+```bash
+cd web
+npm run verify:production   # datos + build public
+```
+
+Solo build rápido:
+
+```bash
+cd web
+NEXT_PUBLIC_EDITION=public SKIP_BUILD_DATA=1 npm run build
+```
 
 ## Refresco programado de datos
 
-El workflow `.github/workflows/refresh-web-data.yml` corre cada **lunes** a las
-`03:17 UTC` (~05:17 CEST en verano) y tambien se puede lanzar manualmente. Esta
-es la version barata: no descarga ni parsea boletines BOCM nuevos con LLM y no
-recalcula el cruce caro `link_licencia_sigma`.
+Workflow `.github/workflows/refresh-web-data.yml`: cada **lunes** `03:17 UTC`
+(~05:17 CEST en verano); también manual (`workflow_dispatch`).
+
+Versión operativa actual: no descarga BOCM nuevos con LLM ni recalcula
+`link_licencia_sigma` en cada run.
 
 ### Frecuencia por dataset
 
-| Dataset | Frecuencia | Que hace |
+| Dataset | Frecuencia | Qué hace |
 | --- | --- | --- |
-| SIGMA (Ayto. Madrid) | Semanal (cada lunes) | Descarga + upsert catalogo y geometrias |
-| Licencias urbanisticas | Mensual (dia 1 UTC) | Descarga anos actual y anterior, merge en JSONL, upsert incremental en Supabase |
-| `web/public/data` | Semanal | `npm run build-data` con scope `madrid-public` |
+| SIGMA (Ayto. Madrid) | Semanal (lunes) | Descarga + upsert catálogo y geometrías |
+| Licencias urbanísticas | Mensual (día 1 UTC) o manual | Años actual y anterior → JSONL → Supabase |
+| `web/public/data` | Semanal | `npm run build-data` scope `madrid-public` |
 
-En los lunes que no caen en dia 1, el job omite licencias (`--skip-licencias`) y
-solo refresca SIGMA. El dia 1 de cada mes (o un run manual con
-`refresh_licencias=true`) descarga `YEAR-1,YEAR`, fusiona en
-`output/madrid_licencias.jsonl` y sincroniza esos anos sin truncar tablas.
+En lunes que no son día 1: solo SIGMA (`--skip-licencias`). Día 1 o run manual con
+`refresh_licencias=true`: descarga `YEAR-1,YEAR` y sync incremental.
 
-Recarga completa de licencias (solo operacion manual):
+Recarga completa de licencias (solo manual):
 
 ```bash
 python3 -m sector_geometry.madrid_licencias_download
 python3 db/sync_madrid_public_to_supabase.py --licencias-full
 ```
 
-El flujo semanal es:
+Flujo del job:
 
-1. Restaura la cache de datos generados (`output/`).
-2. Refresca SIGMA; licencias solo si toca (dia 1 o dispatch).
-3. Sincroniza a Supabase, sin SQLite intermedio.
-4. Regenera `web/public/data/`.
-5. Ejecuta `npm run build`.
-6. Verifica que exista `web/public/data/madrid-dashboard-stats.json` (dashboard de estadísticas).
-7. Hace commit de `web/public/data/` (incl. `madrid-dashboard-stats.json`) si hay cambios. Ese commit dispara Vercel.
+1. Restaura cache `output/` (o release `web-data-baseline`).
+2. Refresca SIGMA; licencias si toca.
+3. Sync a Supabase (`SUPABASE_DB_URL`).
+4. `npm run build-data` en `web/`.
+5. Verifica `madrid-dashboard-stats.json` y `npm run build` (public).
+6. Commit `web/public/data/` → push → deploy Vercel.
 
-La página `/madrid/estadisticas` lee ese JSON estático (no Supabase). No hace falta ejecutar `build-data` a mano salvo en local.
+`/madrid/estadisticas` lee JSON estático; no requiere Supabase en runtime.
 
-## Secretos necesarios
+## Secretos GitHub
 
-En GitHub, configura:
-
-- `SUPABASE_DB_URL`: connection string Postgres de Supabase para el sync directo.
-- `DATA_SNAPSHOT_URL`: opcional, solo para bootstrap. Debe apuntar a un
-  `.tar.gz` con `output/`.
-
-Si no existe `DATA_SNAPSHOT_URL`, el workflow intenta descargar el release asset
-`poc-bocm-web-baseline.tgz` desde el tag `web-data-baseline`. El tag se puede
-cambiar con la variable `DATA_SNAPSHOT_RELEASE_TAG`.
+| Secreto / variable | Obligatorio | Uso |
+| --- | --- | --- |
+| `SUPABASE_DB_URL` | Sí | Sync Postgres en refresh |
+| `DATA_SNAPSHOT_URL` | No | Bootstrap inicial `output/` |
+| `DATA_SNAPSHOT_RELEASE_TAG` | No | Default `web-data-baseline` |
 
 ## Bootstrap inicial
 
-El primer run necesita una linea base de datos generados. Si la cache de Actions
-esta vacia y no existe snapshot por URL ni release asset, el job falla antes de
-tocar `web/public/data/` para evitar publicar un dataset vacio.
+Si cache de Actions vacía y no hay snapshot, el job falla (evita dataset vacío).
 
-Para inicializarlo, sube un snapshot privado con esta estructura:
+1. Subir `.tar.gz` con carpeta `output/` (incl. `history_parsed_incremental.csv`).
+2. Publicar como release `web-data-baseline` **o** `DATA_SNAPSHOT_URL` temporal.
+3. Lanzar workflow manual; retirar URL si no la necesitáis.
 
-```text
-output/
-```
+## Supabase
 
-Despues configura `DATA_SNAPSHOT_URL` temporalmente, lanza el workflow manual y
-retira el secreto si no quieres mantenerlo.
+Proyecto de producción: ver `docs/supabase-setup.md` y `.env.example` (ref
+`rjwcmbllrzqvsbgaajmp`). Esquema `homes` expuesto en API; RPC para fichas y boletín.

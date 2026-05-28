@@ -63,3 +63,5 @@ cd web && npm install && npm run build-data && npm run dev
 ```
 
 Los datos se generan desde `output/history_parsed_incremental.csv` y `output/municipios_coords_cache.json`. Ver `web/README.md`.
+
+**Producción:** despliegue en Vercel, refresco de datos y checklist en [`docs/production-web.md`](docs/production-web.md).

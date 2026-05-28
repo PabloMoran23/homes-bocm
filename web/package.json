@@ -10,6 +10,7 @@
     "dev:public": "NEXT_PUBLIC_EDITION=public next dev",
     "build": "next build",
     "build:public": "NEXT_PUBLIC_EDITION=public BUILD_DATA_SCOPE=madrid-public npm run build",
+    "verify:production": "node scripts/verify-production.mjs",
     "start": "next start",
     "lint": "eslint"
   },
