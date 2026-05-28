@@ -12,7 +12,7 @@ Vercel sirve los artefactos ya generados en `web/public/data/` (no regenera en b
 | Vercel proyecto | OK | `homes-bocm`, root `web/` |
 | URL producción | OK | https://homes-bocm.vercel.app |
 | Env Vercel (Production) | OK | `NEXT_PUBLIC_SUPABASE_*`, `NEXT_PUBLIC_EDITION`, `SKIP_BUILD_DATA` |
-| `NEXT_PUBLIC_SITE_URL` | Pendiente | Añadir cuando tengáis dominio propio (OG, sitemap) |
+| `NEXT_PUBLIC_SITE_URL` | OK | `https://homes-bocm.vercel.app` (cambiar al dominio propio) |
 | GitHub `SUPABASE_DB_URL` | OK | Workflow refresh |
 | Release baseline datos | OK | Tag `web-data-baseline` → `poc-bocm-web-baseline.tgz` |
 | Workflow refresh | OK | Último éxito 2026-05-25; lunes 03:17 UTC |
