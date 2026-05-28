@@ -10,9 +10,10 @@ Vercel sirve los artefactos ya generados en `web/public/data/` (no regenera en b
 | --- | --- | --- |
 | Repo GitHub | OK | `PabloMoran23/homes-bocm`, rama `main` |
 | Vercel proyecto | OK | `homes-bocm`, root `web/` |
-| URL producción | OK | https://homes-bocm.vercel.app |
+| URL producción | OK | https://homes-urbanismo.es (alias https://homes-bocm.vercel.app) |
 | Env Vercel (Production) | OK | `NEXT_PUBLIC_SUPABASE_*`, `NEXT_PUBLIC_EDITION`, `SKIP_BUILD_DATA` |
-| `NEXT_PUBLIC_SITE_URL` | OK | `https://homes-bocm.vercel.app` (cambiar al dominio propio) |
+| `NEXT_PUBLIC_SITE_URL` | OK | `https://homes-urbanismo.es` |
+| DNS Hostinger | Pendiente | Registros A → `76.76.21.21` (ver abajo) |
 | GitHub `SUPABASE_DB_URL` | OK | Workflow refresh |
 | Release baseline datos | OK | Tag `web-data-baseline` → `poc-bocm-web-baseline.tgz` |
 | Workflow refresh | OK | Último éxito 2026-05-25; lunes 03:17 UTC |
@@ -45,18 +46,26 @@ APIs en público: `/api/boletin-area`, `/api/geocode-address`, `/api/nti-asset`.
 `vercel.json` fija edición pública y omite `build-data` en Vercel; los JSON/GeoJSON
 deben estar commiteados en `web/public/data/`.
 
-### Dominio propio (cuando lo elijas)
+### Dominio propio · homes-urbanismo.es (Hostinger)
 
-1. Añade el dominio en Vercel → proyecto `homes-bocm`.
-2. Configura DNS (CNAME o registros que indique Vercel).
-3. En Vercel → Environment Variables → Production:
-   ```bash
-   NEXT_PUBLIC_SITE_URL=https://tu-dominio.es
-   ```
-4. Redeploy de producción (o push vacío a `main`).
-5. Comprueba `https://tu-dominio.es/sitemap.xml` y `robots.txt`.
+Dominio añadido en Vercel al proyecto `homes-bocm`. `NEXT_PUBLIC_SITE_URL=https://homes-urbanismo.es`.
 
-Sin `NEXT_PUBLIC_SITE_URL`, OG y sitemap usan `VERCEL_URL` (subdominio `*.vercel.app`).
+En **Hostinger → DNS / Zona DNS** del dominio, crea o edita:
+
+| Tipo | Nombre | Valor | TTL |
+| --- | --- | --- | --- |
+| **A** | `@` (raíz) | `76.76.21.21` | 300–3600 |
+| **A** | `www` | `76.76.21.21` | 300–3600 |
+
+Alternativa: nameservers del dominio a `ns1.vercel-dns.com` y `ns2.vercel-dns.com` (Vercel gestiona todo el DNS).
+
+Tras propagar (minutos–48 h):
+
+1. Vercel marcará el dominio como válido (email de confirmación).
+2. HTTPS se provisiona solo.
+3. Comprueba https://homes-urbanismo.es y https://www.homes-urbanismo.es
+
+En Vercel → Domains puedes redirigir `www` → raíz si prefieres una sola URL canónica.
 
 ## Verificación antes de publicar cambios
 
