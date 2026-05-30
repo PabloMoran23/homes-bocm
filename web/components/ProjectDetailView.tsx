@@ -311,6 +311,19 @@ export function ProjectDetailView({
               expedienteActual={p.sigmaExpediente}
               refActual={programaRef}
               clasificacionByExpediente={clasificacionByExpediente}
+              tramitacionByExpediente={
+                p.sigmaVisorTramitacion?.length
+                  ? { [p.sigmaExpediente]: p.sigmaVisorTramitacion }
+                  : undefined
+              }
+              expedientesByGrupo={{
+                [p.sigmaExpediente]: {
+                  expediente_grupo: p.sigmaExpediente,
+                  exp_numero_original: p.sigmaExpediente,
+                  fecha_aprob: p.sigmaFechaAprobacion ?? null,
+                  denominacion: p.sigmaDenominacion ?? null,
+                },
+              }}
             />
           </div>
         ) : null}

@@ -177,6 +177,15 @@ export function SigmaExpedienteDetailView({
             expedienteActual={ficha.expedienteGrupo}
             refActual={programaRef}
             clasificacionByExpediente={clasificacionByExpediente}
+            tramitacionByExpediente={{ [ficha.expedienteGrupo]: ficha.tramitacion }}
+            expedientesByGrupo={{
+              [ficha.expedienteGrupo]: {
+                expediente_grupo: ficha.expedienteGrupo,
+                exp_numero_original: ficha.catalog?.EXP_TX_NUMERO ?? null,
+                fecha_aprob: ficha.catalog?.FEX_DT_APROB ?? null,
+                denominacion: ficha.catalog?.EXP_TX_DENOM ?? null,
+              },
+            }}
           />
         </div>
       ) : null}

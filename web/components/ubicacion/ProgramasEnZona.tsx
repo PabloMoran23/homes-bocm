@@ -3,30 +3,12 @@
 import Link from "next/link";
 import { SigmaClassificationIcon } from "@/components/sigma/SigmaClassificationIcon";
 import { UbicacionExpedientePresentacion } from "@/components/ubicacion/UbicacionExpedientePresentacion";
-import {
-  anioReferenciaMunicipal,
-  fechaDestacadaUbicacionExpediente,
-  parseFechaEs,
-} from "@/lib/ubicacion-resumen";
+import { ordenarMiembrosProgramaCronologico } from "@/lib/sigma-programa-timeline";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import type { SigmaPrograma } from "@/lib/sigma-programa";
 import type { UbicacionSigmaExpediente, UbicacionTramite } from "@/lib/ubicacion";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
-
-function anioExpediente(
-  exp: UbicacionSigmaExpediente,
-  fecha: string | null,
-  soloAnio?: boolean,
-): string | null {
-  if (fecha && soloAnio) return fecha;
-  if (fecha) {
-    const d = parseFechaEs(fecha);
-    if (d) return String(d.getFullYear());
-  }
-  const ref = anioReferenciaMunicipal(exp);
-  return ref ? String(ref) : null;
-}
 
 export function ProgramasEnZona({
   programas,
@@ -46,23 +28,24 @@ export function ProgramasEnZona({
   return (
     <div className="space-y-6">
       {programas.map((prog) => {
-        const miembros = prog.miembros
-          .map((m) => {
-            const exp = expedientesByGrupo[m.expedienteGrupo];
+        const miembros = ordenarMiembrosProgramaCronologico(prog.miembros, {
+          expedientesByGrupo,
+          tramitacionSigma,
+        })
+          .map(({ miembro, anio }) => {
+            const exp = expedientesByGrupo[miembro.expedienteGrupo];
             if (!exp) return null;
-            const tram = tramitacionSigma[m.expedienteGrupo] || [];
-            const { fecha, soloAnio } = fechaDestacadaUbicacionExpediente(exp, tram);
             return {
               exp,
-              orden: m.ordenFase,
-              anio: anioExpediente(exp, fecha, soloAnio),
-              clasificacion: clasificacionByExpediente[m.expedienteGrupo] ?? null,
-              metric: metricsByExpediente[m.expedienteGrupo] ?? null,
+              miembro,
+              anio,
+              clasificacion: clasificacionByExpediente[miembro.expedienteGrupo] ?? null,
+              metric: metricsByExpediente[miembro.expedienteGrupo] ?? null,
             };
           })
           .filter(Boolean) as {
           exp: UbicacionSigmaExpediente;
-          orden: number;
+          miembro: (typeof prog.miembros)[number];
           anio: string | null;
           clasificacion: SigmaClassification | null;
           metric: SigmaExpedienteMetric | null;
@@ -93,9 +76,7 @@ export function ProgramasEnZona({
                     aria-hidden
                   />
                   <ol className="relative flex snap-x snap-mandatory gap-0">
-                    {miembros
-                      .sort((a, b) => a.orden - b.orden)
-                      .map((m, i) => {
+                    {miembros.map((m, i) => {
                         const isLast = i === miembros.length - 1;
                         const fichaHref = sigmaFichaPath(m.exp.expediente_grupo);
                         return (

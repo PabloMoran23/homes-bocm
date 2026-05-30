@@ -12,6 +12,8 @@ import {
   type SigmaPrograma,
   type SigmaProgramaExpedienteRef,
 } from "@/lib/sigma-programa";
+import { ordenarMiembrosProgramaCronologico, type ProgramaMiembroExpedienteCtx } from "@/lib/sigma-programa-timeline";
+import type { UbicacionTramite } from "@/lib/ubicacion";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
 export function SigmaProgramaPanel({
@@ -19,18 +21,27 @@ export function SigmaProgramaPanel({
   expedienteActual,
   refActual,
   clasificacionByExpediente = {},
+  tramitacionByExpediente = {},
+  expedientesByGrupo = {},
   compact = false,
 }: {
   programa: SigmaPrograma;
   expedienteActual: string;
   refActual?: SigmaProgramaExpedienteRef | null;
   clasificacionByExpediente?: Record<string, SigmaClassification | null>;
+  tramitacionByExpediente?: Record<string, UbicacionTramite[]>;
+  expedientesByGrupo?: Record<string, ProgramaMiembroExpedienteCtx>;
   compact?: boolean;
 }) {
-  const miembros = [...programa.miembros].sort((a, b) => a.ordenFase - b.ordenFase);
+  const miembros = ordenarMiembrosProgramaCronologico(programa.miembros, {
+    expedientesByGrupo,
+    tramitacionSigma: tramitacionByExpediente,
+  });
   if (miembros.length < 2) return null;
 
-  const rolActual = refActual?.rol ?? miembros.find((m) => m.expedienteGrupo === expedienteActual)?.rol;
+  const rolActual =
+    refActual?.rol ??
+    miembros.find((m) => m.miembro.expedienteGrupo === expedienteActual)?.miembro.rol;
   const rango =
     programa.anioInicio && programa.anioFin && programa.anioInicio !== programa.anioFin
       ? `${programa.anioInicio}–${programa.anioFin}`
@@ -77,7 +88,7 @@ export function SigmaProgramaPanel({
           </p>
         ) : null}
         <p className="mt-1 text-xs text-slate-500">
-          El Ayuntamiento los tramita por separado; la línea siguiente ordena las fases del mismo proceso.
+          El Ayuntamiento los tramita por separado; aquí van ordenados de más antiguo a más reciente.
         </p>
       </header>
 
@@ -93,14 +104,13 @@ export function SigmaProgramaPanel({
               aria-hidden
             />
             <ol className="relative flex snap-x snap-mandatory gap-0">
-              {miembros.map((m, i) => {
+              {miembros.map(({ miembro: m, anio }, i) => {
                 const esActual = m.expedienteGrupo === expedienteActual;
                 const isLast = i === miembros.length - 1;
                 const clasificacion = clasificacionByExpediente[m.expedienteGrupo] ?? null;
                 const classHeadline = sigmaHeroClassificationHeadline(clasificacion);
                 const classificationTitle =
                   classHeadline?.title ?? sigmaProgramaRolLabel(m.rol);
-                const anio = m.anio ? String(m.anio) : null;
                 const fichaHref = sigmaFichaPath(m.expedienteGrupo);
 
                 return (
