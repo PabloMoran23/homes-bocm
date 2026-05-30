@@ -191,7 +191,7 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
       : null;
 
   return (
-    <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+    <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
       <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
           ← Mapa Madrid

@@ -1,8 +1,18 @@
 import { LICENCIA_MAPA_CONFIG, LICENCIA_MAPA_LEYENDA } from "@/lib/licencia-mapa";
 
-export function LicenciaMapLegend({ className = "" }: { className?: string }) {
+export function LicenciaMapLegend({
+  className = "",
+  layout = "stack",
+}: {
+  className?: string;
+  layout?: "stack" | "grid";
+}) {
+  const layoutClass =
+    layout === "grid"
+      ? "grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3"
+      : "flex flex-col gap-1";
   return (
-    <div className={`flex flex-col gap-1 ${className}`}>
+    <div className={`${layoutClass} ${className}`}>
       {LICENCIA_MAPA_LEYENDA.map((cat) => {
         const cfg = LICENCIA_MAPA_CONFIG[cat];
         return (

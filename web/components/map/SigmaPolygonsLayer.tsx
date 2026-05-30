@@ -10,9 +10,11 @@ import {
   featureLayerStyle,
   featurePointStyle,
   featurePopupHtml,
+  shouldShowSigmaFeature,
   type FeaturePopupOptions,
   type SectorFeatureCollection,
 } from "@/lib/sector-geo";
+import { useMapVisualContext } from "@/components/map/useMapVisualContext";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
 export function SigmaPolygonsLayer({
@@ -28,6 +30,7 @@ export function SigmaPolygonsLayer({
   preview?: boolean;
 }) {
   const map = useMap();
+  const visual = useMapVisualContext();
   const router = useRouter();
   const layerRef = useRef<L.GeoJSON | null>(null);
   const routerRef = useRef(router);
@@ -43,11 +46,24 @@ export function SigmaPolygonsLayer({
     }
 
     const layer = L.geoJSON(geojson as GeoJSON.FeatureCollection, {
+      ...(preview ? { renderer: L.svg({ padding: 0.5 }) } : {}),
+      filter(feature) {
+        if (preview) {
+          return shouldShowSigmaFeature(map, feature, visual, { preview: true });
+        }
+        return shouldShowSigmaFeature(map, feature, visual);
+      },
       style(feature) {
-        return featureLayerStyle(feature?.properties) as PathOptions;
+        return featureLayerStyle(
+          feature?.properties,
+          preview ? null : visual,
+        ) as PathOptions;
       },
       pointToLayer(feature, latlng) {
-        return L.circleMarker(latlng, featurePointStyle(feature?.properties) as PathOptions);
+        return L.circleMarker(
+          latlng,
+          featurePointStyle(feature?.properties, preview ? null : visual) as PathOptions,
+        );
       },
       onEachFeature(feature, lyr) {
         if (preview) return;
@@ -72,7 +88,7 @@ export function SigmaPolygonsLayer({
       map.removeLayer(layer);
       layerRef.current = null;
     };
-  }, [map, geojson, popupOptions, visible, preview]);
+  }, [map, geojson, popupOptions, visible, preview, visual]);
 
   return null;
 }

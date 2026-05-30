@@ -12,6 +12,12 @@ import {
   createLicenciaDivIcon,
   createSigmaDivIcon,
 } from "@/lib/licencia-mapa";
+import { useMapVisualContext } from "@/components/map/useMapVisualContext";
+import {
+  boundsScaleForContainer,
+  capZoomForContainer,
+  scaledWeight,
+} from "@/lib/map-visual-scale";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
 
@@ -38,6 +44,46 @@ function MapSizeFix() {
   return null;
 }
 
+/** Encuadre y techo de zoom según radio: menos radio → más cercano. */
+function boletinFitForRadius(radiusM: number) {
+  if (radiusM <= 300) {
+    return { boundsScale: 0.9, maxZoom: 18, padding: 24 };
+  }
+  if (radiusM <= 500) {
+    return { boundsScale: 0.96, maxZoom: 17, padding: 30 };
+  }
+  if (radiusM <= 800) {
+    return { boundsScale: 1.02, maxZoom: 16, padding: 34 };
+  }
+  return { boundsScale: 1.1, maxZoom: 15, padding: 40 };
+}
+
+/** Círculo de radio con trazo escalado en pantallas pequeñas. */
+function BoletinSearchCircle({
+  lat,
+  lng,
+  radiusM,
+}: {
+  lat: number;
+  lng: number;
+  radiusM: number;
+}) {
+  const visual = useMapVisualContext();
+  return (
+    <Circle
+      center={[lat, lng]}
+      radius={radiusM}
+      pathOptions={{
+        color: "#0f766e",
+        fillColor: "#14b8a6",
+        fillOpacity: 0.14,
+        weight: scaledWeight(2.5, visual),
+        dashArray: "8 5",
+      }}
+    />
+  );
+}
+
 /** Encuadra el mapa en el círculo de búsqueda (zoom cercano al radio). */
 function FitCircleView({
   lat,
@@ -49,16 +95,39 @@ function FitCircleView({
   radiusM: number;
 }) {
   const map = useMap();
+  const visual = useMapVisualContext();
+
   useEffect(() => {
-    const dlat = radiusM / 111_320;
-    const dlng = radiusM / (111_320 * Math.cos((lat * Math.PI) / 180));
-    const bounds = L.latLngBounds(
-      [lat - dlat * 1.08, lng - dlng * 1.08],
-      [lat + dlat * 1.08, lng + dlng * 1.08],
-    );
-    const maxZoom = radiusM <= 400 ? 17 : radiusM <= 800 ? 16 : 15;
-    map.fitBounds(bounds, { padding: [32, 32], maxZoom, animate: false });
-  }, [map, lat, lng, radiusM]);
+    const fit = () => {
+      const { boundsScale, maxZoom, padding } = boletinFitForRadius(radiusM);
+      const scale = boundsScaleForContainer(
+        boundsScale,
+        visual.containerWidth,
+        visual.containerHeight,
+      );
+      const cap = capZoomForContainer(
+        maxZoom,
+        visual.containerWidth,
+        visual.containerHeight,
+      );
+      const dlat = (radiusM / 111_320) * scale;
+      const dlng = (radiusM / (111_320 * Math.cos((lat * Math.PI) / 180))) * scale;
+      const bounds = L.latLngBounds(
+        [lat - dlat, lng - dlng],
+        [lat + dlat, lng + dlng],
+      );
+      map.fitBounds(bounds, {
+        paddingTopLeft: [padding, padding],
+        paddingBottomRight: [padding, padding],
+        maxZoom: cap,
+        animate: false,
+      });
+    };
+    fit();
+    const t = window.setTimeout(fit, 120);
+    return () => window.clearTimeout(t);
+  }, [map, lat, lng, radiusM, visual.containerWidth, visual.containerHeight]);
+
   return null;
 }
 
@@ -155,24 +224,19 @@ export function BoletinMiniMap({
 }) {
   const isPanel = variant === "panel";
   const markerSize = isPanel ? "md" : "sm";
-  const panelHeight = "min(72vh, 680px)";
+  const shellClass = isPanel
+    ? "relative h-[min(42vh,340px)] min-h-[220px] w-full overflow-hidden rounded-2xl border border-teal-100/80 bg-teal-50/50 shadow-lg ring-1 ring-teal-900/5 lg:min-h-[420px] lg:h-[min(72vh,680px)]"
+    : "relative h-52 w-full overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/50 sm:h-60";
 
   return (
     <div className={`homes-map-shell w-full ${className}`}>
-      <div
-        className={
-          isPanel
-            ? "relative w-full overflow-hidden rounded-2xl border border-teal-100/80 bg-teal-50/50 shadow-lg ring-1 ring-teal-900/5"
-            : "relative h-52 w-full overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/50 sm:h-60"
-        }
-        style={isPanel ? { height: panelHeight, minHeight: 420 } : undefined}
-      >
+      <div className={shellClass}>
         <MapContainer
           key={`${lat.toFixed(5)}-${lng.toFixed(5)}-${radiusM}`}
           center={[lat, lng]}
           zoom={16}
           className="z-0 h-full w-full"
-          style={{ height: "100%", minHeight: isPanel ? 420 : 208 }}
+          style={{ height: "100%", minHeight: isPanel ? 220 : 208 }}
           zoomControl={false}
           attributionControl={false}
           scrollWheelZoom={isPanel}
@@ -180,17 +244,7 @@ export function BoletinMiniMap({
           <TileLayer url={HOMES_MAP_TILE_URL} />
           <MapSizeFix />
           <FitCircleView lat={lat} lng={lng} radiusM={radiusM} />
-          <Circle
-            center={[lat, lng]}
-            radius={radiusM}
-            pathOptions={{
-              color: "#0f766e",
-              fillColor: "#14b8a6",
-              fillOpacity: 0.14,
-              weight: 2.5,
-              dashArray: "8 5",
-            }}
-          />
+          <BoletinSearchCircle lat={lat} lng={lng} radiusM={radiusM} />
           <MapMarkers
             centerLat={lat}
             centerLng={lng}
@@ -200,24 +254,24 @@ export function BoletinMiniMap({
           />
           {isPanel ? <ZoomControl position="topright" /> : null}
         </MapContainer>
-
-        {isPanel ? (
-          <div className="pointer-events-none absolute bottom-3 left-3 z-[1000] max-h-[38%] overflow-y-auto rounded-xl border border-white/90 bg-white/93 px-3 py-2.5 text-[10px] text-slate-600 shadow-md backdrop-blur-sm">
-            <p className="mb-1.5 font-semibold uppercase tracking-wide text-slate-500">Leyenda</p>
-            <LicenciaMapLegend />
-            <p className="mt-2 border-t border-slate-100 pt-2 text-slate-500">
-              <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-[#0f766e] ring-1 ring-white" />
-              Tu dirección ·{" "}
-              <span className="inline-flex items-center gap-0.5">
-                <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sky-500 text-[8px] font-bold text-white">
-                  Σ
-                </span>
-                Planeamiento
-              </span>
-            </p>
-          </div>
-        ) : null}
       </div>
+
+      {isPanel ? (
+        <div className="mt-2 rounded-xl border border-slate-200/80 bg-white/95 px-3 py-2.5 text-[10px] text-slate-600 shadow-sm">
+          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Leyenda</p>
+          <LicenciaMapLegend layout="grid" />
+          <p className="mt-2 border-t border-slate-100 pt-2 text-slate-500">
+            <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-[#0f766e] ring-1 ring-white" />
+            Tu dirección ·{" "}
+            <span className="inline-flex items-center gap-0.5">
+              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sky-500 text-[8px] font-bold text-white">
+                Σ
+              </span>
+              Planeamiento
+            </span>
+          </p>
+        </div>
+      ) : null}
 
       {!isPanel ? (
         <p className="mt-2 text-[10px] text-slate-500">

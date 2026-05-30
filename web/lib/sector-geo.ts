@@ -8,6 +8,14 @@ import {
 } from "@/lib/sigma-user-labels";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
 import { SIGMA_MAP_POINT, SIGMA_MAP_POLYGON } from "@/lib/map-sigma-colors";
+import {
+  geometryPixelBBoxArea,
+  minSigmaPixelArea,
+  scalePathStyle,
+  type MapVisualContext,
+} from "@/lib/map-visual-scale";
+import type L from "leaflet";
+import type { GeoJSON } from "geojson";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 
 export type SectorFeatureProperties = {
@@ -211,31 +219,44 @@ export function featurePopupHtml(
 
 export function featureLayerStyle(
   p: SectorFeatureProperties | undefined,
+  visual?: MapVisualContext | null,
 ): Record<string, unknown> {
   if (isLicenciaFeature(p)) {
-    return { color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.62 };
+    return scalePathStyle(
+      { color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.62 },
+      visual,
+    );
   }
   if (isSigmaFeature(p)) {
     const kind = String(propsRecord(p).sigma_layer_kind || "");
-    if (kind === "tramitados_ad") return SIGMA_MAP_POLYGON.tramitados_ad;
-    if (kind === "gestion") return SIGMA_MAP_POLYGON.gestion;
-    if (kind === "urbanizacion") return SIGMA_MAP_POLYGON.urbanizacion;
-    return SIGMA_MAP_POLYGON.default;
+    let base: Record<string, unknown>;
+    if (kind === "tramitados_ad") base = { ...SIGMA_MAP_POLYGON.tramitados_ad };
+    else if (kind === "gestion") base = { ...SIGMA_MAP_POLYGON.gestion };
+    else if (kind === "urbanizacion") base = { ...SIGMA_MAP_POLYGON.urbanizacion };
+    else base = { ...SIGMA_MAP_POLYGON.default };
+    return scalePathStyle(base, visual);
   }
-  return sectorLayerStyle(p?.resolver_id) as Record<string, unknown>;
+  return scalePathStyle(sectorLayerStyle(p?.resolver_id) as Record<string, unknown>, visual);
 }
 
-export function featurePointStyle(p: SectorFeatureProperties | undefined): Record<string, unknown> {
+export function featurePointStyle(
+  p: SectorFeatureProperties | undefined,
+  visual?: MapVisualContext | null,
+): Record<string, unknown> {
   if (isLicenciaFeature(p)) {
-    return { radius: 5, color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.82 };
+    return scalePathStyle(
+      { radius: 5, color: "#047857", weight: 1.5, fillColor: "#10b981", fillOpacity: 0.82 },
+      visual,
+    );
   }
   if (isSigmaFeature(p)) {
-    if (String(propsRecord(p).sigma_layer_kind || "") === "tramitados_ad") {
-      return SIGMA_MAP_POINT.tramitados_ad;
-    }
-    return SIGMA_MAP_POINT.default;
+    const base =
+      String(propsRecord(p).sigma_layer_kind || "") === "tramitados_ad"
+        ? { ...SIGMA_MAP_POINT.tramitados_ad }
+        : { ...SIGMA_MAP_POINT.default };
+    return scalePathStyle(base, visual);
   }
-  return sectorPointStyle(p?.resolver_id) as Record<string, unknown>;
+  return scalePathStyle(sectorPointStyle(p?.resolver_id) as Record<string, unknown>, visual);
 }
 
 export type SectorFeatureCollection = {
@@ -249,11 +270,11 @@ export type SectorFeatureCollection = {
 
 export function sectorLayerStyle(resolverId: string | null | undefined) {
   if (resolverId?.startsWith("madrid_ayto")) {
-    return SIGMA_MAP_POLYGON.default;
+    return { ...SIGMA_MAP_POLYGON.default };
   }
   const isCm = resolverId?.startsWith("cm_sitcm");
   if (isCm) {
-    return SIGMA_MAP_POLYGON.gestion;
+    return { ...SIGMA_MAP_POLYGON.gestion };
   }
   return {
     color: "#0f766e",
@@ -263,9 +284,30 @@ export function sectorLayerStyle(resolverId: string | null | undefined) {
   };
 }
 
+/** Oculta polígonos/puntos SIGMA demasiado pequeños en pantalla al acercar mucho el zoom. */
+export function shouldShowSigmaFeature(
+  map: L.Map,
+  feature: GeoJSON.Feature,
+  visual: MapVisualContext,
+  opts?: { preview?: boolean },
+): boolean {
+  const p = feature.properties as SectorFeatureProperties | undefined;
+  if (!isSigmaFeature(p)) return true;
+  const minArea = minSigmaPixelArea(visual, opts);
+  if (minArea <= 0) return true;
+  const geom = feature.geometry;
+  if (!geom) return true;
+  if (geom.type === "Point") {
+    if (visual.zoom < 18) return true;
+    const r = featurePointStyle(p, visual).radius as number;
+    return r >= 4;
+  }
+  return geometryPixelBBoxArea(map, geom) >= minArea;
+}
+
 export function sectorPointStyle(resolverId: string | null | undefined) {
   if (resolverId?.startsWith("madrid_ayto")) {
-    return SIGMA_MAP_POINT.default;
+    return { ...SIGMA_MAP_POINT.default };
   }
   const isCm = resolverId?.startsWith("cm_sitcm");
   if (isCm) {

@@ -74,7 +74,6 @@ export function LandingMap() {
             interactive={false}
             fitToData={false}
             initialView="preview"
-            preferCanvas
             statsHint={statsHint}
             className="h-full w-full rounded-2xl"
           />

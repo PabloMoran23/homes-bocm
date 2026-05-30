@@ -146,7 +146,7 @@ export function SigmaExpedienteDetailView({
   };
 
   return (
-    <main className="mx-auto max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+    <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
       <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <DetailBreadcrumbLink href="/explore">Mapa Madrid</DetailBreadcrumbLink>
         <span className="text-slate-300">/</span>
@@ -161,8 +161,8 @@ export function SigmaExpedienteDetailView({
         bocmCount={ficha.bocmProyectos.length}
       />
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-        <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
+      <div className="mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <aside className="min-w-0 space-y-5 lg:sticky lg:top-6 lg:self-start">
           {sigmaGeo ? (
             <div className="overflow-hidden rounded-xl border border-indigo-200/80 bg-white shadow-sm">
               <p className="border-b border-indigo-100 bg-indigo-50/70 px-3 py-2 text-xs font-semibold text-indigo-900">

@@ -3,7 +3,6 @@
 import { Fragment, useCallback, useEffect, useMemo } from "react";
 import {
   CircleMarker,
-  GeoJSON,
   MapContainer,
   Marker,
   Popup,
@@ -15,23 +14,10 @@ import {
 } from "react-leaflet";
 import L from "leaflet";
 import type { LatLngExpression } from "leaflet";
-import type { PathOptions } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { collectMapBounds } from "@/lib/map-bounds";
-import {
-  clasificarLicenciaMapa,
-  createLicenciaDivIcon,
-} from "@/lib/licencia-mapa";
-import {
-  featureLayerStyle,
-  featurePointStyle,
-  featurePopupHtml,
-  isLicenciaFeature,
-  isSigmaFeature,
-  type FeaturePopupOptions,
-  type SectorFeatureCollection,
-  type SectorFeatureProperties,
-} from "@/lib/sector-geo";
+import { SectorFeaturesGeoLayer } from "@/components/map/SectorFeaturesGeoLayer";
+import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 export type MapPoint = {
@@ -198,35 +184,7 @@ export function ProjectsMap({
   const isDetail = variant === "detail";
   const hasMapContent = nMunicipios > 0 || nSectors > 0;
 
-  const sectorLayer = useMemo(() => {
-    if (!sectorGeoJson?.features?.length) return null;
-    return (
-      <GeoJSON
-        key={`sectors-${nSectors}-${dataScope}-${variant}`}
-        data={sectorGeoJson as never}
-        style={(feature) => {
-          const props = feature?.properties as SectorFeatureProperties | undefined;
-          return featureLayerStyle(props) as PathOptions;
-        }}
-        pointToLayer={(feature, latlng) => {
-          const props = feature?.properties as SectorFeatureProperties | undefined;
-          if (isLicenciaFeature(props)) {
-            const cat = clasificarLicenciaMapa(props?.tipo_expediente);
-            return L.marker(latlng, { icon: createLicenciaDivIcon(cat, false) });
-          }
-          return L.circleMarker(latlng, featurePointStyle(props) as PathOptions);
-        }}
-        onEachFeature={(feature, layer) => {
-          const props = feature.properties as SectorFeatureProperties | undefined;
-          const pop = featurePopupHtml(props, sigmaPopupOptions ?? undefined);
-          layer.bindPopup(pop, {
-            className: isSigmaFeature(props) ? "homes-map-popup homes-map-popup-sigma" : "homes-map-popup",
-            maxWidth: isSigmaFeature(props) ? 360 : 320,
-          });
-        }}
-      />
-    );
-  }, [sectorGeoJson, nSectors, dataScope, variant, sigmaPopupOptions]);
+  const sectorLayerKey = `sectors-${nSectors}-${dataScope}-${variant}`;
 
   return (
     <div className="homes-map-shell group relative">
@@ -325,7 +283,13 @@ export function ProjectsMap({
                 zoomControl={false}
               >
                 <TileLayer attribution="" url={HOMES_MAP_TILE_URL} />
-                {sectorLayer}
+                {sectorGeoJson?.features?.length ? (
+                  <SectorFeaturesGeoLayer
+                    geojson={sectorGeoJson}
+                    popupOptions={sigmaPopupOptions ?? undefined}
+                    layerKey={sectorLayerKey}
+                  />
+                ) : null}
                 <FitBounds points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
                 <MapResizeFix points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
                 <ZoomControl position="topright" />

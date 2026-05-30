@@ -22,7 +22,7 @@ const BoletinMiniMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="min-h-[min(72vh,680px)] flex-1 animate-pulse rounded-2xl bg-slate-200" />
+      <div className="h-[min(42vh,340px)] min-h-[220px] animate-pulse rounded-2xl bg-slate-200 lg:min-h-[420px] lg:h-[min(72vh,680px)]" />
     ),
   },
 );
@@ -127,6 +127,8 @@ export function BoletinAreaApp() {
   const qFromUrl = searchParams.get("q")?.trim() || null;
   const autoLoadedNdp = useRef<string | null>(null);
   const appliedQFromUrl = useRef<string | null>(null);
+  const resultsAnchorRef = useRef<HTMLDivElement>(null);
+  const scrollResultsAfterLoad = useRef(false);
 
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [searchReady, setSearchReady] = useState(false);
@@ -208,6 +210,7 @@ export function BoletinAreaApp() {
           throw new Error(json.error || "No se pudo cargar el boletín");
         }
         setData(json);
+        scrollResultsAfterLoad.current = true;
       } catch (e) {
         setError(e instanceof Error ? e.message : "Error al consultar");
       } finally {
@@ -216,6 +219,16 @@ export function BoletinAreaApp() {
     },
     [selected, q, radiusM, months],
   );
+
+  useEffect(() => {
+    if (!data || !scrollResultsAfterLoad.current) return;
+    scrollResultsAfterLoad.current = false;
+    const t = window.setTimeout(() => {
+      if (!window.matchMedia("(max-width: 1023px)").matches) return;
+      resultsAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, [data]);
 
   useEffect(() => {
     if (!qFromUrl || appliedQFromUrl.current === qFromUrl || ndpFromUrl) return;
@@ -391,11 +404,29 @@ export function BoletinAreaApp() {
           ) : null}
         </section>
 
-        {/* Resultado: boletín + mapa */}
+        {/* Resultado: en móvil mapa bajo búsqueda, detalle debajo; en lg editorial | mapa */}
         {data ? (
-          <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(340px,46%)] lg:items-start xl:gap-10">
-            {/* Columna editorial */}
-            <article className="min-w-0 rounded-2xl border border-slate-200/80 bg-white px-5 py-6 shadow-sm sm:px-8 sm:py-8">
+          <div
+            ref={resultsAnchorRef}
+            className="mt-6 flex scroll-mt-20 flex-col gap-6 lg:mt-8 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(340px,46%)] lg:items-start lg:gap-8 xl:gap-10"
+          >
+            {/* Mapa: primero en móvil, columna derecha sticky en lg */}
+            <aside className="order-1 w-full min-w-0 lg:order-2 lg:sticky lg:top-20 lg:self-start">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                Mapa del ámbito · {radioLabel}
+              </p>
+              <BoletinMiniMap
+                key={`map-${data.center.ndp}-${data.params.radiusM}`}
+                variant="panel"
+                lat={data.center.lat}
+                lng={data.center.lng}
+                radiusM={data.params.radiusM}
+                licencias={data.licencias}
+                expedientesSigma={data.expedientesSigma}
+              />
+            </aside>
+
+            <article className="order-2 min-w-0 rounded-2xl border border-slate-200/80 bg-white px-5 py-6 shadow-sm sm:px-8 sm:py-8 lg:order-1">
               <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
                 Edición local · radio {radioLabel}
               </p>
@@ -471,22 +502,6 @@ export function BoletinAreaApp() {
                 indican inicio ni fin de obra salvo que se indique lo contrario.
               </footer>
             </article>
-
-            {/* Mapa sticky derecha */}
-            <aside className="w-full min-w-0 lg:sticky lg:top-20 lg:self-start">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Mapa del ámbito · {radioLabel}
-              </p>
-              <BoletinMiniMap
-                key={`map-${data.center.ndp}-${data.params.radiusM}`}
-                variant="panel"
-                lat={data.center.lat}
-                lng={data.center.lng}
-                radiusM={data.params.radiusM}
-                licencias={data.licencias}
-                expedientesSigma={data.expedientesSigma}
-              />
-            </aside>
           </div>
         ) : (
           <div className="mt-12 rounded-2xl border border-dashed border-slate-300 bg-white/50 px-6 py-16 text-center">

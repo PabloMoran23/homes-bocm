@@ -34,8 +34,13 @@ export function SigmaProjectHero({
   return (
     <header className="portal-hero-bg overflow-hidden rounded-2xl border border-indigo-200/50 shadow-sm">
       <div className={compact ? "p-4 sm:p-5" : "p-5 sm:p-8"}>
-        <div className="flex items-start gap-3 sm:gap-5">
-          <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
+          {clasificacion ? (
+            <div className="flex shrink-0 justify-end sm:order-2">
+              <SigmaClassificationIcon clasificacion={clasificacion} size="hero" />
+            </div>
+          ) : null}
+          <div className="min-w-0 flex-1 sm:order-1">
             <div className="flex flex-wrap gap-2">
               <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-semibold text-indigo-950 ring-1 ring-indigo-200">
                 Proyecto urbanístico
@@ -61,8 +66,8 @@ export function SigmaProjectHero({
 
             {classHeadline ? (
               <p
-                className={`mt-1 font-serif font-semibold leading-tight ${sigmaClassificationHeroToneClass(clasificacion)} ${
-                  compact ? "text-xl sm:text-2xl" : "text-2xl sm:text-3xl"
+                className={`mt-1 break-words font-semibold leading-tight ${sigmaClassificationHeroToneClass(clasificacion)} ${
+                  compact ? "text-lg sm:text-2xl" : "text-xl sm:text-3xl"
                 }`}
               >
                 {classHeadline.title}
@@ -70,7 +75,7 @@ export function SigmaProjectHero({
             ) : null}
 
             <h1
-              className={`font-bold leading-tight tracking-tight text-slate-900 ${
+              className={`break-words font-bold leading-tight tracking-tight text-slate-900 ${
                 classHeadline
                   ? compact
                     ? "mt-2 text-lg sm:text-xl"
@@ -85,13 +90,13 @@ export function SigmaProjectHero({
 
             {classHeadline?.summary ? (
               <p
-                className={`mt-2 max-w-2xl text-sm leading-relaxed text-slate-600 ${compact ? "" : "sm:text-base"}`}
+                className={`mt-2 max-w-2xl break-words text-sm leading-relaxed text-slate-600 ${compact ? "" : "sm:text-base"}`}
               >
                 {classHeadline.summary}
               </p>
             ) : null}
 
-            <div className={`flex flex-wrap gap-2 ${compact ? "mt-4" : "mt-6"}`}>
+            <div className={`flex max-w-full flex-wrap gap-2 ${compact ? "mt-4" : "mt-6"}`}>
               {visorUrl ? (
                 <a
                   href={visorUrl}
@@ -112,14 +117,6 @@ export function SigmaProjectHero({
               ) : null}
             </div>
           </div>
-
-          {clasificacion ? (
-            <SigmaClassificationIcon
-              clasificacion={clasificacion}
-              size="hero"
-              className="mt-0.5"
-            />
-          ) : null}
         </div>
       </div>
     </header>

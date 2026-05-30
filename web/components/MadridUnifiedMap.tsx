@@ -22,6 +22,7 @@ import type { UbicacionesMapGeoJson } from "@/lib/madrid-ubicaciones-map";
 import { SIGMA_MAP_LEGEND } from "@/lib/map-sigma-colors";
 import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
+import { capZoomForContainer, fixedZoomForContainer } from "@/lib/map-visual-scale";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
@@ -34,8 +35,8 @@ const MADRID_CITY_BOUNDS = L.latLngBounds(
   [40.502, -3.518],
 );
 
-/** Portada: zoom fijo (no fitBounds del GeoJSON completo). */
-const MADRID_PREVIEW_ZOOM = 11;
+/** Portada: zoom fijo (un poco más alejado que explorar para la miniatura). */
+const MADRID_PREVIEW_ZOOM = 10;
 
 /** Explorar: misma idea al entrar, sobre todo en móvil. */
 const MADRID_EXPLORE_ZOOM = 12;
@@ -73,16 +74,38 @@ const FIT_PRESETS: Record<
   },
 };
 
+function fitBoundsForContainer(
+  map: L.Map,
+  bounds: L.LatLngBounds,
+  opts: L.FitBoundsOptions,
+  view?: MapInitialView,
+) {
+  const el = map.getContainer();
+  const w = el?.clientWidth ?? 800;
+  const h = el?.clientHeight ?? 400;
+  const maxZoom =
+    opts.maxZoom != null && view !== "preview"
+      ? capZoomForContainer(opts.maxZoom, w, h, 9)
+      : opts.maxZoom;
+  map.fitBounds(bounds, { ...opts, maxZoom });
+}
+
 function frameMadridCity(map: L.Map, view: MapInitialView) {
   const bounds = view === "preview" ? MADRID_PREVIEW_BOUNDS : MADRID_CITY_BOUNDS;
-  map.fitBounds(bounds, FIT_PRESETS[view].city);
+  fitBoundsForContainer(map, bounds, FIT_PRESETS[view].city, view);
 }
 
 /** Zoom fijo; no usar getBounds() del GeoJSON (cubre todo Madrid y aleja el mapa). */
 function frameFixedZoom(map: L.Map, view: MapInitialView) {
   const zoom = FIXED_VIEW_ZOOM[view];
   if (zoom == null) return;
-  map.setView(MADRID_CENTER, zoom, { animate: false });
+  const el = map.getContainer();
+  const w = el?.clientWidth ?? 800;
+  const h = el?.clientHeight ?? 400;
+  // Portada: zoom fijo sin boost en móvil (evita polígonos “gordos” en miniatura).
+  const effective =
+    view === "preview" ? zoom : fixedZoomForContainer(zoom, w, h);
+  map.setView(MADRID_CENTER, effective, { animate: false });
 }
 
 function scheduleFixedZoom(map: L.Map, view: MapInitialView) {
@@ -103,7 +126,7 @@ function fitLayerBounds(
   mode: "city" | "data",
 ) {
   if (!bounds.isValid()) return;
-  map.fitBounds(bounds, FIT_PRESETS[view][mode]);
+  fitBoundsForContainer(map, bounds, FIT_PRESETS[view][mode], view);
 }
 
 function UnifiedFitBounds({
@@ -119,6 +142,8 @@ function UnifiedFitBounds({
 }) {
   const map = useMap();
   const lastFitKey = useRef("");
+  /** Zoom fijo de portada/explorar: solo al montar (no al cambiar features en vista). */
+  const fixedExploreZoomDone = useRef(false);
 
   useEffect(() => {
     const hasUbic = Boolean(ubicaciones?.features?.length);
@@ -139,12 +164,14 @@ function UnifiedFitBounds({
     };
 
     if (!fitToData) {
-      if (lastFitKey.current === key) return;
-      lastFitKey.current = key;
-
       if (initialView === "preview" || initialView === "explore") {
+        if (fixedExploreZoomDone.current) return;
+        fixedExploreZoomDone.current = true;
         return scheduleFixedZoom(map, initialView);
       }
+
+      if (lastFitKey.current === key) return;
+      lastFitKey.current = key;
 
       const layerBounds = boundsFromLayers();
       if (layerBounds) {
@@ -174,6 +201,36 @@ function UnifiedFitBounds({
     frameMadridCity(map, initialView);
   }, [map, ubicaciones, sigma, fitToData, initialView]);
 
+  useEffect(() => {
+    if (!fitToData && (initialView === "preview" || initialView === "explore")) return;
+
+    const el = map.getContainer();
+    if (!el || typeof ResizeObserver === "undefined") return;
+
+    const refit = () => {
+      if (!fitToData) {
+        const hasSigma = Boolean(sigma?.features?.length);
+        const hasUbic = Boolean(ubicaciones?.features?.length);
+        if (hasSigma || hasUbic) {
+          let bounds: L.LatLngBounds | null = null;
+          if (hasSigma) {
+            const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
+            if (sb.isValid()) bounds = sb;
+          }
+          if (hasUbic) {
+            const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
+            if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
+          }
+          if (bounds?.isValid()) fitLayerBounds(map, bounds, initialView, "data");
+        }
+      }
+    };
+
+    const ro = new ResizeObserver(refit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [map, ubicaciones, sigma, fitToData, initialView]);
+
   return null;
 }
 
@@ -190,7 +247,10 @@ function FlyToNdp({
     const f = geojson.features.find((x) => x.properties.ndp === ndp);
     if (!f) return;
     const [lng, lat] = f.geometry.coordinates;
-    map.flyTo([lat, lng], 17, { duration: 0.55 });
+    const el = map.getContainer();
+    const w = el?.clientWidth ?? 800;
+    const h = el?.clientHeight ?? 400;
+    map.flyTo([lat, lng], capZoomForContainer(17, w, h), { duration: 0.55 });
   }, [map, geojson, ndp]);
   return null;
 }
