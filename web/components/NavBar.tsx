@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
+import { SiteLogo } from "@/components/SiteLogo";
 import { editionLabel, isPublicEdition } from "@/lib/edition";
 
 const navLinks = [
@@ -98,28 +99,27 @@ export function NavBar() {
         <Link
           href="/"
           onClick={close}
-          className={`min-w-0 shrink-0 rounded-md px-2 py-1.5 text-sm font-semibold tracking-tight transition sm:text-base ${
+          className={`flex min-w-0 shrink-0 items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold tracking-tight transition sm:text-base ${
             pathname === "/"
               ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)]"
               : "text-slate-900 hover:bg-slate-100"
           }`}
         >
-          <span className="text-[var(--portal-accent)]">Homes</span>
-          <span className="text-slate-400"> · </span>
-          <span className="hidden sm:inline">Urbanismo Madrid</span>
-          <span className="sm:hidden">Madrid</span>
+          <SiteLogo height={22} className="opacity-90" />
+          <span className="min-w-0 truncate">
+            <span className="text-[var(--portal-accent)]">Homes</span>
+            <span className="text-slate-400"> · </span>
+            <span className="hidden sm:inline">Urbanismo Madrid</span>
+            <span className="sm:hidden">Madrid</span>
+          </span>
         </Link>
 
         <div className="flex items-center gap-2 md:gap-3">
-          {isPublic ? (
-            <span className="hidden shrink-0 rounded-md border border-teal-200/80 bg-teal-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-teal-800 sm:inline">
-              Beta
-            </span>
-          ) : (
+          {!isPublic ? (
             <span className="hidden shrink-0 rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-500 lg:inline">
               {editionLabel("full")}
             </span>
-          )}
+          ) : null}
 
           <nav
             className="hidden items-center justify-center gap-1 md:flex"
@@ -179,11 +179,6 @@ export function NavBar() {
                 );
               })}
             </ul>
-            {isPublic ? (
-              <p className="mt-3 border-t border-slate-100 pt-3 text-center text-[10px] font-semibold uppercase tracking-wide text-teal-800">
-                Versión beta · Madrid capital
-              </p>
-            ) : null}
           </nav>
         </>
       ) : null}

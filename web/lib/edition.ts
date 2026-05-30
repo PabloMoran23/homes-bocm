@@ -80,5 +80,5 @@ export function isPublicApiRoute(pathname: string): boolean {
 }
 
 export function editionLabel(edition: ProductEdition): string {
-  return edition === "public" ? "Madrid (beta)" : "Desarrollo";
+  return edition === "public" ? "Madrid" : "Desarrollo";
 }

@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     template: "%s · Homes Urbanismo",
   },
   description: siteDescription,
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/logo-192.png", sizes: "192x192", type: "image/png" }],
+  },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     locale: "es_ES",

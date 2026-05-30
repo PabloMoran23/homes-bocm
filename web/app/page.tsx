@@ -19,7 +19,7 @@ export default async function Home() {
             <div className="min-w-0">
               {isPublic ? (
                 <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
-                  Madrid · versión beta
+                  Madrid capital
                 </p>
               ) : (
                 <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
