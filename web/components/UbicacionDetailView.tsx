@@ -5,13 +5,19 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { ViviendaBadge } from "@/components/detail/SigmaMetricsCards";
+import { UbicacionExpedientePresentacion } from "@/components/ubicacion/UbicacionExpedientePresentacion";
+import { ProgramasEnZona } from "@/components/ubicacion/ProgramasEnZona";
 import {
   buildUbicacionResumen,
   categoriaExpedienteLabel,
+  fechaDestacadaUbicacionExpediente,
   faseEnLenguajeClaro,
   licenciaDetalleCorto,
+  ordenarExpedientesPorFecha,
 } from "@/lib/ubicacion-resumen";
 import { LicenciaTitulo } from "@/components/LicenciaTitulo";
+import type { SigmaClassification } from "@/lib/sigma-classification";
+import type { SigmaPrograma } from "@/lib/sigma-programa";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import { boletinPath } from "@/lib/boletin-area";
 import type { UbicacionFicha, UbicacionSigmaExpediente } from "@/lib/ubicacion";
@@ -34,18 +40,48 @@ type TabId = "resumen" | "licencias" | "proyectos";
 function ExpedienteCard({
   exp,
   metric,
+  clasificacion,
   tramCount,
+  fechaDestacada,
+  hitoLabel,
+  soloAnio,
+  simple = false,
 }: {
   exp: UbicacionSigmaExpediente;
   metric: SigmaExpedienteMetric | null;
+  clasificacion: SigmaClassification | null;
   tramCount: number;
+  fechaDestacada: string | null;
+  hitoLabel: string | null;
+  soloAnio?: boolean;
+  simple?: boolean;
 }) {
+  const titulo = exp.denominacion || exp.expediente_grupo;
+
   return (
     <article className="rounded-xl border border-sky-100 bg-sky-50/30 p-4 shadow-sm transition hover:border-sky-200">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-900 ring-1 ring-sky-200">
-          Proyecto urbanístico
-        </span>
+      {fechaDestacada ? (
+        <div className="mb-3 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+          <time
+            dateTime={soloAnio ? `${fechaDestacada}-01-01` : undefined}
+            className="text-xs font-semibold tabular-nums text-slate-600"
+          >
+            {fechaDestacada}
+          </time>
+          {hitoLabel ? <span className="text-[10px] text-sky-700">{hitoLabel}</span> : null}
+        </div>
+      ) : null}
+      {simple ? (
+        <div className="min-w-0">
+          <h4 className="break-words text-sm font-semibold leading-snug text-slate-900 sm:text-base">
+            {titulo}
+          </h4>
+          <p className="mt-1 font-mono text-[11px] text-slate-500">{exp.expediente_grupo}</p>
+        </div>
+      ) : (
+        <UbicacionExpedientePresentacion exp={exp} metric={metric} clasificacion={clasificacion} />
+      )}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
         <span
           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
             exp.fase?.toLowerCase().includes("definitiva")
@@ -59,9 +95,6 @@ function ExpedienteCard({
           <ViviendaBadge code={metric.genera_vivienda_nueva} />
         ) : null}
       </div>
-      <h3 className="mt-2 text-base font-semibold leading-snug text-slate-900">
-        {exp.denominacion || "Proyecto urbanístico"}
-      </h3>
       {metric?.num_viviendas_max != null ? (
         <p className="mt-1 text-sm text-teal-800">
           Hasta {metric.num_viviendas_max.toLocaleString("es-ES")} viviendas en el ámbito
@@ -111,9 +144,15 @@ function SignalCard({ text, index }: { text: string; index: number }) {
 export function UbicacionDetailView({
   ficha,
   metricsByExpediente = {},
+  clasificacionByExpediente = {},
+  programasEnZona = [],
+  expedientesSueltos = [],
 }: {
   ficha: UbicacionFicha;
   metricsByExpediente?: Record<string, SigmaExpedienteMetric | null>;
+  clasificacionByExpediente?: Record<string, SigmaClassification | null>;
+  programasEnZona?: SigmaPrograma[];
+  expedientesSueltos?: string[];
 }) {
   const [tab, setTab] = useState<TabId>("resumen");
   const inv = ficha.inmueble;
@@ -150,6 +189,20 @@ export function UbicacionDetailView({
   });
 
   const categoriasOrden = ["local", "sector", "normativa_ciudad"] as const;
+  const sueltosSet = new Set(expedientesSueltos);
+  const expedientesByGrupo = Object.fromEntries(
+    ficha.expedientesSigma.map((exp) => [exp.expediente_grupo, exp]),
+  );
+  const resumenSueltos = {
+    ...resumen,
+    expedientesPorCategoria: {
+      local: resumen.expedientesPorCategoria.local.filter((e) => sueltosSet.has(e.expediente_grupo)),
+      sector: resumen.expedientesPorCategoria.sector.filter((e) => sueltosSet.has(e.expediente_grupo)),
+      normativa_ciudad: resumen.expedientesPorCategoria.normativa_ciudad.filter((e) =>
+        sueltosSet.has(e.expediente_grupo),
+      ),
+    },
+  };
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
@@ -425,8 +478,18 @@ export function UbicacionDetailView({
                   </p>
                 ) : (
                   <div className="space-y-6">
+                    <ProgramasEnZona
+                      programas={programasEnZona}
+                      expedientesByGrupo={expedientesByGrupo}
+                      tramitacionSigma={ficha.tramitacionSigma}
+                      metricsByExpediente={metricsByExpediente}
+                      clasificacionByExpediente={clasificacionByExpediente}
+                    />
                     {categoriasOrden.map((cat) => {
-                      const items = resumen.expedientesPorCategoria[cat];
+                      const items = ordenarExpedientesPorFecha(
+                        resumenSueltos.expedientesPorCategoria[cat],
+                        ficha.tramitacionSigma,
+                      );
                       if (!items.length) return null;
                       return (
                         <div key={cat}>
@@ -435,15 +498,27 @@ export function UbicacionDetailView({
                             <span className="ml-2 font-normal text-slate-400">({items.length})</span>
                           </h3>
                           <ul className="grid gap-3 sm:grid-cols-2">
-                            {items.map((exp) => (
-                              <li key={exp.expediente_grupo}>
-                                <ExpedienteCard
-                                  exp={exp}
-                                  metric={metricsByExpediente[exp.expediente_grupo] ?? null}
-                                  tramCount={(ficha.tramitacionSigma[exp.expediente_grupo] || []).length}
-                                />
-                              </li>
-                            ))}
+                            {items.map((exp) => {
+                              const tram = ficha.tramitacionSigma[exp.expediente_grupo] || [];
+                              const { fecha, hitoLabel, soloAnio } = fechaDestacadaUbicacionExpediente(
+                                exp,
+                                tram,
+                              );
+                              return (
+                                <li key={exp.expediente_grupo}>
+                                  <ExpedienteCard
+                                    exp={exp}
+                                    metric={metricsByExpediente[exp.expediente_grupo] ?? null}
+                                    clasificacion={clasificacionByExpediente[exp.expediente_grupo] ?? null}
+                                    tramCount={tram.length}
+                                    fechaDestacada={fecha}
+                                    hitoLabel={hitoLabel}
+                                    soloAnio={soloAnio}
+                                    simple={cat === "local" || cat === "normativa_ciudad"}
+                                  />
+                                </li>
+                              );
+                            })}
                           </ul>
                         </div>
                       );

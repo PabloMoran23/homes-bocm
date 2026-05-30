@@ -111,6 +111,50 @@ function metersPerPixel(map: L.Map, lat: number): number {
   return meters / px;
 }
 
+function geometryLatLngBounds(
+  geometry: GeoJSON.Geometry,
+): { south: number; north: number; west: number; east: number } | null {
+  if (geometry.type === "GeometryCollection") {
+    let merged: { south: number; north: number; west: number; east: number } | null = null;
+    for (const g of geometry.geometries) {
+      const bb = geometryLatLngBounds(g);
+      if (!bb) continue;
+      if (!merged) {
+        merged = { ...bb };
+        continue;
+      }
+      merged.south = Math.min(merged.south, bb.south);
+      merged.north = Math.max(merged.north, bb.north);
+      merged.west = Math.min(merged.west, bb.west);
+      merged.east = Math.max(merged.east, bb.east);
+    }
+    return merged;
+  }
+
+  const b = { minLat: 90, maxLat: -90, minLng: 180, maxLng: -180 };
+  const acc = (coords: unknown, depth: number) => {
+    if (!coords || depth > 14) return;
+    if (
+      Array.isArray(coords) &&
+      coords.length >= 2 &&
+      typeof coords[0] === "number" &&
+      typeof coords[1] === "number"
+    ) {
+      const lng = coords[0];
+      const lat = coords[1];
+      b.minLat = Math.min(b.minLat, lat);
+      b.maxLat = Math.max(b.maxLat, lat);
+      b.minLng = Math.min(b.minLng, lng);
+      b.maxLng = Math.max(b.maxLng, lng);
+      return;
+    }
+    if (Array.isArray(coords)) for (const c of coords) acc(c, depth + 1);
+  };
+  acc(geometry.coordinates, 0);
+  if (b.minLat >= b.maxLat) return null;
+  return { south: b.minLat, north: b.maxLat, west: b.minLng, east: b.maxLng };
+}
+
 /** Aproximación del área del bbox de la geometría en píxeles de pantalla. */
 export function geometryPixelBBoxArea(
   map: L.Map,
@@ -118,20 +162,13 @@ export function geometryPixelBBoxArea(
 ): number {
   if (!geometry) return Infinity;
   try {
-    const layer = L.geoJSON({
-      type: "Feature",
-      geometry,
-      properties: {},
-    } as GeoJSON.Feature);
-    const bounds = layer.getBounds();
-    if (!bounds.isValid()) return 0;
-    const center = bounds.getCenter();
-    const mpp = metersPerPixel(map, center.lat);
-    const latM = Math.abs(bounds.getNorth() - bounds.getSouth()) * 111320;
+    const bb = geometryLatLngBounds(geometry);
+    if (!bb) return 0;
+    const centerLat = (bb.south + bb.north) / 2;
+    const mpp = metersPerPixel(map, centerLat);
+    const latM = Math.abs(bb.north - bb.south) * 111320;
     const lngM =
-      Math.abs(bounds.getEast() - bounds.getWest()) *
-      111320 *
-      Math.cos((center.lat * Math.PI) / 180);
+      Math.abs(bb.east - bb.west) * 111320 * Math.cos((centerLat * Math.PI) / 180);
     return (latM * lngM) / (mpp * mpp);
   } catch {
     return Infinity;

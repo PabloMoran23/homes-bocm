@@ -5,7 +5,10 @@ import { ProjectDetailView } from "@/components/ProjectDetailView";
 import { SigmaExpedienteDetailView } from "@/components/SigmaExpedienteDetailView";
 import { loadProjectById } from "@/lib/load-project";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
+import { getSigmaClasificacionForGrupos } from "@/lib/load-sigma-clasificacion";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
+import { getSigmaProgramaForGrupo } from "@/lib/load-sigma-programas";
+import type { SigmaPrograma } from "@/lib/sigma-programa";
 import { normalizeResumenContenido } from "@/lib/normalize-resumen-contenido";
 import { projectHeadline } from "@/lib/project-display";
 import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
@@ -18,6 +21,11 @@ type PageProps = {
 
 function proyectoPath(id: string): string {
   return `/proyecto/${encodeURIComponent(id)}`;
+}
+
+async function clasificacionProgramaMiembros(programa: SigmaPrograma | null | undefined) {
+  if (!programa?.miembros.length) return {};
+  return getSigmaClasificacionForGrupos(programa.miembros.map((m) => m.expedienteGrupo));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -64,10 +72,19 @@ export default async function ProyectoPage({ params }: PageProps) {
   const { id } = await params;
   const project = await loadProjectById(id);
   if (project) {
+    const programaCtx = project.sigmaExpediente
+      ? await getSigmaProgramaForGrupo(String(project.sigmaExpediente))
+      : null;
+    const clasificacionByExpediente = await clasificacionProgramaMiembros(programaCtx?.programa);
     return (
       <>
         <ProyectoViewTracker id={id} kind="bocm" />
-        <ProjectDetailView project={project} />
+        <ProjectDetailView
+          project={project}
+          programa={programaCtx?.programa ?? null}
+          programaRef={programaCtx?.ref ?? null}
+          clasificacionByExpediente={clasificacionByExpediente}
+        />
       </>
     );
   }
@@ -75,11 +92,21 @@ export default async function ProyectoPage({ params }: PageProps) {
   const ficha = await loadSigmaFichaBySlug(id);
   if (!ficha) notFound();
 
-  const metric = await getSigmaMetricForGrupo(ficha.expedienteGrupo);
+  const [metric, programaCtx] = await Promise.all([
+    getSigmaMetricForGrupo(ficha.expedienteGrupo),
+    getSigmaProgramaForGrupo(ficha.expedienteGrupo),
+  ]);
+  const clasificacionByExpediente = await clasificacionProgramaMiembros(programaCtx?.programa);
   return (
     <>
       <ProyectoViewTracker id={id} kind="sigma" />
-      <SigmaExpedienteDetailView ficha={ficha} metric={metric} />
+      <SigmaExpedienteDetailView
+        ficha={ficha}
+        metric={metric}
+        programa={programaCtx?.programa ?? null}
+        programaRef={programaCtx?.ref ?? null}
+        clasificacionByExpediente={clasificacionByExpediente}
+      />
     </>
   );
 }

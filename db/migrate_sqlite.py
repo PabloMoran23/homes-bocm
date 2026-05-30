@@ -196,11 +196,20 @@ def _apply_ubicacion_schema_if_needed(con: sqlite3.Connection) -> None:
     """Aplica schema_ubicacion.sql (migración v2) si aún no está registrada."""
     cur = con.execute("SELECT 1 FROM schema_migrations WHERE version=2")
     if cur.fetchone():
+        pass
+    else:
+        ubicacion_sql = Path(__file__).resolve().parent / "schema_ubicacion.sql"
+        if ubicacion_sql.is_file():
+            con.executescript(ubicacion_sql.read_text(encoding="utf-8"))
+            con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (2)")
+
+    cur = con.execute("SELECT 1 FROM schema_migrations WHERE version=3")
+    if cur.fetchone():
         return
-    ubicacion_sql = Path(__file__).resolve().parent / "schema_ubicacion.sql"
-    if ubicacion_sql.is_file():
-        con.executescript(ubicacion_sql.read_text(encoding="utf-8"))
-        con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (2)")
+    programa_sql = Path(__file__).resolve().parent / "schema_sigma_programa.sql"
+    if programa_sql.is_file():
+        con.executescript(programa_sql.read_text(encoding="utf-8"))
+        con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (3)")
 
 
 def seed_sources(con: sqlite3.Connection) -> None:

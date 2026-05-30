@@ -45,6 +45,7 @@ def query(con: sqlite3.Connection, ndp: str) -> dict | None:
           c.denominacion,
           c.fase,
           c.enlace,
+          c.fecha_aprob,
           l.match_method,
           l.match_score
         FROM actuacion_edificacion ae
@@ -64,7 +65,7 @@ def query(con: sqlite3.Connection, ndp: str) -> dict | None:
             """
             SELECT g.expediente_grupo, g.geom_geojson,
                    c.exp_numero_original, c.sigma_layer_kind, c.denominacion, c.fase, c.enlace,
-                   g.area_approx_m2
+                   c.fecha_aprob, g.area_approx_m2
             FROM sigma_ambito_geom g
             JOIN sigma_catalog_expediente c ON c.expediente_grupo = g.expediente_grupo
             WHERE g.bbox_min_lng <= ? AND g.bbox_max_lng >= ?
@@ -89,6 +90,7 @@ def query(con: sqlite3.Connection, ndp: str) -> dict | None:
                 "denominacion": row["denominacion"],
                 "fase": row["fase"],
                 "enlace": row["enlace"],
+                "fecha_aprob": row.get("fecha_aprob"),
                 "match_method": "point_in_edificio",
                 "match_score": 1.0,
             }

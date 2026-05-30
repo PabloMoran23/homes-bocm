@@ -16,18 +16,57 @@ import {
 } from "@/lib/sector-geo";
 import { useMapVisualContext } from "@/components/map/useMapVisualContext";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import type { MapVisualContext } from "@/lib/map-visual-scale";
+
+const HIDDEN_STYLE: PathOptions = {
+  opacity: 0,
+  fillOpacity: 0,
+  weight: 0,
+  stroke: false,
+};
+
+function applySigmaFeatureStyle(
+  map: L.Map,
+  subLayer: L.Layer,
+  feature: GeoJSON.Feature,
+  visual: MapVisualContext,
+  preview: boolean,
+) {
+  const props = feature.properties as Record<string, unknown> | undefined;
+  const show = shouldShowSigmaFeature(map, feature, visual, { preview });
+  if (!show) {
+    if ("setStyle" in subLayer && typeof subLayer.setStyle === "function") {
+      subLayer.setStyle(HIDDEN_STYLE);
+    }
+    return;
+  }
+  const geom = feature.geometry;
+  if (geom?.type === "Point" && "setStyle" in subLayer && typeof subLayer.setStyle === "function") {
+    subLayer.setStyle(
+      featurePointStyle(props, preview ? null : visual) as PathOptions,
+    );
+    return;
+  }
+  if ("setStyle" in subLayer && typeof subLayer.setStyle === "function") {
+    subLayer.setStyle(
+      featureLayerStyle(props, preview ? null : visual) as PathOptions,
+    );
+  }
+}
 
 export function SigmaPolygonsLayer({
   geojson,
   popupOptions,
   visible,
   preview = false,
+  preferCanvas = false,
 }: {
   geojson: SectorFeatureCollection | null;
   popupOptions: FeaturePopupOptions | null;
   visible: boolean;
   /** Vista previa (inicio): sin popups ni navegación al hacer clic. */
   preview?: boolean;
+  preferCanvas?: boolean;
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
@@ -36,6 +75,7 @@ export function SigmaPolygonsLayer({
   const routerRef = useRef(router);
   routerRef.current = router;
 
+  /** Crea la capa una sola vez al cambiar datos o visibilidad (no en cada pan/zoom). */
   useEffect(() => {
     if (!visible || !geojson?.features?.length) {
       if (layerRef.current) {
@@ -45,14 +85,15 @@ export function SigmaPolygonsLayer({
       return;
     }
 
+    const renderer =
+      preview && !preferCanvas
+        ? L.svg({ padding: 0.5 })
+        : preferCanvas
+          ? L.canvas({ padding: 0.5 })
+          : undefined;
+
     const layer = L.geoJSON(geojson as GeoJSON.FeatureCollection, {
-      ...(preview ? { renderer: L.svg({ padding: 0.5 }) } : {}),
-      filter(feature) {
-        if (preview) {
-          return shouldShowSigmaFeature(map, feature, visual, { preview: true });
-        }
-        return shouldShowSigmaFeature(map, feature, visual);
-      },
+      ...(renderer ? { renderer } : {}),
       style(feature) {
         return featureLayerStyle(
           feature?.properties,
@@ -88,7 +129,21 @@ export function SigmaPolygonsLayer({
       map.removeLayer(layer);
       layerRef.current = null;
     };
-  }, [map, geojson, popupOptions, visible, preview, visual]);
+  }, [map, geojson, visible, preview, preferCanvas, popupOptions]);
+
+  /** Actualiza visibilidad/estilo in-place al cambiar zoom o tamaño del mapa. */
+  useEffect(() => {
+    const layer = layerRef.current;
+    if (!layer || !visible) return;
+
+    layer.eachLayer((subLayer) => {
+      const feature = (
+        subLayer as L.Layer & { feature?: GeoJSON.Feature }
+      ).feature;
+      if (!feature) return;
+      applySigmaFeatureStyle(map, subLayer, feature, visual, preview);
+    });
+  }, [map, visible, preview, visual]);
 
   return null;
 }

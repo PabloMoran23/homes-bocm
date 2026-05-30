@@ -7,6 +7,7 @@ import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { SigmaMetricsPanel } from "@/components/detail/SigmaMetricsCards";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
+import { SigmaProgramaPanel } from "@/components/sigma/SigmaProgramaPanel";
 import { SigmaProjectHero } from "@/components/sigma/SigmaProjectHero";
 import { SigmaAtAGlance } from "@/components/sigma/SigmaAtAGlance";
 import { SigmaClassificationSummary } from "@/components/sigma/SigmaClassificationSummary";
@@ -28,7 +29,9 @@ import {
   SIGMA_DOCUMENTOS_TAB_LABEL,
   SIGMA_TRAMITACION_INTRO,
 } from "@/lib/sigma-user-labels";
-import { type SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import type { SigmaClassification } from "@/lib/sigma-classification";
+import type { SigmaPrograma, SigmaProgramaExpedienteRef } from "@/lib/sigma-programa";
+import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import {
   loadSigmaNtiLinkedBundle,
   lookupSigmaNtiGrupo,
@@ -54,9 +57,15 @@ type TabId = "resumen" | "tramitacion" | "documentos" | "bocm";
 export function SigmaExpedienteDetailView({
   ficha,
   metric: metricProp,
+  programa = null,
+  programaRef = null,
+  clasificacionByExpediente = {},
 }: {
   ficha: SigmaFicha;
   metric?: SigmaExpedienteMetric | null;
+  programa?: SigmaPrograma | null;
+  programaRef?: SigmaProgramaExpedienteRef | null;
+  clasificacionByExpediente?: Record<string, SigmaClassification | null>;
 }) {
   const [ntiBundle, setNtiBundle] = useState<SigmaNtiLinkedBundle | null>(null);
   const [tab, setTab] = useState<TabId>("resumen");
@@ -160,6 +169,17 @@ export function SigmaExpedienteDetailView({
         bocmFirstId={hasBocm ? ficha.bocmProyectos[0].id : null}
         bocmCount={ficha.bocmProyectos.length}
       />
+
+      {programa ? (
+        <div className="mt-6">
+          <SigmaProgramaPanel
+            programa={programa}
+            expedienteActual={ficha.expedienteGrupo}
+            refActual={programaRef}
+            clasificacionByExpediente={clasificacionByExpediente}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <aside className="min-w-0 space-y-5 lg:sticky lg:top-6 lg:self-start">

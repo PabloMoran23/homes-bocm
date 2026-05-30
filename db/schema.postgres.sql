@@ -214,3 +214,5 @@ CREATE TABLE hito (
   detalle_json JSONB,
   UNIQUE (entidad_tipo, entidad_id, fecha, tipo, organo)
 );
+
+-- Ver schema_sigma_programa.sql / migración 20250530140000_sigma_programa.sql

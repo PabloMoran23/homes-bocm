@@ -104,6 +104,8 @@ def insert_batch(cur, table: str, columns: list[str], rows: list[tuple], conflic
 
 def truncate_all(cur) -> None:
     tables = [
+        "sigma_programa_miembro",
+        "sigma_programa",
         "link_licencia_sigma",
         "actuacion_edificacion",
         "inmueble",
@@ -750,6 +752,73 @@ def sync_sigma_pdf_metric(sqlite: sqlite3.Connection, cur) -> int:
     )
 
 
+def sync_sigma_programa(sqlite: sqlite3.Connection, cur) -> int:
+    try:
+        sqlite.execute("SELECT 1 FROM sigma_programa LIMIT 1")
+    except sqlite3.OperationalError:
+        return 0
+    prog_rows = list(sqlite.execute("SELECT * FROM sigma_programa"))
+    if not prog_rows:
+        return 0
+    cur.execute(f"DELETE FROM {SCHEMA}.sigma_programa_miembro")
+    cur.execute(f"DELETE FROM {SCHEMA}.sigma_programa")
+    n_prog = insert_batch(
+        cur,
+        "sigma_programa",
+        [
+            "programa_id",
+            "titulo",
+            "ambito_ordenacion",
+            "distrito",
+            "anio_inicio",
+            "anio_fin",
+            "confianza",
+            "metodo_agrupacion",
+            "miembros_count",
+            "expediente_lider",
+            "generated_at",
+            "version",
+        ],
+        [
+            (
+                r["programa_id"],
+                r["titulo"],
+                r["ambito_ordenacion"],
+                r["distrito"],
+                r["anio_inicio"],
+                r["anio_fin"],
+                r["confianza"],
+                r["metodo_agrupacion"],
+                r["miembros_count"],
+                r["expediente_lider"],
+                r["generated_at"],
+                r["version"],
+            )
+            for r in prog_rows
+        ],
+        conflict="(programa_id) DO UPDATE SET titulo = EXCLUDED.titulo, miembros_count = EXCLUDED.miembros_count",
+    )
+    mem_rows = list(sqlite.execute("SELECT * FROM sigma_programa_miembro"))
+    n_mem = insert_batch(
+        cur,
+        "sigma_programa_miembro",
+        ["expediente_grupo", "programa_id", "rol", "orden_fase", "confianza_rol", "overlap_ratio"],
+        [
+            (
+                r["expediente_grupo"],
+                r["programa_id"],
+                r["rol"],
+                r["orden_fase"],
+                r["confianza_rol"],
+                r["overlap_ratio"],
+            )
+            for r in mem_rows
+        ],
+        conflict="(expediente_grupo) DO UPDATE SET programa_id = EXCLUDED.programa_id, rol = EXCLUDED.rol",
+    )
+    return n_prog + n_mem
+
+
 SYNC_STEPS: dict[str, Any] = {
     "source": sync_source,
     "sigma": sync_sigma_catalog,
@@ -762,6 +831,7 @@ SYNC_STEPS: dict[str, Any] = {
     "links": sync_link_licencia_sigma,
     "metrics": sync_sigma_expediente_metric,
     "pdf_metrics": sync_sigma_pdf_metric,
+    "programas": sync_sigma_programa,
 }
 
 ORDER = [
@@ -776,6 +846,7 @@ ORDER = [
     "links",
     "metrics",
     "pdf_metrics",
+    "programas",
 ]
 
 

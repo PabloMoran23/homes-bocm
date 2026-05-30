@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { UbicacionDetailView } from "@/components/UbicacionDetailView";
+import { getSigmaClasificacionForGrupo } from "@/lib/load-sigma-clasificacion";
+import { getSigmaProgramasForExpedientes } from "@/lib/load-sigma-programas";
 import { loadUbicacionFicha } from "@/lib/load-ubicacion";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
+import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import { withCanonical } from "@/lib/seo";
 
@@ -29,11 +32,30 @@ export default async function UbicacionPage({ params }: Props) {
   if (!ficha) notFound();
 
   const metricsByExpediente: Record<string, SigmaExpedienteMetric | null> = {};
+  const clasificacionByExpediente: Record<string, SigmaClassification | null> = {};
   await Promise.all(
     ficha.expedientesSigma.map(async (exp) => {
-      metricsByExpediente[exp.expediente_grupo] = await getSigmaMetricForGrupo(exp.expediente_grupo);
+      const grupo = exp.expediente_grupo;
+      const [metric, clasificacion] = await Promise.all([
+        getSigmaMetricForGrupo(grupo),
+        getSigmaClasificacionForGrupo(grupo),
+      ]);
+      metricsByExpediente[grupo] = metric;
+      clasificacionByExpediente[grupo] = clasificacion;
     }),
   );
 
-  return <UbicacionDetailView ficha={ficha} metricsByExpediente={metricsByExpediente} />;
+  const grupos = ficha.expedientesSigma.map((exp) => exp.expediente_grupo);
+  const { programas: programasEnZona, sueltos: expedientesSueltos } =
+    await getSigmaProgramasForExpedientes(grupos);
+
+  return (
+    <UbicacionDetailView
+      ficha={ficha}
+      metricsByExpediente={metricsByExpediente}
+      clasificacionByExpediente={clasificacionByExpediente}
+      programasEnZona={programasEnZona}
+      expedientesSueltos={expedientesSueltos}
+    />
+  );
 }

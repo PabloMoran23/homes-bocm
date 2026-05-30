@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 import { normSearch } from "@/lib/madrid";
 import { sigmaPassesPortalLink } from "@/lib/madrid-sigma-filters";
@@ -100,7 +101,7 @@ function MapLayerToolbar({
       aria-label="Capas del mapa"
     >
       <div
-        className="pointer-events-auto grid w-full max-w-[min(100%,18.5rem)] grid-cols-2 gap-1 rounded-xl border border-white/90 bg-white/95 p-1 shadow-lg backdrop-blur-md sm:w-auto sm:max-w-none"
+        className="pointer-events-auto grid w-full max-w-[min(100%,18.5rem)] grid-cols-2 gap-1 rounded-xl border border-white/90 bg-white p-1 shadow-lg md:bg-white/95 md:backdrop-blur-md sm:w-auto sm:max-w-none"
         role="group"
         aria-label="Capa visible"
       >
@@ -168,6 +169,7 @@ export function ExploreMadridApp() {
   }, []);
 
   const [q, setQ] = useState("");
+  const debouncedQ = useDebouncedValue(q, 300);
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
   const [showUbicaciones, setShowUbicaciones] = useState(false);
@@ -342,7 +344,7 @@ export function ExploreMadridApp() {
   const filteredUbicGeo = useMemo(() => {
     if (!ubicGeo) return null;
     let feats = filterUbicacionesMadridCapital(ubicGeo).features;
-    const nq = norm(q.trim());
+    const nq = norm(debouncedQ.trim());
     if (nq.length >= 2) {
       const ndpSet = new Set(
         searchIndex
@@ -361,19 +363,23 @@ export function ExploreMadridApp() {
     if (showUbicaciones && actuacionQueFilterActive) {
       feats = feats.filter((f) => passesActuacionQueFilter(f.properties, actuacionQueEnabled));
     }
-    feats = filterPointFeaturesInView(feats, mapBounds);
     return { ...ubicGeo, features: feats };
   }, [
     ubicGeo,
-    q,
+    debouncedQ,
     searchIndex,
-    mapBounds,
     dateFilterActive,
     dateRange,
     showUbicaciones,
     actuacionQueFilterActive,
     actuacionQueEnabled,
   ]);
+
+  const ubicCountInView = useMemo(() => {
+    if (!filteredUbicGeo) return 0;
+    if (!mapBounds) return filteredUbicGeo.features.length;
+    return filterPointFeaturesInView(filteredUbicGeo.features, mapBounds).length;
+  }, [filteredUbicGeo, mapBounds]);
 
   const polygonGeo =
     mapMode === "ambitos"
@@ -384,7 +390,7 @@ export function ExploreMadridApp() {
 
   const sigmaGeoFiltered = useMemo(() => {
     if (!polygonGeo?.features?.length) return null;
-    const nq = normSearch(q.trim());
+    const nq = normSearch(debouncedQ.trim());
     let feats = polygonGeo.features;
     if (nq) {
       feats = feats.filter((f) => {
@@ -427,7 +433,7 @@ export function ExploreMadridApp() {
     return filterPolygonFeaturesInView(fc, mapBounds);
   }, [
     polygonGeo,
-    q,
+    debouncedQ,
     sigmaMapOnlyWithPortal,
     bocmByExp,
     dateFilterActive,
@@ -440,7 +446,7 @@ export function ExploreMadridApp() {
   const mapStatsHint = useMemo(() => {
     const parts: string[] = [];
     if (showUbicaciones && filteredUbicGeo) {
-      parts.push(`${filteredUbicGeo.features.length.toLocaleString("es-ES")} edificios en vista`);
+      parts.push(`${ubicCountInView.toLocaleString("es-ES")} edificios en vista`);
     }
     if (showSigma && sigmaGeoFiltered) {
       parts.push(ambitosProyectosEnVista(sigmaGeoFiltered.features.length));
@@ -455,6 +461,7 @@ export function ExploreMadridApp() {
   }, [
     showUbicaciones,
     filteredUbicGeo,
+    ubicCountInView,
     showSigma,
     sigmaGeoFiltered,
     mapBounds,
@@ -520,7 +527,7 @@ export function ExploreMadridApp() {
           initialView="explore"
         />
         {!dataReady.ubic ? (
-          <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/60 backdrop-blur-[1px]">
+          <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/80 md:bg-slate-100/60">
             <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
               Cargando edificios…
             </p>
@@ -540,7 +547,7 @@ export function ExploreMadridApp() {
         <button
           type="button"
           onClick={() => setPanelOpen(true)}
-          className="absolute bottom-5 right-5 z-[1100] rounded-full border border-slate-200 bg-white/95 px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-lg backdrop-blur-sm sm:bottom-auto sm:right-auto sm:left-4 sm:top-4"
+          className="absolute bottom-5 right-5 z-[1100] rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 shadow-lg md:bg-white/95 md:backdrop-blur-sm sm:bottom-auto sm:right-auto sm:left-4 sm:top-4"
         >
           Filtros
         </button>

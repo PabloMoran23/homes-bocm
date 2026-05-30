@@ -1503,6 +1503,25 @@ if (existsSync(sigmaAmbitosExport) && existsSync(ubicacionesDb)) {
   }
 }
 
+const sigmaProgramasBuild = join(pocRoot, "db", "build_sigma_programas.py");
+if (existsSync(sigmaProgramasBuild)) {
+  try {
+    const dbArg = existsSync(ubicacionesDb) ? ubicacionesDb : join(pocRoot, "db", "poc_local.sqlite");
+    const r = spawnSync(
+      "python3",
+      [sigmaProgramasBuild, join(outDir, "madrid-sigma-programas.json"), dbArg],
+      { cwd: pocRoot, encoding: "utf-8" },
+    );
+    if (r.status === 0) {
+      console.log((r.stdout || "").trim() || "OK: madrid-sigma-programas.json");
+    } else {
+      console.warn("SIGMA programas:", r.stderr?.slice(0, 300) || r.stdout?.slice(0, 300));
+    }
+  } catch (err) {
+    console.warn("SIGMA programas:", err?.message || err);
+  }
+}
+
 const sigmaAmbitosPath = join(outDir, "madrid-sigma-ambitos.geojson");
 const landingScript = join(webRoot, "scripts", "build-madrid-sigma-ambitos-landing.mjs");
 if (existsSync(sigmaAmbitosPath) && existsSync(landingScript)) {

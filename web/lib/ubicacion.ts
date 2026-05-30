@@ -59,6 +59,7 @@ export type UbicacionSigmaExpediente = {
   denominacion: string | null;
   fase: string | null;
   enlace: string | null;
+  fecha_aprob?: string | null;
   match_method: string | null;
   match_score: number | null;
 };

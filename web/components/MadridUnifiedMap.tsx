@@ -22,6 +22,7 @@ import type { UbicacionesMapGeoJson } from "@/lib/madrid-ubicaciones-map";
 import { SIGMA_MAP_LEGEND } from "@/lib/map-sigma-colors";
 import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
+import { usePreferCanvas } from "@/lib/use-prefer-canvas";
 import { capZoomForContainer, fixedZoomForContainer } from "@/lib/map-visual-scale";
 import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
 
@@ -269,7 +270,7 @@ export function MadridUnifiedMap({
   interactive = true,
   fitToData = true,
   initialView = "city",
-  preferCanvas = false,
+  preferCanvas: preferCanvasProp = false,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -290,11 +291,13 @@ export function MadridUnifiedMap({
   fitToData?: boolean;
   /** Zoom inicial: `preview` portada, `explore` mapa explorar, `city` encaje por datos. */
   initialView?: MapInitialView;
-  /** Mejor rendimiento con muchos polígonos en móvil. */
+  /** Mejor rendimiento con muchos polígonos en móvil. Si no se pasa, se detecta automáticamente. */
   preferCanvas?: boolean;
 }) {
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
+  const preferCanvasAuto = usePreferCanvas();
+  const preferCanvas = preferCanvasProp || preferCanvasAuto;
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
 
@@ -323,7 +326,7 @@ export function MadridUnifiedMap({
 
   const legend = useMemo(
     () => (
-      <div className="pointer-events-none absolute bottom-12 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-white/90 bg-white/92 px-3 py-2.5 text-[11px] text-slate-600 shadow-md backdrop-blur-sm sm:bottom-14 sm:flex">
+      <div className="pointer-events-none absolute bottom-12 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-white/90 bg-white px-3 py-2.5 text-[11px] text-slate-600 shadow-md md:bg-white/92 md:backdrop-blur-sm sm:bottom-14 sm:flex">
         {showSigma ? (
           <>
             <span className="flex items-center gap-2">
@@ -351,7 +354,7 @@ export function MadridUnifiedMap({
       <div className="absolute inset-0 overflow-hidden bg-teal-50/40">
         {statsLabel ? (
           <div className="pointer-events-none absolute bottom-3 left-1/2 z-[1000] flex w-[min(calc(100%-1.5rem),28rem)] -translate-x-1/2 justify-center px-3 sm:bottom-4">
-            <p className="rounded-xl border border-white/90 bg-white/92 px-3 py-1.5 text-center text-xs leading-snug text-slate-600 shadow-md backdrop-blur-sm">
+            <p className="rounded-xl border border-white/90 bg-white px-3 py-1.5 text-center text-xs leading-snug text-slate-600 shadow-md md:bg-white/92 md:backdrop-blur-sm">
               {statsLabel}
             </p>
           </div>
@@ -392,6 +395,7 @@ export function MadridUnifiedMap({
               popupOptions={sigmaPopupOptions ?? null}
               visible={showSigma}
               preview={!interactive}
+              preferCanvas={preferCanvas}
             />
             <UnifiedFitBounds
               ubicaciones={ubicacionesGeojson}

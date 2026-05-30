@@ -286,13 +286,47 @@ class PolygonIndex:
         return hits
 
 
+def bbox_overlap_ratio(
+    b1: tuple[float, float, float, float],
+    b2: tuple[float, float, float, float],
+) -> float:
+    """Solape de bbox / área del bbox menor (0–1). Aproximación rápida de co-territorialidad."""
+    min_lng1, min_lat1, max_lng1, max_lat1 = b1
+    min_lng2, min_lat2, max_lng2, max_lat2 = b2
+    ix0 = max(min_lng1, min_lng2)
+    iy0 = max(min_lat1, min_lat2)
+    ix1 = min(max_lng1, max_lng2)
+    iy1 = min(max_lat1, max_lat2)
+    if ix0 >= ix1 or iy0 >= iy1:
+        return 0.0
+    mid_lat = (iy0 + iy1) / 2
+    m_lat = 111_320.0
+    m_lng = 111_320.0 * max(0.2, math.cos(math.radians(mid_lat)))
+    inter = (ix1 - ix0) * m_lng * (iy1 - iy0) * m_lat
+
+    def area(b: tuple[float, float, float, float]) -> float:
+        ml, Ma, Ml, ma = b
+        mlt = (Ma + ma) / 2
+        return (Ml - ml) * m_lng * (ma - Ma) * 111_320.0
+
+    a1 = area(b1)
+    a2 = area(b2)
+    denom = min(a1, a2)
+    if denom <= 0:
+        return 0.0
+    return min(1.0, inter / denom)
+
+
+def bbox_area_m2(bbox: tuple[float, float, float, float]) -> float:
+    min_lng, min_lat, max_lng, max_lat = bbox
+    mid_lat = (min_lat + max_lat) / 2
+    m_lng = 111_320.0 * max(0.2, math.cos(math.radians(mid_lat)))
+    return (max_lng - min_lng) * m_lng * (max_lat - min_lat) * 111_320.0
+
+
 def geom_area_approx_m2(geom: dict[str, Any]) -> float:
     """Área aproximada en m² (proyección local) para desempatar polígonos."""
     bbox = geom_bbox(geom)
     if not bbox:
         return float("inf")
-    min_lng, min_lat, max_lng, max_lat = bbox
-    mid_lat = (min_lat + max_lat) / 2
-    m_per_deg_lat = 111_320.0
-    m_per_deg_lng = 111_320.0 * math.cos(math.radians(mid_lat))
-    return (max_lng - min_lng) * m_per_deg_lng * (max_lat - min_lat) * m_per_deg_lat
+    return bbox_area_m2(bbox)

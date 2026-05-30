@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import { RelatedBoletines } from "@/components/project-detail/RelatedBoletines";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
+import { SigmaProgramaPanel } from "@/components/sigma/SigmaProgramaPanel";
 import { SigmaUserResumen } from "@/components/sigma/SigmaUserResumen";
 import { filterSectorGeoJsonForProjects } from "@/lib/filter-sector-geo";
 import {
@@ -25,6 +26,8 @@ import {
   SIGMA_TRAMITACION_INTRO,
 } from "@/lib/sigma-user-labels";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import type { SigmaClassification } from "@/lib/sigma-classification";
+import type { SigmaPrograma, SigmaProgramaExpedienteRef } from "@/lib/sigma-programa";
 import {
   loadSigmaNtiLinkedBundle,
   lookupSigmaNtiGrupo,
@@ -115,7 +118,17 @@ function KpiCard({
   );
 }
 
-export function ProjectDetailView({ project: p }: { project: Project }) {
+export function ProjectDetailView({
+  project: p,
+  programa = null,
+  programaRef = null,
+  clasificacionByExpediente = {},
+}: {
+  project: Project;
+  programa?: SigmaPrograma | null;
+  programaRef?: SigmaProgramaExpedienteRef | null;
+  clasificacionByExpediente?: Record<string, SigmaClassification | null>;
+}) {
   const [sectorGeoJson, setSectorGeoJson] = useState<SectorFeatureCollection | null>(null);
   const [ntiBundle, setNtiBundle] = useState<SigmaNtiLinkedBundle | null>(null);
   const [tab, setTab] = useState<TabId>("resumen");
@@ -290,6 +303,17 @@ export function ProjectDetailView({ project: p }: { project: Project }) {
             ) : null}
           </div>
         </div>
+
+        {programa && p.sigmaExpediente ? (
+          <div className="mt-6 border-t border-slate-200/80 pt-6">
+            <SigmaProgramaPanel
+              programa={programa}
+              expedienteActual={p.sigmaExpediente}
+              refActual={programaRef}
+              clasificacionByExpediente={clasificacionByExpediente}
+            />
+          </div>
+        ) : null}
 
         <div className="grid gap-px border-t border-slate-200/80 bg-slate-200/50 sm:grid-cols-2 lg:grid-cols-4">
           <KpiCard label="Boletín" value={p.bocmDate || "—"} sub={p.artNum ? `Art. ${p.artNum}` : undefined} />

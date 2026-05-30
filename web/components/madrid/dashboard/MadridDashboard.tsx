@@ -3,7 +3,46 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useMemo, useState, useCallback } from "react";
-import { DonutChart } from "@/components/madrid/dashboard/DonutChart";
+
+const DonutChart = dynamic(
+  () => import("@/components/madrid/dashboard/DonutChart").then((m) => m.DonutChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[280px] animate-pulse items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-400">
+        Cargando gráfico…
+      </div>
+    ),
+  },
+);
+
+const YearEvolutionChart = dynamic(
+  () =>
+    import("@/components/madrid/dashboard/YearEvolutionChart").then((m) => m.YearEvolutionChart),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[400px] animate-pulse items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-400">
+        Cargando gráfico…
+      </div>
+    ),
+  },
+);
+
+const ActuacionQueLineChart = dynamic(
+  () =>
+    import("@/components/madrid/dashboard/ActuacionQueLineChart").then(
+      (m) => m.ActuacionQueLineChart,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[380px] animate-pulse items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 text-sm text-slate-400">
+        Cargando gráfico…
+      </div>
+    ),
+  },
+);
 
 const DistritosCountMap = dynamic(
   () =>
@@ -35,8 +74,6 @@ import {
   LICENCIAS_KPI_LABELS,
   type LicenciasKpiPeriod,
 } from "@/lib/licencias-dashboard-kpi";
-import { ActuacionQueLineChart } from "@/components/madrid/dashboard/ActuacionQueLineChart";
-import { YearEvolutionChart } from "@/components/madrid/dashboard/YearEvolutionChart";
 import { SigmaDashboardTab } from "@/components/madrid/dashboard/SigmaDashboardTab";
 import type { LicenciasTimeGranularity, MadridDashboardStats } from "@/lib/types";
 import { trackEvent } from "@/lib/analytics";

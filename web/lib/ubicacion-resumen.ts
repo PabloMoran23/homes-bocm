@@ -1,11 +1,133 @@
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { tramiteShortLabel } from "@/lib/sigma-user-labels";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import { tramiteKind } from "@/lib/tramite-style";
 import type {
   UbicacionFicha,
   UbicacionLicencia,
   UbicacionSigmaExpediente,
   UbicacionTramite,
 } from "@/lib/ubicacion";
+
+export type ExpedienteFechaDestacada = {
+  fecha: string | null;
+  fechaSort: number;
+  hitoLabel: string | null;
+  /** Fecha inferida solo del año en la referencia municipal (p. ej. 135/2023/02073). */
+  soloAnio?: boolean;
+};
+
+const MILESTONE_KINDS = ["definitiva", "provisional", "inicial"] as const;
+
+/** Año en referencias Ayto. tipo «135/2023/02073» (segundo tramo). */
+export function anioReferenciaMunicipal(
+  exp: Pick<UbicacionSigmaExpediente, "expediente_grupo" | "exp_numero_original">,
+): number | null {
+  for (const ref of [exp.exp_numero_original, exp.expediente_grupo]) {
+    if (!ref) continue;
+    const parts = ref.trim().split("/");
+    if (parts.length < 2) continue;
+    const y = Number(parts[1]);
+    if (Number.isInteger(y) && y >= 1980 && y <= 2100) return y;
+  }
+  return null;
+}
+
+/** Fecha clave del expediente para ordenar la cronología de la zona (aprobación > último hito). */
+export function fechaDestacadaExpediente(tramites: UbicacionTramite[]): ExpedienteFechaDestacada {
+  if (!tramites.length) {
+    return { fecha: null, fechaSort: 0, hitoLabel: null };
+  }
+
+  for (const kind of MILESTONE_KINDS) {
+    const hito = tramites.find((t) => t.fecha && tramiteKind(t.tramite) === kind);
+    if (hito?.fecha) {
+      return fechaDesdeTexto(hito.fecha, tramiteShortLabel(hito.tramite));
+    }
+  }
+
+  for (let i = tramites.length - 1; i >= 0; i--) {
+    const hito = tramites[i];
+    if (!hito.fecha) continue;
+    return fechaDesdeTexto(hito.fecha, tramiteShortLabel(hito.tramite));
+  }
+
+  return { fecha: null, fechaSort: 0, hitoLabel: null };
+}
+
+function fechaDesdeTexto(raw: string, hitoLabel: string | null): ExpedienteFechaDestacada {
+  const parsed = parseFechaEs(raw);
+  if (!parsed) {
+    return { fecha: raw.trim() || null, fechaSort: 0, hitoLabel };
+  }
+  const soloAnio = /^\d{4}$/.test(raw.trim());
+  return {
+    fecha: raw.trim(),
+    fechaSort: parsed.getTime(),
+    hitoLabel,
+    soloAnio: soloAnio || undefined,
+  };
+}
+
+/** Tramitación del visor + año de referencia municipal + fecha_aprob del catálogo. */
+export function fechaDestacadaUbicacionExpediente(
+  exp: UbicacionSigmaExpediente,
+  tramites: UbicacionTramite[],
+): ExpedienteFechaDestacada {
+  const fromTramites = fechaDestacadaExpediente(tramites);
+  if (fromTramites.fecha && fromTramites.fechaSort > 0) return fromTramites;
+
+  if (exp.fecha_aprob) {
+    const parsed = parseFechaEs(exp.fecha_aprob);
+    if (parsed) {
+      return {
+        fecha: formatFechaEs(parsed),
+        fechaSort: parsed.getTime(),
+        hitoLabel: "Fecha de aprobación",
+      };
+    }
+  }
+
+  const anio = anioReferenciaMunicipal(exp);
+  if (anio) {
+    return {
+      fecha: String(anio),
+      fechaSort: new Date(anio, 0, 1).getTime(),
+      hitoLabel: "Año del expediente",
+      soloAnio: true,
+    };
+  }
+
+  return fromTramites;
+}
+
+function formatFechaEs(d: Date): string {
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  return `${day}/${month}/${d.getFullYear()}`;
+}
+
+export function ordenarExpedientesPorFecha(
+  expedientes: UbicacionSigmaExpediente[],
+  tramitacionSigma: Record<string, UbicacionTramite[]>,
+): UbicacionSigmaExpediente[] {
+  return [...expedientes].sort((a, b) => {
+    const fa = fechaDestacadaUbicacionExpediente(
+      a,
+      tramitacionSigma[a.expediente_grupo] || [],
+    ).fechaSort;
+    const fb = fechaDestacadaUbicacionExpediente(
+      b,
+      tramitacionSigma[b.expediente_grupo] || [],
+    ).fechaSort;
+    if (fa !== fb) {
+      if (!fa) return 1;
+      if (!fb) return -1;
+      return fa - fb;
+    }
+    return (a.denominacion || a.expediente_grupo).localeCompare(b.denominacion || b.expediente_grupo, "es");
+  });
+}
 
 export type UbicacionExpedienteCategoria = "local" | "sector" | "normativa_ciudad";
 
@@ -97,7 +219,22 @@ export function licenciaDetalleCorto(lic: UbicacionLicencia): string {
 
 export function parseFechaEs(raw: string | null): Date | null {
   if (!raw) return null;
-  const p = raw.trim().split(/[/.-]/);
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  const iso = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (iso) {
+    const y = Number(iso[1]);
+    const m = Number(iso[2]);
+    const d = Number(iso[3]);
+    if (y && m && d) return new Date(y, m - 1, d);
+  }
+
+  if (/^\d{4}$/.test(trimmed)) {
+    return new Date(Number(trimmed), 0, 1);
+  }
+
+  const p = trimmed.split(/[/.-]/);
   if (p.length < 3) return null;
   const d = Number(p[0]);
   const m = Number(p[1]);
@@ -280,13 +417,15 @@ export function buildUbicacionResumen(
 
   for (const exp of ficha.expedientesSigma) {
     const tram: UbicacionTramite[] = ficha.tramitacionSigma[exp.expediente_grupo] || [];
-    const ultimo = tram[tram.length - 1];
+    const { fecha, fechaSort, hitoLabel } = fechaDestacadaUbicacionExpediente(exp, tram);
     const cat = clasificarExpediente(exp);
     hitos.push({
-      fecha: ultimo?.fecha ?? null,
-      fechaSort: parseFechaEs(ultimo?.fecha ?? null)?.getTime() ?? 0,
+      fecha,
+      fechaSort,
       titulo: (exp.denominacion || exp.expediente_grupo).slice(0, 72),
-      detalle: `${categoriaExpedienteLabel(cat)} · ${faseEnLenguajeClaro(exp.fase)}`,
+      detalle: [categoriaExpedienteLabel(cat), faseEnLenguajeClaro(exp.fase), hitoLabel]
+        .filter(Boolean)
+        .join(" · "),
       tipo: "sigma",
       href: sigmaFichaPath(exp.expediente_grupo),
     });

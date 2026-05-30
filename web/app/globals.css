@@ -42,7 +42,13 @@ body {
 }
 
 .homes-map-shell .leaflet-tile-pane img {
-  filter: saturate(1.08) contrast(1.02) brightness(1.01);
+  /* filter en cada tile penaliza mucho Safari móvil al hacer pan */
+}
+
+@media (min-width: 768px) {
+  .homes-map-shell .leaflet-tile-pane img {
+    filter: saturate(1.08) contrast(1.02) brightness(1.01);
+  }
 }
 
 .homes-map-shell .leaflet-control-zoom {
