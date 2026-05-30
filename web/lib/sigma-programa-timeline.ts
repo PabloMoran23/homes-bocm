@@ -2,9 +2,10 @@ import {
   anioReferenciaMunicipal,
   fechaDestacadaUbicacionExpediente,
   parseFechaEs,
+  type ExpedienteFechaInput,
 } from "@/lib/ubicacion-resumen";
 import type { SigmaProgramaMiembroRef } from "@/lib/sigma-programa";
-import type { UbicacionSigmaExpediente, UbicacionTramite } from "@/lib/ubicacion";
+import type { UbicacionTramite } from "@/lib/ubicacion";
 
 export type ProgramaMiembroCronologia = {
   miembro: SigmaProgramaMiembroRef;
@@ -12,10 +13,9 @@ export type ProgramaMiembroCronologia = {
   fechaSort: number;
 };
 
-export type ProgramaMiembroExpedienteCtx = Pick<
-  UbicacionSigmaExpediente,
-  "expediente_grupo" | "exp_numero_original" | "fecha_aprob" | "denominacion"
->;
+export type ProgramaMiembroExpedienteCtx = ExpedienteFechaInput & {
+  denominacion?: string | null;
+};
 
 /** Fecha clave + año mostrado para un miembro del programa (tramitación > aprobación > ref. municipal). */
 export function cronologiaProgramaMiembro(

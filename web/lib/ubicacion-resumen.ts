@@ -19,10 +19,14 @@ export type ExpedienteFechaDestacada = {
 
 const MILESTONE_KINDS = ["definitiva", "provisional", "inicial"] as const;
 
+export type ExpedienteFechaInput = {
+  expediente_grupo: string;
+  exp_numero_original?: string | null;
+  fecha_aprob?: string | null;
+};
+
 /** Año en referencias Ayto. tipo «135/2023/02073» (segundo tramo). */
-export function anioReferenciaMunicipal(
-  exp: Pick<UbicacionSigmaExpediente, "expediente_grupo" | "exp_numero_original">,
-): number | null {
+export function anioReferenciaMunicipal(exp: ExpedienteFechaInput): number | null {
   for (const ref of [exp.exp_numero_original, exp.expediente_grupo]) {
     if (!ref) continue;
     const parts = ref.trim().split("/");
@@ -71,7 +75,7 @@ function fechaDesdeTexto(raw: string, hitoLabel: string | null): ExpedienteFecha
 
 /** Tramitación del visor + año de referencia municipal + fecha_aprob del catálogo. */
 export function fechaDestacadaUbicacionExpediente(
-  exp: UbicacionSigmaExpediente,
+  exp: ExpedienteFechaInput,
   tramites: UbicacionTramite[],
 ): ExpedienteFechaDestacada {
   const fromTramites = fechaDestacadaExpediente(tramites);
