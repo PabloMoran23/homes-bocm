@@ -2,7 +2,7 @@
 
 Documento vivo. Dominio: **https://homes-urbanismo.es**
 
-Última revisión: **2026-05-30**
+Última revisión: **2026-05-30** · **Fase 0 cerrada** (Bing aplazado)
 
 ---
 
@@ -25,12 +25,14 @@ Homes concentra licencias urbanísticas, proyectos SIGMA y anuncios BOCM de Madr
 | `NEXT_PUBLIC_SITE_URL` | ✅ | `https://homes-urbanismo.es` en Vercel |
 | Metadata dinámica en fichas | ✅ | `/proyecto/[id]`, `/ubicacion/[ndp]` |
 | Canonical explícito | ✅ | `lib/seo.ts` → layout, estáticas y fichas |
-| Analítica (Plausible / GA4) | ⚙️ | Código listo; falta env en Vercel (ver abajo) |
+| Analítica | ✅ | Vercel Web Analytics (pageviews + eventos custom) |
 | JSON-LD / datos estructurados | ❌ | Pendiente Fase 1 |
 | Google Search Console | ✅ | Propiedad **Dominio**, verificada por DNS TXT |
 | Sitemap enviado a GSC | ✅ | |
+| Inspección URLs iniciales (GSC) | ✅ | Home, estadísticas, explore, fichas proyecto |
+| PageSpeed / Core Web Vitals (baseline) | ✅ | Revisado post-deploy |
 | Redirect `www` → raíz | ✅ | `middleware.ts` (301 si `NEXT_PUBLIC_SITE_URL` definida) |
-| Bing Webmaster Tools | ❌ | Manual — importar desde GSC |
+| Bing Webmaster Tools | ⏸️ | Aplazado — importar desde GSC cuando toque |
 
 ### Slugs de proyecto — decisión tomada
 
@@ -87,7 +89,7 @@ Formato actual: `/proyecto/135-2021-00618` (número de expediente SIGMA).
 
 ## Fases y checklist
 
-### Fase 0 — Fundamentos
+### Fase 0 — Fundamentos ✅
 
 - [x] Google Search Console — propiedad **Dominio** `homes-urbanismo.es`
 - [x] Verificación DNS TXT en Hostinger
@@ -97,20 +99,22 @@ Formato actual: `/proyecto/135-2021-00618` (número de expediente SIGMA).
 - [x] `alternates.canonical` en layout y rutas principales (`web/lib/seo.ts`)
 - [x] Titles SEO en páginas estáticas (`/explore`, `/boletin`, `/madrid/estadisticas`)
 - [x] Eventos analítica en código (`boletin_buscar`, `ficha_proyecto_ver`, `estadisticas_filtro`)
-- [ ] **Activar analítica en producción** — añadir en Vercel → Environment Variables:
-  - `NEXT_PUBLIC_PLAUSIBLE_DOMAIN=homes-urbanismo.es` (Plausible), **o**
-  - `NEXT_PUBLIC_GA_MEASUREMENT_ID=G-…` (GA4)
-- [ ] Inspeccionar URLs iniciales en GSC: `/`, `/madrid/estadisticas`, `/explore`, 2–3 fichas `/proyecto/...`
-- [ ] Bing Webmaster Tools — [bing.com/webmasters](https://www.bing.com/webmasters) → importar desde GSC
-- [ ] Auditoría PageSpeed post-deploy — [PageSpeed Insights](https://pagespeed.web.dev/?url=https://homes-urbanismo.es) (home, estadísticas, 1 ficha)
+- [x] Analítica — **Vercel Web Analytics** (activar en Vercel → Project → Analytics; quitar `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` si existía)
+- [x] Inspeccionar URLs iniciales en GSC
+- [x] Auditoría PageSpeed post-deploy (baseline)
+- [ ] Bing Webmaster Tools — **aplazado** ([bing.com/webmasters](https://www.bing.com/webmasters) → importar desde GSC)
 
-**Eventos analítica (implementados)**
+**Eventos custom (Vercel Analytics)**
+
+Registrados con `track()` → visibles en Vercel → Analytics → Events (cuando haya tráfico).
 
 | Evento | Dónde | Props |
 | --- | --- | --- |
 | `boletin_buscar` | `BoletinAreaApp` | `modo`, `radius_m`, `months` |
 | `ficha_proyecto_ver` | `ProyectoViewTracker` | `id`, `kind` (`sigma` \| `bocm`) |
 | `estadisticas_filtro` | `MadridDashboard`, `SigmaDashboardTab` | `tab`, `activos` |
+
+**Verificación:** Vercel → proyecto `homes-bocm` → **Analytics** → pageviews en tiempo real tras navegar el sitio en producción.
 
 ---
 
@@ -226,7 +230,7 @@ Distribución: LinkedIn, prensa urbanística, grupos de vecinos.
 | URL base | `web/lib/site-url.ts` |
 | Canonical / OG helpers | `web/lib/seo.ts` |
 | OG image | `web/app/opengraph-image.tsx` |
-| Analítica | `web/components/Analytics.tsx`, `web/lib/analytics.ts` |
+| Analítica | `web/components/Analytics.tsx`, `web/lib/analytics.ts` (`@vercel/analytics`) |
 | Redirect www | `web/middleware.ts` |
 | Slugs proyecto | `web/lib/sigma-ficha-path.ts` |
 | Lista slugs sitemap | `web/lib/load-sigma-ficha.ts` → `listSigmaFichaSlugs()` |
@@ -245,8 +249,8 @@ Distribución: LinkedIn, prensa urbanística, grupos de vecinos.
 ## Roadmap visual
 
 ```
-Fase 0  Fundamentos     █████████░  código ✅ · GSC/Bing manual · activar Plausible/GA4
-Fase 1  Técnico         ███░░░░░░░  sitemap ✅ · titles estáticos ✅ · JSON-LD pendiente
+Fase 0  Fundamentos     ██████████  ✅ cerrada (Bing aplazado)
+Fase 1  Técnico         ███░░░░░░░  sitemap ✅ · titles ✅ · JSON-LD pendiente
 Fase 2  Landings        ░░░░░░░░░░  distritos · tipos · años
 Fase 3  Editorial       ░░░░░░░░░░  guías
 Fase 4  Autoridad       ░░░░░░░░░░  PR · enlaces
@@ -259,7 +263,9 @@ Fase 5  Medición        ░░░░░░░░░░  ritual mensual GSC
 
 | Fecha | Cambio |
 | --- | --- |
-| 2026-05-30 | **Fase 0 (código):** OG image, canonical, redirect www, analítica + eventos, titles estáticos. |
+| 2026-05-30 | Analítica migrada a **Vercel Web Analytics** (sin Plausible/GA4). |
+| 2026-05-30 | **Fase 0 cerrada:** analítica, inspección GSC y PageSpeed hechos. Bing aplazado. |
+| 2026-05-30 | Fase 0 (código): OG image, canonical, redirect www, analítica + eventos, titles estáticos. |
 | 2026-05-30 | Documento inicial. GSC dominio verificado, sitemap ampliado (~3.909 URLs). Slugs numéricos sin cambio. |
 
 ---
@@ -268,6 +274,7 @@ Fase 5  Medición        ░░░░░░░░░░  ritual mensual GSC
 
 <!-- Añadir aquí ideas sueltas antes de asignarlas a una fase -->
 
+- Bing Webmaster Tools — importar desde GSC (baja prioridad)
 - Slugs híbridos legibles + ID (futuro, baja prioridad)
 - `hreflang` — solo si hay versión en otro idioma
 - FAQ schema en home o guías

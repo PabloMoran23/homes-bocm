@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
+    "@vercel/analytics": "^2.0.1",
     "chart.js": "^4.5.1",
     "csv-parse": "^6.2.1",
     "leaflet": "^1.9.4",
