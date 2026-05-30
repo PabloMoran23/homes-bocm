@@ -16,6 +16,7 @@ import type { UbicacionSearchItem } from "@/lib/ubicacion";
 import { ubicacionPath } from "@/lib/ubicacion";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import { fechaRelativaEs } from "@/lib/ubicacion-resumen";
+import { trackEvent } from "@/lib/analytics";
 
 const BoletinMiniMap = dynamic(
   () => import("./BoletinMiniMap").then((m) => ({ default: m.BoletinMiniMap })),
@@ -210,6 +211,11 @@ export function BoletinAreaApp() {
           throw new Error(json.error || "No se pudo cargar el boletín");
         }
         setData(json);
+        trackEvent("boletin_buscar", {
+          modo: ndp ? "ndp" : "geocode",
+          radius_m: radiusM,
+          months,
+        });
         scrollResultsAfterLoad.current = true;
       } catch (e) {
         setError(e instanceof Error ? e.message : "Error al consultar");

@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { DashboardSection } from "@/components/madrid/dashboard/DashboardSection";
 import { DonutChart } from "@/components/madrid/dashboard/DonutChart";
 import { SigmaDashboardFiltersBar } from "@/components/madrid/dashboard/SigmaDashboardFiltersBar";
@@ -19,13 +19,16 @@ import {
 } from "@/lib/sigma-dashboard-kpi";
 import {
   aggregateSigmaFromRows,
+  countActiveSigmaFilters,
   EMPTY_SIGMA_FILTERS,
   filterSigmaRows,
   hasActiveSigmaFilters,
+  type SigmaDashboardFilters,
 } from "@/lib/sigma-dashboard-filters";
 import { sigmaStatsToView } from "@/lib/sigma-dashboard-view";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import type { MadridDashboardStats } from "@/lib/types";
+import { trackEvent } from "@/lib/analytics";
 
 const DistritosCountMap = dynamic(
   () =>
@@ -73,12 +76,22 @@ export function SigmaDashboardTab({
     return buildSigmaPromotoresTable(kpiRows, labels, 7);
   }, [kpiRows, filterRows]);
 
+  const handleSigmaFiltersChange = useCallback((next: SigmaDashboardFilters) => {
+    setSigmaFilters(next);
+    if (hasActiveSigmaFilters(next)) {
+      trackEvent("estadisticas_filtro", {
+        tab: "sigma",
+        activos: countActiveSigmaFilters(next),
+      });
+    }
+  }, []);
+
   return (
     <>
       <SigmaDashboardFiltersBar
         filterData={filterRows}
         filters={sigmaFilters}
-        onChange={setSigmaFilters}
+        onChange={handleSigmaFiltersChange}
         filteredCount={sigView.total}
         loading={filterLoading}
         error={filterError}

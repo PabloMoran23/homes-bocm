@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { BoletinAreaApp } from "@/components/BoletinAreaApp";
+import { withCanonical } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Boletín de tu área",
+export const metadata: Metadata = withCanonical("/boletin", {
+  title: "Qué ocurre en tu zona — licencias y proyectos cerca de tu dirección",
   description:
-    "Introduce tu dirección y consulta licencias y proyectos de planeamiento recientes en un radio a tu alrededor.",
-};
+    "Introduce tu dirección en Madrid capital y consulta licencias de obra y proyectos de planeamiento recientes en un radio a tu alrededor.",
+});
 
 export default function BoletinPage() {
   return (

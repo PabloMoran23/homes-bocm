@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MadridDashboard } from "@/components/madrid/dashboard/MadridDashboard";
 import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
+import { withCanonical } from "@/lib/seo";
 
 /** Evita HTML estático vacío si el JSON no existía en un build anterior. */
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Estadísticas Madrid · Licencias y planeamiento",
+export const metadata: Metadata = withCanonical("/madrid/estadisticas", {
+  title: "Estadísticas de licencias urbanísticas en Madrid por distrito",
   description:
     "Dashboard de licencias urbanísticas y proyectos de planeamiento del Ayuntamiento de Madrid: evolución anual, promotores, usos, trámites y distritos.",
-};
+});
 
 export default async function MadridEstadisticasPage() {
   const stats = await loadMadridDashboardStats();

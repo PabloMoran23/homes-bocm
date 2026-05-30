@@ -4,17 +4,23 @@ import { UbicacionDetailView } from "@/components/UbicacionDetailView";
 import { loadUbicacionFicha } from "@/lib/load-ubicacion";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
+import { withCanonical } from "@/lib/seo";
 
 type Props = { params: Promise<{ ndp: string }> };
 
+function ubicacionPath(ndp: string): string {
+  return `/ubicacion/${encodeURIComponent(ndp)}`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { ndp } = await params;
+  const path = ubicacionPath(ndp);
   const ficha = await loadUbicacionFicha(ndp);
-  if (!ficha) return { title: "Ubicación no encontrada" };
-  return {
+  if (!ficha) return withCanonical(path, { title: "Ubicación no encontrada" });
+  return withCanonical(path, {
     title: ficha.inmueble.direccion || `NDP ${ndp}`,
     description: `Actividad urbanística y proyectos cercanos en ${ficha.inmueble.distrito || "Madrid"}.`,
-  };
+  });
 }
 
 export default async function UbicacionPage({ params }: Props) {

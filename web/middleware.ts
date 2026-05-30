@@ -7,7 +7,30 @@ import {
   isPublicRoute,
 } from "@/lib/edition";
 
+function wwwRedirect(request: NextRequest): NextResponse | null {
+  const host = request.headers.get("host") ?? "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  if (!siteUrl) return null;
+
+  let canonicalHost: string;
+  try {
+    canonicalHost = new URL(siteUrl).host;
+  } catch {
+    return null;
+  }
+
+  if (host !== `www.${canonicalHost}`) return null;
+
+  const url = request.nextUrl.clone();
+  url.host = canonicalHost;
+  url.protocol = "https:";
+  return NextResponse.redirect(url, 301);
+}
+
 export function middleware(request: NextRequest) {
+  const www = wwwRedirect(request);
+  if (www) return www;
+
   const edition = getEdition();
   if (edition === "full") return NextResponse.next();
 

@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { DonutChart } from "@/components/madrid/dashboard/DonutChart";
 
 const DistritosCountMap = dynamic(
@@ -23,8 +23,10 @@ import { LicenciasDatosNota } from "@/components/madrid/dashboard/LicenciasDatos
 import { useLicenciasFilterRows } from "@/components/madrid/dashboard/useLicenciasFilterRows";
 import {
   aggregateLicenciasFromRows,
+  countActiveLicenciasFilters,
   EMPTY_LICENCIAS_FILTERS,
   hasActiveLicenciasFilters,
+  type LicenciasDashboardFilters,
 } from "@/lib/licencias-dashboard-filters";
 import { LicenciasKpiCard } from "@/components/madrid/dashboard/LicenciasKpiCard";
 import { GranularityToggle } from "@/components/madrid/dashboard/GranularityToggle";
@@ -37,6 +39,7 @@ import { ActuacionQueLineChart } from "@/components/madrid/dashboard/ActuacionQu
 import { YearEvolutionChart } from "@/components/madrid/dashboard/YearEvolutionChart";
 import { SigmaDashboardTab } from "@/components/madrid/dashboard/SigmaDashboardTab";
 import type { LicenciasTimeGranularity, MadridDashboardStats } from "@/lib/types";
+import { trackEvent } from "@/lib/analytics";
 
 type Tab = "licencias" | "sigma";
 
@@ -73,6 +76,16 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
   }, [lic, filterRows, licFilters]);
 
   const licenciasCount = licView?.totalRows ?? lic?.totalRows ?? 0;
+
+  const handleLicFiltersChange = useCallback((next: LicenciasDashboardFilters) => {
+    setLicFilters(next);
+    if (hasActiveLicenciasFilters(next)) {
+      trackEvent("estadisticas_filtro", {
+        tab: "licencias",
+        activos: countActiveLicenciasFilters(next),
+      });
+    }
+  }, []);
 
   return (
     <div className="min-h-full">
@@ -137,7 +150,7 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
             <DashboardFiltersBar
               filterData={filterRows}
               filters={licFilters}
-              onChange={setLicFilters}
+              onChange={handleLicFiltersChange}
               filteredCount={licenciasCount}
               loading={filterRowsLoading}
               error={filterRowsError}
