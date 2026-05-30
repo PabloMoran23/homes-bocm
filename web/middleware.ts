@@ -27,14 +27,27 @@ function wwwRedirect(request: NextRequest): NextResponse | null {
   return NextResponse.redirect(url, 301);
 }
 
+function isMetadataRoute(pathname: string): boolean {
+  const base = pathname.split("?")[0];
+  return (
+    base === "/opengraph-image" ||
+    base === "/twitter-image" ||
+    base === "/sitemap.xml" ||
+    base === "/robots.txt" ||
+    base === "/manifest.webmanifest"
+  );
+}
+
 export function middleware(request: NextRequest) {
   const www = wwwRedirect(request);
   if (www) return www;
 
+  const { pathname } = request.nextUrl;
+
+  if (isMetadataRoute(pathname)) return NextResponse.next();
+
   const edition = getEdition();
   if (edition === "full") return NextResponse.next();
-
-  const { pathname } = request.nextUrl;
 
   if (pathname.startsWith("/_next") || pathname.startsWith("/favicon")) {
     return NextResponse.next();
