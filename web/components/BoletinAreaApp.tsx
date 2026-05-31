@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   boletinResumenParrafo,
+  boletinStatLabel,
   MONTHS_OPTIONS,
   RADIUS_OPTIONS,
   type BoletinAreaResult,
@@ -269,6 +270,10 @@ export function BoletinAreaApp() {
 
   const radioLabel = RADIUS_OPTIONS.find((o) => o.m === (data?.params.radiusM ?? radiusM))?.label;
   const canSearch = searchReady && !loading && (selected != null || q.trim().length >= 3);
+  const filtersStale = Boolean(
+    data && (data.params.radiusM !== radiusM || data.params.months !== months),
+  );
+  const heavyQuery = radiusM >= 800 && months >= 36;
 
   return (
     <div className="min-h-[calc(100dvh-3.5rem-var(--site-footer-compact))] bg-[#f8f6f1]">
@@ -403,6 +408,28 @@ export function BoletinAreaApp() {
             </fieldset>
           </div>
 
+          {heavyQuery && !data ? (
+            <p className="mt-3 text-xs text-slate-500">
+              Radio amplio y periodo largo: la consulta puede tardar unos segundos.
+            </p>
+          ) : null}
+
+          {filtersStale ? (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-teal-200/80 bg-teal-50/80 px-3 py-2.5">
+              <p className="text-sm text-teal-950">
+                Has cambiado el radio o el periodo. Pulsa «Actualizar» para regenerar el boletín.
+              </p>
+              <button
+                type="button"
+                onClick={() => void buscar()}
+                disabled={loading}
+                className="shrink-0 rounded-lg bg-[var(--portal-accent)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)] disabled:opacity-50"
+              >
+                {loading ? "Actualizando…" : "Actualizar boletín"}
+              </button>
+            </div>
+          ) : null}
+
           {error ? (
             <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
               {error}
@@ -455,7 +482,7 @@ export function BoletinAreaApp() {
                     Licencias
                   </dt>
                   <dd className="mt-0.5 font-serif text-2xl font-semibold text-slate-900">
-                    {data.stats.licencias}
+                    {boletinStatLabel(data.stats.licencias, data.stats.licenciasCapped)}
                   </dd>
                 </div>
                 <div>
@@ -463,7 +490,7 @@ export function BoletinAreaApp() {
                     Planeamiento
                   </dt>
                   <dd className="mt-0.5 font-serif text-2xl font-semibold text-slate-900">
-                    {data.stats.expedientesSigma}
+                    {boletinStatLabel(data.stats.expedientesSigma, data.stats.expedientesSigmaCapped)}
                   </dd>
                 </div>
                 <div>

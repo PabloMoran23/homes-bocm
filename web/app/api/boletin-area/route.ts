@@ -1,16 +1,49 @@
 import { NextResponse } from "next/server";
 import type { BoletinAreaResult } from "@/lib/boletin-area";
+import {
+  BOLETIN_AREA_CACHE_HEADERS,
+  boletinAreaCacheKey,
+  readBoletinAreaCache,
+  writeBoletinAreaCache,
+} from "@/lib/boletin-area-cache";
 import { normalizeDireccion } from "@/lib/direccion";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
+export const maxDuration = 15;
+
+const RADIUS_MIN = 100;
+const RADIUS_MAX = 3000;
+const MONTHS_MIN = 6;
+const MONTHS_MAX = 120;
+
+function clampInt(value: number, min: number, max: number, fallback: number) {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(value)));
+}
+
+function normalizeBoletinResult(
+  result: BoletinAreaResult,
+  opts: { ndp?: string | null; label?: string | null },
+): BoletinAreaResult {
+  if (!opts.ndp && opts.label) {
+    result.center.direccion = opts.label;
+  } else if (result.center.direccion) {
+    result.center.direccion = normalizeDireccion(result.center.direccion);
+  }
+  for (const ev of [...result.licencias, ...result.expedientesSigma, ...result.timeline]) {
+    if (ev.direccion) ev.direccion = normalizeDireccion(ev.direccion);
+  }
+  return result;
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
-  const ndp = url.searchParams.get("ndp");
+  const ndp = url.searchParams.get("ndp")?.trim() || null;
   const latParam = url.searchParams.get("lat");
   const lngParam = url.searchParams.get("lng");
   const labelParam = url.searchParams.get("label")?.trim() || null;
-  const radiusM = Number(url.searchParams.get("radiusM") || "600");
-  const months = Number(url.searchParams.get("months") || "24");
+  const radiusM = clampInt(Number(url.searchParams.get("radiusM") || "600"), RADIUS_MIN, RADIUS_MAX, 600);
+  const months = clampInt(Number(url.searchParams.get("months") || "24"), MONTHS_MIN, MONTHS_MAX, 24);
 
   const supabase = getSupabaseServer();
   if (!supabase) {
@@ -25,7 +58,7 @@ export async function GET(req: Request) {
 
   if (ndp) {
     const { data: rows, error } = await supabase.rpc("resolve_ndp_coords", {
-      p_ndp: ndp.trim(),
+      p_ndp: ndp,
     });
 
     if (error) {
@@ -48,6 +81,15 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Coordenadas inválidas" }, { status: 400 });
   }
 
+  const cacheKey = boletinAreaCacheKey({ lat, lng, radiusM, months, ndp });
+  const cached = readBoletinAreaCache(cacheKey);
+  if (cached) {
+    return NextResponse.json(
+      normalizeBoletinResult(structuredClone(cached), { ndp, label: labelParam }),
+      { headers: BOLETIN_AREA_CACHE_HEADERS },
+    );
+  }
+
   const { data, error } = await supabase.rpc("boletin_area", {
     p_lat: lat,
     p_lng: lng,
@@ -56,7 +98,10 @@ export async function GET(req: Request) {
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const msg = error.message.includes("statement timeout")
+      ? "La consulta tardó demasiado. Prueba un radio o un periodo más cortos."
+      : error.message;
+    return NextResponse.json({ error: msg }, { status: error.message.includes("statement timeout") ? 504 : 500 });
   }
 
   const result = data as BoletinAreaResult | null;
@@ -66,18 +111,10 @@ export async function GET(req: Request) {
   if ("error" in result && result.error) {
     return NextResponse.json(result, { status: 422 });
   }
-  if (!ndp && labelParam) {
-    result.center.direccion = labelParam;
-  } else if (result.center.direccion) {
-    result.center.direccion = normalizeDireccion(result.center.direccion);
-  }
-  for (const ev of [
-    ...result.licencias,
-    ...result.expedientesSigma,
-    ...result.timeline,
-  ]) {
-    if (ev.direccion) ev.direccion = normalizeDireccion(ev.direccion);
-  }
 
-  return NextResponse.json(result);
+  writeBoletinAreaCache(cacheKey, structuredClone(result));
+  return NextResponse.json(
+    normalizeBoletinResult(result, { ndp, label: labelParam }),
+    { headers: BOLETIN_AREA_CACHE_HEADERS },
+  );
 }

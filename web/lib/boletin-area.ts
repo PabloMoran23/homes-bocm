@@ -34,6 +34,9 @@ export type BoletinAreaResult = {
     licencias: number;
     expedientesSigma: number;
     eventos: number;
+    /** Hay más licencias de las contadas (consulta acotada). */
+    licenciasCapped?: boolean;
+    expedientesSigmaCapped?: boolean;
   };
   licencias: BoletinEvento[];
   expedientesSigma: BoletinEvento[];
@@ -58,6 +61,11 @@ export function boletinPath(ndp: string) {
   return `/boletin?ndp=${encodeURIComponent(ndp)}`;
 }
 
+export function boletinStatLabel(value: number, capped?: boolean): string {
+  if (capped && value > 0) return `${value.toLocaleString("es-ES")}+`;
+  return value.toLocaleString("es-ES");
+}
+
 export function boletinResumenParrafo(data: BoletinAreaResult): string {
   const { stats, params } = data;
   const r = params.radiusM;
@@ -66,13 +74,13 @@ export function boletinResumenParrafo(data: BoletinAreaResult): string {
   }
   const parts: string[] = [];
   if (stats.licencias > 0) {
-    parts.push(
-      `${stats.licencias} licencia${stats.licencias > 1 ? "s" : ""} en edificios cercanos`,
-    );
+    const n = boletinStatLabel(stats.licencias, stats.licenciasCapped);
+    parts.push(`${n} licencia${stats.licenciasCapped || stats.licencias > 1 ? "s" : ""} en edificios cercanos`);
   }
   if (stats.expedientesSigma > 0) {
+    const n = boletinStatLabel(stats.expedientesSigma, stats.expedientesSigmaCapped);
     parts.push(
-      `${stats.expedientesSigma} proyecto${stats.expedientesSigma > 1 ? "s" : ""} de planeamiento que afectan la zona`,
+      `${n} proyecto${stats.expedientesSigmaCapped || stats.expedientesSigma > 1 ? "s" : ""} de planeamiento que afectan la zona`,
     );
   }
   return `En los últimos ${params.months} meses, en ${r} m a la redonda: ${parts.join(" y ")}.`;
