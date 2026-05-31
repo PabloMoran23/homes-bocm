@@ -25,7 +25,12 @@ function useSigmaAmbitosMapGeoFromUrl(url: string, prefiltered: boolean) {
         const res = await fetch(url);
         if (!res.ok) throw new Error(String(res.status));
         if (!cancelled) {
-          setRaw((await res.json()) as SectorFeatureCollection);
+          const fc = (await res.json()) as SectorFeatureCollection;
+          if (!fc.features?.length) {
+            setErr("Faltan datos de planeamiento de Madrid.");
+            return;
+          }
+          setRaw(fc);
           setReady(true);
         }
       } catch {

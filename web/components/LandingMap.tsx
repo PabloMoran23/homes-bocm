@@ -56,12 +56,10 @@ export function LandingMap() {
 
   return (
     <div ref={ref} className="flex flex-col gap-2">
-      <Link
-        href="/explore"
-        className={`group relative block overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
-        aria-label="Abrir mapa explorar Madrid"
+      <div
+        className={`group relative overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
       >
-        {!visible || !ready || !geo ? (
+        {!visible || !ready || !geo?.features?.length ? (
           <LandingMapPlaceholder hint={loading ? "Cargando mapa…" : undefined} />
         ) : (
           <MadridUnifiedMap
@@ -76,16 +74,18 @@ export function LandingMap() {
             initialView="preview"
             statsHint={statsHint}
             className="h-full w-full rounded-2xl"
+            showAttribution={false}
           />
         )}
-        <span
-          className="absolute inset-0 z-[2000] cursor-pointer bg-transparent"
-          aria-hidden
+        <Link
+          href="/explore"
+          className="absolute inset-0 z-[2000] block cursor-pointer rounded-2xl"
+          aria-label="Abrir mapa explorar Madrid"
         />
         <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-white/90 bg-white/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
           Explorar →
         </span>
-      </Link>
+      </div>
     </div>
   );
 }

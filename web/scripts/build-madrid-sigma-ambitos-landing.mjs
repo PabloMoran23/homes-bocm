@@ -109,6 +109,21 @@ function main() {
   }
 
   const raw = JSON.parse(readFileSync(sourcePath, "utf-8"));
+  const sourceCount = raw.features?.length ?? 0;
+  if (sourceCount === 0 && existsSync(landingPath)) {
+    try {
+      const prev = JSON.parse(readFileSync(landingPath, "utf-8"));
+      if ((prev.features?.length ?? 0) > 0) {
+        console.log(
+          `Aviso: ${sourcePath} vacío — se conserva madrid-sigma-ambitos-landing.geojson (${prev.features.length} ámbitos)`,
+        );
+        return;
+      }
+    } catch {
+      /* regenerar */
+    }
+  }
+
   const features = [];
   let excluded = 0;
 

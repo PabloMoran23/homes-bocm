@@ -92,6 +92,24 @@ def main() -> None:
 
         features.append({"type": "Feature", "geometry": geom, "properties": props})
 
+    if not features and out.is_file():
+        try:
+            existing = json.loads(out.read_text(encoding="utf-8"))
+            if len(existing.get("features") or []) > 0:
+                print(
+                    json.dumps(
+                        {
+                            "warning": "sigma_ambito_geom vacío; se conserva el GeoJSON existente",
+                            "existing_features": len(existing["features"]),
+                            "out": str(out),
+                        },
+                        indent=2,
+                    )
+                )
+                return
+        except (OSError, json.JSONDecodeError):
+            pass
+
     payload = {"type": "FeatureCollection", "features": features}
     out.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
     print(

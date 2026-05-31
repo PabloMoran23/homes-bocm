@@ -271,6 +271,7 @@ export function MadridUnifiedMap({
   fitToData = true,
   initialView = "city",
   preferCanvas: preferCanvasProp = false,
+  showAttribution = true,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -293,6 +294,8 @@ export function MadridUnifiedMap({
   initialView?: MapInitialView;
   /** Mejor rendimiento con muchos polígonos en móvil. Si no se pasa, se detecta automáticamente. */
   preferCanvas?: boolean;
+  /** Atribución OSM/CARTO (desactivar si el mapa va dentro de un enlace). */
+  showAttribution?: boolean;
 }) {
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
@@ -413,19 +416,25 @@ export function MadridUnifiedMap({
           </div>
         )}
 
-        <div className="pointer-events-none absolute bottom-2 right-2 z-[1000] text-right text-[9px] text-slate-400/90">
-          <span className="pointer-events-auto">
-            <a
-              href="https://www.openstreetmap.org/copyright"
-              className="underline decoration-slate-300/80"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              © OSM
-            </a>
-            {" · CARTO"}
-          </span>
-        </div>
+        {showAttribution ? (
+          <div className="pointer-events-none absolute bottom-2 right-2 z-[1000] text-right text-[9px] text-slate-400/90">
+            <span className="pointer-events-auto">
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                className="underline decoration-slate-300/80"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                © OSM
+              </a>
+              {" · CARTO"}
+            </span>
+          </div>
+        ) : (
+          <div className="pointer-events-none absolute bottom-2 right-2 z-[1000] text-right text-[9px] text-slate-400/90">
+            © OSM · CARTO
+          </div>
+        )}
       </div>
     </div>
   );

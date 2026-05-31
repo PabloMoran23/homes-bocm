@@ -65,6 +65,20 @@ try {
   fail(`madrid-dashboard-stats.json inválido: ${e.message}`);
 }
 
+try {
+  const landing = JSON.parse(
+    readFileSync(join(dataDir, "madrid-sigma-ambitos-landing.geojson"), "utf8"),
+  );
+  const n = landing?.features?.length ?? 0;
+  if (n < 100) {
+    fail(`madrid-sigma-ambitos-landing.geojson sin ámbitos (${n})`);
+  } else {
+    ok(`madrid-sigma-ambitos-landing.geojson (${n} ámbitos)`);
+  }
+} catch (e) {
+  fail(`madrid-sigma-ambitos-landing.geojson inválido: ${e.message}`);
+}
+
 console.log("\nBuild producción (SKIP_BUILD_DATA=1)…");
 try {
   execSync("npm run build", {
