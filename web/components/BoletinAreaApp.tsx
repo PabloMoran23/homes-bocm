@@ -271,7 +271,7 @@ export function BoletinAreaApp() {
   const canSearch = searchReady && !loading && (selected != null || q.trim().length >= 3);
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem)] bg-[#f8f6f1]">
+    <div className="min-h-[calc(100dvh-3.5rem-var(--site-footer-compact))] bg-[#f8f6f1]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         {/* Cabecera boletín */}
         <header className="border-b border-slate-300/60 pb-6">

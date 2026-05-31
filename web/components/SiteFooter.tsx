@@ -3,17 +3,44 @@
 import { usePathname } from "next/navigation";
 import { SiteLogo } from "@/components/SiteLogo";
 import { isPublicEdition } from "@/lib/edition";
+import { SITE_CONTACT_EMAIL, siteContactMailto } from "@/lib/site-contact";
 
 const FULL_BLEED_PREFIXES = ["/explore", "/boletin"];
 
+function ContactLine({ compact }: { compact?: boolean }) {
+  return (
+    <p
+      className={
+        compact
+          ? "text-center text-xs leading-relaxed text-slate-500"
+          : "text-sm leading-relaxed text-slate-600"
+      }
+    >
+      Si necesitas más información o atención personalizada, escríbenos a{" "}
+      <a
+        href={siteContactMailto()}
+        className="font-medium text-[var(--portal-accent)] hover:underline"
+      >
+        {SITE_CONTACT_EMAIL}
+      </a>
+      .
+    </p>
+  );
+}
+
 export function SiteFooter() {
   const pathname = usePathname();
-  const hidden = FULL_BLEED_PREFIXES.some(
+  const compact = FULL_BLEED_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),
   );
+  const isPublic = isPublicEdition();
 
-  if (hidden) {
-    return null;
+  if (compact) {
+    return (
+      <footer className="shrink-0 border-t border-slate-200/90 bg-white/95 px-4 py-2.5 backdrop-blur-sm">
+        <ContactLine compact />
+      </footer>
+    );
   }
 
   return (
@@ -24,10 +51,11 @@ export function SiteFooter() {
             <SiteLogo height={20} className="opacity-80" />
             <strong className="font-semibold text-slate-800">Homes · Urbanismo</strong>
           </span>{" "}
-          {isPublicEdition()
+          {isPublic
             ? "concentra licencias, proyectos de planeamiento y anuncios del BOCM en un mapa y fichas legibles para Madrid capital."
             : "te acerca lo que importa del planeamiento alrededor de tu zona: seguimiento de proyectos, lectura clara y herramientas para comparar y reaccionar a tiempo."}
         </p>
+        <ContactLine />
       </div>
     </footer>
   );

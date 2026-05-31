@@ -13,7 +13,7 @@ export default function BoletinPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[calc(100dvh-3.5rem)] items-center justify-center bg-[#f8f6f1] text-sm text-slate-500">
+        <div className="flex min-h-[calc(100dvh-3.5rem-var(--site-footer-compact))] items-center justify-center bg-[#f8f6f1] text-sm text-slate-500">
           Cargando boletín…
         </div>
       }

@@ -10,7 +10,7 @@ export const metadata: Metadata = withCanonical("/explore", {
 
 export default function ExplorePage() {
   return (
-    <div className="fixed inset-x-0 top-14 z-0 h-[calc(100dvh-3.5rem)] overflow-hidden">
+    <div className="fixed inset-x-0 top-14 z-0 h-[calc(100dvh-3.5rem-var(--site-footer-compact))] overflow-hidden">
       <ExploreMadridApp />
     </div>
   );

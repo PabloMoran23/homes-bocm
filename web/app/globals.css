@@ -11,6 +11,7 @@
   --portal-ink: #0f172a;
   --portal-warm: #0f766e;
   --portal-hero-edge: rgba(15, 118, 110, 0.1);
+  --site-footer-compact: 2.75rem;
 }
 
 @theme inline {
