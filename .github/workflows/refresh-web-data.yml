@@ -114,13 +114,13 @@ jobs:
           elif [ "$(date -u +%d)" = "01" ]; then
             REFRESH_LIC=1
           fi
+          python3 db/sync_dominio_to_supabase.py --skip-licencias
           if [ "$REFRESH_LIC" = "1" ]; then
-            echo "Licencias: descarga ${PREV},${YEAR} y upsert incremental."
+            echo "Licencias: descarga ${PREV},${YEAR} y sync incremental (tras proyectos)."
             python3 -m sector_geometry.madrid_licencias_download --years "${PREV},${YEAR}" --merge-jsonl
-            python3 db/sync_dominio_to_supabase.py --licencias-years "${PREV},${YEAR}"
+            python3 db/sync_dominio_to_supabase.py --skip-proyectos --licencias-years "${PREV},${YEAR}"
           else
-            echo "Licencias: omitidas (SIGMA + dominio)."
-            python3 db/sync_dominio_to_supabase.py --skip-licencias
+            echo "Licencias: sin actualizar en Supabase (solo SIGMA/proyectos)."
           fi
 
       - name: Build public data files

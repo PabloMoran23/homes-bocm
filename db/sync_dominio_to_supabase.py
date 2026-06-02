@@ -632,8 +632,13 @@ def sync_proyectos(cur) -> dict[str, int]:
     if not proyectos:
         return {"proyecto": 0}
 
-    log("TRUNCATE proyecto + hijas (refresh semanal)…")
-    cur.execute(f"TRUNCATE TABLE {SCHEMA}.proyecto CASCADE")
+    log("Refresh proyecto (hijas + filas; licencia no se toca)…")
+    cur.execute(
+        f"TRUNCATE TABLE {SCHEMA}.proyecto_pdf_metric, {SCHEMA}.proyecto_documento, "
+        f"{SCHEMA}.proyecto_tramite, {SCHEMA}.proyecto_bocm_publicacion"
+    )
+    cur.execute(f"UPDATE {SCHEMA}.licencia SET proyecto_id = NULL WHERE proyecto_id IS NOT NULL")
+    cur.execute(f"DELETE FROM {SCHEMA}.proyecto")
 
     rows = [_proyecto_tuple(proyectos[i]) for i in proyectos]
     t1 = time.perf_counter()
