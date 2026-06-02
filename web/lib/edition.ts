@@ -75,7 +75,8 @@ export function isPublicApiRoute(pathname: string): boolean {
     pathname === "/api/boletin-area" ||
     pathname.startsWith("/api/boletin-area/") ||
     pathname === "/api/geocode-address" ||
-    pathname.startsWith("/api/geocode-address/")
+    pathname.startsWith("/api/geocode-address/") ||
+    pathname.startsWith("/api/dominio/")
   );
 }
 

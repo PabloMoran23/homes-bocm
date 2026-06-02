@@ -57,15 +57,24 @@ export function MadridBocmExplorer() {
     let cancelled = false;
     (async () => {
       try {
-        const [projRes, geoRes] = await Promise.all([
-          fetch("/data/projects.json"),
+        const [apiRes, geoRes] = await Promise.all([
+          fetch("/api/dominio/projects-madrid"),
           fetch("/data/sector-geometries.geojson"),
         ]);
-        if (!projRes.ok) throw new Error(String(projRes.status));
-        const data = (await projRes.json()) as Partial<Project>[];
-        const madrid = data
-          .map((row) => ensureProject(row as Partial<Project> & { id: string }))
-          .filter((p) => isMadridCapital(p.municipio));
+        let madrid: Project[] | null = null;
+        if (apiRes.ok) {
+          const j = (await apiRes.json()) as { projects?: Project[] };
+          if (j.projects?.length) madrid = j.projects;
+        }
+        if (!madrid) {
+          const projRes = await fetch("/data/projects.json");
+          if (!projRes.ok) throw new Error(String(projRes.status));
+          const data = (await projRes.json()) as Partial<Project>[];
+          madrid = data
+            .map((row) => ensureProject(row as Partial<Project> & { id: string }))
+            .filter((p) => isMadridCapital(p.municipio));
+        }
+        if (!madrid.length) throw new Error("sin proyectos");
         if (!cancelled) setProjects(madrid);
         if (geoRes.ok && !cancelled) {
           setSectorGeoJson((await geoRes.json()) as SectorFeatureCollection);

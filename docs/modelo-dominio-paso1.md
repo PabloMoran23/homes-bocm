@@ -51,7 +51,7 @@ python3 db/sync_dominio_to_supabase.py --licencias-years "2025,2026"
 python3 db/backfill_dominio_from_legacy.py
 ```
 
-Workflow `refresh-web-data.yml`: sync dominio → **después** `npm run build-data`.
+Workflow `refresh-web-data.yml`: sync dominio → **después** `npm run build-data` (con `SUPABASE_DB_URL` lee dominio vía `db/export_web_data_from_supabase.py`; sin URL, fallback a `output/` + CSV).
 
 ## Tablas hijas
 
@@ -63,3 +63,23 @@ Workflow `refresh-web-data.yml`: sync dominio → **después** `npm run build-da
 | `proyecto_pdf_metric` | Métricas por PDF |
 
 `link_licencia_sigma` / `licencia.proyecto_id`: job aparte, no en Actions.
+
+## Paso 3 — RPCs y web
+
+Migración `supabase/migrations/20250602160000_rpc_dominio.sql` (aplicada en remoto):
+
+| RPC | Lee de |
+|-----|--------|
+| `get_sigma_ficha`, `get_sigma_clasificacion` | `proyecto`, `proyecto_bocm_publicacion` |
+| `get_ubicacion_ficha` | `inmueble`, `licencia`, `proyecto` (link + ST_Contains en `geom_geojson`) |
+| `boletin_area` | `inmueble`, `licencia`, `proyecto` (centroides) |
+| `get_proyecto_portal` | `proyecto` (fila BOCM → `load-project.ts`) |
+| `list_proyectos_madrid`, `list_sigma_clasificacion` | API `/api/dominio/*` (opcional frente a JSON estático) |
+
+Web: `load-project.ts`, fichas SIGMA/ubicación y clasificación vía RPC; exploradores Madrid (`ExploreMadridApp`, `MadridSigmaExplorer`, `MadridBocmExplorer`) usan `/api/dominio/*` con fallback JSON. GeoJSON de capas SIGMA y métricas del mapa siguen en `public/data` (generados por `build-data`).
+
+## Programas SIGMA (`programa_id`)
+
+- Columna `homes.proyecto.programa_id` → `homes.sigma_programa.programa_id` (cluster inferido).
+- Tras export/sync: `db/sync_programas_dominio.py` (también al final de `export_web_data_from_supabase.py`).
+- Metadatos del programa (título, miembros, roles) en `sigma_programa` + `sigma_programa_miembro`; la web sigue usando `madrid-sigma-programas.json` generado desde Supabase.

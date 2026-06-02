@@ -198,6 +198,7 @@ PROYECTO_COLS = [
     "coord_source",
     "sector_key",
     "sector_geo_key",
+    "programa_id",
     "inserted_at",
     "updated_at",
 ]

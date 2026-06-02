@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { fetchDominioJson } from "@/lib/dominio-fetch";
 import { normSearch } from "@/lib/madrid";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import {
@@ -84,12 +85,14 @@ export function MadridSigmaExplorer() {
     let cancelled = false;
     (async () => {
       try {
-        const [sigmaRes, geoRes] = await Promise.all([
-          fetch("/data/madrid-sigma.json"),
+        const [json, geoRes] = await Promise.all([
+          fetchDominioJson<MadridSigmaDataset>(
+            "/api/dominio/madrid-sigma",
+            "/data/madrid-sigma.json",
+          ),
           fetch("/data/madrid-sigma-ip.geojson"),
         ]);
-        if (!sigmaRes.ok) throw new Error(String(sigmaRes.status));
-        const json = (await sigmaRes.json()) as MadridSigmaDataset;
+        if (!json) throw new Error("sin datos SIGMA");
         if (!cancelled) setData(json);
         if (geoRes.ok && !cancelled) {
           const fc = (await geoRes.json()) as SectorFeatureCollection;
@@ -113,10 +116,11 @@ export function MadridSigmaExplorer() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/data/madrid-sigma-bocm-projects.json");
-        if (!res.ok) return;
-        const json = (await res.json()) as MadridSigmaBocmProjectsFile;
-        if (!cancelled && json.byExpediente && typeof json.byExpediente === "object") {
+        const json = await fetchDominioJson<MadridSigmaBocmProjectsFile>(
+          "/api/dominio/madrid-sigma-bocm",
+          "/data/madrid-sigma-bocm-projects.json",
+        );
+        if (!cancelled && json?.byExpediente && typeof json.byExpediente === "object") {
           setBocmByExpediente(json.byExpediente);
         }
       } catch {

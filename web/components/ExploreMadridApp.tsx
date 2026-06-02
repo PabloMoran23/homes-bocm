@@ -45,6 +45,7 @@ import {
   filterUbicacionesMadridCapital,
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
+import { fetchDominioJson } from "@/lib/dominio-fetch";
 import { ambitosProyectosEnVista, PROYECTOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
@@ -260,11 +261,14 @@ export function ExploreMadridApp() {
     setLayerLoading(true);
     (async () => {
       try {
-        const [sigmaRes, ambitosRes] = await Promise.all([
-          fetch("/data/madrid-sigma.json"),
+        const [sigmaData, ambitosRes] = await Promise.all([
+          fetchDominioJson<MadridSigmaDataset>(
+            "/api/dominio/madrid-sigma",
+            "/data/madrid-sigma.json",
+          ),
           fetch("/data/madrid-sigma-ambitos.geojson"),
         ]);
-        if (sigmaRes.ok && !cancelled) setSigmaData((await sigmaRes.json()) as MadridSigmaDataset);
+        if (sigmaData && !cancelled) setSigmaData(sigmaData);
         if (ambitosRes.ok && !cancelled) {
           const fc = (await ambitosRes.json()) as SectorFeatureCollection;
           setAmbitosGeo(fc);
@@ -285,25 +289,29 @@ export function ExploreMadridApp() {
     if (bocmByExp && metricsBundle && clasificacionIndex) return;
     let cancelled = false;
     (async () => {
-      const [bocmRes, mb, clRes] = await Promise.all([
-        bocmByExp ? Promise.resolve(null) : fetch("/data/madrid-sigma-bocm-projects.json"),
+      const [bocmJson, mb, clJson] = await Promise.all([
+        bocmByExp
+          ? Promise.resolve(null)
+          : fetchDominioJson<{ byExpediente?: Record<string, SigmaBocmPopupLink[]> }>(
+              "/api/dominio/madrid-sigma-bocm",
+              "/data/madrid-sigma-bocm-projects.json",
+            ),
         metricsBundle ? Promise.resolve(null) : loadSigmaMetricsBundle(),
-        clasificacionIndex ? Promise.resolve(null) : fetch("/data/madrid-sigma-clasificacion.json"),
+        clasificacionIndex
+          ? Promise.resolve(null)
+          : fetchDominioJson<MadridSigmaClasificacionFile>(
+              "/api/dominio/madrid-sigma-clasificacion",
+              "/data/madrid-sigma-clasificacion.json",
+            ),
       ]);
       if (!cancelled) {
-        if (bocmRes?.ok) {
-          const j = (await bocmRes.json()) as { byExpediente?: Record<string, SigmaBocmPopupLink[]> };
-          if (j.byExpediente) setBocmByExp(j.byExpediente);
-        }
+        if (bocmJson?.byExpediente) setBocmByExp(bocmJson.byExpediente);
         if (mb) setMetricsBundle(mb);
-        if (clRes?.ok) {
-          const j = (await clRes.json()) as MadridSigmaClasificacionFile;
-          const byExp = j.byExpediente;
-          if (byExp) {
-            const meta = buildSigmaClassificationAxisMeta(byExp);
-            setClasificacionIndex(byExp);
-            setClasificacionFilters((prev) => prev ?? allSigmaClassificationEnabled(meta));
-          }
+        if (clJson?.byExpediente) {
+          const byExp = clJson.byExpediente;
+          const meta = buildSigmaClassificationAxisMeta(byExp);
+          setClasificacionIndex(byExp);
+          setClasificacionFilters((prev) => prev ?? allSigmaClassificationEnabled(meta));
         }
       }
     })();

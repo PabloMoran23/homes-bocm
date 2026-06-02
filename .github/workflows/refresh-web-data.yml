@@ -127,6 +127,7 @@ jobs:
         working-directory: web
         env:
           BUILD_DATA_SCOPE: madrid-public
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: npm run build-data
 
       - name: Verify Madrid dashboard stats

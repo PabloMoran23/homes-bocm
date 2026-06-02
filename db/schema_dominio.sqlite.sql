@@ -120,6 +120,7 @@ CREATE TABLE IF NOT EXISTS proyecto (
   coord_source TEXT,
   sector_key TEXT,
   sector_geo_key TEXT,
+  programa_id TEXT,
 
   inserted_at TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))

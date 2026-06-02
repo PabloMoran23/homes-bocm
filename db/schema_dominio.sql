@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS proyecto (
   coord_source TEXT,
   sector_key TEXT,
   sector_geo_key TEXT,
+  programa_id TEXT REFERENCES homes.sigma_programa (programa_id) ON DELETE SET NULL,
 
   inserted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()

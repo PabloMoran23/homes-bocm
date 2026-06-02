@@ -89,21 +89,44 @@ let visoPromise: Promise<{
 
 let bocmPromise: Promise<Record<string, SigmaBocmPopupLink[]>> | null = null;
 
+function catalogFromDataset(raw: MadridSigmaDataset | null): {
+  byGrupo: Map<string, SigmaExpediente>;
+  syncAt: string | null;
+} {
+  const byGrupo = new Map<string, SigmaExpediente>();
+  if (!raw) return { byGrupo, syncAt: null };
+  for (const e of raw.expedientes || []) {
+    const n = e.EXP_TX_NUMERO;
+    if (!n) continue;
+    byGrupo.set(expedienteGrupoKeyFromVariant(String(n)), e);
+  }
+  return { byGrupo, syncAt: raw.generatedAt ?? null };
+}
+
+async function loadCatalogFromSupabase(): Promise<{
+  byGrupo: Map<string, SigmaExpediente>;
+  syncAt: string | null;
+} | null> {
+  const supabase = getSupabaseServer();
+  if (!supabase) return null;
+  const { data, error } = await supabase.rpc("list_proyectos_madrid", { p_limit: 8000 });
+  if (error) {
+    console.warn("list_proyectos_madrid:", error.message);
+    return null;
+  }
+  return catalogFromDataset(data as MadridSigmaDataset);
+}
+
 async function loadCatalog(): Promise<{
   byGrupo: Map<string, SigmaExpediente>;
   syncAt: string | null;
 }> {
   if (!catalogPromise) {
     catalogPromise = (async () => {
+      const fromDb = await loadCatalogFromSupabase();
+      if (fromDb && fromDb.byGrupo.size > 0) return fromDb;
       const raw = await fetchStaticJson<MadridSigmaDataset>("/data/madrid-sigma.json");
-      const byGrupo = new Map<string, SigmaExpediente>();
-      if (!raw) return { byGrupo, syncAt: null };
-      for (const e of raw.expedientes || []) {
-        const n = e.EXP_TX_NUMERO;
-        if (!n) continue;
-        byGrupo.set(expedienteGrupoKeyFromVariant(String(n)), e);
-      }
-      return { byGrupo, syncAt: raw.generatedAt ?? null };
+      return catalogFromDataset(raw);
     })();
   }
   return catalogPromise;
@@ -128,9 +151,23 @@ async function loadViso(): Promise<{
   return visoPromise;
 }
 
+async function loadBocmLinksFromSupabase(): Promise<Record<string, SigmaBocmPopupLink[]> | null> {
+  const supabase = getSupabaseServer();
+  if (!supabase) return null;
+  const { data, error } = await supabase.rpc("list_sigma_bocm_by_expediente");
+  if (error) {
+    console.warn("list_sigma_bocm_by_expediente:", error.message);
+    return null;
+  }
+  const payload = data as { byExpediente?: Record<string, SigmaBocmPopupLink[]> } | null;
+  return payload?.byExpediente ?? null;
+}
+
 async function loadBocmLinks(): Promise<Record<string, SigmaBocmPopupLink[]>> {
   if (!bocmPromise) {
     bocmPromise = (async () => {
+      const fromDb = await loadBocmLinksFromSupabase();
+      if (fromDb && Object.keys(fromDb).length > 0) return fromDb;
       const raw = await fetchStaticJson<{ byExpediente?: Record<string, SigmaBocmPopupLink[]> }>(
         "/data/madrid-sigma-bocm-projects.json",
       );

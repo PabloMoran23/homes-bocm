@@ -61,6 +61,169 @@ if (isMadridPublicBuild) {
   );
 }
 
+/** Madrid público: exportar desde Supabase tras sync_dominio (fuente canónica). */
+const buildFromSupabase = isMadridPublicBuild && Boolean(process.env.SUPABASE_DB_URL);
+if (buildFromSupabase) {
+  console.log("BUILD_DATA: fuente Supabase (homes.proyecto / licencia / inmueble)");
+}
+
+function runSupabaseWebExport() {
+  const script = join(pocRoot, "db/export_web_data_from_supabase.py");
+  if (!existsSync(script)) {
+    console.error("Falta db/export_web_data_from_supabase.py");
+    return false;
+  }
+  const r = spawnSync("python3", [script, outDir], {
+    cwd: pocRoot,
+    encoding: "utf-8",
+    env: process.env,
+  });
+  if (r.status !== 0) {
+    console.error(r.stderr?.trim() || r.stdout?.trim() || "export_web_data_from_supabase falló");
+    return false;
+  }
+  console.log((r.stdout || "").trim());
+  return true;
+}
+
+async function runMadridPostBuild(opts = {}) {
+  const {
+    skipLicencias = false,
+    skipUbicaciones = false,
+    skipAmbitos = false,
+    skipMetrics = false,
+    skipProgramas = false,
+  } = opts;
+
+  if (!skipMetrics) buildMadridSigmaMetricsWeb();
+  buildLandingNewsSpotlight();
+
+  if (!skipLicencias) {
+    try {
+      await buildMadridLicenciasWeb({
+        jsonlPath: madridLicenciasJsonlPath,
+        outDir,
+        minYear: isMadridPublicBuild ? LICENCIAS_MIN_YEAR_PUBLIC : undefined,
+      });
+      if (isMadridPublicBuild) {
+        for (const name of readdirSync(outDir)) {
+          const m = /^madrid-licencias-(\d{4})\.(json|geojson)$/.exec(name);
+          if (m && Number(m[1]) < LICENCIAS_MIN_YEAR_PUBLIC) {
+            unlinkSync(join(outDir, name));
+            console.log(`OK: eliminado ${name} (fuera de alcance público)`);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Licencias urbanísticas (web):", err?.message || err);
+    }
+  }
+
+  try {
+    await buildMadridDistritos({ outDir });
+  } catch (err) {
+    console.warn("Distritos Madrid (mapa):", err?.message || err);
+  }
+
+  try {
+    buildMadridSigmaFilterRows({ outDir });
+  } catch (err) {
+    console.warn("SIGMA filter-rows:", err?.message || err);
+  }
+
+  try {
+    buildMadridDashboardStats({ outDir });
+  } catch (err) {
+    console.warn("Dashboard Madrid (stats):", err?.message || err);
+  }
+
+  try {
+    buildMadridLicenciasFilterRows({ outDir });
+  } catch (err) {
+    console.warn("Licencias filter-rows:", err?.message || err);
+  }
+
+  const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");
+  const ubicacionesDb = join(pocRoot, "db", "poc_local.sqlite");
+  if (!skipUbicaciones && existsSync(ubicacionesExport) && existsSync(ubicacionesDb)) {
+    try {
+      const r = spawnSync("python3", [ubicacionesExport, ubicacionesDb], {
+        cwd: pocRoot,
+        encoding: "utf-8",
+      });
+      if (r.status === 0) {
+        console.log("OK: ubicaciones-map.geojson + search (SQLite v2)");
+      } else {
+        console.warn("Ubicaciones web:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
+      }
+    } catch (err) {
+      console.warn("Ubicaciones web:", err?.message || err);
+    }
+  } else if (!skipUbicaciones) {
+    console.log(
+      "Aviso: sin poc_local.sqlite — ejecuta db/migrate_sqlite.py y db/ingest_madrid_ubicacion.py",
+    );
+  }
+
+  const sigmaAmbitosExport = join(pocRoot, "db", "export_sigma_ambito_web.py");
+  if (!skipAmbitos && existsSync(sigmaAmbitosExport) && existsSync(ubicacionesDb)) {
+    try {
+      const r = spawnSync("python3", [sigmaAmbitosExport, ubicacionesDb], {
+        cwd: pocRoot,
+        encoding: "utf-8",
+      });
+      if (r.status === 0) {
+        console.log((r.stdout || "").trim() || "OK: madrid-sigma-ambitos.geojson (SQLite)");
+      } else {
+        console.warn("SIGMA ámbitos web:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
+      }
+    } catch (err) {
+      console.warn("SIGMA ámbitos web:", err?.message || err);
+    }
+  }
+
+  const sigmaProgramasBuild = join(pocRoot, "db/build_sigma_programas.py");
+  if (!skipProgramas && existsSync(sigmaProgramasBuild)) {
+    try {
+      const dbArg = existsSync(ubicacionesDb) ? ubicacionesDb : join(pocRoot, "db", "poc_local.sqlite");
+      const r = spawnSync(
+        "python3",
+        [sigmaProgramasBuild, join(outDir, "madrid-sigma-programas.json"), dbArg],
+        { cwd: pocRoot, encoding: "utf-8" },
+      );
+      if (r.status === 0) {
+        console.log((r.stdout || "").trim() || "OK: madrid-sigma-programas.json");
+      } else {
+        console.warn("SIGMA programas:", r.stderr?.slice(0, 300) || r.stdout?.slice(0, 300));
+      }
+    } catch (err) {
+      console.warn("SIGMA programas:", err?.message || err);
+    }
+  }
+
+  const sigmaAmbitosPath = join(outDir, "madrid-sigma-ambitos.geojson");
+  const landingScript = join(webRoot, "scripts", "build-madrid-sigma-ambitos-landing.mjs");
+  if (existsSync(sigmaAmbitosPath) && existsSync(landingScript)) {
+    try {
+      const lr = spawnSync("node", [landingScript], { cwd: webRoot, encoding: "utf-8" });
+      if (lr.status === 0) console.log((lr.stdout || "").trim());
+      else console.warn("SIGMA landing map:", lr.stderr?.slice(0, 200) || lr.stdout?.slice(0, 200));
+    } catch (err) {
+      console.warn("SIGMA landing map:", err?.message || err);
+    }
+  }
+
+  if (existsSync(sectorGeoPath)) {
+    copyFileSync(sectorGeoPath, join(outDir, "sector-geometries.geojson"));
+    console.log("OK: sector-geometries.geojson copiado");
+  } else {
+    writeFileSync(
+      join(outDir, "sector-geometries.geojson"),
+      JSON.stringify({ type: "FeatureCollection", features: [] }),
+    );
+  }
+}
+
 const TERRITORIO_BY_SOURCE = {
   bocm: { id: "comunidad-madrid", label: "Comunidad de Madrid" },
   boja: { id: "andalucia", label: "Andalucía" },
@@ -1182,6 +1345,34 @@ function buildMadridCapitalBlock(projects, madridMatch) {
   return block;
 }
 
+mkdirSync(outDir, { recursive: true });
+
+if (buildFromSupabase) {
+  if (!runSupabaseWebExport()) process.exit(1);
+  const enrichUbic = join(webRoot, "scripts/enrich-ubicaciones-map.mjs");
+  if (existsSync(enrichUbic)) {
+    try {
+      const r = spawnSync("node", [enrichUbic], { cwd: webRoot, encoding: "utf-8" });
+      if (r.status === 0) console.log((r.stdout || "").trim());
+      else console.warn("enrich-ubicaciones-map:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
+    } catch (err) {
+      console.warn("enrich-ubicaciones-map:", err?.message || err);
+    }
+  }
+  await runMadridPostBuild({
+    skipLicencias: true,
+    skipUbicaciones: true,
+    skipAmbitos: true,
+    skipMetrics: true,
+    skipProgramas: true,
+  });
+  const supabaseProjects = JSON.parse(readFileSync(join(outDir, "projects.json"), "utf-8"));
+  console.log(
+    `OK: ${supabaseProjects.length} projects (Supabase dominio) → public/data/`,
+  );
+  process.exit(0);
+}
+
 const coords = existsSync(coordsPath) ? JSON.parse(readFileSync(coordsPath, "utf-8")) : {};
 const sectorCentroids = loadSectorCentroids();
 const madridSigmaCentroids = loadMadridSigmaCentroids();
@@ -1418,131 +1609,7 @@ if (existsSync(madridAytoUrbanGeoPath)) {
   console.log("OK: madrid-sigma-urbanizacion.geojson copiado");
 }
 
-buildMadridSigmaMetricsWeb();
-buildLandingNewsSpotlight();
-
-try {
-  await buildMadridLicenciasWeb({
-    jsonlPath: madridLicenciasJsonlPath,
-    outDir,
-    minYear: isMadridPublicBuild ? LICENCIAS_MIN_YEAR_PUBLIC : undefined,
-  });
-  if (isMadridPublicBuild) {
-    for (const name of readdirSync(outDir)) {
-      const m = /^madrid-licencias-(\d{4})\.(json|geojson)$/.exec(name);
-      if (m && Number(m[1]) < LICENCIAS_MIN_YEAR_PUBLIC) {
-        unlinkSync(join(outDir, name));
-        console.log(`OK: eliminado ${name} (fuera de alcance público)`);
-      }
-    }
-  }
-} catch (err) {
-  console.warn("Licencias urbanísticas (web):", err?.message || err);
-}
-
-try {
-  await buildMadridDistritos({ outDir });
-} catch (err) {
-  console.warn("Distritos Madrid (mapa):", err?.message || err);
-}
-
-try {
-  buildMadridSigmaFilterRows({ outDir });
-} catch (err) {
-  console.warn("SIGMA filter-rows:", err?.message || err);
-}
-
-try {
-  buildMadridDashboardStats({ outDir });
-} catch (err) {
-  console.warn("Dashboard Madrid (stats):", err?.message || err);
-}
-
-try {
-  buildMadridLicenciasFilterRows({ outDir });
-} catch (err) {
-  console.warn("Licencias filter-rows:", err?.message || err);
-}
-
-const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");
-const ubicacionesDb = join(pocRoot, "db", "poc_local.sqlite");
-if (existsSync(ubicacionesExport) && existsSync(ubicacionesDb)) {
-  try {
-    const r = spawnSync("python3", [ubicacionesExport, ubicacionesDb], {
-      cwd: pocRoot,
-      encoding: "utf-8",
-    });
-    if (r.status === 0) {
-      console.log("OK: ubicaciones-map.geojson + search (SQLite v2)");
-    } else {
-      console.warn("Ubicaciones web:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
-    }
-  } catch (err) {
-    console.warn("Ubicaciones web:", err?.message || err);
-  }
-} else {
-  console.log(
-    "Aviso: sin poc_local.sqlite — ejecuta db/migrate_sqlite.py y db/ingest_madrid_ubicacion.py",
-  );
-}
-
-const sigmaAmbitosExport = join(pocRoot, "db", "export_sigma_ambito_web.py");
-if (existsSync(sigmaAmbitosExport) && existsSync(ubicacionesDb)) {
-  try {
-    const r = spawnSync("python3", [sigmaAmbitosExport, ubicacionesDb], {
-      cwd: pocRoot,
-      encoding: "utf-8",
-    });
-    if (r.status === 0) {
-      console.log((r.stdout || "").trim() || "OK: madrid-sigma-ambitos.geojson (SQLite)");
-    } else {
-      console.warn("SIGMA ámbitos web:", r.stderr?.slice(0, 200) || r.stdout?.slice(0, 200));
-    }
-  } catch (err) {
-    console.warn("SIGMA ámbitos web:", err?.message || err);
-  }
-}
-
-const sigmaProgramasBuild = join(pocRoot, "db", "build_sigma_programas.py");
-if (existsSync(sigmaProgramasBuild)) {
-  try {
-    const dbArg = existsSync(ubicacionesDb) ? ubicacionesDb : join(pocRoot, "db", "poc_local.sqlite");
-    const r = spawnSync(
-      "python3",
-      [sigmaProgramasBuild, join(outDir, "madrid-sigma-programas.json"), dbArg],
-      { cwd: pocRoot, encoding: "utf-8" },
-    );
-    if (r.status === 0) {
-      console.log((r.stdout || "").trim() || "OK: madrid-sigma-programas.json");
-    } else {
-      console.warn("SIGMA programas:", r.stderr?.slice(0, 300) || r.stdout?.slice(0, 300));
-    }
-  } catch (err) {
-    console.warn("SIGMA programas:", err?.message || err);
-  }
-}
-
-const sigmaAmbitosPath = join(outDir, "madrid-sigma-ambitos.geojson");
-const landingScript = join(webRoot, "scripts", "build-madrid-sigma-ambitos-landing.mjs");
-if (existsSync(sigmaAmbitosPath) && existsSync(landingScript)) {
-  try {
-    const lr = spawnSync("node", [landingScript], { cwd: webRoot, encoding: "utf-8" });
-    if (lr.status === 0) console.log((lr.stdout || "").trim());
-    else console.warn("SIGMA landing map:", lr.stderr?.slice(0, 200) || lr.stdout?.slice(0, 200));
-  } catch (err) {
-    console.warn("SIGMA landing map:", err?.message || err);
-  }
-}
-
-if (existsSync(sectorGeoPath)) {
-  copyFileSync(sectorGeoPath, join(outDir, "sector-geometries.geojson"));
-  console.log("OK: sector-geometries.geojson copiado");
-} else {
-  writeFileSync(
-    join(outDir, "sector-geometries.geojson"),
-    JSON.stringify({ type: "FeatureCollection", features: [] }),
-  );
-}
+await runMadridPostBuild();
 
 console.log(
   `OK: ${exportProjects.length} projects (${totalRelevant} relevantes, ${withCoords} con coords; ` +
