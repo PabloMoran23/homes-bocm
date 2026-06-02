@@ -117,10 +117,10 @@ jobs:
           if [ "$REFRESH_LIC" = "1" ]; then
             echo "Licencias: descarga ${PREV},${YEAR} y upsert incremental."
             python3 -m sector_geometry.madrid_licencias_download --years "${PREV},${YEAR}" --merge-jsonl
-            python3 db/sync_madrid_public_to_supabase.py --licencias-years "${PREV},${YEAR}"
+            python3 db/sync_dominio_to_supabase.py --licencias-years "${PREV},${YEAR}"
           else
-            echo "Licencias: omitidas (SIGMA + build web)."
-            python3 db/sync_madrid_public_to_supabase.py --skip-licencias
+            echo "Licencias: omitidas (SIGMA + dominio)."
+            python3 db/sync_dominio_to_supabase.py --skip-licencias
           fi
 
       - name: Build public data files

@@ -179,6 +179,8 @@ def apply_schema(con: sqlite3.Connection, *, fresh: bool) -> None:
             DROP TABLE IF EXISTS actuacion_edificacion;
             DROP TABLE IF EXISTS inmueble;
             DROP TABLE IF EXISTS sigma_ambito_geom;
+            DROP TABLE IF EXISTS licencia;
+            DROP TABLE IF EXISTS proyecto;
             DROP TABLE IF EXISTS hito;
             DROP TABLE IF EXISTS schema_migrations;
             PRAGMA foreign_keys = ON;
@@ -204,12 +206,19 @@ def _apply_ubicacion_schema_if_needed(con: sqlite3.Connection) -> None:
             con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (2)")
 
     cur = con.execute("SELECT 1 FROM schema_migrations WHERE version=3")
+    if not cur.fetchone():
+        programa_sql = Path(__file__).resolve().parent / "schema_sigma_programa.sql"
+        if programa_sql.is_file():
+            con.executescript(programa_sql.read_text(encoding="utf-8"))
+            con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (3)")
+
+    cur = con.execute("SELECT 1 FROM schema_migrations WHERE version=4")
     if cur.fetchone():
         return
-    programa_sql = Path(__file__).resolve().parent / "schema_sigma_programa.sql"
-    if programa_sql.is_file():
-        con.executescript(programa_sql.read_text(encoding="utf-8"))
-        con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (3)")
+    dominio_sql = Path(__file__).resolve().parent / "schema_dominio.sqlite.sql"
+    if dominio_sql.is_file():
+        con.executescript(dominio_sql.read_text(encoding="utf-8"))
+        con.execute("INSERT OR IGNORE INTO schema_migrations (version) VALUES (4)")
 
 
 def seed_sources(con: sqlite3.Connection) -> None:
