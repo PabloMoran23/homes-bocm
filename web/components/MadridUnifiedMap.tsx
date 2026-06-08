@@ -13,6 +13,7 @@ import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
 import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
+import { LandingMapPulseLayer } from "@/components/map/LandingMapPulseLayer";
 import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
 import { MapBoundsReporter } from "@/components/map/MapBoundsReporter";
@@ -272,6 +273,7 @@ export function MadridUnifiedMap({
   initialView = "city",
   preferCanvas: preferCanvasProp = false,
   showAttribution = true,
+  landingPulse = false,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -296,11 +298,14 @@ export function MadridUnifiedMap({
   preferCanvas?: boolean;
   /** Atribución OSM/CARTO (desactivar si el mapa va dentro de un enlace). */
   showAttribution?: boolean;
+  /** Portada animada: proyectos que aparecen y desaparecen (solo visual). */
+  landingPulse?: boolean;
 }) {
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
   const preferCanvasAuto = usePreferCanvas();
-  const preferCanvas = preferCanvasProp || preferCanvasAuto;
+  /** Canvas tapa polígonos SVG del pulse en la portada; ~220 ámbitos no lo necesitan. */
+  const preferCanvas = (preferCanvasProp || preferCanvasAuto) && !landingPulse;
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
 
@@ -396,10 +401,17 @@ export function MadridUnifiedMap({
             <SigmaPolygonsLayer
               geojson={sigmaGeojson}
               popupOptions={sigmaPopupOptions ?? null}
-              visible={showSigma}
+              visible={showSigma && !landingPulse}
               preview={!interactive}
               preferCanvas={preferCanvas}
             />
+            {landingPulse ? (
+              <LandingMapPulseLayer
+                geojson={sigmaGeojson}
+                visible={showSigma}
+                preferCanvas={preferCanvas}
+              />
+            ) : null}
             <UnifiedFitBounds
               ubicaciones={ubicacionesGeojson}
               sigma={sigmaGeojson}

@@ -7,6 +7,10 @@ import type { SectorFeatureCollection } from "./sector-geo";
  */
 export const SIGMA_MAP_DEFAULT_MAX_BBOX_KM2 = 15;
 
+/** Portada: sin mínimo de área; solo se excluyen polígonos enormes (> MAX). */
+export const SIGMA_LANDING_MIN_BBOX_KM2 = 0;
+export const SIGMA_LANDING_MAX_BBOX_KM2 = SIGMA_MAP_DEFAULT_MAX_BBOX_KM2;
+
 type GeomLike = { type?: string; coordinates?: unknown } | null | undefined;
 
 function accumulateBounds(coords: unknown, depth: number, b: Bounds): void {
@@ -69,4 +73,14 @@ export function filterSigmaMapFeaturesByBBox(
   }
 
   return { visible: { type: "FeatureCollection", features }, excluded };
+}
+
+/** Ámbitos para el mapa de inicio (sin mínimo; excluye solo el municipio entero). */
+export function filterSigmaLandingFeatures(fc: SectorFeatureCollection): SectorFeatureCollection {
+  const features = (fc.features || []).filter((f) => {
+    const km2 = approximateBBoxAreaKm2(f.geometry as GeomLike);
+    if (km2 == null) return true;
+    return km2 <= SIGMA_LANDING_MAX_BBOX_KM2;
+  });
+  return { type: "FeatureCollection", features };
 }

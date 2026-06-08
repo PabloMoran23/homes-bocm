@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSigmaAmbitosLandingGeo } from "@/lib/madrid-sigma-map";
 import { useInViewport } from "@/lib/use-in-viewport";
-import { ambitosProyectosEnVista } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
   () => import("./MadridUnifiedMap").then((m) => ({ default: m.MadridUnifiedMap })),
@@ -36,12 +35,6 @@ export function LandingMap() {
   const { ref, visible } = useInViewport();
   const { geo, err, ready, loading } = useSigmaAmbitosLandingGeo(visible);
 
-  const statsHint = loading
-    ? "Cargando proyectos…"
-    : ready && geo
-      ? ambitosProyectosEnVista(geo.features.length)
-      : undefined;
-
   if (err) {
     return (
       <div className="rounded-2xl border border-amber-200/90 bg-amber-50/90 px-4 py-6 text-center text-sm text-amber-950">
@@ -57,7 +50,7 @@ export function LandingMap() {
   return (
     <div ref={ref} className="flex flex-col gap-2">
       <div
-        className={`group relative overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
+        className={`landing-map-live group relative overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
       >
         {!visible || !ready || !geo?.features?.length ? (
           <LandingMapPlaceholder hint={loading ? "Cargando mapa…" : undefined} />
@@ -72,18 +65,27 @@ export function LandingMap() {
             interactive={false}
             fitToData={false}
             initialView="preview"
-            statsHint={statsHint}
+            landingPulse
+            statsHint="Actividad reciente en Madrid"
             className="h-full w-full rounded-2xl"
             showAttribution={false}
           />
         )}
+
+        <div className="landing-map-live-overlay pointer-events-none absolute inset-0 z-[1500]" aria-hidden>
+          <div className="landing-map-live-badge">
+            <span className="landing-map-live-dot" />
+            En vivo
+          </div>
+        </div>
+
         <Link
           href="/explore"
           className="absolute inset-0 z-[2000] block cursor-pointer rounded-2xl"
-          aria-label="Abrir mapa explorar Madrid"
+          aria-label="Abrir mapa de Madrid"
         />
         <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-white/90 bg-white/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
-          Explorar →
+          Abrir mapa →
         </span>
       </div>
     </div>

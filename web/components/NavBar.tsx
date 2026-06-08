@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import { SiteLogo } from "@/components/SiteLogo";
 import { editionLabel, isPublicEdition } from "@/lib/edition";
+import { DASHBOARD } from "@/lib/ui-labels";
 
 const navLinks = [
   { href: "/explore", label: "Explorar" },
-  { href: "/madrid/estadisticas", label: "Estadísticas" },
+  { href: "/madrid/estadisticas", label: DASHBOARD },
   { href: "/boletin", label: "Tu zona" },
 ] as const;
 

@@ -52,16 +52,16 @@ export default function OpenGraphImage() {
               letterSpacing: "-0.02em",
             }}
           >
-            Proyectos urbanísticos en tu zona
+            Qué se está moviendo cerca de ti
           </div>
           <div style={{ fontSize: 26, color: "#475569", lineHeight: 1.4 }}>
-            Licencias, planeamiento SIGMA y anuncios BOCM en un mapa unificado de Madrid capital.
+            Obras, planes y actividad urbanística en Madrid capital — mapa, tu calle y dashboard.
           </div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontSize: 22, color: "#0f766e", fontWeight: 600 }}>homes-urbanismo.es</span>
-          <span style={{ fontSize: 18, color: "#94a3b8" }}>Mapa · Boletín · Estadísticas</span>
+          <span style={{ fontSize: 18, color: "#94a3b8" }}>Mapa · Tu zona · Dashboard</span>
         </div>
       </div>
     ),

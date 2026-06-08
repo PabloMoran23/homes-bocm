@@ -12,6 +12,7 @@ const sourcePath = join(outDir, "madrid-sigma-ambitos.geojson");
 const landingPath = join(outDir, "madrid-sigma-ambitos-landing.geojson");
 
 const MAX_BBOX_KM2 = 15;
+/** Solo excluye polígonos enormes (municipio entero); sin mínimo de área. */
 /** ~15 m en Madrid; miniatura portada (SVG) sin “escalones” tan marcados. */
 const SIMPLIFY_TOLERANCE = 0.00015;
 

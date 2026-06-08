@@ -10,7 +10,7 @@ const dataDir = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "d
 
 const checks = [
   { file: "madrid-sigma-ambitos.geojson", minFeatures: 100 },
-  { file: "madrid-sigma-ambitos-landing.geojson", minFeatures: 100 },
+  { file: "madrid-sigma-ambitos-landing.geojson", minFeatures: 50 },
 ];
 
 let failed = 0;

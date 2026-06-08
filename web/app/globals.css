@@ -104,3 +104,71 @@ body {
   background: transparent !important;
   border: none !important;
 }
+
+/* Landing map: contornos de planeamiento */
+.landing-map-live-overlay {
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.landing-map-live-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.88);
+  padding: 0.3rem 0.65rem;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0f766e;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.landing-map-live-dot {
+  position: relative;
+  display: inline-flex;
+  height: 0.45rem;
+  width: 0.45rem;
+}
+
+.landing-map-live-dot::before,
+.landing-map-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #14b8a6;
+}
+
+.landing-map-live-dot::before {
+  animation: landing-map-live-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.landing-map-live-dot::after {
+  opacity: 0.95;
+}
+
+@keyframes landing-map-live-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-map-live-dot::before {
+    animation: none;
+  }
+}

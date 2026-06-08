@@ -1,21 +1,19 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { LandingAddressForm } from "@/components/LandingAddressForm";
 
 const BENEFITS = [
   {
-    title: "Licencias en edificios cercanos",
-    detail: "Obras, cambios de uso y actuaciones en un radio de 300 m a 1,2 km.",
+    title: "Obras y reformas en edificios de al lado",
+    detail: "Permisos de obra, cambios de uso y actuaciones en un radio de 300 m a 1,2 km.",
   },
   {
-    title: "Proyectos que afectan el entorno",
-    detail: "Expedientes de planeamiento con geometría cerca de tu parcela.",
+    title: "Planes que pueden cambiar tu barrio",
+    detail: "Tramitaciones con ámbito cerca de tu parcela o edificio.",
   },
   {
-    title: "Lectura en minutos",
-    detail: "Cronología clara con distancias y enlaces a cada ficha.",
+    title: "Todo en orden, con distancias y fechas",
+    detail: "Cronología clara y enlaces a cada caso.",
   },
 ] as const;
 
@@ -27,45 +25,36 @@ function PreviewCard() {
     >
       <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-teal-400/15 blur-2xl" />
       <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--portal-accent)]">
-        Ejemplo · 600 m · 24 meses
+        Ejemplo · 500 m · último año
       </p>
       <p className="mt-2 font-semibold text-slate-900">Calle Mayor, 12 — Centro</p>
       <p className="mt-1 text-sm text-slate-600">
-        En los últimos 24 meses, en 600 m a la redonda:{" "}
-        <span className="font-medium text-slate-800">4 licencias</span> y{" "}
-        <span className="font-medium text-slate-800">2 proyectos</span> de planeamiento.
+        En el último año, en 500 m a la redonda:{" "}
+        <span className="font-medium text-slate-800">4 obras</span> y{" "}
+        <span className="font-medium text-slate-800">2 planes</span> en tramitación.
       </p>
       <ul className="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm">
         <li className="flex gap-3">
           <span className="mt-0.5 shrink-0 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-amber-900">
-            Licencia
+            Obra
           </span>
           <span className="text-slate-700">Rehabilitación · a 120 m</span>
         </li>
         <li className="flex gap-3">
           <span className="mt-0.5 shrink-0 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-sky-800">
-            Proyecto
+            Plan
           </span>
-          <span className="text-slate-700">Ámbito de reforma · te afecta directamente</span>
+          <span className="text-slate-700">Reforma del barrio · te afecta directamente</span>
         </li>
       </ul>
       <div className="mt-4 flex h-28 items-center justify-center rounded-xl border border-dashed border-teal-200/80 bg-gradient-to-br from-teal-50/90 to-white text-xs text-slate-500">
-        Mapa del radio y eventos en el boletín
+        Mapa del radio y actividad reciente
       </div>
     </div>
   );
 }
 
 export function LandingTuZonaSection({ isPublic = true }: { isPublic?: boolean }) {
-  const router = useRouter();
-  const [address, setAddress] = useState("");
-
-  function goToBoletin(e?: FormEvent) {
-    e?.preventDefault();
-    const q = address.trim();
-    router.push(q ? `/boletin?q=${encodeURIComponent(q)}` : "/boletin");
-  }
-
   return (
     <section
       className="border-y border-slate-200/80 bg-gradient-to-b from-[#f8f6f1] via-white to-teal-50/40"
@@ -81,19 +70,19 @@ export function LandingTuZonaSection({ isPublic = true }: { isPublic?: boolean }
               id="landing-tu-zona-heading"
               className="mt-3 text-3xl font-semibold tracking-tight text-[var(--portal-ink)] [text-wrap:balance] sm:text-4xl"
             >
-              ¿Qué ocurre alrededor de{" "}
-              <span className="text-[var(--portal-accent)]">tu dirección</span>?
+              ¿Qué ha pasado cerca de{" "}
+              <span className="text-[var(--portal-accent)]">casa</span>?
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
               {isPublic ? (
                 <>
-                  Introduce una calle en Madrid capital y genera un boletín con licencias recientes y
-                  proyectos de planeamiento en tu entorno — sin registrarte.
+                  Pon tu calle en Madrid y te mostramos obras, permisos y planes en un radio a tu
+                  alrededor — gratis y sin registrarte.
                 </>
               ) : (
                 <>
-                  Genera un boletín personalizado con lo que se tramita cerca de ti: licencias,
-                  planeamiento y distancias en un solo informe.
+                  Genera un informe con lo que se ha movido cerca de ti: obras, planes y
+                  distancias en una sola lectura.
                 </>
               )}
             </p>
@@ -113,34 +102,7 @@ export function LandingTuZonaSection({ isPublic = true }: { isPublic?: boolean }
               ))}
             </ul>
 
-            <form className="mt-8 space-y-3" onSubmit={goToBoletin}>
-              <label className="block">
-                <span className="sr-only">Tu dirección en Madrid</span>
-                <input
-                  type="text"
-                  name="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Ej. Calle Gran Vía 28, Madrid"
-                  autoComplete="street-address"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/25"
-                />
-              </label>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  type="submit"
-                  className="inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--portal-accent)] px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-teal-900/10 transition hover:bg-[var(--portal-accent-hover)] sm:flex-none sm:px-8"
-                >
-                  Ver boletín de mi zona
-                </button>
-                <Link
-                  href="/boletin"
-                  className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-                >
-                  Abrir sin dirección
-                </Link>
-              </div>
-            </form>
+            <LandingAddressForm />
           </div>
 
           <PreviewCard />

@@ -52,8 +52,8 @@ export function SiteFooter() {
             <strong className="font-semibold text-slate-800">Homes · Urbanismo</strong>
           </span>{" "}
           {isPublic
-            ? "concentra licencias, proyectos de planeamiento y anuncios del BOCM en un mapa y fichas legibles para Madrid capital."
-            : "te acerca lo que importa del planeamiento alrededor de tu zona: seguimiento de proyectos, lectura clara y herramientas para comparar y reaccionar a tiempo."}
+            ? "te acerca la actividad urbanística de Madrid capital: obras, planes y anuncios oficiales, en mapa y fichas claras."
+            : "te acerca lo que importa alrededor de tu zona: seguimiento de actuaciones, lectura clara y herramientas para comparar y reaccionar a tiempo."}
         </p>
         <ContactLine />
       </div>
