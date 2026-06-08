@@ -583,6 +583,24 @@ ACTUACION_UPSERT = (
 )
 
 
+def _next_row_ids(cur, table: str, keys: list[str], *, key_column: str = "licencia_key") -> dict[str, int]:
+    """Asigna id explícito para tablas sin BIGSERIAL (p. ej. actuacion_edificacion, licencia)."""
+    if not keys:
+        return {}
+    cur.execute(
+        f"SELECT {key_column}, id FROM {SCHEMA}.{table} WHERE {key_column} = ANY(%s)",
+        (keys,),
+    )
+    out = {str(r[0]): int(r[1]) for r in cur.fetchall()}
+    cur.execute(f"SELECT COALESCE(MAX(id), 0) FROM {SCHEMA}.{table}")
+    nxt = int(cur.fetchone()[0]) + 1
+    for k in keys:
+        if k not in out:
+            out[k] = nxt
+            nxt += 1
+    return out
+
+
 def sync_licencias_incremental(cur, years: set[int]) -> dict[str, int]:
     inmuebles, actuaciones_by_key, stats = collect_licencias(years=years)
     now = datetime.now(UTC).isoformat()
@@ -615,8 +633,12 @@ def sync_licencias_incremental(cur, years: set[int]) -> dict[str, int]:
         cur.execute(f"SELECT id, ndp_edificio FROM {SCHEMA}.inmueble WHERE ndp_edificio = ANY(%s)", (ndps,))
         id_by_ndp = {str(row[1]): int(row[0]) for row in cur.fetchall()}
 
+    keys = [k for k, t in actuaciones_by_key.items() if t[1] in id_by_ndp]
+    id_by_key = _next_row_ids(cur, "actuacion_edificacion", keys)
+
     actuacion_rows = [
         (
+            id_by_key[key],
             key,
             id_by_ndp[ndp],
             anio,
@@ -655,6 +677,7 @@ def sync_licencias_incremental(cur, years: set[int]) -> dict[str, int]:
         cur,
         "actuacion_edificacion",
         [
+            "id",
             "licencia_key",
             "inmueble_id",
             "anio_dataset",

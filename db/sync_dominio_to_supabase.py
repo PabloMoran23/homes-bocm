@@ -44,6 +44,7 @@ from sync_madrid_public_to_supabase import (  # noqa: E402
     SCHEMA,
     SIGMA_METRICS,
     VISOR_JSON,
+    _next_row_ids,
     collect_licencias,
     load_sigma_ambitos,
     load_sigma_catalog,
@@ -778,17 +779,7 @@ LICENCIA_UPSERT = (
 
 
 def _next_licencia_ids(cur, keys: list[str]) -> dict[str, int]:
-    if not keys:
-        return {}
-    cur.execute(f"SELECT licencia_key, id FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)", (keys,))
-    out = {str(r[0]): int(r[1]) for r in cur.fetchall()}
-    cur.execute(f"SELECT COALESCE(MAX(id), 0) FROM {SCHEMA}.licencia")
-    nxt = int(cur.fetchone()[0]) + 1
-    for k in keys:
-        if k not in out:
-            out[k] = nxt
-            nxt += 1
-    return out
+    return _next_row_ids(cur, "licencia", keys)
 
 
 def sync_licencias_incremental(cur, years: set[int]) -> dict[str, Any]:
