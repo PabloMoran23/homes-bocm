@@ -133,11 +133,11 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
             Madrid Ciudad
           </p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Dashboard
+            Estadísticas urbanísticas
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-            Licencias urbanísticas y planeamiento en un solo panel. Gráficos interactivos con filtro
-            temporal, rankings y cruce por distrito.
+            Licencias urbanísticas y proyectos de planeamiento en un solo panel.
+            Gráficos interactivos con filtro temporal.
           </p>
           <p className="mt-2 text-xs text-slate-400">
             {fmtDate(stats.generatedAt)}

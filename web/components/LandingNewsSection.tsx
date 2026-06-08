@@ -21,7 +21,7 @@ function RadarBadge() {
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--portal-accent)] opacity-70" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--portal-accent)]" />
       </span>
-      Actualizado · Madrid
+      Radar activo · Madrid
     </span>
   );
 }
@@ -114,7 +114,7 @@ export function LandingNewsSection({
 
   return (
     <section
-      className="relative overflow-hidden rounded-2xl border border-teal-100/90 bg-white shadow-sm ring-1 ring-slate-900/[0.03]"
+      className="relative mt-10 overflow-hidden rounded-2xl border border-teal-100/90 bg-white shadow-sm ring-1 ring-slate-900/[0.03]"
       aria-labelledby="landing-news-heading"
     >
       <div
@@ -130,12 +130,13 @@ export function LandingNewsSection({
               id="landing-news-heading"
               className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl"
             >
-              Destacados{" "}
-              <span className="text-[var(--portal-accent)]">esta semana</span>
+              En el radar{" "}
+              <span className="text-[var(--portal-accent)]">urbanístico</span>
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base">
-              Seleccionamos lo más llamativo de Madrid: obras grandes, cambios de uso y planes que
-              están avanzando.
+              Cada día cruzamos licencias y planeamiento de Madrid capital y sacamos a la superficie
+              los expedientes que más destacan: obra reciente, cambios de uso, densidad o superficie
+              llamativa.
               {updated ? (
                 <span className="text-slate-500"> Actualizado el {updated}.</span>
               ) : null}
@@ -143,8 +144,8 @@ export function LandingNewsSection({
             {summary?.total ? (
               <p className="mt-3 text-xs text-slate-500">
                 <span className="font-semibold text-teal-800">{news.items.length} casos</span> en
-                esta selección · seguimos{" "}
-                {summary.total.toLocaleString("es-ES")} anuncios y actuaciones de referencia
+                esta selección · analizamos{" "}
+                {summary.total.toLocaleString("es-ES")} registros y anuncios de referencia
               </p>
             ) : null}
           </div>
@@ -166,7 +167,7 @@ export function LandingNewsSection({
           <div className="mt-8">
             <p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
               <span className="h-px flex-1 max-w-[2rem] bg-teal-300/80" aria-hidden />
-              Más destacados
+              Más en el radar
               <span className="h-px flex-1 bg-teal-100" aria-hidden />
             </p>
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -180,8 +181,8 @@ export function LandingNewsSection({
         ) : null}
 
         <footer className="mt-8 border-t border-teal-50 pt-4 text-[11px] leading-relaxed text-slate-500">
-          Basado en datos públicos del Ayuntamiento. Las cifras son orientativas — consulta siempre
-          la documentación oficial.
+          Detección a partir de datos abiertos del Ayuntamiento. No es previsión oficial de obra
+          terminada.
         </footer>
       </div>
     </section>

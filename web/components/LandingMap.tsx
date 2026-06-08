@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSigmaAmbitosLandingGeo } from "@/lib/madrid-sigma-map";
 import { useInViewport } from "@/lib/use-in-viewport";
-import { planEnTramitacionEnVista } from "@/lib/ui-labels";
+import { ambitosProyectosEnVista } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
   () => import("./MadridUnifiedMap").then((m) => ({ default: m.MadridUnifiedMap })),
@@ -37,9 +37,9 @@ export function LandingMap() {
   const { geo, err, ready, loading } = useSigmaAmbitosLandingGeo(visible);
 
   const statsHint = loading
-    ? "Cargando mapa…"
+    ? "Cargando proyectos…"
     : ready && geo
-      ? planEnTramitacionEnVista(geo.features.length)
+      ? ambitosProyectosEnVista(geo.features.length)
       : undefined;
 
   if (err) {
@@ -80,10 +80,10 @@ export function LandingMap() {
         <Link
           href="/explore"
           className="absolute inset-0 z-[2000] block cursor-pointer rounded-2xl"
-          aria-label="Abrir mapa de Madrid"
+          aria-label="Abrir mapa explorar Madrid"
         />
         <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-white/90 bg-white/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
-          Abrir mapa →
+          Explorar →
         </span>
       </div>
     </div>

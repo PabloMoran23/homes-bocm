@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 const PUBLIC_LINKS = [
   { href: "/explore", label: "Explorar Madrid" },
   { href: "/boletin", label: "Boletín de tu zona" },
-  { href: "/madrid/estadisticas", label: "Dashboard" },
+  { href: "/madrid/estadisticas", label: "Estadísticas" },
   { href: "/", label: "Inicio" },
 ] as const;
 
@@ -32,7 +32,7 @@ export default async function EnDesarrolloPage({
       </h1>
       <p className="mt-4 text-sm leading-relaxed text-slate-600">
         La versión publicada de Homes incluye el mapa unificado, el boletín por dirección, las fichas
-        de detalle y el dashboard de actividad. Estamos preparando más herramientas para una próxima
+        de detalle y el panel de estadísticas. Estamos preparando más herramientas para una próxima
         actualización.
       </p>
       {from ? (

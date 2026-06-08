@@ -19,7 +19,7 @@ export default async function MadridEstadisticasPage() {
   if (!stats) {
     return (
       <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Dashboard Madrid</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">Estadísticas Madrid</h1>
         <p className="mt-4 text-slate-600">
           Aún no hay datos agregados. Genera el fichero con{" "}
           <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">npm run build-data</code>{" "}

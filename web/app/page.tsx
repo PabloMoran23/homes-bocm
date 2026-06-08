@@ -1,44 +1,15 @@
 import Link from "next/link";
-import { LandingAddressForm } from "@/components/LandingAddressForm";
-import { LandingDashboardSection } from "@/components/LandingDashboardSection";
 import { LandingMap } from "@/components/LandingMap";
 import { LandingNewsSection } from "@/components/LandingNewsSection";
 import { LandingTuZonaSection } from "@/components/LandingTuZonaSection";
-import { isPublicEdition } from "@/lib/edition";
 import { loadLandingNews } from "@/lib/landing-news";
-import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
 import { loadSummary } from "@/lib/load-summary";
-import { DASHBOARD } from "@/lib/ui-labels";
-
-function formatUpdatedAt(iso: string | undefined): string {
-  if (!iso) return "";
-  try {
-    return new Date(iso).toLocaleDateString("es-ES", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return "";
-  }
-}
-
-function titleCaseDistrito(name: string): string {
-  const lower = name.toLowerCase().replace(/_/g, " ");
-  return lower.charAt(0).toUpperCase() + lower.slice(1);
-}
+import { isPublicEdition } from "@/lib/edition";
 
 export default async function Home() {
   const summary = await loadSummary();
   const news = loadLandingNews();
-  const dashboardStats = await loadMadridDashboardStats();
   const isPublic = isPublicEdition();
-
-  const planesCount = dashboardStats?.sigma?.total;
-  const licenciasCount = dashboardStats?.licencias?.totalRows;
-  const updatedAt = formatUpdatedAt(news.generatedAt ?? summary?.generatedAt);
-  const latestLicenciasYear = dashboardStats?.licencias?.seriesByYear?.at(-1);
-  const topDistritos = dashboardStats?.licencias?.topDistrito?.slice(0, 3) ?? [];
 
   return (
     <main className="flex-1">
@@ -48,7 +19,7 @@ export default async function Home() {
             <div className="min-w-0">
               {isPublic ? (
                 <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
-                  Lo que pasa en Madrid capital
+                  Madrid capital
                 </p>
               ) : (
                 <p className="text-sm font-medium uppercase tracking-wider text-[var(--portal-warm)]">
@@ -56,68 +27,44 @@ export default async function Home() {
                 </p>
               )}
               <h1 className="mt-3 max-w-2xl text-4xl font-semibold tracking-tight text-[var(--portal-ink)] sm:text-5xl">
-                Qué se está moviendo{" "}
-                <span className="text-[var(--portal-accent)]">cerca de ti</span>
+                Proyectos urbanísticos{" "}
+                <span className="text-[var(--portal-accent)]">en tu zona</span>
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
                 {isPublic ? (
                   <>
-                    Obras, planes y anuncios oficiales en un solo sitio. Escribe tu calle y mira qué
-                    ha pasado alrededor — o explora toda la ciudad.
+                    Homes concentra en un solo mapa lo que ocurre en Madrid capital: licencias de
+                    obra, proyectos de planeamiento y anuncios del BOCM enlazados. Introduce tu dirección en
+                    el boletín, explora el territorio y consulta estadísticas agregadas.
                   </>
                 ) : (
                   <>
-                    Obras, planes y anuncios oficiales en un solo sitio. Sigue lo que cambia cerca
-                    de ti, configura alertas y entiende el pulso del suelo en minutos.
+                    Homes centraliza lo que cambia el tejido alrededor de ti: qué se tramita, dónde y
+                    con qué intensidad. Sigue proyectos, configura alertas, estudia un ámbito y
+                    entiende el pulso del suelo en minutos.
                   </>
                 )}
               </p>
-
-              {planesCount || licenciasCount || updatedAt ? (
-                <p className="mt-4 text-sm text-slate-500">
-                  {planesCount ? (
-                    <>
-                      <span className="font-semibold text-slate-700">
-                        {planesCount.toLocaleString("es-ES")} planes
-                      </span>
-                      {" en mapa"}
-                    </>
-                  ) : null}
-                  {planesCount && licenciasCount ? " · " : null}
-                  {licenciasCount ? (
-                    <>
-                      <span className="font-semibold text-slate-700">
-                        {licenciasCount.toLocaleString("es-ES")} obras indexadas
-                      </span>
-                    </>
-                  ) : null}
-                  {updatedAt ? (
-                    <>
-                      {" · "}
-                      <span>Actualizado el {updatedAt}</span>
-                    </>
-                  ) : null}
-                </p>
-              ) : null}
-
-              <LandingAddressForm variant="hero" showSecondaryLink={false} />
-
-              <p className="mt-4 text-sm text-slate-600">
-                o{" "}
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/boletin"
+                  className="inline-flex items-center justify-center rounded-lg bg-[var(--portal-accent)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)]"
+                >
+                  Qué ocurre en tu zona
+                </Link>
                 <Link
                   href="/explore"
-                  className="font-semibold text-[var(--portal-accent)] hover:underline"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
                 >
-                  abrir mapa
+                  Explorar Madrid
                 </Link>
-                {" · "}
                 <Link
                   href="/madrid/estadisticas"
-                  className="font-semibold text-[var(--portal-accent)] hover:underline"
+                  className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50"
                 >
-                  {DASHBOARD.toLowerCase()}
+                  Ver estadísticas
                 </Link>
-              </p>
+              </div>
             </div>
             <div className="min-w-0 lg:pt-1">
               <LandingMap />
@@ -126,52 +73,36 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-10 pb-4 sm:px-6 sm:pt-12">
-        <LandingNewsSection summary={summary} news={news} />
-      </section>
-
       <LandingTuZonaSection isPublic={isPublic} />
 
-      <LandingDashboardSection
-        planesCount={planesCount}
-        licenciasCount={licenciasCount}
-        latestLicenciasYear={latestLicenciasYear?.year}
-        latestLicenciasTotal={latestLicenciasYear?.total}
-        topDistritos={topDistritos.map((d) => ({
-          name: titleCaseDistrito(d.name),
-          count: d.count,
-        }))}
-      />
+      <section className="mx-auto max-w-6xl px-4 pt-5 pb-10 sm:px-6 sm:pt-6 sm:pb-12">
+        <LandingNewsSection summary={summary} news={news} />
 
-      <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-12">
-        <div className="grid gap-8 border-t border-slate-200 pt-14 sm:grid-cols-3">
+        <div className="mt-14 grid gap-8 border-t border-slate-200 pt-14 sm:grid-cols-3">
           <div>
-            <h3 className="font-semibold text-slate-900">Vives o estás mirando un piso</h3>
+            <h3 className="font-semibold text-slate-900">Si vives o compras ahí</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Anticiparte a obras y cambios en el barrio antes de que salgan en las noticias. Ideal
-              si compras, alquilas o quieres saber qué pasa en tu calle.
+              Entiende qué se cuece en tu barrio antes de que sea noticia. Ideal para anticiparte a
+              obras, cambios de usos o nuevas dotaciones.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Trabajas con suelo o inversión</h3>
+            <h3 className="font-semibold text-slate-900">Si analizas suelo</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Compara barrios, evolución en el tiempo y casos concretos desde el{" "}
-              {DASHBOARD.toLowerCase()}. Licencias, planeamiento y métricas agregadas.
+              Cruza licencias, planeamiento y anuncios en segundos; compara distritos y evolución
+              temporal desde el panel de estadísticas.
             </p>
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">
-              {isPublic ? "Más por venir" : "Si escalas un equipo"}
+              {isPublic ? "Próximamente" : "Si escalas un equipo"}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
               {isPublic ? (
                 <>
-                  Alertas por correo y planes de suscripción en el roadmap.{" "}
-                  <Link
-                    href="/en-desarrollo?from=/planes"
-                    className="font-medium text-[var(--portal-accent)] hover:underline"
-                  >
-                    Ver qué viene
+                  Alertas por correo y planes de suscripción llegarán en próximas versiones.{" "}
+                  <Link href="/en-desarrollo?from=/planes" className="font-medium text-[var(--portal-accent)] hover:underline">
+                    Ver roadmap
                   </Link>
                 </>
               ) : (
