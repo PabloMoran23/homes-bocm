@@ -106,6 +106,37 @@ jobs:
             exit 1
           fi
           python3 -m sector_geometry.madrid_ayto_sync
+          VISOR_SINCE=$(( $(date -u +%Y) - 2 ))
+          echo "Visor: expedientes nuevos en índice SIGMA..."
+          python3 -m sector_geometry.madrid_viso_fetch \
+            --fetch-missing-index \
+            --merge-existing \
+            --skip-nti \
+            --delay 0.35
+          echo "Visor: re-scrape HTML recientes (>= ${VISOR_SINCE})..."
+          python3 -m sector_geometry.madrid_viso_fetch \
+            --refresh-since-year "${VISOR_SINCE}" \
+            --merge-existing \
+            --skip-nti \
+            --delay 0.35
+          echo "Visor: enriquecer ficha parseada (promotor, m², ámbito)..."
+          python3 -m sector_geometry.madrid_viso_fetch \
+            --enrich-ficha \
+            --fetch-missing-html \
+            --since-year "${VISOR_SINCE}" \
+            --delay 0.35
+          python3 -c "
+          import json
+          from pathlib import Path
+          p = Path('output/madrid_viso_expedientes.json')
+          if not p.is_file():
+              raise SystemExit('Missing output/madrid_viso_expedientes.json')
+          d = json.loads(p.read_text())
+          n = len(d.get('byGrupoExpediente') or {})
+          cf = d.get('conVisorFicha') or 0
+          ct = sum(1 for v in (d.get('byGrupoExpediente') or {}).values() if v.get('tramitacion'))
+          print(f'Visor OK — fichas: {cf}/{n} | tramitación: {ct}/{n}')
+          "
           YEAR=$(date -u +%Y)
           PREV=$((YEAR - 1))
           REFRESH_LIC=0

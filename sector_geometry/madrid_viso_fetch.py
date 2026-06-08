@@ -674,6 +674,8 @@ def run_fetch(
     fetch_missing_index: bool,
     merge_existing: bool,
     since_year: int | None = None,
+    refresh_since_year: int | None = None,
+    force_refresh: bool = False,
 ) -> dict[str, Any]:
     index_by_grupo = load_index_bundle()
     existing_by_g: dict[str, Any] = {}
@@ -753,6 +755,29 @@ def run_fetch(
             )
             seen_g.add(g)
 
+    if refresh_since_year is not None and index_by_grupo:
+        refresh: list[Target] = []
+        refresh_seen: set[str] = set()
+        for g in sorted(index_by_grupo.keys()):
+            rec = existing_by_g.get(g) or {}
+            if not expediente_is_recent(rec, g, since_year=refresh_since_year):
+                continue
+            meta = index_by_grupo[g]
+            enl = meta.get("Enlace")
+            refresh.append(
+                merge_metadata(
+                    Target(
+                        grupo=g,
+                        layer_kind=meta.get("sigma_layer_kind"),
+                        enlace_sigma=str(enl).strip() if enl else None,
+                    ),
+                    index_by_grupo,
+                )
+            )
+            refresh_seen.add(g)
+        uniq = refresh
+        seen_g = refresh_seen
+
     if limit > 0:
         uniq = uniq[:limit]
 
@@ -770,7 +795,7 @@ def run_fetch(
 
         for url in urls:
             cfile = CACHE_DIR / f"{cache_key}_{hash(url) & 0xFFFF}.html"
-            if cfile.is_file():
+            if not force_refresh and cfile.is_file():
                 last_body = cfile.read_bytes()
             else:
                 time.sleep(delay_s)
@@ -870,6 +895,12 @@ def main() -> None:
         help="Solo expedientes con año en número o trámite >= este año (0=sin filtro).",
     )
     ap.add_argument(
+        "--refresh-since-year",
+        type=int,
+        default=0,
+        help="Re-scrape visor HTML para expedientes recientes (año en nº o trámite >= valor).",
+    )
+    ap.add_argument(
         "--enrich-ficha",
         action="store_true",
         help="Extraer visorFicha (promotor, resumen, m²…) desde HTML en caché o descargando.",
@@ -913,16 +944,19 @@ def main() -> None:
         )
         return
 
-    merge = args.merge_existing or args.fetch_missing_index
+    refresh_since = args.refresh_since_year if args.refresh_since_year > 0 else None
+    merge = args.merge_existing or args.fetch_missing_index or refresh_since is not None
     bundle = run_fetch(
         limit=args.limit,
         delay_s=args.delay,
         skip_nti=args.skip_nti,
         extra=args.extra,
         all_index=args.all_index,
-        fetch_missing_index=args.fetch_missing_index,
+        fetch_missing_index=args.fetch_missing_index and refresh_since is None,
         merge_existing=merge,
         since_year=since_year,
+        refresh_since_year=refresh_since,
+        force_refresh=refresh_since is not None,
     )
     OUT_JSON.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding="utf-8")
     print(
