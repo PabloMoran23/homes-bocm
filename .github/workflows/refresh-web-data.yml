@@ -4,12 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       refresh_licencias:
-        description: "Forzar descarga y sync de licencias (por defecto solo dia 1 del mes)"
+        description: "Forzar descarga y sync de licencias (por defecto solo dia 17 del mes)"
         type: boolean
         default: false
   schedule:
-    # Lunes 03:17 UTC (~05:17 CEST en verano)
+    # Lunes 03:17 UTC (~05:17 CEST en verano) — SIGMA + visor
     - cron: "17 3 * * 1"
+    # Dia 17 de cada mes 03:17 UTC — incluye sync de licencias
+    - cron: "17 3 17 * *"
 
 permissions:
   contents: write
@@ -142,7 +144,7 @@ jobs:
           REFRESH_LIC=0
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "true" ]; then
             REFRESH_LIC=1
-          elif [ "$(date -u +%d)" = "01" ]; then
+          elif [ "$(date -u +%d)" = "17" ]; then
             REFRESH_LIC=1
           fi
           python3 db/sync_dominio_to_supabase.py --skip-licencias

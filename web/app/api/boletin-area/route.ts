@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import type { BoletinAreaResult } from "@/lib/boletin-area";
+import {
+  BOLETIN_DEFAULT_MONTHS,
+  BOLETIN_DEFAULT_RADIUS_M,
+  type BoletinAreaResult,
+} from "@/lib/boletin-area";
 import {
   BOLETIN_AREA_CACHE_HEADERS,
   boletinAreaCacheKey,
@@ -42,8 +46,18 @@ export async function GET(req: Request) {
   const latParam = url.searchParams.get("lat");
   const lngParam = url.searchParams.get("lng");
   const labelParam = url.searchParams.get("label")?.trim() || null;
-  const radiusM = clampInt(Number(url.searchParams.get("radiusM") || "600"), RADIUS_MIN, RADIUS_MAX, 600);
-  const months = clampInt(Number(url.searchParams.get("months") || "24"), MONTHS_MIN, MONTHS_MAX, 24);
+  const radiusM = clampInt(
+    Number(url.searchParams.get("radiusM") || String(BOLETIN_DEFAULT_RADIUS_M)),
+    RADIUS_MIN,
+    RADIUS_MAX,
+    BOLETIN_DEFAULT_RADIUS_M,
+  );
+  const months = clampInt(
+    Number(url.searchParams.get("months") || String(BOLETIN_DEFAULT_MONTHS)),
+    MONTHS_MIN,
+    MONTHS_MAX,
+    BOLETIN_DEFAULT_MONTHS,
+  );
 
   const supabase = getSupabaseServer();
   if (!supabase) {

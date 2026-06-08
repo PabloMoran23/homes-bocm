@@ -7,6 +7,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   boletinResumenParrafo,
   boletinStatLabel,
+  BOLETIN_DEFAULT_MONTHS,
+  BOLETIN_DEFAULT_RADIUS_M,
   MONTHS_OPTIONS,
   RADIUS_OPTIONS,
   type BoletinAreaResult,
@@ -137,8 +139,8 @@ export function BoletinAreaApp() {
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<UbicacionSearchItem | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
-  const [radiusM, setRadiusM] = useState(600);
-  const [months, setMonths] = useState(24);
+  const [radiusM, setRadiusM] = useState(BOLETIN_DEFAULT_RADIUS_M);
+  const [months, setMonths] = useState(BOLETIN_DEFAULT_MONTHS);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<BoletinAreaResult | null>(null);
@@ -176,9 +178,9 @@ export function BoletinAreaApp() {
   }, [q, searchIndex]);
 
   const buscar = useCallback(
-    async (ndpOverride?: string) => {
-      const ndp = ndpOverride ?? selected?.ndp;
-      const freeText = q.trim();
+    async (override?: { ndp?: string; q?: string }) => {
+      const ndp = override?.ndp ?? selected?.ndp;
+      const freeText = (override?.q ?? q).trim();
       if (!ndp && freeText.length < 3) {
         setError("Escribe una dirección o elige una sugerencia");
         return;
@@ -244,8 +246,9 @@ export function BoletinAreaApp() {
       setQ(qFromUrl);
       setSelected(null);
       setOpenSuggest(false);
+      void buscar({ q: qFromUrl });
     });
-  }, [qFromUrl, ndpFromUrl]);
+  }, [qFromUrl, ndpFromUrl, buscar]);
 
   useEffect(() => {
     if (!searchReady || !ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
@@ -256,7 +259,7 @@ export function BoletinAreaApp() {
       setSelected(item);
       setQ(item.label);
       setOpenSuggest(false);
-      void buscar(ndpFromUrl);
+      void buscar({ ndp: ndpFromUrl });
     });
   }, [searchReady, ndpFromUrl, searchIndex, buscar]);
 
