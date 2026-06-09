@@ -1,5 +1,4 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { fetchStaticJson } from "./fetch-static-json";
 import { ensureProject } from "./ensure-project";
 import { projectFromDominioRow } from "./proyecto-dominio-map";
 import { projectPath } from "./project-display";
@@ -12,10 +11,9 @@ let index: Map<string, Project> | null = null;
 
 async function getIndex(): Promise<Map<string, Project>> {
   if (index) return index;
-  const path = join(process.cwd(), "public/data/projects.json");
-  const raw = await readFile(path, "utf-8");
-  const rows = JSON.parse(raw) as Array<Partial<Project> & { id: string }>;
   index = new Map();
+  const rows = await fetchStaticJson<Array<Partial<Project> & { id: string }>>("/data/projects.json");
+  if (!rows) return index;
   for (const row of rows) {
     if (!row.id) continue;
     index.set(row.id, ensureProject(row));

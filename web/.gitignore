@@ -46,3 +46,6 @@ public/data/*.json
 !public/data/madrid-licencias-filter-rows.json
 !public/data/madrid-sigma-filter-rows.json
 !public/data/ubicaciones-search.json
+!public/data/projects.json
+!public/data/madrid-sigma-clasificacion.json
+!public/data/madrid-sigma-programas.json
