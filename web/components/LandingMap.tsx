@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSigmaAmbitosLandingGeo } from "@/lib/madrid-sigma-map";
+import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import { useInViewport } from "@/lib/use-in-viewport";
 
 const MadridUnifiedMap = dynamic(
@@ -31,17 +32,31 @@ function LandingMapPlaceholder({ hint }: { hint?: string }) {
   );
 }
 
-export function LandingMap() {
+type LandingMapProps = {
+  /** Precargado en servidor; evita un fetch extra en cliente que puede fallar en producción. */
+  sigmaGeojson?: SectorFeatureCollection | null;
+};
+
+export function LandingMap({ sigmaGeojson }: LandingMapProps) {
+  const hasServerGeo = Boolean(sigmaGeojson?.features?.length);
   const { ref, visible } = useInViewport();
-  const { geo, err, ready, loading } = useSigmaAmbitosLandingGeo(visible);
+  const client = useSigmaAmbitosLandingGeo(!hasServerGeo && visible);
+
+  const geo = hasServerGeo ? sigmaGeojson : client.geo;
+  const err = hasServerGeo ? null : client.err;
+  const ready = hasServerGeo || client.ready;
+  const loading = !hasServerGeo && client.loading;
 
   if (err) {
     return (
       <div className="rounded-2xl border border-amber-200/90 bg-amber-50/90 px-4 py-6 text-center text-sm text-amber-950">
         <p>{err}</p>
         <p className="mt-2 text-xs text-amber-800/90">
-          En la carpeta <code className="rounded bg-amber-100/80 px-1 font-mono">web/</code> ejecuta{" "}
-          <code className="rounded bg-amber-100/80 px-1 font-mono">npm run build-data</code>.
+          Prueba a recargar la página o{" "}
+          <Link href="/explore" className="font-semibold underline underline-offset-2">
+            abrir el mapa completo
+          </Link>
+          .
         </p>
       </div>
     );

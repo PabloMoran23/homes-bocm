@@ -13,38 +13,35 @@ export function filterSigmaAmbitosForMap(fc: SectorFeatureCollection): SectorFea
   return filterSigmaMapFeaturesByBBox(fc, SIGMA_MAP_DEFAULT_MAX_BBOX_KM2).visible;
 }
 
-function useSigmaAmbitosMapGeoFromUrl(url: string, prefiltered: boolean) {
+function useSigmaAmbitosMapGeoFromUrl(url: string, prefiltered: boolean, enabled = true) {
   const [raw, setRaw] = useState<SectorFeatureCollection | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!enabled) return;
+
     let cancelled = false;
     (async () => {
       try {
         const res = await fetch(url);
         if (!res.ok) throw new Error(String(res.status));
+        const fc = (await res.json()) as SectorFeatureCollection;
+        if (!fc.features?.length) throw new Error("empty");
         if (!cancelled) {
-          const fc = (await res.json()) as SectorFeatureCollection;
-          if (!fc.features?.length) {
-            setErr("Faltan datos de planeamiento de Madrid.");
-            return;
-          }
           setRaw(fc);
           setReady(true);
         }
       } catch {
         if (!cancelled) {
-          setErr(
-            "Faltan datos de planeamiento de Madrid.",
-          );
+          setErr("No hemos podido cargar el mapa de actividad en Madrid.");
         }
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [url]);
+  }, [url, enabled]);
 
   const geo = useMemo(
     () => (raw ? (prefiltered ? raw : filterSigmaAmbitosForMap(raw)) : null),
@@ -58,11 +55,7 @@ export function useSigmaAmbitosMapGeo() {
   return useSigmaAmbitosMapGeoFromUrl(SIGMA_AMBITOS_MAP_URL, false);
 }
 
-/** Vista previa de inicio: GeoJSON simplificado (~1,5 MB vs ~23 MB). */
+/** Vista previa de inicio: GeoJSON simplificado (~1,5 MB vs ~23 MB). Preferir `loadSigmaAmbitosLandingGeo` en servidor. */
 export function useSigmaAmbitosLandingGeo(enabled = true) {
-  const state = useSigmaAmbitosMapGeoFromUrl(SIGMA_AMBITOS_LANDING_URL, true);
-  if (!enabled) {
-    return { geo: null, err: null, ready: false, loading: false };
-  }
-  return state;
+  return useSigmaAmbitosMapGeoFromUrl(SIGMA_AMBITOS_LANDING_URL, true, enabled);
 }
