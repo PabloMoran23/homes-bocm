@@ -235,17 +235,20 @@ export function ExploreMadridApp() {
           fetch("/data/ubicaciones-map.geojson"),
           fetch("/data/ubicaciones-search.json"),
         ]);
-        if (!mapRes.ok || !searchRes.ok) throw new Error("ubicaciones");
+        if (!mapRes.ok) throw new Error("ubicaciones-map");
         if (!cancelled) {
           setUbicGeo((await mapRes.json()) as UbicacionesMapGeoJson);
-          setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
-          setDataReady({ ubic: true, search: true });
+          if (searchRes.ok) {
+            setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
+            setDataReady({ ubic: true, search: true });
+          } else {
+            setSearchIndex([]);
+            setDataReady({ ubic: true, search: false });
+          }
         }
       } catch {
         if (!cancelled) {
-          setErr(
-            "Faltan datos de Madrid. Ejecuta: npm run build-data (y db/ingest_madrid_ubicacion.py si aplica).",
-          );
+          setErr("No hemos podido cargar el mapa de edificios. Prueba a recargar la página.");
         }
       }
     })();

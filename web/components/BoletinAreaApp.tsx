@@ -156,7 +156,7 @@ export function BoletinAreaApp() {
           setSearchReady(true);
         }
       } catch {
-        if (!cancelled) setError("No hay índice de direcciones. Ejecuta export_ubicaciones_web.py");
+        if (!cancelled) setError("No hemos podido cargar el buscador de direcciones. Prueba a recargar la página.");
       }
     })();
     return () => {

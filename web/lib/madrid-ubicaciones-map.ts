@@ -38,9 +38,7 @@ export function useUbicacionesMapGeo() {
         }
       } catch {
         if (!cancelled) {
-          setErr(
-            "Faltan datos de Madrid. Ejecuta: npm run build-data (y db/ingest_madrid_ubicacion.py si aplica).",
-          );
+          setErr("No hemos podido cargar los edificios de Madrid.");
         }
       }
     })();

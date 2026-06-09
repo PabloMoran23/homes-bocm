@@ -17,6 +17,8 @@ const requiredFiles = [
   "madrid-sigma-ambitos-landing.geojson",
   "madrid-licencias-filter-rows.json",
   "madrid-sigma-bocm-projects.json",
+  "ubicaciones-map.geojson",
+  "ubicaciones-search.json",
   "projects.json",
   "summary.json",
 ];
