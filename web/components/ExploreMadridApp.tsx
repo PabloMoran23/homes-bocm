@@ -578,7 +578,7 @@ export function ExploreMadridApp() {
         </div>
         <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-4 py-3">
           <div className="min-w-0">
-            <h1 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h1>
+            <h2 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h2>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               Activa capas arriba del mapa. Busca aquí; clic en ámbito → ficha del proyecto, en punto → ubicación.
             </p>

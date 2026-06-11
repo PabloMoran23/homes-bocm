@@ -290,10 +290,10 @@ export function BoletinAreaApp() {
             <p className="text-xs text-slate-500 capitalize">{formatEdicionDate()}</p>
           </div>
           <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Qué ha pasado cerca de ti
+            Qué obras y planes hay cerca de tu casa
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-            Tu resumen de licencias y planeamiento en el barrio. Elige dirección y radio; el mapa
+            Licencias de obra y planes urbanísticos en tu barrio. Elige dirección y radio; el mapa
             muestra el ámbito que estamos leyendo.
           </p>
         </header>
