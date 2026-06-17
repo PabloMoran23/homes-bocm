@@ -60,7 +60,7 @@ export function ubicacionMapPopupHtml(p: UbicacionMapProperties): string {
   bits.push(
     `<div style="margin-top:6px;font-size:11px;color:#047857">Obra o actuación autorizada (datos abiertos Ayto.)</div>`,
   );
-  bits.push(mapPopupLinkHtml(ubicacionPath(p.ndp), "Ver ficha del edificio"));
+  bits.push(mapPopupLinkHtml(ubicacionPath(p.ndp), "Más información"));
 
   return bits.join("");
 }

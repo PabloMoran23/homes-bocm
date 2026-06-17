@@ -89,10 +89,6 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function escapeAttr(s: string): string {
-  return escapeHtml(s).replace(/'/g, "&#39;");
-}
-
 export function featurePopupHtml(
   p: SectorFeatureProperties | undefined,
   opts?: FeaturePopupOptions,
@@ -148,7 +144,6 @@ export function featurePopupHtml(
         `<div class="text-[10px] text-slate-400">Ref. ${escapeHtml(String(r.EXP_TX_NUMERO))}</div>`,
       );
     }
-    const visorUrl = r.Enlace || r.ENLACE;
     const expKey = expedienteGrupoKeyFromVariant(String(r.EXP_TX_NUMERO || ""));
     const metricSlice = expKey ? opts?.sigmaMetricsByExpediente?.[expKey] : undefined;
     if (metricSlice?.num_viviendas_max != null) {
@@ -163,12 +158,7 @@ export function featurePopupHtml(
       );
     }
     if (expKey) {
-      bits.push(mapPopupLinkHtml(sigmaFichaPath(expKey), "Ver ficha del proyecto"));
-    }
-    if (visorUrl) {
-      bits.push(
-        `<a href="${escapeAttr(String(visorUrl))}" target="_blank" rel="noopener noreferrer" style="color:#64748b;font-weight:600;font-size:12px">Ayuntamiento ↗</a>`,
-      );
+      bits.push(mapPopupLinkHtml(sigmaFichaPath(expKey), "Más información"));
     }
 
     const rawHits = expKey ? opts?.sigmaBocmByExpediente?.[expKey] : undefined;
