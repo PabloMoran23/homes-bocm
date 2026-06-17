@@ -15,7 +15,12 @@ El BOCM regional ya alimenta la web global; este pipeline no duplica ese trabajo
 
 ## Piloto
 
-`mostoles`, `getafe`, `pozuelo-de-alarcon` — adapters pendientes.
+`mostoles`, `getafe`, `pozuelo-de-alarcon` — adapters implementados.
+
+## Automation (cron)
+
+Cursor Automation cada 4h incorpora el siguiente municipio de la cola BOCM.
+Ver `docs/automation-onboard-municipio.md`.
 
 ## Comandos
 

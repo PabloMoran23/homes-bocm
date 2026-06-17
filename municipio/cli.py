@@ -68,12 +68,62 @@ def main(argv: list[str] | None = None) -> int:
     _add_municipio_arg(val)
     val.add_argument("--pilot", action="store_true")
 
+    q = sub.add_parser("queue", help="Cola de onboarding automático de municipios")
+    qsub = q.add_subparsers(dest="queue_command", required=True)
+    qsub.add_parser("init", help="Inicializar cola desde web/public/data/summary.json")
+    qsub.add_parser("status", help="Estado de la cola")
+    qsub.add_parser("next", help="Ver siguiente municipio pendiente (sin reservar)")
+    qsub.add_parser("claim", help="Reservar siguiente municipio (in_progress)")
+    qdone = qsub.add_parser("done", help="Marcar municipio como completado")
+    qdone.add_argument("--municipio", "-m", required=True)
+    qdone.add_argument("--pr-url", default=None)
+    qdone.add_argument("--notes", default=None)
+    qfail = qsub.add_parser("fail", help="Marcar municipio como fallido")
+    qfail.add_argument("--municipio", "-m", required=True)
+    qfail.add_argument("--error", required=True)
+
     args = parser.parse_args(argv)
 
     if args.command == "list":
         for slug in list_manifest_slugs():
             print(slug)
         return 0
+
+    if args.command == "queue":
+        from municipio import queue as qmod
+
+        if args.queue_command == "init":
+            qmod.init_from_summary()
+            print(json.dumps(qmod.queue_status(), indent=2, ensure_ascii=False))
+            return 0
+        if args.queue_command == "status":
+            print(json.dumps(qmod.queue_status(), indent=2, ensure_ascii=False))
+            return 0
+        if args.queue_command == "next":
+            nxt = qmod.pick_next()
+            print(json.dumps(nxt, indent=2, ensure_ascii=False))
+            return 0
+        if args.queue_command == "claim":
+            claimed = qmod.claim_next()
+            print(json.dumps(claimed, indent=2, ensure_ascii=False))
+            return 0 if claimed else 1
+        if args.queue_command == "done":
+            entry = qmod.mark_status(
+                args.municipio,
+                "done",
+                pr_url=args.pr_url,
+                notes=args.notes,
+            )
+            print(json.dumps(entry, indent=2, ensure_ascii=False))
+            return 0
+        if args.queue_command == "fail":
+            entry = qmod.mark_status(
+                args.municipio,
+                "failed",
+                error=args.error,
+            )
+            print(json.dumps(entry, indent=2, ensure_ascii=False))
+            return 0
 
     pilot_slugs = ["mostoles", "getafe", "pozuelo-de-alarcon"]
     slugs = args.municipios or []

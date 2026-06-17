@@ -1,0 +1,22 @@
+name: Onboard municipio ayuntamiento
+description: >
+  Cada 4 horas toma el siguiente municipio de la cola BOCM, investiga su portal,
+  implementa el adapter de ingesta y abre PR a main.
+
+trigger:
+  - type: cron
+    schedule: "0 */4 * * *"
+
+repository:
+  github: PabloMoran23/homes-bocm
+  branch: main
+
+tools:
+  - memories
+
+model: default
+
+instructions_file: .cursor/prompts/onboard-municipio-ayuntamiento.md
+
+sandbox:
+  install_command: pip install -r requirements-municipio.txt && pip install psycopg2-binary
