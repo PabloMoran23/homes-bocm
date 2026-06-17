@@ -200,7 +200,7 @@ export function ExploreUbicacionesApp() {
             · {meta.inmueblesConCoords.toLocaleString("es-ES")} edificios Madrid (open data)
           </span>
         ) : null}
-        . Haz clic en un punto para abrir la{" "}
+        . Pasa el ratón sobre un punto para ver el resumen y abrir la{" "}
         <span className="font-medium text-slate-800">ficha de la ubicación</span>.
       </p>
 

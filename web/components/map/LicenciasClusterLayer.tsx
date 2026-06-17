@@ -9,10 +9,11 @@ import "leaflet.markercluster";
 import {
   createLicenciaDivIcon,
   clasificarLicenciaMapaDesdeActuacion,
-  licenciaMapTooltipLabel,
 } from "@/lib/licencia-mapa";
 import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
 import { boundsFromLeaflet, filterPointFeaturesInView } from "@/lib/map-viewport";
+import { bindMapHoverPopup } from "@/lib/map-hover-popup";
+import { ubicacionMapPopupHtml } from "@/lib/ubicacion-map-popup";
 
 type LeafletWithCluster = typeof L & {
   markerClusterGroup: (options?: object) => L.LayerGroup;
@@ -26,12 +27,7 @@ type UbicacionGeo = {
   }>;
 };
 
-function buildMarkersLayer(
-  geojson: UbicacionGeo,
-  highlightNdp: string | null,
-  onSelectNdp: (ndp: string) => void,
-  stickyTooltips: boolean,
-) {
+function buildMarkersLayer(geojson: UbicacionGeo, highlightNdp: string | null) {
   return L.geoJSON(geojson as unknown as GeoJSON.FeatureCollection, {
     pointToLayer(feature, latlng) {
       const p = feature.properties as UbicacionMapProperties;
@@ -44,17 +40,7 @@ function buildMarkersLayer(
     },
     onEachFeature(feature, lyr) {
       const p = feature.properties as UbicacionMapProperties;
-      lyr.on("click", () => onSelectNdp(p.ndp));
-      const label = licenciaMapTooltipLabel(actuacionDesdeMapProps(p), p.direccion);
-      lyr.bindTooltip(label, { direction: "top", opacity: 0.95, sticky: stickyTooltips });
-      const lic = p.licencias;
-      if (lic > 1) {
-        lyr.bindPopup(
-          `<div class="text-sm"><strong>${p.direccion ?? "Edificio"}</strong><br/>` +
-            `<span class="text-slate-600">${lic.toLocaleString("es-ES")} licencias registradas</span></div>`,
-          { className: "homes-map-popup", maxWidth: 280 },
-        );
-      }
+      bindMapHoverPopup(lyr, ubicacionMapPopupHtml(p), { maxWidth: 300 });
     },
   });
 }
@@ -62,7 +48,7 @@ function buildMarkersLayer(
 export function LicenciasClusterLayer({
   geojson,
   highlightNdp,
-  onSelectNdp,
+  onSelectNdp: _onSelectNdp,
   visible,
 }: {
   geojson: UbicacionGeo | null;
@@ -74,15 +60,8 @@ export function LicenciasClusterLayer({
   const clusterRef = useRef<L.LayerGroup | null>(null);
   const geojsonRef = useRef(geojson);
   const highlightRef = useRef(highlightNdp);
-  const onSelectRef = useRef(onSelectNdp);
-  const stickyTooltipsRef = useRef(false);
   geojsonRef.current = geojson;
   highlightRef.current = highlightNdp;
-  onSelectRef.current = onSelectNdp;
-
-  useEffect(() => {
-    stickyTooltipsRef.current = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  }, []);
 
   /** Monta el grupo de clusters una sola vez. */
   useEffect(() => {
@@ -128,12 +107,7 @@ export function LicenciasClusterLayer({
       const feats = filterPointFeaturesInView(data.features, bounds);
       if (!feats.length) return;
 
-      const layer = buildMarkersLayer(
-        { features: feats },
-        highlightRef.current,
-        onSelectRef.current,
-        stickyTooltipsRef.current,
-      );
+      const layer = buildMarkersLayer({ features: feats }, highlightRef.current);
       cluster.addLayer(layer);
     };
 
@@ -152,7 +126,7 @@ export function LicenciasClusterLayer({
       map.off("moveend", scheduleRefresh);
       map.off("zoomend", scheduleRefresh);
     };
-  }, [map, geojson, highlightNdp, onSelectNdp, visible]);
+  }, [map, geojson, highlightNdp, visible]);
 
   useEffect(() => {
     if (!highlightNdp || !clusterRef.current) return;

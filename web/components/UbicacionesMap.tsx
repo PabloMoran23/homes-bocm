@@ -17,10 +17,11 @@ import "leaflet.markercluster";
 import {
   clasificarLicenciaMapaDesdeActuacion,
   createLicenciaDivIcon,
-  licenciaMapTooltipLabel,
 } from "@/lib/licencia-mapa";
 import { HOMES_MAP_ATTRIBUTION, HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
+import { ubicacionMapPopupHtml } from "@/lib/ubicacion-map-popup";
 
 type LeafletWithCluster = typeof L & {
   markerClusterGroup: (options?: object) => L.LayerGroup;
@@ -43,7 +44,7 @@ type GeoCollection = {
 function MarkerClusterLayer({
   geojson,
   highlightNdp,
-  onSelect,
+  onSelect: _onSelect,
 }: {
   geojson: GeoCollection;
   highlightNdp: string | null;
@@ -74,12 +75,7 @@ function MarkerClusterLayer({
       },
       onEachFeature(feature, layer) {
         const p = feature.properties as UbicacionMapProperties;
-        const label = licenciaMapTooltipLabel(actuacionDesdeMapProps(p), p.direccion);
-        const extra = [p.distrito, p.licencias ? `${p.licencias} lic.` : null]
-          .filter(Boolean)
-          .join(" · ");
-        layer.bindTooltip(extra ? `${label} (${extra})` : label, { direction: "top", opacity: 0.95 });
-        layer.on("click", () => onSelect(p.ndp));
+        bindMapHoverPopup(layer, ubicacionMapPopupHtml(p), { maxWidth: 300 });
       },
     });
 
@@ -91,7 +87,7 @@ function MarkerClusterLayer({
       map.removeLayer(cluster);
       clusterRef.current = null;
     };
-  }, [map, geojson, highlightNdp, onSelect]);
+  }, [map, geojson, highlightNdp]);
 
   useEffect(() => {
     if (!highlightNdp || !clusterRef.current) return;

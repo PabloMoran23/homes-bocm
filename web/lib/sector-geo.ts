@@ -17,6 +17,7 @@ import {
 import type L from "leaflet";
 import type { GeoJSON } from "geojson";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { mapPopupLinkHtml } from "@/lib/map-popup-html";
 
 export type SectorFeatureProperties = {
   stable_key?: string;
@@ -162,10 +163,7 @@ export function featurePopupHtml(
       );
     }
     if (expKey) {
-      const fichaRel = sigmaFichaPath(expKey);
-      bits.push(
-        `<a href="${escapeAttr(fichaRel)}" style="display:inline-block;margin-top:6px;color:#0d9488;font-weight:700;font-size:13px">Ver ficha del proyecto</a>`,
-      );
+      bits.push(mapPopupLinkHtml(sigmaFichaPath(expKey), "Ver ficha del proyecto"));
     }
     if (visorUrl) {
       bits.push(
@@ -188,7 +186,7 @@ export function featurePopupHtml(
         const art = h.artNum ? ` · art. ${escapeHtml(h.artNum)}` : "";
         bits.push(
           `<div style="margin-top:6px;line-height:1.35">` +
-            `<a href="${escapeAttr(rel)}" style="color:#0d9488;font-weight:600;font-size:13px">Ver anuncio</a>` +
+            mapPopupLinkHtml(rel, "Ver anuncio") +
             `<div style="font-size:11px;color:#64748b;margin-top:2px">${escapeHtml(h.bocmDate)}${art}${relTag}</div>` +
             `<div style="font-size:11px;color:#334155;margin-top:2px">${escapeHtml((h.title || "").slice(0, 140))}${(h.title || "").length > 140 ? "…" : ""}</div>` +
             `</div>`,

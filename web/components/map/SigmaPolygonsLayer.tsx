@@ -4,8 +4,6 @@ import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import type { PathOptions } from "leaflet";
-import { useRouter } from "next/navigation";
-import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import {
   featureLayerStyle,
   featurePointStyle,
@@ -15,7 +13,7 @@ import {
   type SectorFeatureCollection,
 } from "@/lib/sector-geo";
 import { useMapVisualContext } from "@/components/map/useMapVisualContext";
-import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import type { MapVisualContext } from "@/lib/map-visual-scale";
 
 const HIDDEN_STYLE: PathOptions = {
@@ -70,10 +68,7 @@ export function SigmaPolygonsLayer({
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
-  const router = useRouter();
   const layerRef = useRef<L.GeoJSON | null>(null);
-  const routerRef = useRef(router);
-  routerRef.current = router;
 
   /** Crea la capa una sola vez al cambiar datos o visibilidad (no en cada pan/zoom). */
   useEffect(() => {
@@ -110,13 +105,9 @@ export function SigmaPolygonsLayer({
         if (preview) return;
         const props = feature.properties as Record<string, unknown> | undefined;
         const pop = featurePopupHtml(props, popupOptions ?? undefined);
-        lyr.bindPopup(pop, {
+        bindMapHoverPopup(lyr, pop, {
           className: "homes-map-popup homes-map-popup-sigma",
           maxWidth: 380,
-        });
-        lyr.on("click", () => {
-          const expKey = expedienteGrupoKeyFromVariant(String(props?.EXP_TX_NUMERO || ""));
-          if (expKey) routerRef.current.push(sigmaFichaPath(expKey));
         });
       },
     });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { GeoJSON } from "react-leaflet";
+import { GeoJSON, useMap } from "react-leaflet";
 import L from "leaflet";
 import type { PathOptions } from "leaflet";
 import {
@@ -19,8 +19,8 @@ import {
   type SectorFeatureCollection,
   type SectorFeatureProperties,
 } from "@/lib/sector-geo";
+import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import { useMapVisualContext } from "@/components/map/useMapVisualContext";
-import { useMap } from "react-leaflet";
 
 export function SectorFeaturesGeoLayer({
   geojson,
@@ -62,7 +62,7 @@ export function SectorFeaturesGeoLayer({
       onEachFeature={(feature, layer) => {
         const props = feature.properties as SectorFeatureProperties | undefined;
         const pop = featurePopupHtml(props, popupOptions ?? undefined);
-        layer.bindPopup(pop, {
+        bindMapHoverPopup(layer, pop, {
           className: isSigmaFeature(props)
             ? "homes-map-popup homes-map-popup-sigma"
             : "homes-map-popup",
