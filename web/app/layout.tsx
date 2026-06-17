@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@/components/Analytics";
+import { GlobalSiteJsonLd } from "@/components/seo/GlobalSiteJsonLd";
 import { NavBar } from "@/components/NavBar";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TierProvider } from "@/components/TierProvider";
@@ -65,6 +66,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="flex min-h-full flex-col bg-[var(--surface)] font-sans text-slate-900 antialiased">
+        <GlobalSiteJsonLd />
         <Analytics />
         <TierProvider>
           <NavBar />

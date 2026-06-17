@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MadridDashboard } from "@/components/madrid/dashboard/MadridDashboard";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { madridDatasetJsonLd } from "@/lib/json-ld";
 import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
 import { withCanonical } from "@/lib/seo";
 
@@ -37,6 +39,7 @@ export default async function MadridEstadisticasPage() {
 
   return (
     <main className="flex-1 bg-slate-100/50">
+      <JsonLd data={madridDatasetJsonLd(stats)} />
       <MadridDashboard stats={stats} />
     </main>
   );

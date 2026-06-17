@@ -1,24 +1,6 @@
 import Link from "next/link";
 import { SeoFaq } from "@/components/seo/SeoFaq";
-
-const EXPLORE_FAQ = [
-  {
-    q: "¿Qué puedo ver en el mapa?",
-    a: "Obras con licencia, planes urbanísticos en tramitación y proyectos que pueden cambiar tu barrio: nuevos edificios, reformas de uso, reparcelaciones y actuaciones sobre el suelo. Todo geolocalizado en Madrid capital.",
-  },
-  {
-    q: "¿Qué diferencia hay entre una licencia y un plan?",
-    a: "La licencia autoriza una obra concreta en un edificio o parcela. El planeamiento define las reglas de una zona más amplia — por ejemplo un plan especial o un estudio de detalle — antes de que se construya.",
-  },
-  {
-    q: "¿Cómo busco una calle o un proyecto?",
-    a: "Abre el panel de filtros y escribe en el buscador. También puedes introducir tu dirección en el boletín de tu zona si quieres ver qué ha pasado cerca de casa. Cada proyecto tiene su ficha con trámites y documentos.",
-  },
-  {
-    q: "¿Con qué frecuencia se actualizan los datos?",
-    a: "Semanalmente, a partir de fuentes públicas del Ayuntamiento de Madrid. La fecha de la última actualización aparece en la portada y en las estadísticas.",
-  },
-] as const;
+import { EXPLORE_FAQ } from "@/lib/seo-faq-content";
 
 /** Panel colapsado sobre el mapa: no ocupa altura del viewport. El H1 vive aquí para SEO. */
 export function ExplorePageSeoPanel() {
