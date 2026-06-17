@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
+import re
+import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -10,6 +14,9 @@ from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, list_manifest_slugs, sl
 
 QUEUE_PATH = MUNICIPIOS_DIR / "queue.yaml"
 SUMMARY_JSON = POC_ROOT / "web" / "public" / "data" / "summary.json"
+
+AUTOMATION_BRANCH_RE = re.compile(r"^automation/municipio-(.+)$")
+MANIFEST_PATH_RE = re.compile(r"^data/municipios/([^/]+)/manifest\.yaml$")
 
 # Municipios con pipeline propio (no portal genérico).
 SKIP_NAMES = {
@@ -110,6 +117,104 @@ def _entry_index(entries: list[QueueEntry], slug: str) -> int:
     return -1
 
 
+def _gh_repo() -> str | None:
+    env = os.environ.get("GITHUB_REPOSITORY")
+    if env:
+        return env
+    try:
+        out = subprocess.run(
+            ["git", "config", "--get", "remote.origin.url"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+    url = (out.stdout or "").strip()
+    m = re.search(r"github\.com[:/]([^/]+/[^/.]+)", url)
+    return m.group(1) if m else None
+
+
+def _gh_json(subcmd: list[str], *, fields: str) -> Any:
+    repo = _gh_repo()
+    cmd = ["gh", *subcmd, "--json", fields]
+    if repo:
+        cmd.extend(["--repo", repo])
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.returncode != 0:
+        return None
+    try:
+        return json.loads(proc.stdout or "null")
+    except json.JSONDecodeError:
+        return None
+
+
+@lru_cache(maxsize=1)
+def open_pr_by_slug() -> dict[str, str]:
+    """
+    Slugs con PR abierta en GitHub → URL de la PR.
+    Detecta ramas automation/municipio-<slug> o manifest en el diff.
+    """
+    prs = _gh_json(["pr", "list", "--state", "open"], fields="number,headRefName,title,url")
+    if not isinstance(prs, list):
+        return {}
+
+    out: dict[str, str] = {}
+    for pr in prs:
+        if not isinstance(pr, dict):
+            continue
+        number = pr.get("number")
+        url = str(pr.get("url") or "")
+        head = str(pr.get("headRefName") or "")
+        m = AUTOMATION_BRANCH_RE.match(head)
+        if m:
+            out.setdefault(m.group(1), url)
+            continue
+        if number is None:
+            continue
+        files = _gh_json(["pr", "view", str(number)], fields="files")
+        if not isinstance(files, dict):
+            continue
+        for item in files.get("files") or []:
+            if not isinstance(item, dict):
+                continue
+            path = str(item.get("path") or "")
+            m2 = MANIFEST_PATH_RE.match(path)
+            if m2:
+                out.setdefault(m2.group(1), url)
+                break
+    return out
+
+
+def _manifest_exists(slug: str) -> bool:
+    return (MUNICIPIOS_DIR / slug / "manifest.yaml").is_file()
+
+
+def _skip_reason(entry: QueueEntry, *, open_prs: dict[str, str]) -> str | None:
+    if entry.status in {"done", "skipped"}:
+        return f"status:{entry.status}"
+    if _manifest_exists(entry.slug):
+        return "manifest_en_main"
+    pr_url = open_prs.get(entry.slug)
+    if pr_url:
+        return f"pr_abierta:{pr_url}"
+    return None
+
+
+def _candidate_entries(entries: list[QueueEntry]) -> list[QueueEntry]:
+    open_prs = open_pr_by_slug()
+    candidates: list[QueueEntry] = []
+    for e in entries:
+        if e.status == "pending" and _skip_reason(e, open_prs=open_prs) is None:
+            candidates.append(e)
+    if candidates:
+        return candidates
+    for e in entries:
+        if e.status == "failed" and e.attempts < 3 and _skip_reason(e, open_prs=open_prs) is None:
+            candidates.append(e)
+    return candidates
+
+
 def init_from_summary(
     *,
     min_bocm_count: int = 20,
@@ -171,33 +276,19 @@ def init_from_summary(
 
 
 def pick_next(path: Path = QUEUE_PATH) -> dict[str, Any] | None:
-    data = load_queue(path)
-    entries = _parse_entries(data)
-    for e in entries:
-        if e.status == "pending":
-            return e.to_dict()
-    for e in entries:
-        if e.status == "failed" and e.attempts < 3:
-            return e.to_dict()
-    return None
+    entries = _parse_entries(load_queue(path))
+    candidates = _candidate_entries(entries)
+    return candidates[0].to_dict() if candidates else None
 
 
 def claim_next(path: Path = QUEUE_PATH) -> dict[str, Any] | None:
     data = load_queue(path)
     entries = _parse_entries(data)
-    now = datetime.now(timezone.utc).isoformat()
-    target: QueueEntry | None = None
-    for e in entries:
-        if e.status == "pending":
-            target = e
-            break
-    if target is None:
-        for e in entries:
-            if e.status == "failed" and e.attempts < 3:
-                target = e
-                break
-    if target is None:
+    candidates = _candidate_entries(entries)
+    if not candidates:
         return None
+    target = candidates[0]
+    now = datetime.now(timezone.utc).isoformat()
     idx = _entry_index(entries, target.slug)
     entries[idx].status = "in_progress"
     entries[idx].attempts += 1
@@ -238,14 +329,32 @@ def mark_status(
 def queue_status(path: Path = QUEUE_PATH) -> dict[str, Any]:
     data = load_queue(path)
     entries = _parse_entries(data)
+    open_prs = open_pr_by_slug()
     counts: dict[str, int] = {}
     for e in entries:
         counts[e.status] = counts.get(e.status, 0) + 1
+
+    skipped_open_pr = []
+    for e in entries:
+        if e.status != "pending":
+            continue
+        reason = _skip_reason(e, open_prs=open_prs)
+        if reason and reason.startswith("pr_abierta:"):
+            skipped_open_pr.append(
+                {
+                    "slug": e.slug,
+                    "nombre": e.nombre,
+                    "pr_url": reason.split(":", 1)[1],
+                }
+            )
+
     return {
         "updated_at": data.get("updated_at"),
         "total": len(entries),
         "by_status": counts,
         "next": pick_next(path),
+        "open_prs": open_prs,
+        "skipped_pending_with_open_pr": skipped_open_pr,
         "done": [e.to_dict() for e in entries if e.status == "done"],
         "pending": [e.to_dict() for e in entries if e.status == "pending"][:10],
     }

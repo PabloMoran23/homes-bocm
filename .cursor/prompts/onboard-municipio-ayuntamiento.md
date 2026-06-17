@@ -13,7 +13,9 @@ cd poc-bocm
 PYTHONPATH=. python3 -m municipio queue claim
 ```
 
-Guarda el JSON de salida (`slug`, `nombre`, `bocm_count`). Si la salida es `null` o vacía, termina sin abrir PR y escribe en el resumen: "Cola vacía".
+Guarda el JSON de salida (`slug`, `nombre`, `bocm_count`). Si la salida es `null` o vacía, termina sin PR: "Cola vacía".
+
+`claim` salta automáticamente municipios con PR abierta en GitHub (aunque `queue.yaml` en main siga `pending`).
 
 Si falla el claim, no continúes con otro municipio.
 

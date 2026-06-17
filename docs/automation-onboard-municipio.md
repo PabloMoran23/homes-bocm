@@ -44,6 +44,10 @@ Estado actual (46 municipios CM con ≥20 proyectos BOCM):
 - **skipped:** Madrid capital (pipeline SIGMA propio)
 - **pending:** resto, empezando por Torrejón de Ardoz
 
+La cola en `main` solo avanza al **mergear** la PR (el `queue.yaml` actualizado vive en la rama).
+Para no repetir municipios con PR abierta sin merge, `claim` consulta GitHub (`gh pr list`)
+y **salta** slugs que ya tienen PR abierta con su `manifest.yaml` → pasa al siguiente pending.
+
 ### Comandos manuales
 
 ```bash
