@@ -1,0 +1,25 @@
+slug: torrejon-de-ardoz
+nombre: Torrejón de Ardoz
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.ayto-torrejon.es"
+  adapter: municipio.adapters.torrejon_de_ardoz:TorrejonDeArdozAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.ayto-torrejon.es"
+    web_base: "https://www.ayto-torrejon.es"
+    tablon_urb_url: "https://sede.ayto-torrejon.es/portal/tablonVirtual.do?subseccion=TABURB&opc_id=175&ent_id=1&idioma=1"
+    request_delay_s: 0.35
+    fetch_expediente_details: true
+    user_agent: "poc-bocm-torrejon/1.0 (+urbanismo research)"
+  notes: |
+    Tablón Virtual sede (TABURB) para expedientes de licencias urbanísticas.
+    Detalle por expId para edictos; PDFs complementarios en Drupal urbanismo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
