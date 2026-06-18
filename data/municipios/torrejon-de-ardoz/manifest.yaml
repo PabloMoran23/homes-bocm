@@ -1,0 +1,26 @@
+slug: torrejon-de-ardoz
+nombre: Torrejón de Ardoz
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-torrejon.es"
+  adapter: municipio.adapters.torrejon_de_ardoz:TorrejonDeArdozAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torrejon/1.0 (+urbanismo research)"
+    sede_base: "https://sede.ayto-torrejon.es"
+    tablon_subsections:
+      - TABURB
+      - INFOTAB
+    ordenanzas_url: "https://www.ayto-torrejon.es/concejalias/urbanismo/ordenanzas-y-normativa"
+  notes: |
+    Sede STA tablón virtual (TABURB licencias, INFOTAB edictos) +
+    Drupal ordenanzas/normativa (planes especiales, PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
