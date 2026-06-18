@@ -28,7 +28,7 @@ municipios:
   last_run: '2026-06-17T20:08:02.936973+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/2
-  notes: ''
+  notes: Mergeado y auditado 2026-06-18
 - slug: mostoles
   nombre: Móstoles
   bocm_count: 132
@@ -41,21 +41,21 @@ municipios:
 - slug: alcala-de-henares
   nombre: Alcalá de Henares
   bocm_count: 130
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/3
+  notes: Mergeado y auditado 2026-06-18
 - slug: alcobendas
   nombre: Alcobendas
   bocm_count: 96
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/4
+  notes: Mergeado y auditado 2026-06-18
 - slug: getafe
   nombre: Getafe
   bocm_count: 93
@@ -68,30 +68,30 @@ municipios:
 - slug: fuenlabrada
   nombre: Fuenlabrada
   bocm_count: 76
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/5
+  notes: Mergeado y auditado 2026-06-18
 - slug: las-rozas-de-madrid
   nombre: Las Rozas de Madrid
   bocm_count: 61
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/6
+  notes: Mergeado y auditado 2026-06-18
 - slug: rivas-vaciamadrid
   nombre: Rivas-Vaciamadrid
   bocm_count: 58
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/7
+  notes: Mergeado y auditado 2026-06-18
 - slug: boadilla-del-monte
   nombre: Boadilla del Monte
   bocm_count: 56

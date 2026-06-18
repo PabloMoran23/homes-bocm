@@ -1,0 +1,24 @@
+slug: fuenlabrada
+nombre: Fuenlabrada
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-fuenlabrada.es"
+  adapter: municipio.adapters.fuenlabrada:FuenlabradaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.fuenlabrada.es"
+    transparencia_base: "https://transparencia.ayto-fuenlabrada.es"
+    request_delay_s: 0.4
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-fuenlabrada/1.0 (+urbanismo research)"
+  notes: |
+    Fuentes: sede STA tablón (JSON embebido), transparencia ordenación
+    del territorio (PGOU, modificaciones, convenios), trámites urbanismo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
