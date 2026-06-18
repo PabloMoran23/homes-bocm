@@ -95,9 +95,9 @@ municipios:
 - slug: boadilla-del-monte
   nombre: Boadilla del Monte
   bocm_count: 56
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-06-18T20:03:17.630968+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-17T20:08:02.937006+00:00'
+updated_at: '2026-06-18T20:03:17.631029+00:00'
