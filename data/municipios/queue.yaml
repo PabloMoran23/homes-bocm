@@ -50,9 +50,9 @@ municipios:
 - slug: alcobendas
   nombre: Alcobendas
   bocm_count: 96
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-06-18T04:00:36.011127+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-17T19:24:50.829022+00:00'
+updated_at: '2026-06-18T04:00:36.011213+00:00'
