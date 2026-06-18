@@ -1,0 +1,24 @@
+slug: rivas-vaciamadrid
+nombre: Rivas-Vaciamadrid
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.rivasciudad.es"
+  adapter: municipio.adapters.rivas_vaciamadrid:RivasVaciamadridAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rivas/1.0 (+urbanismo research)"
+    tablon_url: "https://inscripciones.rivasciudad.es/tablon-inicio/"
+    pgou_normativa_url: "https://www.rivasciudad.es/geoportal/normativa-urbanistica-vigente/"
+    pgou_avance_url: "https://www.rivasciudad.es/geoportal/avance-pgou/"
+  notes: |
+    Fuentes: tablón HTML (inscripciones), PGOU geoportal (normativa + avance),
+    páginas informativas de trámites de licencia urbanística.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
