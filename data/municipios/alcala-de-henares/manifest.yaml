@@ -1,0 +1,26 @@
+slug: alcala-de-henares
+nombre: Alcalá de Henares
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://urbanismo.ayto-alcaladehenares.es"
+  adapter: municipio.adapters.alcala_de_henares:AlcalaDeHenaresAyuntamientoAdapter
+  config:
+    wp_api_base: "https://urbanismo.ayto-alcaladehenares.es/wp-json/wp/v2"
+    sede_tablon_url: "https://sede.ayto-alcaladehenares.es/web/guest/tablon-de-anuncios"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alcala-henares/1.0 (+urbanismo research)"
+    proyecto_category_ids: [128, 134, 145, 154]
+    licencia_category_ids: [147, 151]
+  notes: |
+    Fuentes: WP REST API del portal Urbanismo (posts planeamiento, convenios, licencias).
+    Tablón sede STA disponible pero sin JSON embebido; cubierto por API WordPress.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
