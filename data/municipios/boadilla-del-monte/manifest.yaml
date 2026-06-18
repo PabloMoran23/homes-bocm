@@ -1,0 +1,22 @@
+slug: boadilla-del-monte
+nombre: Boadilla del Monte
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayuntamientoboadilladelmonte.org"
+  adapter: municipio.adapters.boadilla_del_monte:BoadillaDelMonteAyuntamientoAdapter
+  config:
+    sede_base: "https://carpetaciudadano.aytoboadilla.org/eAdmin"
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-boadilla/1.0)"
+  notes: |
+    Drupal urbanismo (PGOU, PERI, estudios de detalle, convenios) +
+    tablón digital sede (Tablon.do verAnuncios/verAnuncio).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
