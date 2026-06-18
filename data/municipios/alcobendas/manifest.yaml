@@ -1,0 +1,21 @@
+slug: alcobendas
+nombre: Alcobendas
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.alcobendas.org"
+  adapter: municipio.adapters.alcobendas:AlcobendasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.8
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-alcobendas/1.0)"
+  notes: |
+    Drupal: tablón edictos, acuerdos IP (dept. urbanismo 2466), convenios (área 1110),
+    páginas PGOU/planes especiales/desarrollos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
