@@ -1,0 +1,23 @@
+slug: las-rozas-de-madrid
+nombre: Las Rozas de Madrid
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.lasrozas.es"
+  adapter: municipio.adapters.las_rozas:LasRozasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-las-rozas/1.0 (+urbanismo research)"
+    sede_insecure_ssl: true
+  notes: |
+    Fuentes: transparencia WordPress (ordenación, planes, modificaciones PGOU),
+    Drupal PGOU/NPGOU, convenios urbanísticos, Portal del Ciudadano (licencias).
+    Sede home inaccesible (bucle 302); catálogo directo con SSL bypass.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
