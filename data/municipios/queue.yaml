@@ -50,11 +50,11 @@ municipios:
 - slug: alcobendas
   nombre: Alcobendas
   bocm_count: 96
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-06-18T04:00:36.011127+00:00'
+  last_run: '2026-06-18T04:12:26.665902+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/4
   notes: ''
 - slug: getafe
   nombre: Getafe
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-18T04:00:36.011213+00:00'
+updated_at: '2026-06-18T04:12:26.665929+00:00'
