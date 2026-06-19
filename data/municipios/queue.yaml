@@ -149,9 +149,9 @@ municipios:
 - slug: villalbilla
   nombre: Villalbilla
   bocm_count: 46
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-06-19T20:03:44.980809+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-17T20:08:02.937006+00:00'
+updated_at: '2026-06-19T20:03:44.980904+00:00'
