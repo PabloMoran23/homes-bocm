@@ -1,0 +1,22 @@
+slug: villaviciosa-de-odon
+nombre: Villaviciosa de Odón
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aytovillaviciosadeodon.es"
+  adapter: municipio.adapters.villaviciosa_de_odon:VillaviciosaDeOdonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villaviciosa-de-odon/1.0 (+urbanismo research)"
+    browser_cookie: "browser_verified=1"
+  notes: |
+    Liferay: Anuncios Oficiales (acordeón asset publisher) + páginas urbanismo/PGOU.
+    Sede tablón virtual (sede.aytovillaviciosadeodon.es) inaccesible por reset TLS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
