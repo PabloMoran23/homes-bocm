@@ -8,11 +8,17 @@ export type MapHoverPopupOptions = {
   maxWidth?: number;
 };
 
-function canUseHoverPopup(): boolean {
-  return typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+/** Escritorio con ratón: hover. Táctil / móvil: tap. */
+export function prefersMapHoverPopup(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 }
 
-function attachPopupHover(layer: L.Layer, cancelClose: () => void, scheduleClose: () => void) {
+function attachPopupHoverKeepOpen(
+  layer: L.Layer,
+  cancelClose: () => void,
+  scheduleClose: () => void,
+) {
   const popup = layer.getPopup();
   const el = popup?.getElement();
   if (!el || popupHoverBound.has(el)) return;
@@ -21,7 +27,11 @@ function attachPopupHover(layer: L.Layer, cancelClose: () => void, scheduleClose
   el.addEventListener("mouseleave", scheduleClose);
 }
 
-/** Popup al pasar el ratón; en táctil, clic abre/cierra. Sin navegación directa al feature. */
+function stopTouchFromPanningMap(e: L.LeafletEvent) {
+  L.DomEvent.stopPropagation(e);
+}
+
+/** Popup al pasar el ratón en desktop; en móvil, al pulsar el elemento. */
 export function bindMapHoverPopup(
   layer: L.Layer,
   html: string,
@@ -29,6 +39,7 @@ export function bindMapHoverPopup(
 ): void {
   const className = options?.className ?? "homes-map-popup";
   const maxWidth = options?.maxWidth ?? 320;
+  const hoverMode = prefersMapHoverPopup();
 
   layer.bindPopup(html, {
     className,
@@ -53,24 +64,25 @@ export function bindMapHoverPopup(
     }, POPUP_CLOSE_DELAY_MS);
   };
 
-  layer.on("click", (e) => {
-    L.DomEvent.stopPropagation(e);
-    if (canUseHoverPopup()) {
-      layer.openPopup();
-      attachPopupHover(layer, cancelClose, scheduleClose);
-      return;
-    }
-    layer.togglePopup();
-    attachPopupHover(layer, cancelClose, scheduleClose);
-  });
-
-  if (!canUseHoverPopup()) return;
-
-  layer.on("mouseover", () => {
+  const openPopup = () => {
     cancelClose();
     layer.openPopup();
-    attachPopupHover(layer, cancelClose, scheduleClose);
+    if (hoverMode) {
+      attachPopupHoverKeepOpen(layer, cancelClose, scheduleClose);
+    }
+  };
+
+  // Evita que el mapa interprete el tap como inicio de arrastre.
+  layer.on("mousedown", stopTouchFromPanningMap);
+  layer.on("touchstart", stopTouchFromPanningMap);
+
+  layer.on("click", (e) => {
+    stopTouchFromPanningMap(e);
+    openPopup();
   });
 
+  if (!hoverMode) return;
+
+  layer.on("mouseover", openPopup);
   layer.on("mouseout", scheduleClose);
 }

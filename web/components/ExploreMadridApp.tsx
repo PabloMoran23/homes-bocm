@@ -580,7 +580,7 @@ export function ExploreMadridApp() {
           <div className="min-w-0">
             <h2 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h2>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-              Activa capas arriba del mapa. Busca aquí; pasa el ratón sobre un ámbito o licencia para ver el resumen y abrir su ficha.
+              Activa capas arriba del mapa. Busca aquí; en el mapa, pasa el ratón o pulsa un ámbito o licencia para ver el resumen.
             </p>
           </div>
           <button

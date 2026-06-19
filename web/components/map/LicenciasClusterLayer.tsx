@@ -27,6 +27,20 @@ type UbicacionGeo = {
   }>;
 };
 
+function clusterOptionsForViewport(): object {
+  const mobile =
+    typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches;
+  return {
+    chunkedLoading: true,
+    chunkInterval: 120,
+    maxClusterRadius: mobile ? 36 : 52,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    disableClusteringAtZoom: mobile ? 14 : 17,
+    zoomToBoundsOnClick: true,
+  };
+}
+
 function buildMarkersLayer(geojson: UbicacionGeo, highlightNdp: string | null) {
   return L.geoJSON(geojson as unknown as GeoJSON.FeatureCollection, {
     pointToLayer(feature, latlng) {
@@ -73,13 +87,7 @@ export function LicenciasClusterLayer({
       return;
     }
 
-    const cluster = Lc.markerClusterGroup({
-      chunkedLoading: true,
-      chunkInterval: 120,
-      maxClusterRadius: 52,
-      spiderfyOnMaxZoom: true,
-      showCoverageOnHover: false,
-    });
+    const cluster = Lc.markerClusterGroup(clusterOptionsForViewport());
     map.addLayer(cluster);
     clusterRef.current = cluster;
 
