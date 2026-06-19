@@ -77,6 +77,14 @@ RE_TEXT_BEFORE_DOC = re.compile(
     r"([^<]{5,200})\s*<a[^>]+href=\"(/documents/[^\"]+)\"",
     re.I,
 )
+RE_PDF_LINK = re.compile(
+    r"([^<]{10,200})\s*\(\s*pdf[^)]*\)\s*<a[^>]+href=\"(/documents/[^\"]+)\"",
+    re.I,
+)
+RE_DOCUMENT_ENTRY = re.compile(
+    r'class="document-entry"[^>]*>(.*?)</li>',
+    re.S | re.I,
+)
 RE_FOLDER_VIEW = re.compile(r"/view/(\d+)")
 
 
@@ -225,18 +233,43 @@ class PintoAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _extract_page_docs(self, html: str, page_url: str) -> list[tuple[str, str, str]]:
         out: list[tuple[str, str, str]] = []
+        seen: set[str] = set()
+
+        def add(title: str, href: str) -> None:
+            link = self._abs_url(href, page_url)
+            key = link.split("?")[0]
+            if self._is_favicon(link) or key in seen:
+                return
+            seen.add(key)
+            out.append((title[:500], link, page_url))
+
+        for m in RE_PDF_LINK.finditer(html):
+            add(unescape(re.sub(r"\s+", " ", m.group(1)).strip()), m.group(2))
+
+        for m in RE_DOCUMENT_ENTRY.finditer(html):
+            block = m.group(1)
+            link_m = re.search(r'href="(/documents/[^"]+)"', block)
+            if not link_m:
+                continue
+            text = unescape(re.sub(r"<[^>]+>", " ", block))
+            text = re.sub(r"\s+", " ", text).strip()
+            text = re.sub(r"\s*\(\s*pdf[^)]*\)\s*$", "", text, flags=re.I).strip()
+            if text and not text.startswith("li class"):
+                add(text, link_m.group(1))
+
         for m in RE_TEXT_BEFORE_DOC.finditer(html):
             title = unescape(re.sub(r"\s+", " ", m.group(1)).strip())
-            link = self._abs_url(m.group(2), page_url)
-            if self._is_favicon(link):
+            if title.startswith("li class"):
                 continue
-            out.append((title, link, page_url))
+            add(title, m.group(2))
+
         for m in RE_DOC_LINK.finditer(html):
             link = self._abs_url(m.group(1), page_url)
-            if self._is_favicon(link):
+            key = link.split("?")[0]
+            if self._is_favicon(link) or key in seen:
                 continue
             name = unquote(Path(link.split("?")[0]).name.replace("+", " "))
-            out.append((name[:500], link, page_url))
+            add(name[:500], m.group(1))
         return out
 
     def _collect_seed_proyectos(self) -> list[dict[str, Any]]:
