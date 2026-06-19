@@ -131,11 +131,11 @@ municipios:
 - slug: alcorcon
   nombre: Alcorcón
   bocm_count: 49
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-06-19T12:02:26.454884+00:00'
+  last_run: '2026-06-19T12:12:56.326100+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/12
   notes: ''
 - slug: pinto
   nombre: Pinto
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-19T12:02:26.455051+00:00'
+updated_at: '2026-06-19T12:12:56.326130+00:00'
