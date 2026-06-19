@@ -140,11 +140,11 @@ municipios:
 - slug: pinto
   nombre: Pinto
   bocm_count: 49
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-19T16:12:53.314658+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/13
   notes: ''
 - slug: villalbilla
   nombre: Villalbilla
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-17T20:08:02.937006+00:00'
+updated_at: '2026-06-19T16:12:53.314685+00:00'
