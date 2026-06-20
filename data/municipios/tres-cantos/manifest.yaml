@@ -1,0 +1,32 @@
+slug: tres-cantos
+nombre: Tres Cantos
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://web.trescantos.es"
+  adapter: municipio.adapters.tres_cantos:TresCantosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tres-cantos/1.0 (+urbanismo research)"
+    sede_base: "https://sede.trescantos.es"
+    sede_insecure_ssl: true
+    tablon_url: "https://sede.trescantos.es/eAdmin/Tablon.do?action=verAnuncios&tipoTablon=1"
+    publicacion_pages:
+      - "https://web.trescantos.es/publicacion/plan-genera-ordenacion-urbana/"
+      - "https://web.trescantos.es/publicacion/planes-parciales/"
+      - "https://web.trescantos.es/publicacion/planes-especiales/"
+      - "https://web.trescantos.es/publicacion/proyectos-de-urbanizacion/"
+      - "https://web.trescantos.es/publicacion/estudios-de-detalle/"
+    licencia_pages:
+      - "https://web.trescantos.es/tramite/licencias-urbanisticas/"
+      - "https://web.trescantos.es/tramite/acceso-a-la-informacion-publica-archivos-y-registros-de-urbanismo/"
+  notes: |
+    Fuentes: publicaciones WP urbanismo (PDFs), tablón sede eAdmin, trámites informativos licencia.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
