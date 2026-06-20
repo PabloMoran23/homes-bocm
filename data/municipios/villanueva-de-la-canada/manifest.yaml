@@ -1,0 +1,34 @@
+slug: villanueva-de-la-canada
+nombre: Villanueva de la Cañada
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-villacanada.es"
+  adapter: municipio.adapters.villanueva_de_la_canada:VillanuevaDeLaCanadaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villanueva-canada/1.0 (+urbanismo research)"
+    sede_base: "https://portal.ayto-villacanada.es"
+    tablon_ent_id: 6
+    tablon_subsections:
+      - TV_BAN_URB
+      - TV_BAN
+    seed_pages:
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/expedientes-urbanisticos/"
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/plan-general-de-ordenacion-urbana/"
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/plan-parcial-sector-1/"
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/plan-parcial-sector-2/"
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/plan-parcial-sector-4/"
+      - "https://www.ayto-villacanada.es/urbanismo-y-vivienda/planes-especiales/"
+    licencias_url: "https://www.ayto-villacanada.es/urbanismo-y-vivienda/licencias-urbanisticas/"
+  notes: |
+    Sede STA tablón virtual (TV_BAN_URB, TV_BAN) + WordPress Avada
+    (expedientes IP, PGOU, planes parciales, planes especiales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
