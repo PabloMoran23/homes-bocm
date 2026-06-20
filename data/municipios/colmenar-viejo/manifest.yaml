@@ -1,0 +1,21 @@
+slug: colmenar-viejo
+nombre: Colmenar Viejo
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://carpeta.colmenarviejo.es/eAdmin"
+  adapter: municipio.adapters.colmenar_viejo:ColmenarViejoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-colmenar-viejo/1.0)"
+  notes: |
+    Sede eAdmin: tablón digital de anuncios/edictos + catálogo trámites urbanismo.
+    Web municipal (colmenarviejo.com) bloqueada 403 desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
