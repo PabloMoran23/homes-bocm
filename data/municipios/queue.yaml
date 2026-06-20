@@ -185,11 +185,11 @@ municipios:
 - slug: pelabravo
   nombre: Pelabravo
   bocm_count: 43
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-06-20T12:02:40.689507+00:00'
+  last_run: '2026-06-20T12:08:31.682316+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/18
   notes: ''
 - slug: villanueva-de-la-canada
   nombre: Villanueva de la Cañada
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-20T12:02:40.689570+00:00'
+updated_at: '2026-06-20T12:08:31.682345+00:00'
