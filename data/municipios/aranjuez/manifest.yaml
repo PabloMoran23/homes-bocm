@@ -1,0 +1,30 @@
+slug: aranjuez
+nombre: Aranjuez
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aranjuez.es"
+  adapter: municipio.adapters.aranjuez:AranjuezAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aranjuez/1.0 (+urbanismo research)"
+    tablon_url: "https://www.aranjuez.es/tablon-de-edictos/"
+    urbanismo_pages:
+      - "https://www.aranjuez.es/concejalias/urbanismo/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/pgou1996/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/normativa-tecnica/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/sector-la-montana/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/sector-i-ciudad-de-las-artes/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/sector-puente-largo-avance/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/sector-xi-cerro-de-la-linterna/"
+      - "https://www.aranjuez.es/concejalias/urbanismo/obras-de-acceso-norte/"
+  notes: |
+    Tablón de Edictos WordPress (licencias) + páginas urbanismo/PGOU/sectores (planeamiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
