@@ -1,0 +1,22 @@
+slug: san-sebastian-de-los-reyes
+nombre: San Sebastián de los Reyes
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ssreyes.org"
+  adapter: municipio.adapters.san_sebastian_de_los_reyes:SanSebastianDeLosReyesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.4
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-ssreyes/1.0)"
+    browser_cookie: "browser_verified=1"
+  notes: |
+    Liferay: normativa PGOU, acuerdos comisión, planes/modificaciones, transparencia urbanística.
+    Sede: trámites LIQUI licencias (informativos). Tablón IQRS bloqueado por Cl@ve.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
