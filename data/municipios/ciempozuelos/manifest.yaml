@@ -1,0 +1,21 @@
+slug: ciempozuelos
+nombre: Ciempozuelos
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayto-ciempozuelos.org"
+  adapter: municipio.adapters.ciempozuelos:CiempozuelosAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.ayto-ciempozuelos.org/eAdmin"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ciempozuelos/1.0 (+urbanismo research)"
+  notes: |
+    Fuentes: sede add4u tablón de edictos, web urbanismo y trámites sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

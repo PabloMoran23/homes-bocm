@@ -1,0 +1,24 @@
+slug: villalbilla
+nombre: Villalbilla
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://villalbilla.es"
+  adapter: municipio.adapters.villalbilla:VillalbillaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villalbilla/1.0 (+urbanismo research)"
+    sede_base: "https://aytovillalbilla.sedelectronica.es"
+    board_url: "https://aytovillalbilla.sedelectronica.es/board"
+    urbanismo_area_url: "https://villalbilla.es/areas/vivienda-y-urbanismo/"
+    wp_category_ids: [3316, 4842]
+  notes: |
+    WordPress REST (Vivienda y Urbanismo) + tablón espublico sede (fallback si mantenimiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
