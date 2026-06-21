@@ -45,11 +45,11 @@ RE_LICENCIA = re.compile(
     r"declaraci[oó]n responsable|autorizaci[oó]n (?:previa|urban)|edicto.*licencia)",
 )
 RE_PROYECTO = re.compile(
-    r"(?i)(urban|planeam|plan (?:parcial|especial|general)|pgou|convenio|"
-    r"informaci[oó]n p[uú]blica|expediente|proyecto|modificaci[oó]n|reparcel|"
-    r"estudio (?:ac[uú]stico|ambiental)|memoria|planos|subasta|parcela|"
-    r"ordenaci[oó]n|normas subsidiarias|bando|asfaltado|urbanizaci|suelo|"
-    r"edicto|obras de renovaci|embellecimiento)",
+    r"(?i)(urbanismo|urbanistic|planeam|plan (?:parcial|especial|general)|pgou|convenio|"
+    r"informaci[oó]n p[uú]blica|expediente|modificaci[oó]n puntual|reparcel|"
+    r"estudio (?:ac[uú]stico|ambiental)|normas subsidiarias|subasta.*parcela|"
+    r"parcela(?:s)? municipal|ordenaci[oó]n|bando.*parcela|asfaltado|urbanizaci|"
+    r"edicto|obras de renovaci|embellecimiento|licitaci[oó]n.*parcela)",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_FECHA_YM = re.compile(r"/(?:uploads|wp-content/uploads)/(\d{4})/(\d{2})/")
@@ -238,9 +238,7 @@ class ElBoaloAyuntamientoAdapter(AyuntamientoAdapter):
     def _post_to_proyecto(self, post: dict[str, Any]) -> dict[str, Any] | None:
         title = self._post_title(post)
         if not RE_PROYECTO.search(title):
-            content = str((post.get("content") or {}).get("rendered") or "")
-            if not RE_PROYECTO.search(_strip_html(content)):
-                return None
+            return None
         url = str(post.get("link") or "").strip()
         if not url:
             return None
@@ -394,53 +392,58 @@ class ElBoaloAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _collect_licencia_tramites(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
         urbanismo_url = f"{WP_BASE}/urbanismo/"
-        try:
-            html = self._fetch(urbanismo_url)
-        except urllib.error.URLError:
-            return rows
+        normativa_url = f"{WP_BASE}/normativa-urbanistica/"
 
-        tramite_titles = re.findall(
-            r"<h[23][^>]*class=\"[^\"]*elementor-heading-title[^\"]*\"[^>]*>([^<]*(?:licencia|declaraci[oó]n|comunicaci[oó]n|autorizaci[oó]n)[^<]*)</h",
-            html,
-            re.I,
-        )
-        for raw_title in tramite_titles:
-            title = unescape(raw_title.strip())
-            if not title or not RE_LICENCIA.search(title):
+        for page_url in (urbanismo_url, normativa_url):
+            try:
+                html = self._fetch(page_url)
+            except urllib.error.URLError:
                 continue
-            rows.append(
-                {
-                    "id": _stable_id("lic", f"{urbanismo_url}#{title}"),
-                    "fecha_concesion": None,
-                    "tipo": "trámite licencia",
-                    "distrito": None,
-                    "lat": None,
-                    "lon": None,
-                    "titulo": title[:500],
-                    "url": urbanismo_url,
-                    "source": "ayuntamiento",
-                    "nota": "Trámite informativo; no concesión publicada",
-                }
-            )
 
-        for title, pdf_url in self._extract_pdfs(html):
-            if RE_LICENCIA.search(title):
+            plain = _strip_html(html)
+            for m in re.finditer(
+                r"(?i)((?:declaraci[oó]n responsable|comunicaci[oó]n previa|"
+                r"solicitud de licencia|licencia urban)[^\.]{0,120})",
+                plain,
+            ):
+                title = m.group(1).strip()
+                if len(title) < 12 or title in seen:
+                    continue
+                seen.add(title)
                 rows.append(
                     {
-                        "id": _stable_id("lic", pdf_url),
-                        "fecha_concesion": _fecha_from_url(pdf_url),
-                        "tipo": "ordenanza licencias",
+                        "id": _stable_id("lic", f"{page_url}#{title}"),
+                        "fecha_concesion": None,
+                        "tipo": "trámite licencia",
                         "distrito": None,
                         "lat": None,
                         "lon": None,
                         "titulo": title[:500],
-                        "url": f"{WP_BASE}/normativa-urbanistica/",
-                        "pdf_url": pdf_url,
+                        "url": page_url,
                         "source": "ayuntamiento",
-                        "nota": "Normativa reguladora; no concesión individual",
+                        "nota": "Trámite informativo; no concesión publicada",
                     }
                 )
+
+            for title, pdf_url in self._extract_pdfs(html):
+                if RE_LICENCIA.search(title):
+                    rows.append(
+                        {
+                            "id": _stable_id("lic", pdf_url),
+                            "fecha_concesion": _fecha_from_url(pdf_url),
+                            "tipo": "ordenanza licencias",
+                            "distrito": None,
+                            "lat": None,
+                            "lon": None,
+                            "titulo": title[:500],
+                            "url": normativa_url,
+                            "pdf_url": pdf_url,
+                            "source": "ayuntamiento",
+                            "nota": "Normativa reguladora; no concesión individual",
+                        }
+                    )
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
@@ -461,19 +464,20 @@ class ElBoaloAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
+        tablon = self._collect_tablon()
 
         def add(rec: dict[str, Any] | None) -> None:
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for item in self._collect_tablon():
+        for item in tablon:
             add(self._tablon_to_licencia(item))
         for rec in self._collect_licencia_tramites():
             add(rec)
 
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "tablon_items": len(self._collect_tablon())}
+        return {"rows": len(rows), "status": "ok", "tablon_items": len(tablon)}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
         existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
