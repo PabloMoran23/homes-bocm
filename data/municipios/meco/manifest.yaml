@@ -1,0 +1,42 @@
+slug: meco
+nombre: Meco
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-meco.es"
+  adapter: municipio.adapters.meco:MecoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-meco/1.0"
+    sede_base: "https://sede.ayto-meco.es/eAdmin"
+    transparencia_base: "http://transparencia.ayto-meco.es"
+    transparencia_insecure_ssl: true
+    transparencia_pages:
+      - page_id: 185
+        section: planeamiento
+        tipo: planeamiento
+      - page_id: 528
+        section: planeamiento_desarrollo
+        tipo: planeamiento
+      - page_id: 530
+        section: instrumentos
+        tipo: convenio
+    licencia_tramites:
+      - { tipo_reg: 57, nombre: "Cédula urbanística" }
+      - { tipo_reg: 58, nombre: "Segregación urbanística" }
+      - { tipo_reg: 59, nombre: "Obra mayor" }
+      - { tipo_reg: 60, nombre: "Obra menor" }
+      - { tipo_reg: 61, nombre: "Calas o zanjas" }
+      - { tipo_reg: 62, nombre: "Declaración responsable obras" }
+      - { tipo_reg: 63, nombre: "Declaración responsable 1ª ocupación" }
+  notes: |
+    eAdmin sede (tablón + trámites) + transparencia WordPress (PGOU, planes, convenios).
+    PDFs vía ValidarDocumento.do con tokens javascript:abrir().
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

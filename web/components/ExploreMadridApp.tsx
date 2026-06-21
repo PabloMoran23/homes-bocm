@@ -45,6 +45,12 @@ import {
   filterUbicacionesMadridCapital,
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
+import {
+  CM_PORTAL_PROYECTOS_URL,
+  type CmPortalGeoJson,
+  type CmPortalProyectoProps,
+} from "@/lib/cm-portal-geo";
+import { isCmMapScope } from "@/lib/map-scope";
 import { fetchDominioJson } from "@/lib/dominio-fetch";
 import { ambitosProyectosEnVista, PROYECTOS } from "@/lib/ui-labels";
 
@@ -144,8 +150,10 @@ function Div({ className, children }: { className?: string; children: React.Reac
 }
 
 export function ExploreMadridApp() {
+  const cmMapScope = isCmMapScope();
   const router = useRouter();
   const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
+  const [portalGeo, setPortalGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [sigmaData, setSigmaData] = useState<MadridSigmaDataset | null>(null);
   const [ambitosGeo, setAmbitosGeo] = useState<SectorFeatureCollection | null>(null);
@@ -176,7 +184,7 @@ export function ExploreMadridApp() {
   const [showUbicaciones, setShowUbicaciones] = useState(false);
   const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
-  const [dataReady, setDataReady] = useState({ ubic: false, search: false });
+  const [dataReady, setDataReady] = useState({ ubic: false, search: false, portal: !cmMapScope });
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
   const [layerLoading, setLayerLoading] = useState(false);
   const [showHugeSigmaPolygons, setShowHugeSigmaPolygons] = useState(false);
@@ -240,10 +248,10 @@ export function ExploreMadridApp() {
           setUbicGeo((await mapRes.json()) as UbicacionesMapGeoJson);
           if (searchRes.ok) {
             setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
-            setDataReady({ ubic: true, search: true });
+            setDataReady((prev) => ({ ...prev, ubic: true, search: true }));
           } else {
             setSearchIndex([]);
-            setDataReady({ ubic: true, search: false });
+            setDataReady((prev) => ({ ...prev, ubic: true, search: false }));
           }
         }
       } catch {
@@ -256,6 +264,28 @@ export function ExploreMadridApp() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!cmMapScope) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(CM_PORTAL_PROYECTOS_URL);
+        if (!res.ok) throw new Error("cm-portal-proyectos");
+        if (!cancelled) {
+          setPortalGeo((await res.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+          setDataReady((prev) => ({ ...prev, portal: true }));
+        }
+      } catch {
+        if (!cancelled) {
+          setErr("No hemos podido cargar los portales municipales de la Comunidad de Madrid.");
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [cmMapScope]);
 
   /** Carga SIGMA bajo demanda (evita ~25 MB + miles de polígonos al abrir). */
   useEffect(() => {
@@ -392,6 +422,12 @@ export function ExploreMadridApp() {
     return filterPointFeaturesInView(filteredUbicGeo.features, mapBounds).length;
   }, [filteredUbicGeo, mapBounds]);
 
+  const portalCountInView = useMemo(() => {
+    if (!portalGeo || !cmMapScope) return 0;
+    if (!mapBounds) return portalGeo.features.length;
+    return filterPointFeaturesInView(portalGeo.features, mapBounds).length;
+  }, [portalGeo, mapBounds, cmMapScope]);
+
   const polygonGeo =
     mapMode === "ambitos"
       ? ambitosGeo ?? geoCache.ambitos ?? null
@@ -462,6 +498,9 @@ export function ExploreMadridApp() {
     if (showSigma && sigmaGeoFiltered) {
       parts.push(ambitosProyectosEnVista(sigmaGeoFiltered.features.length));
     }
+    if (cmMapScope && showSigma && portalGeo) {
+      parts.push(`${portalCountInView.toLocaleString("es-ES")} portales CM en vista`);
+    }
     if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
     if (dateFilterActive) parts.push("filtro de fecha activo");
@@ -481,6 +520,9 @@ export function ExploreMadridApp() {
     actuacionQueFilterActive,
     clasificacionFilterActive,
     clasificacionMapPending,
+    cmMapScope,
+    portalGeo,
+    portalCountInView,
   ]);
 
   const onBoundsChange = useCallback((b: MapBounds) => {
@@ -522,25 +564,30 @@ export function ExploreMadridApp() {
         <MadridUnifiedMap
           ubicacionesGeojson={showUbicaciones && dataReady.ubic ? filteredUbicGeo : null}
           sigmaGeojson={showSigma ? sigmaGeoFiltered : null}
+          portalGeojson={cmMapScope && showSigma ? portalGeo : null}
           highlightNdp={highlightNdp}
           onSelectNdp={goUbicacion}
           sigmaPopupOptions={sigmaPopupOptions}
           showUbicaciones={showUbicaciones && dataReady.ubic}
           showSigma={showSigma}
+          showPortal={cmMapScope && showSigma && dataReady.portal}
+          mapScope={cmMapScope ? "cm" : "madrid"}
           onBoundsChange={onBoundsChange}
           statsHint={
             !dataReady.ubic
-              ? "Cargando edificios…"
+              ? cmMapScope && !dataReady.portal
+                ? "Cargando portales CM…"
+                : "Cargando edificios…"
               : mapStatsHint
           }
           className="h-full w-full"
           fitToData={false}
           initialView="explore"
         />
-        {!dataReady.ubic ? (
+        {!dataReady.ubic || (cmMapScope && !dataReady.portal) ? (
           <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/80 md:bg-slate-100/60">
             <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
-              Cargando edificios…
+              {cmMapScope && !dataReady.portal ? "Cargando portales CM…" : "Cargando edificios…"}
             </p>
           </Div>
         ) : null}
@@ -578,9 +625,13 @@ export function ExploreMadridApp() {
         </div>
         <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-4 py-3">
           <div className="min-w-0">
-            <h2 className="text-lg font-bold tracking-tight text-slate-900">Madrid</h2>
+            <h2 className="text-lg font-bold tracking-tight text-slate-900">
+              {cmMapScope ? "Comunidad de Madrid" : "Madrid"}
+            </h2>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
-              Activa capas arriba del mapa. Busca aquí; en el mapa, pasa el ratón o pulsa un ámbito o licencia para ver el resumen.
+              {cmMapScope
+                ? "Vista CM: polígonos SIGMA (Madrid capital) y puntos violeta de portales municipales. Activa capas arriba del mapa."
+                : "Activa capas arriba del mapa. Busca aquí; en el mapa, pasa el ratón o pulsa un ámbito o licencia para ver el resumen."}
             </p>
           </div>
           <button

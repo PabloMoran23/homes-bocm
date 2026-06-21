@@ -37,6 +37,8 @@ def main(argv: list[str] | None = None) -> int:
             "proyectos_update",
             "licencias_backfill",
             "licencias_update",
+            "geocode",
+            "sync_supabase",
             "validate",
         ],
         default="all",

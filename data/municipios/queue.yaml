@@ -95,138 +95,138 @@ municipios:
 - slug: boadilla-del-monte
   nombre: Boadilla del Monte
   bocm_count: 56
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/8
+  notes: 'Mergeado batch PR #8 (Cursor automation)'
 - slug: villaviciosa-de-odon
   nombre: Villaviciosa de Odón
   bocm_count: 51
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/9
+  notes: 'Mergeado batch PR #9 (Cursor automation)'
 - slug: meco
   nombre: Meco
   bocm_count: 51
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/10
+  notes: 'Mergeado batch PR #10 (Cursor automation)'
 - slug: san-fernando-de-henares
   nombre: San Fernando de Henares
   bocm_count: 51
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/11
+  notes: 'Mergeado batch PR #11 (Cursor automation)'
 - slug: alcorcon
   nombre: Alcorcón
   bocm_count: 49
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/12
+  notes: 'Mergeado batch PR #12 (Cursor automation)'
 - slug: pinto
   nombre: Pinto
   bocm_count: 49
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/13
+  notes: 'Mergeado batch PR #13 (Cursor automation)'
 - slug: villalbilla
   nombre: Villalbilla
   bocm_count: 46
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/14
+  notes: 'Mergeado batch PR #14 (Cursor automation)'
 - slug: tres-cantos
   nombre: Tres Cantos
   bocm_count: 45
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/15
+  notes: 'Mergeado batch PR #15 (Cursor automation)'
 - slug: aranjuez
   nombre: Aranjuez
   bocm_count: 44
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/16
+  notes: 'Mergeado batch PR #16 (Cursor automation)'
 - slug: colmenar-viejo
   nombre: Colmenar Viejo
   bocm_count: 43
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/17
+  notes: 'Mergeado batch PR #17 (Cursor automation)'
 - slug: pelabravo
   nombre: Pelabravo
   bocm_count: 43
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/18
+  notes: 'Mergeado batch PR #18 (Cursor automation)'
 - slug: villanueva-de-la-canada
   nombre: Villanueva de la Cañada
   bocm_count: 43
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/19
+  notes: 'Mergeado batch PR #19 (Cursor automation)'
 - slug: brunete
   nombre: Brunete
   bocm_count: 42
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/20
+  notes: 'Mergeado batch PR #20 (Cursor automation)'
 - slug: el-boalo
   nombre: El Boalo
   bocm_count: 39
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/21
+  notes: 'Mergeado batch PR #21 (Cursor automation)'
 - slug: ciempozuelos
   nombre: Ciempozuelos
   bocm_count: 38
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-21T10:10:33.464329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/22
+  notes: 'Mergeado batch PR #22 (Cursor automation)'
 - slug: san-sebastian-de-los-reyes
   nombre: San Sebastián de los Reyes
   bocm_count: 38
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T12:14:30.277878+00:00'
+updated_at: '2026-06-21T16:10:00.000000+00:00'

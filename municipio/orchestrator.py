@@ -4,15 +4,19 @@ import json
 from typing import Any, Callable
 
 from municipio import licencias_runner, proyectos_runner, validate
+from municipio.geocode import geocode_manifest
 from municipio.manifest import MunicipioManifest, load_manifest
+from municipio.sync_supabase import sync_manifest
 
-Step = str  # licencias_backfill | licencias_update | proyectos_backfill | proyectos_update | validate | all
+Step = str  # licencias_backfill | licencias_update | proyectos_backfill | proyectos_update | geocode | sync_supabase | validate | all
 
 RUNNERS: dict[str, Callable[[MunicipioManifest], dict[str, Any]]] = {
     "licencias_backfill": licencias_runner.backfill,
     "licencias_update": licencias_runner.update,
     "proyectos_backfill": proyectos_runner.backfill,
     "proyectos_update": proyectos_runner.update,
+    "geocode": geocode_manifest,
+    "sync_supabase": sync_manifest,
 }
 
 
@@ -23,12 +27,14 @@ def _steps_for(step: Step) -> list[str]:
             "licencias_backfill",
             "proyectos_update",
             "licencias_update",
+            "geocode",
+            "sync_supabase",
             "validate",
         ]
     if step == "backfill":
-        return ["proyectos_backfill", "licencias_backfill", "validate"]
+        return ["proyectos_backfill", "licencias_backfill", "geocode", "sync_supabase", "validate"]
     if step == "update":
-        return ["proyectos_update", "licencias_update", "validate"]
+        return ["proyectos_update", "licencias_update", "geocode", "sync_supabase", "validate"]
     if step in RUNNERS:
         return [step]
     if step == "validate":

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from municipio.geometry import has_area_geometry
 from municipio.manifest import MunicipioManifest, POC_ROOT
 
 # Paridad mínima respecto a dashboard Madrid (licencias + proyectos BOCM)
@@ -12,6 +13,7 @@ PARITY_CHECKS = {
         "file": "proyectos.jsonl",
         "min_rows": 1,
         "fields_any": ["id", "municipio", "titulo", "fecha"],
+        "min_with_coords": 1,
     },
     "licencias": {
         "file": "licencias.jsonl",
@@ -60,6 +62,42 @@ def _level(count: int, min_rows: int, optional: bool) -> str:
     return "none" if count == 0 else "partial"
 
 
+def _count_with_coords(path: Path) -> int:
+    if not path.is_file():
+        return 0
+    n = 0
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                obj = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if obj.get("lat") is not None and (obj.get("lon") is not None or obj.get("lng") is not None):
+                n += 1
+    return n
+
+
+def _count_with_geometry(path: Path) -> int:
+    if not path.is_file():
+        return 0
+    n = 0
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                obj = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if has_area_geometry(obj):
+                n += 1
+    return n
+
+
 def validate_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     out_dir = manifest.output_dir
     report: dict[str, Any] = {
@@ -74,17 +112,24 @@ def validate_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     for name, spec in PARITY_CHECKS.items():
         path = out_dir / spec["file"]
         count = _count_jsonl(path)
+        with_coords = _count_with_coords(path)
+        with_geometry = _count_with_geometry(path)
         fields = _sample_fields(path)
         required = set(spec.get("fields_any") or [])
         has_fields = bool(fields & required) if required else count > 0
         optional = bool(spec.get("optional"))
         min_rows = int(spec.get("min_rows", 1))
+        min_coords = int(spec.get("min_with_coords", 0))
         level = _level(count if has_fields else 0, min_rows, optional)
         if count >= min_rows and not has_fields and min_rows > 0:
+            level = "partial"
+        if name == "proyectos" and count >= min_rows and with_coords < min_coords:
             level = "partial"
         report["datasets"][name] = {
             "level": level,
             "rows": count,
+            "with_coords": with_coords,
+            "with_geometry": with_geometry,
             "path": str(path),
             "fields_present": sorted(fields)[:20],
         }

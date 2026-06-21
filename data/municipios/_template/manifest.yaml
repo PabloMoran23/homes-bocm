@@ -14,6 +14,7 @@ portal:
   notes: |
     URLs de sede electrónica, visor urbanístico, API o datos abiertos.
     Documentar cómo se listan licencias y expedientes.
+    Sección obligatoria en RESEARCH.md: Geometría / visor (geometry_status).
 
 licencias:
   enabled: true

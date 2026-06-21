@@ -1,0 +1,22 @@
+slug: alcorcon
+nombre: Alcorcón
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-alcorcon.es"
+  adapter: municipio.adapters.alcorcon:AlcorconAyuntamientoAdapter
+  config:
+    sede_base: "https://portalciudadano.ayto-alcorcon.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alcorcon/1.0 (+urbanismo portal)"
+  notes: |
+    Drupal 10 (transparencia PGOU/convenios, concejalía DYC) +
+    sede portalciudadano (catálogo urbanismo, anuncios, mapa web).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

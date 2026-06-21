@@ -1,6 +1,6 @@
 # Automation: onboarding de portales municipales
 
-Cursor Automation que cada **4 horas** toma el siguiente municipio de la cola BOCM, investiga su portal, implementa el adapter de ingesta, sincroniza a Supabase y abre PR.
+Cursor Automation que cada **4 horas** toma el siguiente municipio de la cola BOCM, investiga su portal, implementa el adapter de ingesta (incl. geometría del visor si existe), sincroniza a Supabase y abre PR.
 
 ## Archivos
 
@@ -10,21 +10,34 @@ Cursor Automation que cada **4 horas** toma el siguiente municipio de la cola BO
 | `.cursor/prompts/onboard-municipio-ayuntamiento.md` | Instrucciones detalladas para el agente |
 | `data/municipios/queue.yaml` | Cola de municipios CM ordenada por volumen BOCM |
 | `municipio/queue.py` | Lógica de cola (claim / done / fail) |
+| `municipio/geometry.py` | Helpers GeoJSON (`geom_geojson`, bbox, centroide) |
+| `municipio/geocode.py` | Asigna `lat`/`lon` (centroide polígono o municipio + jitter) |
+| `municipio/sync_supabase.py` | Paso del orquestador que llama al sync |
 | `db/sync_municipio_to_supabase.py` | Portal JSONL → `homes.proyecto` + `homes.licencia` |
 
 ## Activar en Cursor
 
-La definición YAML vive en el repo, pero hay que **activarla** en Cursor:
+La definición YAML vive en el repo como **documentación**, pero la automation se configura en la UI:
 
-1. Abre [cursor.com/automations](https://cursor.com/automations) o la pestaña **Automations** en la ventana de Agents.
-2. **Importa** o crea una automation basada en `.cursor/automations/onboard-municipio-ayuntamiento.yaml`.
-3. Configura:
-   - **Repositorio:** `PabloMoran23/homes-bocm`, rama `main`
-   - **Trigger:** cron `0 */4 * * *` (cada 4 horas)
-   - **Tools:** Memories (opcional). No hay "crear PR" — el agente usa `gh pr create` (ver prompt).
-   - **Prompt:** apunta a `.cursor/prompts/onboard-municipio-ayuntamiento.md` o pega su contenido
-4. **Run Now** para probar con el primer municipio (`torrejon-de-ardoz`).
-5. Revisa la PR generada antes de mergear.
+1. Abre [cursor.com/automations](https://cursor.com/automations) o la pestaña **Automations** en Agents.
+2. Crea/edita la automation (repo `PabloMoran23/homes-bocm`, rama `main`).
+3. **Trigger:** cron `0 */4 * * *` (cada 4 horas).
+4. **Tools:** Memories (opcional). No hay "crear PR" — el agente usa `gh pr create` (ver prompt).
+5. **Instructions / Prompt:** pega **todo** el contenido de `.cursor/prompts/onboard-municipio-ayuntamiento.md` en el campo de texto de la UI.
+   - Cursor **no** enlaza automáticamente al fichero del repo; el `.md` es la fuente de verdad en git.
+   - Tras cambiar el prompt en el repo, vuelve a copiarlo y pegarlo en la UI (o usa el comando abajo).
+6. **Run Now** para probar.
+7. Revisa la PR generada antes de mergear.
+
+### Sincronizar prompt repo → UI
+
+```bash
+# Imprime el prompt listo para copiar al portapapeles (Linux)
+cat poc-bocm/.cursor/prompts/onboard-municipio-ayuntamiento.md | xclip -selection clipboard
+# o simplemente abre el fichero y copia todo
+```
+
+Cuando actualices geometría u otras reglas en el `.md`, **repega en la automation** antes del próximo cron.
 
 ### Variables de entorno (opcional)
 
@@ -40,7 +53,7 @@ Sin esto, el agente deja el código listo y documenta sync manual en la PR.
 
 Estado actual (46 municipios CM con ≥20 proyectos BOCM):
 
-- **done:** Pozuelo, Móstoles, Getafe (adapters piloto)
+- **done:** 9 municipios (Pozuelo, Móstoles, Getafe, Torrejón, Alcalá, Alcobendas, Fuenlabrada, Las Rozas, Rivas)
 - **skipped:** Madrid capital (pipeline SIGMA propio)
 - **pending:** resto, empezando por Torrejón de Ardoz
 
@@ -70,15 +83,17 @@ PYTHONPATH=. python -m municipio queue done --municipio torrejon-de-ardoz --pr-u
 ## Flujo por municipio
 
 ```
-claim → investigar portal → manifest + adapter → run pipeline → sync supabase → PR → queue done
+claim → investigar portal → manifest + adapter → run pipeline (scrape + geocode + sync_supabase + validate) → PR → queue done
 ```
 
 ### Pipeline completo (manual)
 
 ```bash
 PYTHONPATH=. python -m municipio run --municipio <slug> --step all
+# incluye geocode + sync_supabase si SUPABASE_DB_URL está en el entorno
+
+# Repetir solo sync (opcional)
 python3 db/sync_municipio_to_supabase.py --municipio <slug>
-python3 db/export_web_data_from_supabase.py   # opcional, requiere SUPABASE_DB_URL
 ```
 
 ## Coste

@@ -1,0 +1,34 @@
+slug: san-fernando-de-henares
+nombre: San Fernando de Henares
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-sanfernando.com"
+  adapter: municipio.adapters.san_fernando_de_henares:SanFernandoDeHenaresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sanfernando/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    tablon_pages:
+      - "https://www.ayto-sanfernando.com/tablon-anuncios-ayuntamiento/"
+      - "https://www.ayto-sanfernando.com/tablon-anuncios-otras-administraciones/"
+    planeamiento_pages:
+      - "https://www.ayto-sanfernando.com/planificacion-de-la-ciudad-y-desarrollo-sostenible/"
+      - "https://www.ayto-sanfernando.com/plan-general/"
+    licencia_pages:
+      - "https://www.ayto-sanfernando.com/licencias-urbanismo/"
+      - "https://www.ayto-sanfernando.com/licencia-urbanistica/"
+      - "https://www.ayto-sanfernando.com/declaracion-responsable-urbanistica/"
+      - "https://www.ayto-sanfernando.com/certificacion-urbanistica/"
+      - "https://www.ayto-sanfernando.com/cambio-de-uso-de-inmuebles/"
+  notes: |
+    WordPress Divi: tablón HTML + PDFs planeamiento + trámites informativos.
+    Geoportal Angular y sede SAVIA no scrapeables.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
