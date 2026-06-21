@@ -18,7 +18,7 @@ portal:
       municipio_filter: "DS_MUNICIPIO ILIKE '%LEGAN%'"
   notes: |
     Liferay urbanismo (planes parciales/especiales, PGOU, PERI) + intento sede STA tablón.
-  sede.leganes.org inaccesible por reset TLS en cloud; geometría parcial vía IDEM WFS.
+    sede.leganes.org inaccesible por reset TLS en cloud; geometría parcial vía IDEM WFS.
 
 licencias:
   enabled: true
