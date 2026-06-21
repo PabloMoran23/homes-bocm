@@ -31,13 +31,9 @@ DEFAULT_LICENCIA_PAGES: list[str] = [
     SEDE_TRAMITES,
 ]
 
-RE_TABLON_ROW = re.compile(
-    r'verAnuncio&id=([A-F0-9]+)"'
-    r'.*?</td>\s*<td[^>]*>\s*'
-    r'((?:[^<]|<br\s*/?>)+?)'
-    r'\s*</td>\s*<td[^>]*>.*?Periodo:.*?(\d{2}/\d{2}/\d{4})',
-    re.I | re.S,
-)
+RE_TABLON_ID = re.compile(r'verAnuncio&id=([A-F0-9]+)"', re.I)
+RE_TABLON_TITLE = re.compile(r'width="40%"[^>]*>\s*([^<]+)', re.I)
+RE_TABLON_PERIOD = re.compile(r"Periodo:.*?(\d{2}/\d{2}/\d{4})", re.I | re.S)
 RE_LICENCIA = re.compile(
     r"(?i)(licencia|licencias|solicitud de licencia|comunicaci[oó]n previa|"
     r"declaraci[oó]n responsable|autorizaci[oó]n previa|vado)",
@@ -113,13 +109,17 @@ class CiempozuelosAyuntamientoAdapter(AyuntamientoAdapter):
     def _parse_tablon_listing(self, html: str) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
-        for m in RE_TABLON_ROW.finditer(html):
+        for m in RE_TABLON_ID.finditer(html):
             anuncio_id = m.group(1)
             if anuncio_id in seen:
                 continue
             seen.add(anuncio_id)
-            title = _strip_html(m.group(2))
-            fecha = _parse_fecha_dmy(m.group(3))
+            chunk = html[m.start() : m.start() + 3000]
+            title_m = RE_TABLON_TITLE.search(chunk)
+            period_m = RE_TABLON_PERIOD.search(chunk)
+            title = unescape(title_m.group(1).strip()) if title_m else ""
+            title = re.sub(r"\s+", " ", title)
+            fecha = _parse_fecha_dmy(period_m.group(1)) if period_m else None
             url = f"{self.sede_base}/Tablon.do?action=verAnuncio&id={anuncio_id}"
             rows.append(
                 {
@@ -163,21 +163,25 @@ class CiempozuelosAyuntamientoAdapter(AyuntamientoAdapter):
         return items
 
     def _enrich_tablon_item(self, item: dict[str, Any]) -> dict[str, Any]:
-        if not self.fetch_detail:
-            return item
+        blob = item["titulo"]
+        if not self.fetch_detail or not (
+            RE_PROYECTO.search(blob) or RE_LICENCIA.search(blob)
+        ):
+            return {**item, "blob": blob}
         detail = self._fetch_anuncio_detail(item["url"])
         desc = detail.get("descripcion") or detail.get("descripci") or ""
         contenido = detail.get("contenido") or ""
         fecha_ini = detail.get("fecha inicio publicacion") or detail.get("fecha inicio publicaci") or ""
         titulo = desc or item["titulo"]
         fecha = _parse_fecha_dmy(fecha_ini) or item.get("fecha")
+        blob = f"{titulo} {desc} {contenido}"[:2000]
         return {
             **item,
             "titulo": titulo[:500] or item["titulo"],
             "fecha": fecha,
             "descripcion": desc,
             "contenido": contenido[:1000],
-            "blob": f"{titulo} {desc} {contenido}"[:2000],
+            "blob": blob,
         }
 
     def _proyecto_tipo(self, blob: str) -> str:
@@ -325,7 +329,8 @@ class CiempozuelosAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for item in self._collect_tablon():
+        tablon = self._collect_tablon()
+        for item in tablon:
             enriched = self._enrich_tablon_item(item)
             blob = enriched.get("blob") or enriched["titulo"]
             add(self._title_to_licencia(blob, enriched["url"], enriched.get("fecha")))
@@ -333,7 +338,7 @@ class CiempozuelosAyuntamientoAdapter(AyuntamientoAdapter):
             add(rec)
 
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "tablon": len(self._collect_tablon())}
+        return {"rows": len(rows), "status": "ok", "tablon": len(tablon)}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
         existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
