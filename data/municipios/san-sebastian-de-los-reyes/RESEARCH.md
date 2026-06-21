@@ -1,75 +1,90 @@
 # San Sebastián de los Reyes — investigación portal ayuntamiento
 
+**Municipio:** San Sebastián de los Reyes (Comunidad de Madrid)  
 **Fecha:** 2026-06-21  
-**Slug:** `san-sebastian-de-los-reyes`  
 **BOCM regional (referencia):** 38 avisos
 
 ## Resumen
 
-El ayuntamiento publica urbanismo en un **portal Liferay** (`www.ssreyes.org`) con sede electrónica
-en `sede.ssreyes.es` y transparencia en `transparencia.ssreyes.org`.
+El ayuntamiento usa **Liferay** en la web corporativa (`www.ssreyes.org`) y la sede electrónica
+(`sede.ssreyes.es`). Ambos dominios exigen la cookie `browser_verified=1` (anti-bot ligero) para
+servir contenido HTML.
 
-| Portal | URL | Stack | Contenido relevante |
-|--------|-----|-------|---------------------|
-| Web corporativa | https://www.ssreyes.org | Liferay 7.x | PGOU, normativa, planes, modificaciones, acuerdos comisión PGOU |
-| Sede electrónica | https://sede.ssreyes.es | Liferay | Tablón edictos/anuncios (IQRS), trámites licencia, actas pleno |
-| Transparencia | https://transparencia.ssreyes.org | Liferay | Información urbanística, convenios |
+La información de **planeamiento** está publicada como páginas temáticas con PDFs en
+`/documents/1678104/...`. No hay visor de expedientes urbanísticos individuales enlazados a
+geometría.
 
-## Protección anti-bot
+## Fuentes identificadas
 
-La web principal y la sede muestran una página intermedia *«Verificando navegador…»* que establece
-la cookie `browser_verified=1`. Sin ella, el scraping recibe HTML vacío (1847 bytes). El adapter
-envía esa cookie en todas las peticiones.
+| Fuente | URL | Formato | Uso en adapter |
+|--------|-----|---------|----------------|
+| PGOU 2001 | `https://www.ssreyes.org/plan-general-de-ordenaci%C3%B3n-urbana-p.g.o.u.-` | Liferay + PDFs | Planos, normativa, memorias (~14 docs) |
+| Planos PGOU | `https://www.ssreyes.org/planos` | PDFs | Planos estructuración/clasificación/ordenación |
+| Desarrollos plan parcial | `https://www.ssreyes.org/desarrollos-urban%C3%ADsticos-mediante-plan-parcial` | Índice + subpáginas | Tempranales, Fresno Norte, Pilar de Abajo, Puente Cultural, PERI |
+| Plan Especial La Marina | `https://www.ssreyes.org/plan-especial-de-la-marina` | Página informativa IP | Texto aprobación inicial (sin PDFs embebidos en crawl) |
+| PERI | `https://www.ssreyes.org/plan-especial-de-reforma-interior-p.e.r.i.-` | PDFs (~9) | Documentación PERI |
+| Planes especiales | `https://www.ssreyes.org/planes-especiales` | Índice | Enlaces a PE La Marina |
+| Urbanismo / SIT | `https://www.ssreyes.org/sistema-de-informaci%C3%B3n-territorial-de-urbanismo` | Enlace geoportal | Visor Tecnogeo |
+| Actuaciones urbanísticas (trámites) | `https://www.ssreyes.org/tr%C3%A1mites1/-/asset_publisher/.../id/2613627` | PDFs impresos | Declaraciones responsables, solicitudes licencia |
+| Tablón sede | `https://sede.ssreyes.es/tabl%C3%B3n-de-anuncios` | Liferay Asset Search | **POST búsqueda devuelve 403** desde CI |
+| Transparencia urbanismo | `https://transparencia.ssreyes.org/urbanismo` | HTML informativo | Contexto IP (p. ej. PE La Marina) |
 
-## Fuentes de proyectos / expedientes
+### Subpáginas con documentación (crawl BFS)
 
-### 1. Documentos Liferay (`/documents/...`)
+- `https://www.ssreyes.org/tempranales` — 11 PDFs plan parcial
+- `https://www.ssreyes.org/fresno-norte` — 2 PDFs
+- `https://www.ssreyes.org/pilar-de-abajo` — 2 PDFs
+- `https://www.ssreyes.org/puente-cultural` — 1 PDF
 
-Páginas semilla con PDFs de planeamiento:
+## Estructura técnica
 
-- **Normativa urbanística:** `/normativa-urban%C3%ADstica` (14 PDFs PGOU: normas suelo, zonas, anexos)
-- **Acuerdos comisión PGOU:** `/acuerdos-de-la-comisi%C3%B3n-t%C3%A9cnica-de-seguimiento-del-pgou` (25 PDFs)
-- **Avance-revisión PGOU:** `/avance-revisi%C3%B3n-plan-general` (4 PDFs)
-- **Planos:** `/planos` (3 PDFs)
-- **Aprobaciones/modificaciones:** páginas de plan especial, 9ª modificación puntual Z.O. 59, etc.
-- **Desarrollo urbano:** `/es/desarrollo-urbano`, `/nuevos-desarrollos-urban%C3%ADsticos`
+- **CMS:** Liferay Portal 7.x (`com.liferay.*` portlets, `/documents/{groupId}/...` document library).
+- **Anti-bot:** página intermedia que establece `browser_verified=1` (8 h); el adapter envía la cookie.
+- **Tablón sede:** portlet `as_asac_asset_search_AssetSearchInstancePortlet` con categorías
+  (Ayuntamiento SSR, Anuncio/Edicto). La búsqueda POST con `searchAssets` responde **403 Forbidden**
+  desde el entorno del agente (posible WAF/CSRF adicional).
+- **Trámites licencia:** solo formularios PDF descargables; no dataset de concesiones con dirección.
 
-Formato HTML: enlaces con `class="document document-pdf"` y atributo `title="..."`.
+## Licencias
 
-### 2. Transparencia — información urbanística
+No hay listado público scrapeable de licencias concedidas con fecha y ubicación (sin paridad Madrid
+capital). El adapter ingiere:
 
-- https://transparencia.ssreyes.org/informaci%C3%93n-urban%C3%8Dstica-y-medioambiental
-- Enlaces cruzados a PGOU y desarrollos en web principal.
+- PDFs de declaraciones responsables y solicitudes de licencia en la página de actuaciones urbanísticas
+- Páginas informativas de trámites (tipo, sin `fecha_concesion`)
 
-### 3. Tablón de anuncios (limitado)
+## Proyectos / expedientes
 
-- Web: `/es/tabl%C3%B3n-de-anuncios-y-edictos` — solo enlace a Excel estadístico (conteos 2017–2023).
-- Sede: `/tabl%C3%B3n-de-edictos-y-anuncios` → `/sedeFormsNoClave/ReturnPage?metodo=IQRS`
-- **IQRS requiere autenticación Cl@ve** — listado de anuncios individuales no scrapeable sin login.
+Documentos y páginas de planeamiento: PGOU, planes parciales por desarrollo, PERI, plan especial La
+Marina (metadatos de página). Los PDFs usan URLs estables con UUID Liferay.
 
-## Fuentes de licencias
+## Geometría / visor
 
-**No hay dataset público de concesiones** con coordenadas (sin paridad Madrid capital).
+- **geometry_status:** `partial`
+- **Fuentes:**
+  - **Visor municipal (Tecnogeo Citymap):**  
+    `https://citymap.tecnogeows.com/user/100812377150920593660/map/PYbgc7dWp2V8Yt9yU7MmeF`  
+    Consulta por parcela/dirección; `search.tecnogeows.com` sin API pública documentada para expedientes.
+  - **WFS Comunidad de Madrid (SIT):** capa `sitcm:VPLA_V_AMBITO` en  
+    `https://idem.comunidad.madrid/geoserver3/ows` — ámbitos de planeamiento con geometría GeoJSON.
+    Consulta por `DS_MUNICIPIO ILIKE '%San Sebasti%'` + nombre de desarrollo (p. ej. Tempranales, Fresno).
+- **Estrategia adapter:** tras extraer metadatos, `_fetch_geometry()` consulta WFS por palabras clave
+  del título/URL de la página (Tempranales, Fresno Norte, etc.) y rellena `geom_geojson` cuando hay
+  coincidencia.
+- **Limitaciones:**
+  - Sin enlace expediente↔polígono en el portal municipal
+  - PERI, La Marina y PGOU genérico no devuelven polígono fiable por nombre en WFS
+  - Tablón de licencias inaccesible por POST 403
+  - Tecnogeo requiere JWT de sesión anónima (no estable para batch)
 
-Fuentes disponibles:
+## Limitaciones generales
 
-1. **Páginas informativas:** `/es/licencias-de-actividad`, `/es/obras-e-infraestructuras`
-2. **Trámites sede (autoliquidación):** `sedeForms/IndexPage?metodo=LIQUI_LicenciaObra`,
-   `LIQUI_LicenciaActividad`, `LIQUI_LicenciaVeladores`, `LIQUI_OcupacionVia`
-   (páginas de trámite, no concesiones publicadas)
-3. Tablón IQRS bloqueado por Cl@ve (ver arriba).
+- Cookie `browser_verified` obligatoria en www y sede
+- Tablón sede: búsqueda automatizada bloqueada (403)
+- Sin coordenadas en listados de licencias
+- PDFs sin georreferencia embebida
 
-## Limitaciones
+## Referencia adapters
 
-- Cookie `browser_verified=1` obligatoria en www y sede.
-- Tablón electrónico IQRS inaccesible sin Cl@ve; Excel del tablón solo tiene estadísticas agregadas.
-- Sin geolocalización en fuentes del ayuntamiento (`lat`/`lon` = null).
-- Algunos PDFs de sede usan host interno `intranet.ssreyes.local` (no accesibles externamente).
-- No replicar pipeline Madrid capital (`sector_geometry/madrid_*`).
-
-## Estrategia de ingesta
-
-- **proyectos.jsonl:** crawl determinista de páginas semilla urbanismo + extracción `/documents/` con título.
-- **licencias.jsonl:** páginas informativas de trámites + sede LIQUI_* (paridad informativa, `min_rows: 0`).
-- **IDs:** `ssreyes-{lic|proy}-{sha256[:14]}`.
-- **source:** `ayuntamiento`.
+- Liferay + cookie: `villaviciosa_de_odon.py`, `pinto.py`
+- WFS CM planeamiento: `sector_geometry/resolvers_madrid.py` (patrón `VPLA_V_AMBITO`)
