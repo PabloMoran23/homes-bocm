@@ -12,6 +12,7 @@ import L from "leaflet";
 import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
+import { PortalProyectosClusterLayer } from "@/components/map/PortalProyectosClusterLayer";
 import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
 import { LandingMapPulseLayer } from "@/components/map/LandingMapPulseLayer";
 import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
@@ -20,6 +21,8 @@ import { MapBoundsReporter } from "@/components/map/MapBoundsReporter";
 import { MapSizeFix } from "@/components/map/MapSizeFix";
 import type { MapBounds } from "@/lib/map-viewport";
 import type { UbicacionesMapGeoJson } from "@/lib/madrid-ubicaciones-map";
+import type { CmPortalGeoJson, CmPortalProyectoProps } from "@/lib/cm-portal-geo";
+import type { MapScope } from "@/lib/map-scope";
 import { SIGMA_MAP_LEGEND } from "@/lib/map-sigma-colors";
 import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
@@ -36,6 +39,14 @@ const MADRID_CITY_BOUNDS = L.latLngBounds(
   [40.348, -3.888],
   [40.502, -3.518],
 );
+
+/** Vista Comunidad de Madrid (modo local `NEXT_PUBLIC_MAP_SCOPE=cm`). */
+const CM_BOUNDS = L.latLngBounds(
+  [39.85, -4.85],
+  [41.15, -3.15],
+);
+const CM_CENTER: LatLngExpression = [40.45, -3.65];
+const CM_EXPLORE_ZOOM = 9;
 
 /** Portada: zoom fijo (un poco más alejado que explorar para la miniatura). */
 const MADRID_PREVIEW_ZOOM = 10;
@@ -97,6 +108,15 @@ function frameMadridCity(map: L.Map, view: MapInitialView) {
   fitBoundsForContainer(map, bounds, FIT_PRESETS[view].city, view);
 }
 
+function frameCmRegion(map: L.Map) {
+  fitBoundsForContainer(
+    map,
+    CM_BOUNDS,
+    { padding: [24, 24], maxZoom: CM_EXPLORE_ZOOM, animate: false },
+    "explore",
+  );
+}
+
 /** Zoom fijo; no usar getBounds() del GeoJSON (cubre todo Madrid y aleja el mapa). */
 function frameFixedZoom(map: L.Map, view: MapInitialView) {
   const zoom = FIXED_VIEW_ZOOM[view];
@@ -134,13 +154,17 @@ function fitLayerBounds(
 function UnifiedFitBounds({
   ubicaciones,
   sigma,
+  portal,
   fitToData = true,
   initialView = "city",
+  mapScope = "madrid",
 }: {
   ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
+  portal?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   fitToData?: boolean;
   initialView?: MapInitialView;
+  mapScope?: MapScope;
 }) {
   const map = useMap();
   const lastFitKey = useRef("");
@@ -150,7 +174,8 @@ function UnifiedFitBounds({
   useEffect(() => {
     const hasUbic = Boolean(ubicaciones?.features?.length);
     const hasSigma = Boolean(sigma?.features?.length);
-    const key = `${initialView}:${fitToData}:${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}`;
+    const hasPortal = Boolean(portal?.features?.length);
+    const key = `${mapScope}:${initialView}:${fitToData}:${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}:${hasPortal ? portal!.features.length : 0}`;
 
     const boundsFromLayers = (): L.LatLngBounds | null => {
       let bounds: L.LatLngBounds | null = null;
@@ -162,10 +187,20 @@ function UnifiedFitBounds({
         const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
         if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
       }
+      if (hasPortal) {
+        const pb = L.geoJSON(portal as GeoJSON.FeatureCollection).getBounds();
+        if (pb.isValid()) bounds = bounds ? bounds.extend(pb) : pb;
+      }
       return bounds?.isValid() ? bounds : null;
     };
 
     if (!fitToData) {
+      if (mapScope === "cm" && initialView === "explore") {
+        if (fixedExploreZoomDone.current) return;
+        fixedExploreZoomDone.current = true;
+        frameCmRegion(map);
+        return;
+      }
       if (initialView === "preview" || initialView === "explore") {
         if (fixedExploreZoomDone.current) return;
         fixedExploreZoomDone.current = true;
@@ -184,9 +219,10 @@ function UnifiedFitBounds({
       return;
     }
 
-    if (!hasUbic && !hasSigma) {
+    if (!hasUbic && !hasSigma && !hasPortal) {
       if (lastFitKey.current !== key) {
-        frameMadridCity(map, initialView);
+        if (mapScope === "cm") frameCmRegion(map);
+        else frameMadridCity(map, initialView);
         lastFitKey.current = key;
       }
       return;
@@ -201,7 +237,7 @@ function UnifiedFitBounds({
       return;
     }
     frameMadridCity(map, initialView);
-  }, [map, ubicaciones, sigma, fitToData, initialView]);
+  }, [map, ubicaciones, sigma, portal, fitToData, initialView, mapScope]);
 
   useEffect(() => {
     if (!fitToData && (initialView === "preview" || initialView === "explore")) return;
@@ -213,7 +249,8 @@ function UnifiedFitBounds({
       if (!fitToData) {
         const hasSigma = Boolean(sigma?.features?.length);
         const hasUbic = Boolean(ubicaciones?.features?.length);
-        if (hasSigma || hasUbic) {
+        const hasPortal = Boolean(portal?.features?.length);
+        if (hasSigma || hasUbic || hasPortal) {
           let bounds: L.LatLngBounds | null = null;
           if (hasSigma) {
             const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
@@ -223,6 +260,10 @@ function UnifiedFitBounds({
             const ub = L.geoJSON(ubicaciones as GeoJSON.FeatureCollection).getBounds();
             if (ub.isValid()) bounds = bounds ? bounds.extend(ub) : ub;
           }
+          if (hasPortal) {
+            const pb = L.geoJSON(portal as GeoJSON.FeatureCollection).getBounds();
+            if (pb.isValid()) bounds = bounds ? bounds.extend(pb) : pb;
+          }
           if (bounds?.isValid()) fitLayerBounds(map, bounds, initialView, "data");
         }
       }
@@ -231,7 +272,7 @@ function UnifiedFitBounds({
     const ro = new ResizeObserver(refit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [map, ubicaciones, sigma, fitToData, initialView]);
+  }, [map, ubicaciones, sigma, portal, fitToData, initialView, mapScope]);
 
   return null;
 }
@@ -274,6 +315,9 @@ export function MadridUnifiedMap({
   preferCanvas: preferCanvasProp = false,
   showAttribution = true,
   landingPulse = false,
+  portalGeojson = null,
+  showPortal = false,
+  mapScope = "madrid",
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -300,6 +344,10 @@ export function MadridUnifiedMap({
   showAttribution?: boolean;
   /** Portada animada: proyectos que aparecen y desaparecen (solo visual). */
   landingPulse?: boolean;
+  /** Proyectos de portales municipales CM (modo `mapScope=cm`). */
+  portalGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
+  showPortal?: boolean;
+  mapScope?: MapScope;
 }) {
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
@@ -308,6 +356,12 @@ export function MadridUnifiedMap({
   const preferCanvas = (preferCanvasProp || preferCanvasAuto) && !landingPulse;
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
+  const nPortal = portalGeojson?.features?.length ?? 0;
+  const mapCenter = mapScope === "cm" ? CM_CENTER : MADRID_CENTER;
+  const mapZoom =
+    mapScope === "cm" && initialView === "explore"
+      ? CM_EXPLORE_ZOOM
+      : fitPreset.defaultZoom;
 
   const statsLabel = useMemo((): ReactNode | null => {
     if (statsHint) return statsHint;
@@ -329,8 +383,15 @@ export function MadridUnifiedMap({
         </span>,
       );
     }
+    if (showPortal && nPortal > 0) {
+      parts.push(
+        <span key="portal">
+          <span className="font-semibold text-slate-800">{nPortal.toLocaleString("es-ES")}</span> portales CM
+        </span>,
+      );
+    }
     return parts.length > 0 ? parts : null;
-  }, [statsHint, showSigma, showUbicaciones, nSigma, nUbic]);
+  }, [statsHint, showSigma, showUbicaciones, showPortal, nSigma, nUbic, nPortal]);
 
   const legend = useMemo(
     () => (
@@ -348,9 +409,15 @@ export function MadridUnifiedMap({
           </>
         ) : null}
         {showUbicaciones ? <LicenciaMapLegend /> : null}
+        {showPortal ? (
+          <span className="flex items-center gap-2">
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-violet-600 ring-2 ring-white" />
+            Portales municipales CM
+          </span>
+        ) : null}
       </div>
     ),
-    [showSigma, showUbicaciones],
+    [showSigma, showUbicaciones, showPortal],
   );
 
   return (
@@ -373,8 +440,8 @@ export function MadridUnifiedMap({
         {mapReady ? (
           <MapContainer
             key={mapKey}
-            center={MADRID_CENTER}
-            zoom={fitPreset.defaultZoom}
+            center={mapCenter}
+            zoom={mapZoom}
             className="z-0 h-full w-full"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
@@ -412,11 +479,17 @@ export function MadridUnifiedMap({
                 preferCanvas={preferCanvas}
               />
             ) : null}
+            <PortalProyectosClusterLayer
+              geojson={portalGeojson}
+              visible={showPortal}
+            />
             <UnifiedFitBounds
               ubicaciones={ubicacionesGeojson}
               sigma={sigmaGeojson}
+              portal={portalGeojson}
               fitToData={fitToData}
               initialView={initialView}
+              mapScope={mapScope}
             />
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
             {interactive ? <ZoomControl position="topright" /> : null}

@@ -1,7 +1,7 @@
 name: Onboard municipio ayuntamiento
 description: >
   Cada 4 horas toma el siguiente municipio de la cola BOCM, investiga su portal,
-  implementa el adapter de ingesta y abre PR a main.
+  implementa el adapter de ingesta (metadatos + geometría si hay visor/GIS) y abre PR a main.
 
 trigger:
   - type: cron
@@ -16,6 +16,8 @@ tools:
 
 model: default
 
+# Referencia: el prompt operativo está en .cursor/prompts/onboard-municipio-ayuntamiento.md
+# Hay que pegarlo manualmente en Instructions de la UI de Cursor Automations.
 instructions_file: .cursor/prompts/onboard-municipio-ayuntamiento.md
 
 sandbox:

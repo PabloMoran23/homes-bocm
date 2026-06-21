@@ -10,6 +10,7 @@ Conseguir **licencias** y **proyectos/expedientes** de un municipio **desde el p
 
 1. `data/municipios/<slug>/manifest.yaml` — `portal.base_url` + `portal.adapter`
 2. `municipio/adapters/<slug>.py` — clase `AyuntamientoAdapter`
+3. `data/municipios/<slug>/RESEARCH.md` — incluye sección **Geometría / visor**
 
 **No ejecutar** el orquestador; solo entregar YAML + código.
 
@@ -19,7 +20,13 @@ Conseguir **licencias** y **proyectos/expedientes** de un municipio **desde el p
 portal:
   base_url: "https://www...."
   adapter: municipio.adapters.mostoles:MostolesAyuntamientoAdapter
-  config: { ... }
+  config:
+    request_delay_s: 0.35
+    # Opcional si hay visor GIS:
+    # geometry:
+    #   kind: arcgis_mapserver
+    #   base_url: "https://..."
+    #   layer_id: 0
 
 licencias:
   enabled: true
@@ -43,9 +50,37 @@ class MostolesAyuntamientoAdapter(AyuntamientoAdapter):
 
 `id`, `fecha_concesion`, `tipo`, `distrito`, `lat`, `lon` (+ `source: ayuntamiento`)
 
+Campos opcionales de geometría (misma convención que proyectos).
+
 ### proyectos.jsonl
 
-`id`, `municipio`, `titulo`, `fecha`, `tipo`, `url` (+ `source: ayuntamiento`)
+Campos mínimos:
+
+`id`, `municipio`, `titulo`, `fecha`, `tipo`, `url` (+ `source: ayuntamiento`, `lat`, `lon`, `coord_source`)
+
+**Geometría (obligatorio intentar, opcional conseguir):**
+
+Si el portal expone delimitación del ámbito/expediente, el adapter **debe** incluirla:
+
+| Campo | Descripción |
+|-------|-------------|
+| `geom_geojson` | GeoJSON Geometry (`Polygon`, `MultiPolygon`, …) en WGS84 |
+| `geometry_source` | `portal_visor_arcgis`, `portal_wfs`, `portal_geojson`, … |
+| `geometry_source_url` | URL de la query o dataset usado |
+| `coord_source` | `portal_geometry_centroid` si solo hay polígono sin punto explícito |
+
+Patrones habituales (prioridad):
+
+1. **ArcGIS MapServer / FeatureServer** — `returnGeometry=true`, `outSR=4326`, `f=geojson` (ver `sector_geometry/madrid_ayto_sync.py`)
+2. **GeoJSON/WFS** en datos abiertos o geoportal
+3. **Enlace al visor** con `objectId` / código de expediente → query puntual
+
+Si **no** hay fuente GIS pública, documentarlo en `RESEARCH.md` (`geometry_status: unavailable`) y deja `geom_geojson` ausente; el orquestador aplicará centroide + jitter.
+
+Helpers compartidos: `municipio/geometry.py` (`record_geometry`, `geometry_bbox`, …).
+
+Tras el scrape, el orquestador ejecuta **geocode** (centroide del polígono o del municipio + jitter) y **sync_supabase**
+si hay `SUPABASE_DB_URL`.
 
 ## Orquestador (humano / CI)
 
@@ -55,3 +90,5 @@ PYTHONPATH=. python -m municipio run --municipio mostoles --step all
 ```
 
 Salida: `output/municipios/<slug>/licencias.jsonl`, `proyectos.jsonl`, `parity-report.json`.
+
+`parity-report.json` incluye `with_geometry` (informativo; no bloquea si es 0).
