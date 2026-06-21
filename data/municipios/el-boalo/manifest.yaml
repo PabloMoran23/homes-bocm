@@ -1,0 +1,28 @@
+slug: el-boalo
+nombre: "El Boalo"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://elboalo-cerceda-mataelpino.org"
+  adapter: municipio.adapters.el_boalo:ElBoaloAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-boalo/1.0 (+urbanismo research)"
+    sede_insecure_ssl: true
+    sede_base: "https://sede.elboalo-cerceda-mataelpino.org/eAdmin"
+    wp_api_base: "https://elboalo-cerceda-mataelpino.org/wp-json/wp/v2"
+    seed_pages:
+      - "https://elboalo-cerceda-mataelpino.org/normativa-urbanistica/"
+      - "https://elboalo-cerceda-mataelpino.org/urbanismo/"
+      - "https://elboalo-cerceda-mataelpino.org/portal-de-transparencia/"
+  notes: |
+    WordPress normativa urbanística (PGOU/planos/ordenanzas) +
+    noticias WP + tablón sede add4u (eAdmin/Tablon.do).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
