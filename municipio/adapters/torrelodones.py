@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 import ssl
 import time
@@ -14,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
-from municipio.geometry import geometry_centroid, record_geometry
+from municipio.geometry import geometry_bbox, geometry_centroid, record_geometry
 
 WP_BASE = "https://torrelodones.es"
 SEDE_BASE = "https://sede.torrelodones.es"
@@ -172,6 +173,7 @@ class TorrelodonesAyuntamientoAdapter(AyuntamientoAdapter):
             self._ssl_ctx.check_hostname = False
             self._ssl_ctx.verify_mode = ssl.CERT_NONE
         self._sector_cache: dict[str, dict[str, Any]] | None = None
+        self._municipio_centroid: tuple[float, float] | None = None
 
     def _fetch(self, url: str, *, use_ssl_ctx: bool = False) -> str:
         time.sleep(self.delay_s)
@@ -231,6 +233,49 @@ class TorrelodonesAyuntamientoAdapter(AyuntamientoAdapter):
                 }
         self._sector_cache = index
         return index
+
+    def _centroid_from_sectors(self) -> tuple[float, float] | None:
+        if self._municipio_centroid is not None:
+            return self._municipio_centroid
+        index = self._load_sector_index()
+        lngs: list[float] = []
+        lats: list[float] = []
+        for hit in index.values():
+            geom = hit.get("geom_geojson")
+            if not isinstance(geom, dict):
+                continue
+            bbox = geometry_bbox(geom)
+            if not bbox:
+                continue
+            min_lng, min_lat, max_lng, max_lat = bbox
+            lngs.extend([min_lng, max_lng])
+            lats.extend([min_lat, max_lat])
+        if not lngs:
+            return None
+        self._municipio_centroid = ((min(lats) + max(lats)) / 2.0, (min(lngs) + max(lngs)) / 2.0)
+        return self._municipio_centroid
+
+    def _jitter_coords(self, base_lat: float, base_lng: float, key: str) -> tuple[float, float]:
+        h = int(hashlib.sha256(key.encode("utf-8")).hexdigest()[:8], 16)
+        angle = (h % 360) * math.pi / 180.0
+        dist = ((h >> 8) % 1000) / 1000.0 * 180.0
+        dlat = (dist * math.cos(angle)) / 111_320.0
+        dlng = (dist * math.sin(angle)) / (111_320.0 * max(0.2, math.cos(math.radians(base_lat))))
+        return base_lat + dlat, base_lng + dlng
+
+    def _apply_coords_fallback(self, rows: list[dict[str, Any]]) -> None:
+        centroid = self._centroid_from_sectors()
+        if not centroid:
+            return
+        base_lat, base_lng = centroid
+        for rec in rows:
+            if rec.get("lat") is not None and rec.get("lon") is not None:
+                continue
+            rec_id = str(rec.get("id") or rec.get("url") or "")
+            lat, lng = self._jitter_coords(base_lat, base_lng, rec_id) if rec_id else (base_lat, base_lng)
+            rec["lat"] = round(lat, 7)
+            rec["lon"] = round(lng, 7)
+            rec["coord_source"] = rec.get("coord_source") or "portal_sector_centroid_jitter"
 
     def _attach_geometry(self, rec: dict[str, Any], text: str) -> None:
         if record_geometry(rec):
@@ -503,6 +548,7 @@ class TorrelodonesAyuntamientoAdapter(AyuntamientoAdapter):
         for board in self._collect_board():
             add(self._board_to_licencia(board))
 
+        self._apply_coords_fallback(rows)
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
@@ -550,6 +596,7 @@ class TorrelodonesAyuntamientoAdapter(AyuntamientoAdapter):
         for board in self._collect_board():
             add(self._board_to_proyecto(board))
 
+        self._apply_coords_fallback(rows)
         self._write_jsonl(out_jsonl, rows)
         with_geom = sum(1 for r in rows if record_geometry(r))
         return {
