@@ -1,0 +1,36 @@
+slug: collado-villalba
+nombre: "Collado Villalba"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.colladovillalba.es"
+  adapter: municipio.adapters.collado_villalba:ColladoVillalbaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-collado-villalba/1.0"
+    sede_base: "https://sedeelectronica.ayto-colladovillalba.org"
+    tablon_opc_id: 268
+    tablon_subsections:
+      - AYTO.URB
+      - AYTO.EDICTOS
+    seed_pages:
+      - "https://www.colladovillalba.es/proyectos"
+      - "https://www.colladovillalba.es/pgou"
+      - "https://www.colladovillalba.es/modificaciones-pgou"
+      - "https://www.colladovillalba.es/plan-general-de-ordenacion-urbana"
+    tramites_catalog_url: "https://sedeelectronica.ayto-colladovillalba.org/portal/noEstatica.do?opc_id=119&ent_id=1&idioma=1"
+    geometry:
+      kind: arcgis_featureserver
+      base_url: "https://services-eu1.arcgis.com/4eGF8kfNzyifeBtz/arcgis/rest/services/Locales_CV_v2_ZonasUrbanisticas/FeatureServer/22"
+  notes: |
+    Liferay (colladovillalba.es) para documentación PGOU/planes + sede propia con
+    tablón electrónico JSON (tablonElectronico.do). Visor ArcGIS de zonificación
+    (parcelas/locales) sin enlace directo a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
