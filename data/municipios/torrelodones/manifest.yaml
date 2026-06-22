@@ -1,0 +1,30 @@
+slug: torrelodones
+nombre: Torrelodones
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://torrelodones.es"
+  adapter: municipio.adapters.torrelodones:TorrelodonesAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.torrelodones.es"
+    board_url: "https://sede.torrelodones.es/board"
+    normas_url: "https://torrelodones.es/normas-subsidiarias/"
+    urbanismo_url: "https://torrelodones.es/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-torrelodones/1.0"
+    geometry:
+      kind: arcgis_featureserver
+      base_url: "https://services1.arcgis.com/SwZwNQ29xwi3dduD/arcgis/rest/services/Normas_Subsidarias_Sectores_Urbanisticos_SYKGIS/FeatureServer"
+      layer_id: 0
+  notes: |
+    Fuentes: tablón eHome (sede), normas subsidiarias/PGOU (PDFs), avisos WordPress,
+    trámites informativos licencia. Geometría parcial vía ArcGIS SYKGIS (sectores NNSS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
