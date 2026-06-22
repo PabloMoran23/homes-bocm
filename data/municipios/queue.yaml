@@ -284,11 +284,11 @@ municipios:
 - slug: san-agustin-del-guadalix
   nombre: San Agustín del Guadalix
   bocm_count: 32
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-22T16:11:24.237513+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/29
   notes: ''
 - slug: galapagar
   nombre: Galapagar
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-22T16:11:24.237542+00:00'
