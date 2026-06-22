@@ -179,7 +179,10 @@ class TorrelodonesAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-torrelodones/1.0")},
         )
-        ctx = self._ssl_ctx if use_ssl_ctx or "sede.torrelodones.es" in url else None
+        needs_insecure = use_ssl_ctx or any(
+            host in url for host in ("sede.torrelodones.es", "torrelodones.es")
+        )
+        ctx = self._ssl_ctx if needs_insecure and self.config.get("insecure_ssl", True) else None
         with urllib.request.urlopen(req, timeout=60, context=ctx) as resp:
             return resp.read().decode("utf-8", errors="replace")
 
