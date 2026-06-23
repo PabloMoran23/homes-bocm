@@ -1,0 +1,26 @@
+slug: arganda-del-rey
+nombre: "Arganda del Rey"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.argandadelrey.es"
+  adapter: municipio.adapters.arganda_del_rey:ArgandaDelReyAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arganda-del-rey/1.0 (+urbanismo research)"
+    sede_insecure_ssl: true
+    sede_base: "https://sedeelectronica.argandadelrey.es"
+    ckan_base: "https://datosabiertos.ayto-arganda.es"
+    ue_geojson_url: "https://datosabiertos.ayto-arganda.es/dataset/eb4dcc25-84ae-4d78-8693-0c47f1805c27/resource/3c1364d9-fc47-4617-99dd-cade9cc6b415/download/map-8.geojson"
+    convenios_json_url: "https://datosabiertos.ayto-arganda.es/dataset/901cc3dd-4e47-4cca-adcf-ed7ddfdaf344/resource/1b301e37-7410-4535-83ee-3f05535041ca/download/convenios_urbanisticos.json"
+  notes: |
+    Fuentes: web WordPress (urbanismo/PGOU/instrumentos en exposición), datos abiertos CKAN
+    (convenios urbanísticos + GeoJSON unidades de ejecución PGOU), sede STA (tablón y planeamiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
