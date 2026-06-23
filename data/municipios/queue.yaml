@@ -338,11 +338,11 @@ municipios:
 - slug: cubas-de-la-sagra
   nombre: Cubas de la Sagra
   bocm_count: 26
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-06-23T16:19:53.166682+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/35
   notes: ''
 - slug: fuente-el-saz-de-jarama
   nombre: Fuente el Saz de Jarama
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-23T16:19:53.166710+00:00'
