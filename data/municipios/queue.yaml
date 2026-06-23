@@ -329,11 +329,11 @@ municipios:
 - slug: valdemoro
   nombre: Valdemoro
   bocm_count: 28
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-23T12:17:14.889126+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/34
   notes: ''
 - slug: cubas-de-la-sagra
   nombre: Cubas de la Sagra
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-23T12:17:14.889178+00:00'
