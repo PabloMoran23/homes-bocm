@@ -347,11 +347,11 @@ municipios:
 - slug: fuente-el-saz-de-jarama
   nombre: Fuente el Saz de Jarama
   bocm_count: 25
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-06-23T20:08:00.368727+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/36
   notes: ''
 - slug: parla
   nombre: Parla
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-23T20:08:00.368755+00:00'
