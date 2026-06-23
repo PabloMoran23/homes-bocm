@@ -139,6 +139,7 @@ class CubasDeLaSagraAyuntamientoAdapter(AyuntamientoAdapter):
         self.obras_url = str(self.config.get("obras_url") or f"{WP_BASE}/tramites-y-gestiones/documentacion-obras.php")
         self.cod_muni = int(self.config.get("cod_muni") or COD_MUNI)
         self.visualurb_api = str(self.config.get("visualurb_api") or VISUALURB_API).rstrip("/")
+        self._bbox_centroid: tuple[float, float] | None = None
         self._ssl_ctx = ssl.create_default_context()
         if self.config.get("insecure_ssl", True):
             self._ssl_ctx.check_hostname = False
@@ -173,26 +174,46 @@ class CubasDeLaSagraAyuntamientoAdapter(AyuntamientoAdapter):
         except urllib.error.URLError:
             return None
 
+    def _municipio_bbox_centroid(self) -> tuple[float, float] | None:
+        if self._bbox_centroid is not None:
+            return self._bbox_centroid
+        data = self._fetch_json(f"{self.visualurb_api}/urbanismo/municipio/{self.cod_muni}")
+        if not isinstance(data, dict):
+            return None
+        bbox = data.get("bbox")
+        if not isinstance(bbox, list) or len(bbox) < 2:
+            return None
+        try:
+            min_lng, min_lat = float(bbox[0][0]), float(bbox[0][1])
+            max_lng, max_lat = float(bbox[1][0]), float(bbox[1][1])
+        except (TypeError, ValueError, IndexError):
+            return None
+        self._bbox_centroid = (min_lat + max_lat) / 2.0, (min_lng + max_lng) / 2.0
+        return self._bbox_centroid
+
     def _fetch_geometry(self, rec: dict[str, Any]) -> dict[str, Any]:
         """Intenta enriquecer con GeoJSON de Visualurb; falla silenciosamente si 401."""
         url = f"{self.visualurb_api}/MapUrbanismo/layer/suelomunicipio/{self.cod_muni}.geojson"
         data = self._fetch_json(url)
-        if not isinstance(data, dict) or data.get("type") != "FeatureCollection":
-            return rec
-        features = data.get("features") or []
-        if not features:
-            return rec
-        geom = (features[0].get("geometry") if isinstance(features[0], dict) else None) or None
-        if not isinstance(geom, dict) or not geom.get("type"):
-            return rec
-        rec = dict(rec)
-        rec["geom_geojson"] = geom
-        rec["geometry_source"] = "portal_visor_visualurb"
-        rec["geometry_source_url"] = url
-        centroid = geometry_centroid(geom)
+        if isinstance(data, dict) and data.get("type") == "FeatureCollection":
+            features = data.get("features") or []
+            if features and isinstance(features[0], dict):
+                geom = features[0].get("geometry")
+                if isinstance(geom, dict) and geom.get("type"):
+                    rec = dict(rec)
+                    rec["geom_geojson"] = geom
+                    rec["geometry_source"] = "portal_visor_visualurb"
+                    rec["geometry_source_url"] = url
+                    centroid = geometry_centroid(geom)
+                    if centroid:
+                        rec["lat"], rec["lon"] = centroid
+                        rec["coord_source"] = "portal_geometry_centroid"
+                    return rec
+        centroid = self._municipio_bbox_centroid()
         if centroid:
+            rec = dict(rec)
             rec["lat"], rec["lon"] = centroid
-            rec["coord_source"] = "portal_geometry_centroid"
+            rec["coord_source"] = "portal_municipio_bbox"
         return rec
 
     def _parse_board(self, html: str) -> list[dict[str, Any]]:
@@ -277,19 +298,19 @@ class CubasDeLaSagraAyuntamientoAdapter(AyuntamientoAdapter):
         if not RE_LICENCIA.search(blob):
             return None
         key = row.get("expediente") or row["url"]
-        return {
-            "id": _stable_id("lic", key),
-            "fecha_concesion": row.get("fecha"),
-            "tipo": row.get("procedimiento") or "licencia",
-            "distrito": None,
-            "lat": None,
-            "lon": None,
-            "titulo": row["titulo"],
-            "expte": row.get("expediente") or None,
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "origen": row.get("origen"),
-        }
+        return self._fetch_geometry(
+            {
+                "id": _stable_id("lic", key),
+                "fecha_concesion": row.get("fecha"),
+                "tipo": row.get("procedimiento") or "licencia",
+                "distrito": None,
+                "titulo": row["titulo"],
+                "expte": row.get("expediente") or None,
+                "url": row["url"],
+                "source": "ayuntamiento",
+                "origen": row.get("origen"),
+            }
+        )
 
     def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = " ".join(
@@ -313,18 +334,19 @@ class CubasDeLaSagraAyuntamientoAdapter(AyuntamientoAdapter):
         elif re.search(r"(?i)convocatoria.*pleno|acuerdo plenario", blob):
             tipo = "acuerdo plenario"
         key = row.get("expediente") or row["url"]
-        rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
-            "titulo": row["titulo"],
-            "fecha": row.get("fecha"),
-            "tipo": tipo,
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "expte": row.get("expediente") or None,
-            "origen": row.get("origen"),
-        }
-        return rec
+        return self._fetch_geometry(
+            {
+                "id": _stable_id("proy", key),
+                "municipio": MUNICIPIO,
+                "titulo": row["titulo"],
+                "fecha": row.get("fecha"),
+                "tipo": tipo,
+                "url": row["url"],
+                "source": "ayuntamiento",
+                "expte": row.get("expediente") or None,
+                "origen": row.get("origen"),
+            }
+        )
 
     def _doc_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any]:
         titulo = row["titulo"]
@@ -344,20 +366,20 @@ class CubasDeLaSagraAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _doc_to_licencia(self, row: dict[str, Any]) -> dict[str, Any]:
         titulo = row["titulo"]
-        return {
-            "id": _stable_id("lic", row.get("pdf_url") or row["url"]),
-            "fecha_concesion": row.get("fecha"),
-            "tipo": _obra_tipo(titulo),
-            "distrito": None,
-            "lat": None,
-            "lon": None,
-            "titulo": titulo[:500],
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "nota": "Documentación informativa de trámite; no concesión publicada",
-            "origen": row.get("origen"),
-            **({"pdf_url": row["pdf_url"]} if row.get("pdf_url") else {}),
-        }
+        return self._fetch_geometry(
+            {
+                "id": _stable_id("lic", row.get("pdf_url") or row["url"]),
+                "fecha_concesion": row.get("fecha"),
+                "tipo": _obra_tipo(titulo),
+                "distrito": None,
+                "titulo": titulo[:500],
+                "url": row["url"],
+                "source": "ayuntamiento",
+                "nota": "Documentación informativa de trámite; no concesión publicada",
+                "origen": row.get("origen"),
+                **({"pdf_url": row["pdf_url"]} if row.get("pdf_url") else {}),
+            }
+        )
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
