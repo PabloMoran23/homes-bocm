@@ -1,0 +1,27 @@
+slug: cubas-de-la-sagra
+nombre: "Cubas de la Sagra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytocubasdelasagra.es"
+  adapter: municipio.adapters.cubas_de_la_sagra:CubasDeLaSagraAyuntamientoAdapter
+  config:
+    sede_base: "https://cubasdelasagra.sedelectronica.es"
+    board_url: "https://cubasdelasagra.sedelectronica.es/board/"
+    urbanismo_url: "https://aytocubasdelasagra.es/tramites-y-gestiones/urbanismo.php"
+    obras_url: "https://aytocubasdelasagra.es/tramites-y-gestiones/documentacion-obras.php"
+    visualurb_org: "65afe619-2d89-4adc-af48-9948618f1c1e"
+    cod_muni: 28050
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cubas-de-la-sagra/1.0"
+  notes: |
+    Web corporativa (PGOU PDFs) + sede espublico tablón /board/ + visor Visualurb.
+    Geometría parcial: API Visualurb requiere autenticación para GeoJSON.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
