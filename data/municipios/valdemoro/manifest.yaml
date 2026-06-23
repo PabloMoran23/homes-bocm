@@ -1,0 +1,22 @@
+slug: valdemoro
+nombre: "Valdemoro"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.valdemoro.es"
+  adapter: municipio.adapters.valdemoro:ValdemoroAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdemoro/1.0 (+urbanismo research)"
+    tablon_max_pages: 16
+  notes: |
+    Sede Liferay: tablón electrónico, consulta pública, PGOU/planos PDF,
+    trámites vivienda-urbanismo. Sin visor GIS público enlazable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
