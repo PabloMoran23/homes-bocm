@@ -54,7 +54,8 @@ RE_NOISE = re.compile(
     r"suspensi[oó]n de plazos|estabilizaci[oó]n de empleo|polic[ií]a local|"
     r"t[eé]cnico.{0,25}jur[ií]dico|participaci[oó]n ciudadana|guardia civil|"
     r"presupuesto municipal|padr[oó]n del impuesto|ivtm|recaudador|conserje|"
-    r"oficial 1|emergencias|inform[aá]tica|residencia|arquitecto)",
+    r"oficial 1|emergencias|inform[aá]tica|residencia|arquitecto|libre designaci[oó]n|"
+    r"herederos|abintestato|notoriedad)",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_ASSET_BLOCK = re.compile(
@@ -104,9 +105,15 @@ def _abs_sede(href: str) -> str:
 
 def _title_from_doc_url(url: str) -> str:
     path = unquote(url.split("?")[0])
+    parts = [p for p in path.split("/") if p]
+    for part in reversed(parts):
+        if part.lower().endswith(".pdf"):
+            name = part[:-4].replace("+", " ").replace("%20", " ")
+            return _clean_title(name)
     name = Path(path).name
-    if name.lower().endswith(".pdf"):
-        name = name[:-4]
+    if re.fullmatch(r"[0-9a-f-]{36}", name, re.I):
+        if len(parts) >= 2:
+            return _title_from_doc_url("/".join(parts[:-1]))
     name = name.replace("+", " ").replace("%20", " ")
     return _clean_title(name) or url
 
