@@ -1,0 +1,32 @@
+slug: coslada
+nombre: Coslada
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://coslada.es"
+  adapter: municipio.adapters.coslada:CosladaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-coslada/1.0 (+urbanismo research)"
+    fetch_base: "https://cosladapre.toools.es"
+    proyecto_pages:
+      - "https://coslada.es/politica-territorial/urbanismo/planes-y-proyectos/planes-planeamiento/"
+      - "https://coslada.es/politica-territorial/urbanismo/planes-y-proyectos/planes-pgou/"
+      - "https://coslada.es/politica-territorial/urbanismo/convenios-urbanisticos/"
+    licencia_pages:
+      - "https://coslada.es/politica-territorial/urbanismo/impresos-administrativos/tramites-obra/"
+      - "https://coslada.es/politica-territorial/urbanismo/impresos-administrativos/tramites-actividad/"
+      - "https://coslada.es/politica-territorial/urbanismo/impresos-administrativos/informacion-urbanistica/"
+      - "https://coslada.es/politica-territorial/urbanismo/impresos-administrativos/ocupacion-via-publica/"
+  notes: |
+    WordPress multisite (política territorial): rejillas document-icon-row con PDFs de
+    planeamiento/PGOU/convenios. Sede sede.ayto-coslada.es inaccesible desde scraping;
+    licencias vía páginas de trámites informativos. Visor PGOU regional SITCM (sin enlace por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
