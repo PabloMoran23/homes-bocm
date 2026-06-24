@@ -41,7 +41,7 @@ RE_EXCLUDE = re.compile(
     r"(?i)(padr[oó]n|presupuest|responsabilidad patrimonial|\bbii\b|"
     r"funcionario|empleado|baja expediente|fin expediente|icio|plusvalia|basura|"
     r"residuos|vehiculos|evaluaci[oó]n ambiental estrat[eé]gica|modificaci[oó]n rpt|"
-    r"energ[ií]a.*clima|notificaci[oó]n expediente)",
+    r"energ[ií]a.*clima|notificaci[oó]n expediente|igualdad)",
 )
 RE_AMBIT_CODE = re.compile(
     r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*)\b",
