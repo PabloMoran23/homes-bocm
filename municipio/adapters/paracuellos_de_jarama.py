@@ -39,7 +39,9 @@ RE_PROYECTO = re.compile(
 )
 RE_EXCLUDE = re.compile(
     r"(?i)(padr[oó]n|presupuest|responsabilidad patrimonial|\bbii\b|"
-    r"funcionario|empleado|baja expediente|icio|plusvalia|basura)",
+    r"funcionario|empleado|baja expediente|fin expediente|icio|plusvalia|basura|"
+    r"residuos|vehiculos|evaluaci[oó]n ambiental estrat[eé]gica|modificaci[oó]n rpt|"
+    r"energ[ií]a.*clima|notificaci[oó]n expediente)",
 )
 RE_AMBIT_CODE = re.compile(
     r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*)\b",
@@ -367,9 +369,9 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
                 candidates.append((100.0, code, feat))
 
         parts = _sector_ilike_parts(title)
+        muni = self.wfs_municipio.replace("'", "''")
         if parts:
             pattern = "%" + "%".join(p.replace("'", "''") for p in parts[:6]) + "%"
-            muni = self.wfs_municipio.replace("'", "''")
             feats = self._wfs_query(
                 f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '{pattern}'",
                 count=10,
@@ -383,6 +385,22 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
                 if name.lower() in title_low:
                     score += 30
                 candidates.append((float(score), name, f))
+
+        keywords = [
+            w
+            for w in re.findall(r"[a-záéíóúñ]{5,}", title.lower())
+            if w not in {"anuncio", "aprob", "definitiva", "inicial", "expediente", "comunidad"}
+        ]
+        for kw in keywords[:4]:
+            feats = self._wfs_query(
+                f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '%{kw.replace(chr(39), chr(39)*2)}%'",
+                count=5,
+            )
+            for f in feats:
+                name = str((f.get("properties") or {}).get("DS_NOMB_AMB") or "")
+                if name:
+                    score = 8.0 if kw in name.lower() else 4.0
+                    candidates.append((score, name, f))
 
         if not candidates:
             return None
@@ -431,8 +449,15 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
         blob = f"{row.get('titulo')} {row.get('subseccion')}"
         if RE_EXCLUDE.search(blob):
             return None
-        if row.get("subseccion") == "URB":
+        sub = str(row.get("subseccion") or "")
+        if sub == "URB":
             pass
+        elif sub == "EDICTO":
+            if not re.search(
+                r"(?i)(plan|planeam|pgou|urban|licencia|obra|convenio|reparcel|informaci[oó]n p[uú]blica)",
+                blob,
+            ):
+                return None
         elif not RE_PROYECTO.search(blob):
             return None
         key = row.get("doc_cve") or row.get("expte") or row["url"]
