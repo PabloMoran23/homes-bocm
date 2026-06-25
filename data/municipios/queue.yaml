@@ -410,10 +410,10 @@ municipios:
 - slug: san-martin-de-la-vega
   nombre: San Martín de la Vega
   bocm_count: 21
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-06-25T04:07:59.587436+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/43
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-25T04:07:59.587471+00:00'
