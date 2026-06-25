@@ -401,11 +401,11 @@ municipios:
 - slug: humanes-de-madrid
   nombre: Humanes de Madrid
   bocm_count: 22
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-06-25T00:10:19.220593+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/42
   notes: ''
 - slug: san-martin-de-la-vega
   nombre: San Martín de la Vega
@@ -416,4 +416,4 @@ municipios:
   last_error: null
   pr_url: null
   notes: ''
-updated_at: '2026-06-21T10:10:33.464329+00:00'
+updated_at: '2026-06-25T00:10:19.220621+00:00'
