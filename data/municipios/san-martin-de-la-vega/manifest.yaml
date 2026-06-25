@@ -1,0 +1,25 @@
+slug: san-martin-de-la-vega
+nombre: "San Martín de la Vega"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayto-smv.es"
+  adapter: municipio.adapters.san_martin_de_la_vega:SanMartinDeLaVegaAyuntamientoAdapter
+  config:
+    sede_base: "https://sanmartindelavega.sedelectronica.es"
+    pgou_base: "https://plangeneralsanmartindelavega.ayto-smv.es"
+    wpfb_root_cat: 128
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-san-martin-de-la-vega/1.0"
+  notes: |
+    Fuentes: tablón virtual WP-Filebase (urbanismo), sede espublico (/board),
+    portal PGOU Weebly, impresos licencias en ayto-smv.es/download/.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
