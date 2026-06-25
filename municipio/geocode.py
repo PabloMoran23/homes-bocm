@@ -48,6 +48,20 @@ def _jitter(lat: float, lng: float, key: str, *, spread_m: float = JITTER_SPREAD
 
 
 def _municipio_centroid(manifest: MunicipioManifest, cache: dict[str, list[float]]) -> tuple[float, float] | None:
+    cfg = manifest.portal.config
+    raw = cfg.get("centroid")
+    if isinstance(raw, (list, tuple)) and len(raw) >= 2:
+        try:
+            return float(raw[0]), float(raw[1])
+        except (TypeError, ValueError):
+            pass
+    lat = cfg.get("centroid_lat")
+    lng = cfg.get("centroid_lng") if cfg.get("centroid_lng") is not None else cfg.get("centroid_lon")
+    if lat is not None and lng is not None:
+        try:
+            return float(lat), float(lng)
+        except (TypeError, ValueError):
+            pass
     for name in (manifest.nombre, manifest.slug.replace("-", " ").title()):
         if name in cache:
             lat, lng = cache[name]

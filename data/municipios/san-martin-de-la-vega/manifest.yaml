@@ -12,6 +12,7 @@ portal:
     wpfb_root_cat: 128
     request_delay_s: 0.35
     insecure_ssl: true
+    centroid: [40.2110462, -3.5771806]
     user_agent: "poc-bocm-san-martin-de-la-vega/1.0"
   notes: |
     Fuentes: tablón virtual WP-Filebase (urbanismo), sede espublico (/board),
