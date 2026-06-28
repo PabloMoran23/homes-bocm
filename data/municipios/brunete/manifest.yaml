@@ -10,6 +10,7 @@ portal:
     sede_base: "https://brunete.sedelectronica.es"
     board_url: "https://brunete.sedelectronica.es/board/"
     urbanismo_url: "https://brunete.org/concejalias/urbanismo/"
+    geoportal_url: "https://mun.nexusgeographics.com/brunetegp/"
     request_delay_s: 0.35
     user_agent: "poc-bocm-brunete/1.0 (+urbanismo research)"
   notes: |
@@ -21,3 +22,9 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    Geoportal Nexus (SPA); polígonos vía SITCM cuando el título cita código de ámbito.

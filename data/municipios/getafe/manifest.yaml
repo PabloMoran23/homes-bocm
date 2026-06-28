@@ -21,3 +21,9 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    Sin ArcGIS REST público en geoportal; enriquecimiento vía capa SITCM VPLA_V_AMBITO.

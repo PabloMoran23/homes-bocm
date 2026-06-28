@@ -9,6 +9,7 @@ portal:
   config:
     sede_base: "https://sede.fuenlabrada.es"
     transparencia_base: "https://transparencia.ayto-fuenlabrada.es"
+    geoportal_url: "https://geospatial.ayto-fuenlabrada.es"
     request_delay_s: 0.4
     sede_insecure_ssl: true
     user_agent: "poc-bocm-fuenlabrada/1.0 (+urbanismo research)"
@@ -22,3 +23,9 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    Geoportal Mapea/IGN sin REST; enriquecimiento vía SITCM VPLA_V_AMBITO.

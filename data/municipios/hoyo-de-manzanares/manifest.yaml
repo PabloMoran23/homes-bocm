@@ -1,0 +1,25 @@
+slug: hoyo-de-manzanares
+nombre: "Hoyo de Manzanares"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.hoyodemanzanares.es"
+  adapter: municipio.adapters.hoyo_de_manzanares:HoyoDeManzanaresAyuntamientoAdapter
+  config:
+    sede_base: "https://hoyodemanzanares.sedelectronica.es"
+    board_url: "https://hoyodemanzanares.sedelectronica.es/board"
+    urbanismo_url: "https://www.hoyodemanzanares.es/urbanismo-y-medio-ambiente/"
+    normativa_dossier: "https://hoyodemanzanares.sedelectronica.es/transparency/3f50e2ee-3ba3-4704-9c7b-d0ad7105c95b/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-hoyo-de-manzanares/1.0"
+  notes: |
+    Fuentes: tablón eHome (/board), transparencia normativa urbanística,
+    PDFs en web urbanismo (licencia, declaración responsable, guías).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

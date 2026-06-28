@@ -1,0 +1,25 @@
+slug: parla
+nombre: "Parla"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://transparencia.ayuntamientoparla.es"
+  adapter: municipio.adapters.parla:ParlaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.ayuntamientoparla.es"
+    transparencia_base: "https://transparencia.ayuntamientoparla.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-parla/1.0"
+  notes: |
+    Portal transparencia oGov (WordPress): planeamiento general/desarrollo, PGOU.
+    Sede STA: catálogo de trámites (dataset_CATSERV, keyword URB).
+    Tablón sede carga vía AJAX (submitAjax.aa); no replicado en v1.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

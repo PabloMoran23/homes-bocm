@@ -1,0 +1,22 @@
+slug: fuente-el-saz-de-jarama
+nombre: "Fuente el Saz de Jarama"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayuntamientofuentelsaz.com"
+  adapter: municipio.adapters.fuente_el_saz_de_jarama:FuenteElSazDeJaramaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.ayuntamientofuentelsaz.com/eAdmin"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fuente-el-saz/1.0"
+  notes: |
+    Fuentes: portal transparencia Joomla (RSS + categoría urbanismo),
+    sede add4u tablón de edictos, web trámites licencias.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

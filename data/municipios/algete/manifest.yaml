@@ -1,0 +1,26 @@
+slug: algete
+nombre: Algete
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aytoalgete.es"
+  adapter: municipio.adapters.algete:AlgeteAyuntamientoAdapter
+  config:
+    sede_base: "https://algete.sedelectronica.es"
+    board_url: "https://algete.sedelectronica.es/board/"
+    urbanismo_url: "https://www.aytoalgete.es/index.php?Itemid=519&id=111&option=com_content&view=article"
+    planeamiento_url: "https://www.aytoalgete.es/index.php?Itemid=654&id=192&option=com_content&view=article"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-algete/1.0 (+urbanismo research)"
+  notes: |
+    Joomla: PDFs de publicaciones en Urbanismo. Tablón espublico (board).
+    Licencias: trámites informativos + tablón cuando publique urbanismo.
+    Geometría: unavailable (visor SIT regional sin enlace a expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

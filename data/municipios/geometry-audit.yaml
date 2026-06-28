@@ -1,0 +1,352 @@
+generated_at: '2026-06-21T12:04:08.088027+00:00'
+municipio_count: 24
+summary:
+  arcgis_rest: 0
+  sitcm_fallback: 23
+  viewer_html_only: 0
+  none_found: 1
+  with_local_geometry: 0
+municipios:
+- slug: pozuelo-de-alarcon
+  nombre: Pozuelo de Alarcón
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: POZUELO DE ALARCÓN
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 41
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: torrejon-de-ardoz
+  nombre: Torrejón de Ardoz
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: TORREJÓN DE ARDOZ
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 95
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: mostoles
+  nombre: Móstoles
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: MÓSTOLES
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 109
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: alcala-de-henares
+  nombre: Alcalá de Henares
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: ALCALÁ DE HENARES
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 197
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: alcobendas
+  nombre: Alcobendas
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: ALCOBENDAS
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 14
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: getafe
+  nombre: Getafe
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: GETAFE
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 12
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: fuenlabrada
+  nombre: Fuenlabrada
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls:
+  - https://geospatial.ayto-fuenlabrada.es
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: FUENLABRADA
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 122
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: las-rozas-de-madrid
+  nombre: Las Rozas de Madrid
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: LAS ROZAS DE MADRID
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 315
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: rivas-vaciamadrid
+  nombre: Rivas-Vaciamadrid
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls:
+  - https://www.rivasciudad.es/geoportal/avance-pgou/
+  - https://www.rivasciudad.es/geoportal/normativa-urbanistica-vigente/
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: RIVAS-VACIAMADRID
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 247
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: boadilla-del-monte
+  nombre: Boadilla del Monte
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: BOADILLA DEL MONTE
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 126
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: villaviciosa-de-odon
+  nombre: Villaviciosa de Odón
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: VILLAVICIOSA DE ODÓN
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 32
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: meco
+  nombre: Meco
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: MECO
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 89
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: san-fernando-de-henares
+  nombre: San Fernando de Henares
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: SAN FERNANDO DE HENARES
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 9
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: alcorcon
+  nombre: Alcorcón
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: ALCORCÓN
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 43
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: pinto
+  nombre: Pinto
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: PINTO
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 136
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: villalbilla
+  nombre: Villalbilla
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: VILLALBILLA
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 20
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: tres-cantos
+  nombre: Tres Cantos
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls:
+  - https://web.trescantos.es/tramite/acceso-a-la-informacion-publica-archivos-y-registros-de-urbanismo/
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: TRES CANTOS
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 298
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: aranjuez
+  nombre: Aranjuez
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: ARANJUEZ
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 150
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: colmenar-viejo
+  nombre: Colmenar Viejo
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: COLMENAR VIEJO
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 2
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: pelabravo
+  nombre: Pelabravo
+  provincia: Salamanca
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: false
+  sitcm_municipio_wfs: null
+  portal_gis_class: none_found
+  recommended_enricher: unavailable
+  local_counts:
+    proyectos: 18
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: villanueva-de-la-canada
+  nombre: Villanueva de la Cañada
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: VILLANUEVA DE LA CAÑADA
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 141
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: brunete
+  nombre: Brunete
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls:
+  - https://mun.nexusgeographics.com/brunetegp/
+  - https://mun.nexusgeographics.com/brunetegp/
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: BRUNETE
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 67
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: el-boalo
+  nombre: El Boalo
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls: []
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: EL BOALO
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 13
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0
+- slug: ciempozuelos
+  nombre: Ciempozuelos
+  provincia: Madrid
+  geometry_status_research: null
+  geoportal_urls:
+  - https://sede.ayto-ciempozuelos.org/eAdmin/Registrar.do?action=inicioPortalTramites
+  arcgis_probes: []
+  sitcm_available: true
+  sitcm_municipio_wfs: CIEMPOZUELOS
+  portal_gis_class: sitcm_fallback
+  recommended_enricher: sitcm_ambito
+  local_counts:
+    proyectos: 10
+    proyectos_with_geometry: 0
+    licencias_with_geometry: 0

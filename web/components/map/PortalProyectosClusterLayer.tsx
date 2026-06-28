@@ -42,8 +42,16 @@ function clusterOptionsForViewport(): object {
   };
 }
 
+function mapworthyFeatures(geojson: CmPortalGeoJson<CmPortalProyectoProps>) {
+  return geojson.features.filter(
+    (f) => f.properties.coordSource !== "municipio_centroid_jitter",
+  );
+}
+
 function buildMarkersLayer(geojson: CmPortalGeoJson<CmPortalProyectoProps>) {
-  return L.geoJSON(geojson as unknown as GeoJSON.FeatureCollection, {
+  return L.geoJSON(
+    { ...geojson, features: mapworthyFeatures(geojson) } as unknown as GeoJSON.FeatureCollection,
+    {
     pointToLayer(_feature, latlng) {
       return L.marker(latlng, { icon: portalDivIcon(), zIndexOffset: 200 });
     },
@@ -90,8 +98,10 @@ export function PortalProyectosClusterLayer({
 
     const refresh = () => {
       cluster.clearLayers();
+      const mapped = mapworthyFeatures(data);
+      if (!mapped.length) return;
       const bounds = boundsFromLeaflet(map.getBounds());
-      const feats = filterPointFeaturesInView(data.features, bounds);
+      const feats = filterPointFeaturesInView(mapped, bounds);
       if (!feats.length) return;
       const layer = buildMarkersLayer({ ...data, features: feats });
       layer.eachLayer((lyr) => cluster.addLayer(lyr));
