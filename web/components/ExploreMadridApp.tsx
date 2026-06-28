@@ -46,8 +46,11 @@ import {
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
 import {
+  CM_PORTAL_META_URL,
+  CM_PORTAL_PROYECTOS_POLIGONOS_URL,
   CM_PORTAL_PROYECTOS_URL,
   type CmPortalGeoJson,
+  type CmPortalMapMeta,
   type CmPortalProyectoProps,
 } from "@/lib/cm-portal-geo";
 import { isCmMapScope } from "@/lib/map-scope";
@@ -154,6 +157,10 @@ export function ExploreMadridApp() {
   const router = useRouter();
   const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
   const [portalGeo, setPortalGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(null);
+  const [portalPolygonGeo, setPortalPolygonGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
+    null,
+  );
+  const [portalMapMeta, setPortalMapMeta] = useState<CmPortalMapMeta | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [sigmaData, setSigmaData] = useState<MadridSigmaDataset | null>(null);
   const [ambitosGeo, setAmbitosGeo] = useState<SectorFeatureCollection | null>(null);
@@ -270,10 +277,22 @@ export function ExploreMadridApp() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch(CM_PORTAL_PROYECTOS_URL);
-        if (!res.ok) throw new Error("cm-portal-proyectos");
+        const [ptsRes, polysRes, metaRes] = await Promise.all([
+          fetch(CM_PORTAL_PROYECTOS_URL),
+          fetch(CM_PORTAL_PROYECTOS_POLIGONOS_URL),
+          fetch(CM_PORTAL_META_URL),
+        ]);
+        if (!ptsRes.ok) throw new Error("cm-portal-proyectos");
         if (!cancelled) {
-          setPortalGeo((await res.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+          setPortalGeo((await ptsRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+          if (polysRes.ok) {
+            setPortalPolygonGeo((await polysRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+          } else {
+            setPortalPolygonGeo(null);
+          }
+          if (metaRes.ok) {
+            setPortalMapMeta((await metaRes.json()) as CmPortalMapMeta);
+          }
           setDataReady((prev) => ({ ...prev, portal: true }));
         }
       } catch {
@@ -423,10 +442,27 @@ export function ExploreMadridApp() {
   }, [filteredUbicGeo, mapBounds]);
 
   const portalCountInView = useMemo(() => {
-    if (!portalGeo || !cmMapScope) return 0;
-    if (!mapBounds) return portalGeo.features.length;
-    return filterPointFeaturesInView(portalGeo.features, mapBounds).length;
-  }, [portalGeo, mapBounds, cmMapScope]);
+    if (!cmMapScope) return 0;
+    let n = 0;
+    if (portalGeo?.features?.length) {
+      const mapped = portalGeo.features.filter(
+        (f) =>
+          f.properties.coordSource !== "municipio_centroid_jitter" &&
+          f.geometry.type === "Point",
+      ) as Array<{ geometry: { type: "Point"; coordinates: [number, number] } }>;
+      n += mapBounds
+        ? filterPointFeaturesInView(mapped, mapBounds).length
+        : mapped.length;
+    }
+    if (portalPolygonGeo?.features?.length) {
+      const inView = filterPolygonFeaturesInView(
+        portalPolygonGeo as unknown as SectorFeatureCollection,
+        mapBounds,
+      );
+      n += inView.features.length;
+    }
+    return n;
+  }, [portalGeo, portalPolygonGeo, mapBounds, cmMapScope]);
 
   const polygonGeo =
     mapMode === "ambitos"
@@ -498,8 +534,13 @@ export function ExploreMadridApp() {
     if (showSigma && sigmaGeoFiltered) {
       parts.push(ambitosProyectosEnVista(sigmaGeoFiltered.features.length));
     }
-    if (cmMapScope && showSigma && portalGeo) {
-      parts.push(`${portalCountInView.toLocaleString("es-ES")} portales CM en vista`);
+    if (cmMapScope && showSigma && (portalGeo || portalPolygonGeo)) {
+      parts.push(`${portalCountInView.toLocaleString("es-ES")} con ubicación en mapa`);
+      if (portalMapMeta?.proyectosSinUbicacion) {
+        parts.push(
+          `${portalMapMeta.proyectosSinUbicacion.toLocaleString("es-ES")} sin polígono (no se dibujan)`,
+        );
+      }
     }
     if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
@@ -522,6 +563,8 @@ export function ExploreMadridApp() {
     clasificacionMapPending,
     cmMapScope,
     portalGeo,
+    portalPolygonGeo,
+    portalMapMeta,
     portalCountInView,
   ]);
 
@@ -565,6 +608,7 @@ export function ExploreMadridApp() {
           ubicacionesGeojson={showUbicaciones && dataReady.ubic ? filteredUbicGeo : null}
           sigmaGeojson={showSigma ? sigmaGeoFiltered : null}
           portalGeojson={cmMapScope && showSigma ? portalGeo : null}
+          portalPolygonGeojson={cmMapScope && showSigma ? portalPolygonGeo : null}
           highlightNdp={highlightNdp}
           onSelectNdp={goUbicacion}
           sigmaPopupOptions={sigmaPopupOptions}
@@ -630,7 +674,9 @@ export function ExploreMadridApp() {
             </h2>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               {cmMapScope
-                ? "Vista CM: polígonos SIGMA (Madrid capital) y puntos violeta de portales municipales. Activa capas arriba del mapa."
+                ? portalMapMeta
+                  ? `${portalMapMeta.proyectosEnMapa?.toLocaleString("es-ES") ?? "—"} proyectos con polígono o ubicación real en mapa · ${portalMapMeta.proyectosSinUbicacion?.toLocaleString("es-ES") ?? "—"} sin geometría (solo listado, no se dibujan).`
+                  : "Vista CM: solo proyectos con polígono SITCM o coordenada real. Sin cogollos en centroide municipal."
                 : "Activa capas arriba del mapa. Busca aquí; en el mapa, pasa el ratón o pulsa un ámbito o licencia para ver el resumen."}
             </p>
           </div>

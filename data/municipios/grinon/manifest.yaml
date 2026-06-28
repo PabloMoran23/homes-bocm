@@ -1,0 +1,27 @@
+slug: grinon
+nombre: "Griñón"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://grinon.es"
+  adapter: municipio.adapters.grinon:GrinonAyuntamientoAdapter
+  config:
+    sede_base: "https://grinon.sedelectronica.es"
+    board_url: "https://grinon.sedelectronica.es/board/"
+    urbanismo_url: "https://grinon.es/areas/urbanismo"
+    planeamiento_url: "https://grinon.es/areas/urbanismo/planeamiento-urbanistico"
+    anuncios_url: "https://grinon.es/areas/urbanismo/anuncios-urbanisticos"
+    licencias_url: "https://grinon.es/areas/urbanismo/tramites-y-servicios/licencias"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-grinon/1.0"
+  notes: |
+    WordPress (planeamiento PDFs, anuncios Elementor) + tablón eHome sede.
+    urbiGIS visor informativo; sin geometría por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

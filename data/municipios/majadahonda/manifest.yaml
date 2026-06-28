@@ -1,0 +1,31 @@
+slug: majadahonda
+nombre: "Majadahonda"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.majadahonda.org"
+  adapter: municipio.adapters.majadahonda:MajadahondaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-majadahonda/1.0"
+    listing_pages:
+      - "https://www.majadahonda.org/informacion-publica-anuncios-urbanisticos"
+      - "https://www.majadahonda.org/anuncios-urbanisticos"
+    planeamiento_pages:
+      - "https://www.majadahonda.org/planes-parciales"
+      - "https://www.majadahonda.org/planes-especiales"
+      - "https://www.majadahonda.org/estudios-de-detalle"
+      - "https://www.majadahonda.org/planeamiento-urban%C3%ADstico"
+      - "https://www.majadahonda.org/disciplina-urbanistica"
+  notes: |
+    Liferay: anuncios urbanísticos en información pública (asset publisher) +
+    documentos PGOU/planes parciales + impresos de trámites licencia.
+    Geometría parcial vía WFS SIT Comunidad de Madrid (sitcm:VPLA_V_AMBITO).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

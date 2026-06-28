@@ -1,0 +1,26 @@
+slug: navalcarnero
+nombre: Navalcarnero
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://navalcarnero.es"
+  adapter: municipio.adapters.navalcarnero:NavalcarneroAyuntamientoAdapter
+  config:
+    urbanismo_base: "https://navalcarnero.es/navalcarnero/urbanismo"
+    transparencia_urb: "https://transparencia.navalcarnero.es/obras-publicas-y-urbanismo"
+    tablon_feed: "https://navalcarnero.es/navalcarnero/tablondeanuncios/feed/"
+    tramites_urbanismo: "https://navalcarnero.es/navalcarnero/tramites/?category=71"
+    sede_base: "https://sede.navalcarnero.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navalcarnero/1.0"
+  notes: |
+    WordPress multi-subsite: urbanismo (MapPress + RSS planeamiento), tablón de anuncios,
+    portal transparencia (convenios/PGOU/planes especiales), trámites descargables.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

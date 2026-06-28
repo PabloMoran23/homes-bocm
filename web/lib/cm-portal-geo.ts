@@ -1,5 +1,17 @@
 export const CM_PORTAL_PROYECTOS_URL = "/data/cm-portal-proyectos.geojson";
+export const CM_PORTAL_PROYECTOS_POLIGONOS_URL = "/data/cm-portal-proyectos-poligonos.geojson";
 export const CM_PORTAL_LICENCIAS_URL = "/data/cm-portal-licencias.geojson";
+export const CM_PORTAL_META_URL = "/data/cm-portal-meta.json";
+
+export type CmPortalMapMeta = {
+  generatedAt?: string;
+  proyectosTotal?: number;
+  proyectosEnMapa?: number;
+  proyectosPoligonos?: number;
+  proyectosPuntosReales?: number;
+  proyectosSinUbicacion?: number;
+  licenciasEnMapa?: number;
+};
 
 export type CmPortalProyectoProps = {
   id: string;
@@ -28,7 +40,10 @@ export type CmPortalGeoJson<P> = {
   generatedAt?: string;
   features: Array<{
     type: "Feature";
-    geometry: { type: "Point"; coordinates: [number, number] };
+    geometry:
+      | { type: "Point"; coordinates: [number, number] }
+      | { type: "Polygon"; coordinates: number[][][] }
+      | { type: "MultiPolygon"; coordinates: number[][][][] };
     properties: P;
   }>;
 };

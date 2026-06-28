@@ -37,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
             "proyectos_update",
             "licencias_backfill",
             "licencias_update",
+            "enrich_geometry",
             "geocode",
             "sync_supabase",
             "validate",
@@ -84,11 +85,33 @@ def main(argv: list[str] | None = None) -> int:
     qfail.add_argument("--municipio", "-m", required=True)
     qfail.add_argument("--error", required=True)
 
+    audit = sub.add_parser("audit-geometry", help="Auditar fuentes GIS de municipios en cola")
+    audit.add_argument(
+        "--all-done",
+        action="store_true",
+        help="Auditar todos los municipios con status=done en queue.yaml",
+    )
+    _add_municipio_arg(audit)
+
     args = parser.parse_args(argv)
 
     if args.command == "list":
         for slug in list_manifest_slugs():
             print(slug)
+        return 0
+
+    if args.command == "audit-geometry":
+        from municipio.geometry_audit import audit_slugs, load_queue_done_slugs, write_audit
+
+        slugs = args.municipios or []
+        if getattr(args, "all_done", False):
+            slugs = load_queue_done_slugs()
+        if not slugs:
+            print("Indica --municipio <slug> o --all-done", file=sys.stderr)
+            return 2
+        path = write_audit(slugs)
+        print(json.dumps(audit_slugs(slugs), indent=2, ensure_ascii=False))
+        print(f"\nAudit escrito en: {path}", file=sys.stderr)
         return 0
 
     if args.command == "queue":

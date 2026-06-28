@@ -1,0 +1,25 @@
+slug: humanes-de-madrid
+nombre: "Humanes de Madrid"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://humanes.sedelectronica.es"
+  adapter: municipio.adapters.humanes_de_madrid:HumanesDeMadridAyuntamientoAdapter
+  config:
+    sede_base: "https://humanes.sedelectronica.es"
+    board_url: "https://humanes.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-humanes/1.0"
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Carpeta tributaria CiudadaNET (eadministracion.es) solo trámites fiscales.
+    Web ayto-humanesdemadrid.es bloqueada por captcha en CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

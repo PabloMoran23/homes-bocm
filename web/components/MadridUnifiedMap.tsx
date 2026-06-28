@@ -13,6 +13,7 @@ import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
 import { PortalProyectosClusterLayer } from "@/components/map/PortalProyectosClusterLayer";
+import { PortalProyectosPolygonLayer } from "@/components/map/PortalProyectosPolygonLayer";
 import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
 import { LandingMapPulseLayer } from "@/components/map/LandingMapPulseLayer";
 import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
@@ -155,6 +156,7 @@ function UnifiedFitBounds({
   ubicaciones,
   sigma,
   portal,
+  portalPolygons,
   fitToData = true,
   initialView = "city",
   mapScope = "madrid",
@@ -162,6 +164,7 @@ function UnifiedFitBounds({
   ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
   portal?: CmPortalGeoJson<CmPortalProyectoProps> | null;
+  portalPolygons?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   fitToData?: boolean;
   initialView?: MapInitialView;
   mapScope?: MapScope;
@@ -175,7 +178,8 @@ function UnifiedFitBounds({
     const hasUbic = Boolean(ubicaciones?.features?.length);
     const hasSigma = Boolean(sigma?.features?.length);
     const hasPortal = Boolean(portal?.features?.length);
-    const key = `${mapScope}:${initialView}:${fitToData}:${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}:${hasPortal ? portal!.features.length : 0}`;
+    const hasPortalPolys = Boolean(portalPolygons?.features?.length);
+    const key = `${mapScope}:${initialView}:${fitToData}:${hasUbic ? ubicaciones!.features.length : 0}:${hasSigma ? sigma!.features.length : 0}:${hasPortal ? portal!.features.length : 0}:${hasPortalPolys ? portalPolygons!.features.length : 0}`;
 
     const boundsFromLayers = (): L.LatLngBounds | null => {
       let bounds: L.LatLngBounds | null = null;
@@ -190,6 +194,10 @@ function UnifiedFitBounds({
       if (hasPortal) {
         const pb = L.geoJSON(portal as GeoJSON.FeatureCollection).getBounds();
         if (pb.isValid()) bounds = bounds ? bounds.extend(pb) : pb;
+      }
+      if (hasPortalPolys) {
+        const pp = L.geoJSON(portalPolygons as GeoJSON.FeatureCollection).getBounds();
+        if (pp.isValid()) bounds = bounds ? bounds.extend(pp) : pp;
       }
       return bounds?.isValid() ? bounds : null;
     };
@@ -219,7 +227,7 @@ function UnifiedFitBounds({
       return;
     }
 
-    if (!hasUbic && !hasSigma && !hasPortal) {
+    if (!hasUbic && !hasSigma && !hasPortal && !hasPortalPolys) {
       if (lastFitKey.current !== key) {
         if (mapScope === "cm") frameCmRegion(map);
         else frameMadridCity(map, initialView);
@@ -237,7 +245,7 @@ function UnifiedFitBounds({
       return;
     }
     frameMadridCity(map, initialView);
-  }, [map, ubicaciones, sigma, portal, fitToData, initialView, mapScope]);
+  }, [map, ubicaciones, sigma, portal, portalPolygons, fitToData, initialView, mapScope]);
 
   useEffect(() => {
     if (!fitToData && (initialView === "preview" || initialView === "explore")) return;
@@ -250,7 +258,8 @@ function UnifiedFitBounds({
         const hasSigma = Boolean(sigma?.features?.length);
         const hasUbic = Boolean(ubicaciones?.features?.length);
         const hasPortal = Boolean(portal?.features?.length);
-        if (hasSigma || hasUbic || hasPortal) {
+        const hasPortalPolys = Boolean(portalPolygons?.features?.length);
+        if (hasSigma || hasUbic || hasPortal || hasPortalPolys) {
           let bounds: L.LatLngBounds | null = null;
           if (hasSigma) {
             const sb = L.geoJSON(sigma as GeoJSON.FeatureCollection).getBounds();
@@ -264,6 +273,10 @@ function UnifiedFitBounds({
             const pb = L.geoJSON(portal as GeoJSON.FeatureCollection).getBounds();
             if (pb.isValid()) bounds = bounds ? bounds.extend(pb) : pb;
           }
+          if (hasPortalPolys) {
+            const pp = L.geoJSON(portalPolygons as GeoJSON.FeatureCollection).getBounds();
+            if (pp.isValid()) bounds = bounds ? bounds.extend(pp) : pp;
+          }
           if (bounds?.isValid()) fitLayerBounds(map, bounds, initialView, "data");
         }
       }
@@ -272,7 +285,7 @@ function UnifiedFitBounds({
     const ro = new ResizeObserver(refit);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [map, ubicaciones, sigma, portal, fitToData, initialView, mapScope]);
+  }, [map, ubicaciones, sigma, portal, portalPolygons, fitToData, initialView, mapScope]);
 
   return null;
 }
@@ -316,6 +329,7 @@ export function MadridUnifiedMap({
   showAttribution = true,
   landingPulse = false,
   portalGeojson = null,
+  portalPolygonGeojson = null,
   showPortal = false,
   mapScope = "madrid",
 }: {
@@ -346,6 +360,7 @@ export function MadridUnifiedMap({
   landingPulse?: boolean;
   /** Proyectos de portales municipales CM (modo `mapScope=cm`). */
   portalGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
+  portalPolygonGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   showPortal?: boolean;
   mapScope?: MapScope;
 }) {
@@ -356,7 +371,10 @@ export function MadridUnifiedMap({
   const preferCanvas = (preferCanvasProp || preferCanvasAuto) && !landingPulse;
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
-  const nPortal = portalGeojson?.features?.length ?? 0;
+  const nPortal =
+    (portalGeojson?.features?.filter(
+      (f) => f.properties?.coordSource !== "municipio_centroid_jitter",
+    ).length ?? 0) + (portalPolygonGeojson?.features?.length ?? 0);
   const mapCenter = mapScope === "cm" ? CM_CENTER : MADRID_CENTER;
   const mapZoom =
     mapScope === "cm" && initialView === "explore"
@@ -483,10 +501,15 @@ export function MadridUnifiedMap({
               geojson={portalGeojson}
               visible={showPortal}
             />
+            <PortalProyectosPolygonLayer
+              geojson={portalPolygonGeojson}
+              visible={showPortal}
+            />
             <UnifiedFitBounds
               ubicaciones={ubicacionesGeojson}
               sigma={sigmaGeojson}
               portal={portalGeojson}
+              portalPolygons={portalPolygonGeojson}
               fitToData={fitToData}
               initialView={initialView}
               mapScope={mapScope}

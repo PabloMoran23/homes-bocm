@@ -1,0 +1,26 @@
+slug: villanueva-del-pardillo
+nombre: Villanueva del Pardillo
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.vvapardillo.org"
+  adapter: municipio.adapters.villanueva_del_pardillo:VillanuevaDelPardilloAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.vvapardillo.org"
+    board_url: "https://sede.vvapardillo.org/board/"
+    normativa_url: "https://www.vvapardillo.org/normativa-urbanistica"
+    tramites_url: "https://www.vvapardillo.org/tramites/urbanismo"
+    sede_insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villanueva-del-pardillo/1.0"
+  notes: |
+    Joomla (normativa PGOU/planes parciales PDF) + sede eHome (tablón /board).
+    Licencias: formularios en /tramites/urbanismo; concesiones en tablón si se publican.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

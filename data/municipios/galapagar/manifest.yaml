@@ -1,0 +1,29 @@
+slug: galapagar
+nombre: "Galapagar"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.galapagar.es/eAdmin"
+  adapter: municipio.adapters.galapagar:GalapagarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-galapagar/1.0"
+    sede_base: "https://sede.galapagar.es/eAdmin"
+    transparencia_base: "https://transparencia.galapagar.es"
+    transparencia_pages:
+      - page_id: 9196
+        section: planeamiento
+        tipo: planeamiento
+    tramite_ids: [12, 38, 39, 40, 41, 42, 43, 44, 45, 46, 413]
+  notes: |
+    Sede eAdmin (add4u): tablón digital de anuncios + catálogo trámites urbanismo.
+    Transparencia WordPress: PGOU, planes parciales UA/UE, convenios (page_id=9196).
+    PDFs vía ValidarDocumento.do con tokens javascript:abrir().
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

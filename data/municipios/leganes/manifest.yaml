@@ -1,0 +1,28 @@
+slug: leganes
+nombre: "Leganés"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.leganes.org"
+  adapter: municipio.adapters.leganes:LeganesAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.leganes.org"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-leganes/1.0 (+urbanismo research)"
+    geometry:
+      kind: idem_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "DS_MUNICIPIO ILIKE '%LEGAN%'"
+  notes: |
+    Liferay urbanismo (planes parciales/especiales, PGOU, PERI) + intento sede STA tablón.
+    sede.leganes.org inaccesible por reset TLS en cloud; geometría parcial vía IDEM WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

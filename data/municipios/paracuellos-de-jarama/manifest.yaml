@@ -1,0 +1,30 @@
+slug: paracuellos-de-jarama
+nombre: "Paracuellos de Jarama"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.paracuellosdejarama.es"
+  adapter: municipio.adapters.paracuellos_de_jarama:ParacuellosDeJaramaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-paracuellos-de-jarama/1.0"
+    sede_base: "https://sede.paracuellosdejarama.es"
+    tablon_opc_id: "268"
+    catalog_id_apl: "1"
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PARACUELLOS DE JARAMA"
+  notes: |
+    Sede Insuit: tablón JSON (tablonElectronico.do) + catálogo urbanismo (idApl=1).
+    Web Drupal bloqueada Cloudflare; geoportal TecnoGeoWS sin API por expediente.
+    Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
