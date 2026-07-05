@@ -1,0 +1,64 @@
+name: Validate municipio PR
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "data/municipios/**"
+      - "municipio/adapters/**"
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            municipio:
+              - "data/municipios/**"
+              - "municipio/adapters/**"
+
+      - name: Detect slug from manifest
+        id: slug
+        if: steps.filter.outputs.municipio == 'true'
+        run: |
+          set -euo pipefail
+          SLUG=""
+          while IFS= read -r f; do
+            case "$f" in
+              data/municipios/*/manifest.yaml)
+                SLUG=$(basename "$(dirname "$f")")
+                ;;
+            esac
+          done < <(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          if [ -z "$SLUG" ] || [ "$SLUG" = "_template" ]; then
+            echo "No se detectó slug de municipio nuevo en la PR"
+            exit 0
+          fi
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "Detected slug: $SLUG"
+
+      - name: Static PR check
+        if: steps.slug.outputs.slug != ''
+        run: |
+          chmod +x scripts/check-municipio-pr-static.sh
+          ./scripts/check-municipio-pr-static.sh "${{ steps.slug.outputs.slug }}"
+
+      - name: Install municipio deps
+        if: steps.slug.outputs.slug != ''
+        run: pip install -r requirements-municipio.txt
+
+      - name: Validate adapter imports
+        if: steps.slug.outputs.slug != ''
+        env:
+          SLUG: ${{ steps.slug.outputs.slug }}
+        run: |
+          PYTHONPATH=. python3 -c "
+          from municipio.manifest import load_manifest
+          m = load_manifest('$SLUG')
+          assert m.portal.adapter
+          print('manifest OK:', m.nombre)
+          "

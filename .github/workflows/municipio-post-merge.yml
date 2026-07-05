@@ -1,0 +1,108 @@
+name: Municipio post-merge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/municipios/**/manifest.yaml"
+      - "municipio/adapters/**"
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Slug del municipio (vacío = detectar desde diff del checkout)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: municipio-post-merge
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      slugs: ${{ steps.detect.outputs.slugs }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect municipio slugs
+        id: detect
+        env:
+          MANUAL_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.slug || '' }}
+        run: |
+          chmod +x scripts/ci/detect-municipio-push-slugs.sh
+          scripts/ci/detect-municipio-push-slugs.sh
+
+      - name: Slugs summary
+        run: echo "Slugs=${{ steps.detect.outputs.slugs }}"
+
+  post-merge:
+    needs: detect
+    if: needs.detect.outputs.slugs != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements-municipio.txt
+            db/requirements-supabase.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-municipio.txt
+          pip install -r db/requirements-supabase.txt
+
+      - name: Resolve merged PR URL
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x scripts/ci/find-pr-url-for-commit.sh
+          scripts/ci/find-pr-url-for-commit.sh
+
+      - name: Post-merge pipeline (all slugs)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SLUGS_JSON: ${{ needs.detect.outputs.slugs }}
+          PR_URL: ${{ steps.pr.outputs.url }}
+        run: |
+          chmod +x scripts/post-merge-municipio.sh
+          python3 - <<'PY'
+          import json, os, subprocess
+
+          slugs = json.loads(os.environ["SLUGS_JSON"])
+          pr_url = os.environ.get("PR_URL") or ""
+          for slug in slugs:
+              cmd = ["./scripts/post-merge-municipio.sh", slug]
+              if pr_url:
+                  cmd.append(pr_url)
+              print("Running:", " ".join(cmd), flush=True)
+              subprocess.run(cmd, check=True)
+          PY
+
+      - name: Commit queue.yaml
+        run: |
+          if git diff --quiet -- data/municipios/queue.yaml; then
+            echo "queue.yaml sin cambios"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/municipios/queue.yaml
+          git commit -m "chore(municipio): update queue after post-merge [skip ci]"
+          git push

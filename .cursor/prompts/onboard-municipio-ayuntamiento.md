@@ -177,7 +177,7 @@ Sync manual (si hace falta repetir):
 python3 db/sync_municipio_to_supabase.py --municipio <slug>
 ```
 
-Si no hay `SUPABASE_DB_URL` en el entorno del agente, el sync queda `skipped` — documenta en la PR que hay que ejecutarlo local/CI.
+Si no hay `SUPABASE_DB_URL` en el entorno del agente, el sync queda `skipped` — **GitHub Actions** lo ejecuta tras merge (`municipio-post-merge.yml`).
 
 ---
 
@@ -186,17 +186,16 @@ Si no hay `SUPABASE_DB_URL` en el entorno del agente, el sync queda `skipped` �
 **No hay tool de "crear PR" en esta automation.** Usa git + `gh` en la terminal del agente.
 
 1. Crea rama: `automation/municipio-<slug>`
-2. Commit solo los archivos del municipio (y `queue.yaml` si aplica):
+2. Commit **solo** los archivos del municipio (no toques `queue.yaml` — lo actualiza el babysitter tras merge en `main`):
    - `data/municipios/<slug>/manifest.yaml`
    - `data/municipios/<slug>/RESEARCH.md`
    - `municipio/adapters/<slug_modulo>.py`
-   - Actualización de `data/municipios/queue.yaml` (marca el municipio como `done`)
-3. **No commitees** `output/municipios/` (está en .gitignore) ni cambios en `web/public/data/`.
+3. **No commitees** `output/municipios/` (está en .gitignore), `web/public/data/` ni `data/municipios/queue.yaml`.
 4. Push y abre PR con `gh`:
 
 ```bash
 git checkout -b automation/municipio-<slug>
-git add data/municipios/<slug>/ municipio/adapters/<modulo>.py data/municipios/queue.yaml
+git add data/municipios/<slug>/ municipio/adapters/<modulo>.py
 git commit -m "feat(municipio): portal ayuntamiento <Nombre>"
 git push -u origin HEAD
 gh pr create --base main --title "feat(municipio): portal ayuntamiento <Nombre>" --body "$(cat <<'EOF'
@@ -217,7 +216,7 @@ gh pr create --base main --title "feat(municipio): portal ayuntamiento <Nombre>"
 - Filas con polígono: G (parity `with_geometry`)
 
 ## Sync Supabase
-- [ ] Ejecutado / Pendiente (falta SUPABASE_DB_URL)
+- [ ] Pendiente sync Supabase (automático en GitHub Actions tras merge)
 
 EOF
 )"
@@ -225,11 +224,7 @@ EOF
 
 5. Guarda la URL de la PR que devuelve `gh pr create`.
 
-Marca la cola como hecha:
-
-```bash
-PYTHONPATH=. python3 -m municipio queue done --municipio <slug> --pr-url "<url de la PR>"
-```
+**No marques la cola como `done` en esta PR.** La automation `merge-municipio-prs` mergeará y ejecutará `post-merge-municipio.sh` en `main`.
 
 Si no puedes completar el municipio tras investigación seria (portal inaccesible, sin datos públicos):
 
@@ -261,5 +256,4 @@ Abre PR igualmente con `RESEARCH.md` explicando el bloqueo, para revisión human
 - [ ] `RESEARCH.md` con fuentes documentadas + sección **Geometría / visor** y `geometry_status`
 - [ ] Adapter intenta extraer `geom_geojson` si hay visor/GIS (o documenta `unavailable`)
 - [ ] PR indica `with_geometry` del parity-report
-- [ ] PR abierta a `main`
-- [ ] Cola actualizada (`done` o `fail` con motivo)
+- [ ] PR abierta a `main` (sin `queue.yaml`; merge y cola las hace el babysitter)

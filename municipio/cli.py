@@ -107,6 +107,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     _add_municipio_arg(audit)
 
+    sub.add_parser("export-admin", help="JSON para panel admin web (municipios / bots)")
+
+    sub.add_parser("merge-review", help="JSON de PRs abiertas de onboarding (merge babysitter)")
+
     args = parser.parse_args(argv)
 
     if args.command == "list":
@@ -166,6 +170,18 @@ def main(argv: list[str] | None = None) -> int:
             )
             print(json.dumps(entry, indent=2, ensure_ascii=False))
             return 0
+
+    if args.command == "export-admin":
+        from municipio.export_admin import build_municipio_admin_payload
+
+        print(json.dumps(build_municipio_admin_payload(), ensure_ascii=False, indent=2))
+        return 0
+
+    if args.command == "merge-review":
+        from municipio.merge_babysitter import build_merge_review_payload
+
+        print(json.dumps(build_merge_review_payload(), ensure_ascii=False, indent=2))
+        return 0
 
     pilot_slugs = ["mostoles", "getafe", "pozuelo-de-alarcon"]
     slugs = args.municipios or []
