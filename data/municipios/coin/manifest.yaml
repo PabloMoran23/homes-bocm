@@ -1,0 +1,27 @@
+slug: coin
+nombre: "Coín"
+provincia: "Coín, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://coin.sedelectronica.es"
+  adapter: municipio.adapters.coin:CoinAyuntamientoAdapter
+  config:
+    sede_base: "https://coin.sedelectronica.es"
+    board_url: "https://coin.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-coin/1.0"
+    centroid: [36.6594, -4.7564]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web www.coin.es (Drupal) devuelve error de base de datos / 403 en CI.
+    Visor PGOU PRP Málaga (gis.prpmalaga.es) sin API REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
