@@ -1,0 +1,587 @@
+{
+  "generatedAt": "2026-06-29T16:15:58.750Z",
+  "source": "madrid-sigma-ambitos + metrics + clasificación + visor (resumen y distrito)",
+  "criteria": "viviendas/m² + ámbito en mapa",
+  "items": [
+    {
+      "id": "tour-711-2013-20329",
+      "href": "/proyecto/711-2013-20329",
+      "tag": "Gran desarrollo residencial",
+      "dateLabel": "2013",
+      "title": "Hasta 2000 viviendas: APR.02.21 Mahou-Vicente Calderón",
+      "dek": "El Plan Parcial de Reforma Interior tiene por objeto el desarrollo y establecimiento de la ordenación pormenorizada en el ÁPR.02.21…",
+      "numViviendas": 2000,
+      "supM2": 204218,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2013/20329",
+      "bounds": [
+        40.40002909686277,
+        -3.722516534118756,
+        40.404939634404684,
+        -3.7147220148663083
+      ],
+      "center": [
+        40.402484365633725,
+        -3.718619274492532
+      ],
+      "score": 2160,
+      "categoryLabel": "Gran desarrollo residencial",
+      "categoriaProyecto": "gran_desarrollo_residencial",
+      "tipoObra": "modificacion_planeamiento",
+      "iconKey": "planeamiento",
+      "locationLine": "Arganzuela · APR.02.21 MAHOU-VICENTE CALDERÓN",
+      "resumen": "El Plan Parcial de Reforma Interior tiene por objeto el desarrollo y establecimiento de la ordenación pormenorizada en el ÁPR.02.21…"
+    },
+    {
+      "id": "tour-711-2007-07846",
+      "href": "/proyecto/711-2007-07846",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2007",
+      "title": "Sector UZP.2.03 Desarrollo del Este - Los Ahijones",
+      "dek": "En el marco de las disposiciones de la Ley 9/2001 y las determinaciones del PEISEM se tramita la presente Modificación del Plan Parcial del…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Inicial",
+      "expedienteGrupo": "711/2007/07846",
+      "bounds": [
+        40.37347545292189,
+        -3.5856021353792835,
+        40.40684303192534,
+        -3.542984748754253
+      ],
+      "center": [
+        40.390159242423614,
+        -3.5642934420667682
+      ],
+      "score": 460.4,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "equipamiento_publico",
+      "iconKey": "equipamiento",
+      "locationLine": "Vicálvaro · SECTOR UZP.2.03 DESARROLLO DEL ESTE - LOS A…",
+      "resumen": "En el marco de las disposiciones de la Ley 9/2001 y las determinaciones del PEISEM se tramita la presente Modificación del Plan Parcial del…"
+    },
+    {
+      "id": "tour-714-2002-05540",
+      "href": "/proyecto/714-2002-05540",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2002",
+      "title": "UZP.2.03 Desarrollo del Este - Los Ahijones",
+      "dek": "Es una urbanización o actuación sobre redes, servicios o infraestructuras del suelo.",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": null,
+      "expedienteGrupo": "714/2002/05540",
+      "bounds": [
+        40.37347545292189,
+        -3.5856021353792835,
+        40.40684303192534,
+        -3.543012590980723
+      ],
+      "center": [
+        40.390159242423614,
+        -3.5643073631800033
+      ],
+      "score": 460.1,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "urbanizacion_redes",
+      "iconKey": "urbanizacion",
+      "locationLine": "UZP.2.03 Desarrollo del Este - Los Ahijones",
+      "resumen": "Es una urbanización o actuación sobre redes, servicios o infraestructuras del suelo."
+    },
+    {
+      "id": "tour-711-2010-13994",
+      "href": "/proyecto/711-2010-13994",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2010",
+      "title": "Desarrollo del Este- Los Ahijones",
+      "dek": "En el marco de las disposiciones de la Ley 9/2001 y las determinaciones del PEISEM se tramita la presente Modificación del Plan Parcial del…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2010/13994",
+      "bounds": [
+        40.37347545292189,
+        -3.5856021353792835,
+        40.40684303192534,
+        -3.542984748754253
+      ],
+      "center": [
+        40.390159242423614,
+        -3.5642934420667682
+      ],
+      "score": 432.4,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "equipamiento_publico",
+      "iconKey": "equipamiento",
+      "locationLine": "Vicálvaro · DESARROLLO DEL ESTE- LOS AHIJONES",
+      "resumen": "En el marco de las disposiciones de la Ley 9/2001 y las determinaciones del PEISEM se tramita la presente Modificación del Plan Parcial del…"
+    },
+    {
+      "id": "tour-714-2000-06949",
+      "href": "/proyecto/714-2000-06949",
+      "tag": "Gran desarrollo residencial",
+      "dateLabel": "2000",
+      "title": "Desarrollo del Este - Los Ahijones",
+      "dek": "Son objetivos de la propuesta: - Establecimiento de un área de crecimiento de suelos paa el desarrollo de actividades residenciales con…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": null,
+      "expedienteGrupo": "714/2000/06949",
+      "bounds": [
+        40.37347545292189,
+        -3.5856021353792835,
+        40.40684303192534,
+        -3.542984748754253
+      ],
+      "center": [
+        40.390159242423614,
+        -3.5642934420667682
+      ],
+      "score": 400.3,
+      "categoryLabel": "Gran desarrollo residencial",
+      "categoriaProyecto": "gran_desarrollo_residencial",
+      "tipoObra": "infraestructura_viaria",
+      "iconKey": "viario",
+      "locationLine": "Vicálvaro · DESARROLLO DEL ESTE - LOS AHIJONES",
+      "resumen": "Son objetivos de la propuesta: - Establecimiento de un área de crecimiento de suelos paa el desarrollo de actividades residenciales con…"
+    },
+    {
+      "id": "tour-135-2023-01246",
+      "href": "/proyecto/135-2023-01246",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2023",
+      "title": "UZP.2.01 Desarrollo del Este-El Cañaveral",
+      "dek": "La modificación del Plan Parcial tiene por objeto la adecuación de su contenido a la evolución de las necesidades que han ido surgiendo…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "135/2023/01246",
+      "bounds": [
+        40.39258032811577,
+        -3.585838471449868,
+        40.41352983983759,
+        -3.5420672010678262
+      ],
+      "center": [
+        40.40305508397668,
+        -3.563952836258847
+      ],
+      "score": 384.7,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "urbanizacion_redes",
+      "iconKey": "urbanizacion",
+      "locationLine": "Vicálvaro · UZP.2.01 DESARROLLO DEL ESTE-EL CAÑAVERAL",
+      "resumen": "La modificación del Plan Parcial tiene por objeto la adecuación de su contenido a la evolución de las necesidades que han ido surgiendo…"
+    },
+    {
+      "id": "tour-711-2008-05297",
+      "href": "/proyecto/711-2008-05297",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2008",
+      "title": "Plan Especial de Infraestructuras del Manzanares …",
+      "dek": "El Plan Especial tiene por objeto la definición, ordenación y coordinación de las infraestructuras, en concreto de la red viaria y de las…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2008/05297",
+      "bounds": [
+        40.32786481658086,
+        -3.6836847991222177,
+        40.364077913154496,
+        -3.6492097226708524
+      ],
+      "center": [
+        40.34597136486768,
+        -3.6664472608965353
+      ],
+      "score": 379.8,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "equipamiento_publico",
+      "iconKey": "equipamiento",
+      "locationLine": "Villaverde · PLAN ESPECIAL DE INFRAESTRUCTURAS DEL MANZA…",
+      "resumen": "El Plan Especial tiene por objeto la definición, ordenación y coordinación de las infraestructuras, en concreto de la red viaria y de las…"
+    },
+    {
+      "id": "tour-714-2000-06033",
+      "href": "/proyecto/714-2000-06033",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2000",
+      "title": "Modificación del Plan Parcial PAU-II.6 Carabanchel",
+      "dek": "Reordenar el ámbito de la UE-3, pequeñas modificaciones en la Ordenanza Residencial y la Industrial y cuatro modificaciones puntuales para…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "714/2000/06033",
+      "bounds": [
+        40.35685905300879,
+        -3.7803482740576406,
+        40.373910809980494,
+        -3.720190919307523
+      ],
+      "center": [
+        40.365384931494646,
+        -3.750269596682582
+      ],
+      "score": 358.8,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "infraestructura_viaria",
+      "iconKey": "viario",
+      "locationLine": "Carabanchel · MODIFICACIÓN DEL PLAN PARCIAL PAU-II.6 CARA…",
+      "resumen": "Reordenar el ámbito de la UE-3, pequeñas modificaciones en la Ordenanza Residencial y la Industrial y cuatro modificaciones puntuales para…"
+    },
+    {
+      "id": "tour-716-2001-00160",
+      "href": "/proyecto/716-2001-00160",
+      "tag": "Equipamiento público",
+      "dateLabel": "2001",
+      "title": "Accesos en la c/ Arturo Soria",
+      "dek": "El objeto del Plan Especial de Mejora de la Ordenación Promenorizada para los Accesos en la c/ Arturo Soria es el cumplimiento de lo…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "716/2001/00160",
+      "bounds": [
+        40.438281200895275,
+        -3.668707796340265,
+        40.47589920158924,
+        -3.638162469225407
+      ],
+      "center": [
+        40.45709020124226,
+        -3.653435132782836
+      ],
+      "score": 349,
+      "categoryLabel": "Equipamiento público",
+      "categoriaProyecto": "equipamiento_dotacional",
+      "tipoObra": "equipamiento_publico",
+      "iconKey": "equipamiento",
+      "locationLine": "Ciudad lineal · ACCESOS EN LA C/ ARTURO SORIA",
+      "resumen": "El objeto del Plan Especial de Mejora de la Ordenación Promenorizada para los Accesos en la c/ Arturo Soria es el cumplimiento de lo…"
+    },
+    {
+      "id": "tour-711-2009-13049",
+      "href": "/proyecto/711-2009-13049",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2009",
+      "title": "Integración del tramo de la R-3",
+      "dek": "La propuesta de modificación tiene por objeto incrementar en 110.044 m2 la superficie del Ámbito de Suelo Urbanizable No Programado 4.03…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2009/13049",
+      "bounds": [
+        40.40799828349376,
+        -3.610596409351168,
+        40.44040144711951,
+        -3.575909812393764
+      ],
+      "center": [
+        40.42419986530663,
+        -3.593253110872466
+      ],
+      "score": 341.6,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "infraestructura_viaria",
+      "iconKey": "viario",
+      "locationLine": "Vicálvaro · INTEGRACIÓN DEL TRAMO DE LA R-3",
+      "resumen": "La propuesta de modificación tiene por objeto incrementar en 110.044 m2 la superficie del Ámbito de Suelo Urbanizable No Programado 4.03…"
+    },
+    {
+      "id": "tour-711-2009-12335",
+      "href": "/proyecto/711-2009-12335",
+      "tag": "Planeamiento urbanístico",
+      "dateLabel": "2009",
+      "title": "Nueva Centralidad del Este",
+      "dek": "El objetivo de la ordenación es la creación de una estructura ubana que organice la ciudad en base a los principales elementos del paisaje…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Avance",
+      "expedienteGrupo": "711/2009/12335",
+      "bounds": [
+        40.408045418532495,
+        -3.610569557655437,
+        40.441397960456236,
+        -3.5760117785716266
+      ],
+      "center": [
+        40.42472168949436,
+        -3.5932906681135317
+      ],
+      "score": 324.3,
+      "categoryLabel": "Planeamiento urbanístico",
+      "categoriaProyecto": "planeamiento_otros",
+      "tipoObra": "sin_determinar",
+      "iconKey": "generico",
+      "locationLine": "San blas · NUEVA CENTRALIDAD DEL ESTE",
+      "resumen": "El objetivo de la ordenación es la creación de una estructura ubana que organice la ciudad en base a los principales elementos del paisaje…"
+    },
+    {
+      "id": "tour-711-2014-13124",
+      "href": "/proyecto/711-2014-13124",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2014",
+      "title": "UNP.4.03 Nueva Centralidad del Este",
+      "dek": "El objeto es completar la ordenación del Plan General sobre el ámbito de suelo urbanizable no programado conforme a lo establecido en el…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Información Avance",
+      "expedienteGrupo": "711/2014/13124",
+      "bounds": [
+        40.408045418532495,
+        -3.610569557655437,
+        40.441397960456236,
+        -3.5760117785716266
+      ],
+      "center": [
+        40.42472168949436,
+        -3.5932906681135317
+      ],
+      "score": 324.3,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "urbanizacion_redes",
+      "iconKey": "urbanizacion",
+      "locationLine": "San blas · UNP.4.03 NUEVA CENTRALIDAD DEL ESTE",
+      "resumen": "El objeto es completar la ordenación del Plan General sobre el ámbito de suelo urbanizable no programado conforme a lo establecido en el…"
+    },
+    {
+      "id": "tour-135-2018-00904",
+      "href": "/proyecto/135-2018-00904",
+      "tag": "Protección patrimonial",
+      "dateLabel": "2018",
+      "title": "UZPp.2.02 Los Cerros y UNS.4.05 Ensanche de San F…",
+      "dek": "El objeto de la MPG se concreta en una propuesta alternativa de clasificación y categorización del suelo de los suelos urbanizables de Los…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Información Pública",
+      "expedienteGrupo": "135/2018/00904",
+      "bounds": [
+        40.38938476153113,
+        -3.545573541401534,
+        40.42008408428547,
+        -3.5180508976193625
+      ],
+      "center": [
+        40.404734422908305,
+        -3.5318122195104484
+      ],
+      "score": 300.8,
+      "categoryLabel": "Protección patrimonial",
+      "categoriaProyecto": "proteccion_catalogo",
+      "tipoObra": "proteccion_patrimonio",
+      "iconKey": "patrimonio",
+      "locationLine": "Vicálvaro · UZPP.2.02 LOS CERROS Y UNS.4.05 ENSANCHE DE…",
+      "resumen": "El objeto de la MPG se concreta en una propuesta alternativa de clasificación y categorización del suelo de los suelos urbanizables de Los…"
+    },
+    {
+      "id": "tour-711-2008-01650",
+      "href": "/proyecto/711-2008-01650",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2008",
+      "title": "Desdoblamiento ramal APA a Santa Eugenia",
+      "dek": "Gas Natural SDG, S.A., continuando con su política de difundir el empleo de gas natural como fuente de energía no contaminante y al objeto…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2008/01650",
+      "bounds": [
+        40.37427180929863,
+        -3.602749734847397,
+        40.39132857695344,
+        -3.5461717110896678
+      ],
+      "center": [
+        40.38280019312603,
+        -3.5744607229685323
+      ],
+      "score": 293.5,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "urbanizacion_redes",
+      "iconKey": "urbanizacion",
+      "locationLine": "Villa de vallecas · DESDOBLAMIENTO RAMAL APA A SANTA EUGENIA",
+      "resumen": "Gas Natural SDG, S.A., continuando con su política de difundir el empleo de gas natural como fuente de energía no contaminante y al objeto…"
+    },
+    {
+      "id": "tour-716-2005-00028",
+      "href": "/proyecto/716-2005-00028",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2005",
+      "title": "Nuevos accesos a los vertederos de Madrid",
+      "dek": "Es objeto del Plan Especial la definición de un nuevo elemento de la red pública de infraestructuras del municipio de Madrid, dentro de su…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "716/2005/00028",
+      "bounds": [
+        40.3319183532014,
+        -3.5963479725585454,
+        40.35932499960847,
+        -3.5611892202879694
+      ],
+      "center": [
+        40.34562167640493,
+        -3.5787685964232576
+      ],
+      "score": 293.2,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "infraestructura_viaria",
+      "iconKey": "viario",
+      "locationLine": "Villa de vallecas · NUEVOS ACCESOS A LOS VERTEDEROS DE MADRID",
+      "resumen": "Es objeto del Plan Especial la definición de un nuevo elemento de la red pública de infraestructuras del municipio de Madrid, dentro de su…"
+    },
+    {
+      "id": "tour-714-2002-06748",
+      "href": "/proyecto/714-2002-06748",
+      "tag": "Urbanización e infraestructuras",
+      "dateLabel": "2002",
+      "title": "UZP.2.01 Desarrollo del Este-El Cañaveral",
+      "dek": "Es una urbanización o actuación sobre redes, servicios o infraestructuras del suelo.",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": null,
+      "expedienteGrupo": "714/2002/06748",
+      "bounds": [
+        40.39258012941771,
+        -3.5858869235516924,
+        40.41352238071655,
+        -3.5429041414938287
+      ],
+      "center": [
+        40.403051255067126,
+        -3.5643955325227603
+      ],
+      "score": 291.4,
+      "categoryLabel": "Urbanización e infraestructuras",
+      "categoriaProyecto": "urbanizacion_infraestructuras",
+      "tipoObra": "urbanizacion_redes",
+      "iconKey": "urbanizacion",
+      "locationLine": "UZP.2.01 Desarrollo del Este-El Cañaveral",
+      "resumen": "Es una urbanización o actuación sobre redes, servicios o infraestructuras del suelo."
+    },
+    {
+      "id": "tour-511-2025-18629",
+      "href": "/proyecto/511-2025-18629",
+      "tag": "Gestión o reparcelación",
+      "dateLabel": "Reciente",
+      "title": "UZI.0.09 Sanchinarro",
+      "dek": "Es una actuación de gestión urbanística: reparcelación o redistribución de suelo.",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Inicial",
+      "expedienteGrupo": "511/2025/18629",
+      "bounds": [
+        40.4814890359309,
+        -3.6719032938295606,
+        40.51012980643651,
+        -3.6421443089021497
+      ],
+      "center": [
+        40.49580942118371,
+        -3.657023801365855
+      ],
+      "score": 287.5,
+      "categoryLabel": "Gestión o reparcelación",
+      "categoriaProyecto": "gestion_reparcelacion",
+      "tipoObra": "reparcelacion_gestion",
+      "iconKey": "gestion",
+      "locationLine": "UZI.0.09 SANCHINARRO",
+      "resumen": "Es una actuación de gestión urbanística: reparcelación o redistribución de suelo."
+    },
+    {
+      "id": "tour-711-2006-22418",
+      "href": "/proyecto/711-2006-22418",
+      "tag": "Equipamiento público",
+      "dateLabel": "2006",
+      "title": "Ámbitos de suelo dotacional colectivo del distrit…",
+      "dek": "El objeto de la presente Modificación del Plan General se puede concretar en actuaciones de mejora del sistema dotacional del distrito de…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2006/22418",
+      "bounds": [
+        40.373270070549665,
+        -3.6766998813897045,
+        40.40200909139611,
+        -3.6458295047464593
+      ],
+      "center": [
+        40.38763958097289,
+        -3.661264693068082
+      ],
+      "score": 269.8,
+      "categoryLabel": "Equipamiento público",
+      "categoriaProyecto": "equipamiento_dotacional",
+      "tipoObra": "equipamiento_publico",
+      "iconKey": "equipamiento",
+      "locationLine": "Puente de vallecas · ÁMBITOS DE SUELO DOTACIONAL COLECTIVO DEL D…",
+      "resumen": "El objeto de la presente Modificación del Plan General se puede concretar en actuaciones de mejora del sistema dotacional del distrito de…"
+    },
+    {
+      "id": "tour-511-2025-19416",
+      "href": "/proyecto/511-2025-19416",
+      "tag": "Gestión o reparcelación",
+      "dateLabel": "Reciente",
+      "title": "Madrid Nuevo Norte",
+      "dek": "Es una actuación de gestión urbanística: reparcelación o redistribución de suelo.",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": null,
+      "expedienteGrupo": "511/2025/19416",
+      "bounds": [
+        40.46711370518721,
+        -3.688655760057146,
+        40.51791671461145,
+        -3.6729570169566057
+      ],
+      "center": [
+        40.49251520989933,
+        -3.680806388506876
+      ],
+      "score": 269,
+      "categoryLabel": "Gestión o reparcelación",
+      "categoriaProyecto": "gestion_reparcelacion",
+      "tipoObra": "reparcelacion_gestion",
+      "iconKey": "gestion",
+      "locationLine": "MADRID NUEVO NORTE",
+      "resumen": "Es una actuación de gestión urbanística: reparcelación o redistribución de suelo."
+    },
+    {
+      "id": "tour-711-2006-08882",
+      "href": "/proyecto/711-2006-08882",
+      "tag": "Gran desarrollo residencial",
+      "dateLabel": "2006",
+      "title": "Plan Especial de mejora del medio urbano en las p…",
+      "dek": "El objetivo de la ordenación es modificar diferentes condiciones dela edificación del Plan Parcial UZP 1.03 \"Ensanche de Vallecas\", que…",
+      "numViviendas": null,
+      "supM2": null,
+      "fase": "Aprobación Definitiva",
+      "expedienteGrupo": "711/2006/08882",
+      "bounds": [
+        40.35839225977329,
+        -3.626011120089177,
+        40.37614760021549,
+        -3.5836258128195495
+      ],
+      "center": [
+        40.36726992999439,
+        -3.604818466454363
+      ],
+      "score": 263.2,
+      "categoryLabel": "Gran desarrollo residencial",
+      "categoriaProyecto": "gran_desarrollo_residencial",
+      "tipoObra": "vivienda_residencial",
+      "iconKey": "vivienda",
+      "locationLine": "Villa de vallecas · PLAN ESPECIAL DE MEJORA DEL MEDIO URBANO EN…",
+      "resumen": "El objetivo de la ordenación es modificar diferentes condiciones dela edificación del Plan Parcial UZP 1.03 \"Ensanche de Vallecas\", que…"
+    }
+  ]
+}

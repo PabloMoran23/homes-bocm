@@ -49,3 +49,5 @@ public/data/*.json
 !public/data/projects.json
 !public/data/madrid-sigma-clasificacion.json
 !public/data/madrid-sigma-programas.json
+!public/data/landing-map-spotlight.json
+!public/data/madrid-sigma-map-cards.json
