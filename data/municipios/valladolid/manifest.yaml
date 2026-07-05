@@ -9,6 +9,8 @@ portal:
   config:
     request_delay_s: 0.35
     user_agent: "poc-bocm-valladolid/1.0"
+    centroid_lat: 41.652946
+    centroid_lon: -4.728390
     tablon_max_pages: 40
     drous_years: [2026, 2025]
     drous_page_size: 1000
