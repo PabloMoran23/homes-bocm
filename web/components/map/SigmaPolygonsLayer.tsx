@@ -12,6 +12,7 @@ import {
   type FeaturePopupOptions,
   type SectorFeatureCollection,
 } from "@/lib/sector-geo";
+import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import { useMapVisualContext } from "@/components/map/useMapVisualContext";
 import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import type { MapVisualContext } from "@/lib/map-visual-scale";
@@ -23,12 +24,17 @@ const HIDDEN_STYLE: PathOptions = {
   stroke: false,
 };
 
+function expedienteFromProps(props: Record<string, unknown> | undefined): string {
+  return expedienteGrupoKeyFromVariant(String(props?.EXP_TX_NUMERO || ""));
+}
+
 function applySigmaFeatureStyle(
   map: L.Map,
   subLayer: L.Layer,
   feature: GeoJSON.Feature,
   visual: MapVisualContext,
   preview: boolean,
+  selectedExpediente: string | null,
 ) {
   const props = feature.properties as Record<string, unknown> | undefined;
   const show = shouldShowSigmaFeature(map, feature, visual, { preview });
@@ -38,17 +44,26 @@ function applySigmaFeatureStyle(
     }
     return;
   }
+  const selected = Boolean(
+    selectedExpediente && expedienteFromProps(props) === selectedExpediente,
+  );
   const geom = feature.geometry;
-  if (geom?.type === "Point" && "setStyle" in subLayer && typeof subLayer.setStyle === "function") {
-    subLayer.setStyle(
-      featurePointStyle(props, preview ? null : visual) as PathOptions,
-    );
-    return;
-  }
+  const base =
+    geom?.type === "Point"
+      ? (featurePointStyle(props, preview ? null : visual) as PathOptions)
+      : (featureLayerStyle(props, preview ? null : visual) as PathOptions);
+
+  const style: PathOptions = selected
+    ? {
+        ...base,
+        weight: Math.max(3, (Number(base.weight) || 2) + 2),
+        fillOpacity: Math.min(0.58, (Number(base.fillOpacity) || 0.28) * 1.35),
+        opacity: Math.min(1, (Number(base.opacity) || 0.9) + 0.05),
+      }
+    : base;
+
   if ("setStyle" in subLayer && typeof subLayer.setStyle === "function") {
-    subLayer.setStyle(
-      featureLayerStyle(props, preview ? null : visual) as PathOptions,
-    );
+    subLayer.setStyle(style);
   }
 }
 
@@ -58,6 +73,9 @@ export function SigmaPolygonsLayer({
   visible,
   preview = false,
   preferCanvas = false,
+  cardSelection = false,
+  selectedExpediente = null,
+  onSelectExpediente,
 }: {
   geojson: SectorFeatureCollection | null;
   popupOptions: FeaturePopupOptions | null;
@@ -65,10 +83,16 @@ export function SigmaPolygonsLayer({
   /** Vista previa (inicio): sin popups ni navegación al hacer clic. */
   preview?: boolean;
   preferCanvas?: boolean;
+  /** Explorar: tarjeta React en lugar de popup HTML. */
+  cardSelection?: boolean;
+  selectedExpediente?: string | null;
+  onSelectExpediente?: (expedienteGrupo: string) => void;
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
   const layerRef = useRef<L.GeoJSON | null>(null);
+  const onSelectRef = useRef(onSelectExpediente);
+  onSelectRef.current = onSelectExpediente;
 
   /** Crea la capa una sola vez al cambiar datos o visibilidad (no en cada pan/zoom). */
   useEffect(() => {
@@ -104,6 +128,16 @@ export function SigmaPolygonsLayer({
       onEachFeature(feature, lyr) {
         if (preview) return;
         const props = feature.properties as Record<string, unknown> | undefined;
+
+        if (cardSelection) {
+          lyr.on("click", (e: L.LeafletMouseEvent) => {
+            L.DomEvent.stopPropagation(e);
+            const grupo = expedienteFromProps(props);
+            if (grupo) onSelectRef.current?.(grupo);
+          });
+          return;
+        }
+
         const pop = featurePopupHtml(props, popupOptions ?? undefined);
         bindMapHoverPopup(lyr, pop, {
           className: "homes-map-popup homes-map-popup-sigma",
@@ -120,7 +154,7 @@ export function SigmaPolygonsLayer({
       map.removeLayer(layer);
       layerRef.current = null;
     };
-  }, [map, geojson, visible, preview, preferCanvas, popupOptions]);
+  }, [map, geojson, visible, preview, preferCanvas, popupOptions, cardSelection, visual]);
 
   /** Actualiza visibilidad/estilo in-place al cambiar zoom o tamaño del mapa. */
   useEffect(() => {
@@ -132,9 +166,16 @@ export function SigmaPolygonsLayer({
         subLayer as L.Layer & { feature?: GeoJSON.Feature }
       ).feature;
       if (!feature) return;
-      applySigmaFeatureStyle(map, subLayer, feature, visual, preview);
+      applySigmaFeatureStyle(
+        map,
+        subLayer,
+        feature,
+        visual,
+        preview,
+        selectedExpediente,
+      );
     });
-  }, [map, visible, preview, visual]);
+  }, [map, visible, preview, visual, selectedExpediente]);
 
   return null;
 }

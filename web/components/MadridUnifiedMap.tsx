@@ -16,6 +16,10 @@ import { PortalProyectosClusterLayer } from "@/components/map/PortalProyectosClu
 import { PortalProyectosPolygonLayer } from "@/components/map/PortalProyectosPolygonLayer";
 import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
 import { LandingMapPulseLayer } from "@/components/map/LandingMapPulseLayer";
+import { LandingMapTourLayer } from "@/components/map/LandingMapTourLayer";
+import { MapSelectionClearLayer } from "@/components/map/MapSelectionClearLayer";
+import type { LandingMapSpotlightItem } from "@/lib/landing-map-spotlight";
+import type { LandingTourActiveChange } from "@/lib/landing-map-tour";
 import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
 import { MapBoundsReporter } from "@/components/map/MapBoundsReporter";
@@ -328,6 +332,13 @@ export function MadridUnifiedMap({
   preferCanvas: preferCanvasProp = false,
   showAttribution = true,
   landingPulse = false,
+  landingTour = false,
+  landingTourItems = [],
+  tourGeojson = null,
+  onLandingTourActiveChange,
+  sigmaCardSelection = false,
+  selectedSigmaExpediente = null,
+  onSelectSigmaExpediente,
   portalGeojson = null,
   portalPolygonGeojson = null,
   showPortal = false,
@@ -358,6 +369,15 @@ export function MadridUnifiedMap({
   showAttribution?: boolean;
   /** Portada animada: proyectos que aparecen y desaparecen (solo visual). */
   landingPulse?: boolean;
+  /** Portada: tour entre proyectos destacados con zoom y tarjeta. */
+  landingTour?: boolean;
+  landingTourItems?: LandingMapSpotlightItem[];
+  tourGeojson?: SectorFeatureCollection | null;
+  onLandingTourActiveChange?: (change: LandingTourActiveChange) => void;
+  /** Explorar: tarjeta de proyecto al pulsar un polígono SIGMA. */
+  sigmaCardSelection?: boolean;
+  selectedSigmaExpediente?: string | null;
+  onSelectSigmaExpediente?: (expedienteGrupo: string | null) => void;
   /** Proyectos de portales municipales CM (modo `mapScope=cm`). */
   portalGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   portalPolygonGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
@@ -367,8 +387,10 @@ export function MadridUnifiedMap({
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
   const preferCanvasAuto = usePreferCanvas();
-  /** Canvas tapa polígonos SVG del pulse en la portada; ~220 ámbitos no lo necesitan. */
-  const preferCanvas = (preferCanvasProp || preferCanvasAuto) && !landingPulse;
+  /** Canvas tapa polígonos SVG del pulse/tour en la portada. */
+  const preferCanvas =
+    (preferCanvasProp || preferCanvasAuto) && !landingPulse && !landingTour;
+  const landingAnimated = landingPulse || landingTour;
   const nSigma = sigmaGeojson?.features?.length ?? 0;
   const nUbic = ubicacionesGeojson?.features?.length ?? 0;
   const nPortal =
@@ -477,6 +499,9 @@ export function MadridUnifiedMap({
             {interactive && onBoundsChange ? (
               <MapBoundsReporter onBoundsChange={onBoundsChange} />
             ) : null}
+            {sigmaCardSelection && onSelectSigmaExpediente ? (
+              <MapSelectionClearLayer onClear={() => onSelectSigmaExpediente(null)} />
+            ) : null}
             <LicenciasClusterLayer
               geojson={ubicacionesGeojson}
               highlightNdp={highlightNdp}
@@ -486,11 +511,26 @@ export function MadridUnifiedMap({
             <SigmaPolygonsLayer
               geojson={sigmaGeojson}
               popupOptions={sigmaPopupOptions ?? null}
-              visible={showSigma && !landingPulse}
+              visible={showSigma && !landingAnimated}
               preview={!interactive}
               preferCanvas={preferCanvas}
+              cardSelection={sigmaCardSelection && interactive}
+              selectedExpediente={selectedSigmaExpediente}
+              onSelectExpediente={
+                onSelectSigmaExpediente
+                  ? (grupo) => onSelectSigmaExpediente(grupo)
+                  : undefined
+              }
             />
-            {landingPulse ? (
+            {landingTour && landingTourItems.length > 0 && tourGeojson ? (
+              <LandingMapTourLayer
+                geojson={tourGeojson}
+                items={landingTourItems}
+                visible={showSigma}
+                onActiveChange={onLandingTourActiveChange ?? (() => {})}
+                preferCanvas={preferCanvas}
+              />
+            ) : landingPulse ? (
               <LandingMapPulseLayer
                 geojson={sigmaGeojson}
                 visible={showSigma}
@@ -505,15 +545,17 @@ export function MadridUnifiedMap({
               geojson={portalPolygonGeojson}
               visible={showPortal}
             />
-            <UnifiedFitBounds
-              ubicaciones={ubicacionesGeojson}
-              sigma={sigmaGeojson}
-              portal={portalGeojson}
-              portalPolygons={portalPolygonGeojson}
-              fitToData={fitToData}
-              initialView={initialView}
-              mapScope={mapScope}
-            />
+            {landingTour ? null : (
+              <UnifiedFitBounds
+                ubicaciones={ubicacionesGeojson}
+                sigma={sigmaGeojson}
+                portal={portalGeojson}
+                portalPolygons={portalPolygonGeojson}
+                fitToData={fitToData}
+                initialView={initialView}
+                mapScope={mapScope}
+              />
+            )}
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
             {interactive ? <ZoomControl position="topright" /> : null}
             {interactive ? <ScaleControl position="bottomleft" imperial={false} /> : null}

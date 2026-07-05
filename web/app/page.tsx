@@ -7,6 +7,7 @@ import { LandingTuZonaSection } from "@/components/LandingTuZonaSection";
 import { isPublicEdition } from "@/lib/edition";
 import { loadLandingNews } from "@/lib/landing-news";
 import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
+import { loadLandingMapSpotlight, loadLandingMapSpotlightGeo } from "@/lib/load-landing-map-spotlight";
 import { loadSigmaAmbitosLandingGeo } from "@/lib/load-sigma-ambitos-landing";
 import { loadSummary } from "@/lib/load-summary";
 import { DASHBOARD } from "@/lib/ui-labels";
@@ -34,6 +35,8 @@ export default async function Home() {
   const news = loadLandingNews();
   const dashboardStats = await loadMadridDashboardStats();
   const landingSigmaGeo = await loadSigmaAmbitosLandingGeo();
+  const landingSpotlight = await loadLandingMapSpotlight();
+  const landingTourGeo = await loadLandingMapSpotlightGeo();
   const isPublic = isPublicEdition();
 
   const planesCount = dashboardStats?.sigma?.total;
@@ -122,7 +125,11 @@ export default async function Home() {
               </p>
             </div>
             <div className="min-w-0 lg:pt-1">
-              <LandingMap sigmaGeojson={landingSigmaGeo} />
+              <LandingMap
+                sigmaGeojson={landingSigmaGeo}
+                spotlight={landingSpotlight}
+                tourGeojson={landingTourGeo}
+              />
             </div>
           </div>
         </div>

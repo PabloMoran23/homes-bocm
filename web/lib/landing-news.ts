@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import type { MadridDashboardMapaMonth, MadridDashboardStats } from "@/lib/types";
 
@@ -214,12 +215,6 @@ function buildLicenseNews(stats: MadridDashboardStats): LandingNewsSpotlight[] {
   return items;
 }
 
-function expedienteGrupoKey(value: string | null | undefined) {
-  const raw = String(value || "").trim();
-  const match = raw.match(/(\d+)\s*\/\s*(\d{4})\s*\/\s*([A-Za-z0-9]+)/);
-  return match ? `${match[1]}/${match[2]}/${match[3]}` : raw;
-}
-
 function yearFromExpediente(value: string | null | undefined) {
   const match = String(value || "").match(/\/(\d{4})\//);
   return match ? Number(match[1]) : null;
@@ -245,7 +240,7 @@ function buildSigmaNews(root: string): LandingNewsSpotlight[] {
 
   const candidates = sigma.expedientes
     .map((exp) => {
-      const grupo = expedienteGrupoKey(String(exp.EXP_TX_NUMERO || ""));
+      const grupo = expedienteGrupoKeyFromVariant(String(exp.EXP_TX_NUMERO || ""));
       const year = yearFromExpediente(grupo);
       const ficha = slim.byGrupoExpediente?.[grupo]?.visorFicha;
       const sup = Number(ficha?.superficieAmbitoM2);

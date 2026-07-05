@@ -1,4 +1,5 @@
 import { fetchStaticJson } from "./fetch-static-json";
+import { loadCmPortalProjectById } from "./load-cm-portal-project";
 import { ensureProject } from "./ensure-project";
 import { projectFromDominioRow } from "./proyecto-dominio-map";
 import { projectPath } from "./project-display";
@@ -39,5 +40,7 @@ export async function loadProjectById(id: string): Promise<Project | null> {
   const fromDb = await loadProjectFromSupabase(decoded);
   if (fromDb) return fromDb;
   const map = await getIndex();
-  return map.get(decoded) ?? null;
+  const fromBocm = map.get(decoded);
+  if (fromBocm) return fromBocm;
+  return loadCmPortalProjectById(decoded);
 }

@@ -41,6 +41,8 @@ export function coordSourceLabel(source: string | null | undefined): string {
       return "Ubicación del proyecto (gestión, polígono del expediente)";
     case "sigma_madrid_urbanizacion":
       return "Ubicación del proyecto (urbanización, polígono del expediente)";
+    case "portal_geometry_centroid":
+      return "Centroide del polígono publicado en el portal municipal";
     default:
       return source ?? "Sin coordenadas";
   }

@@ -21,7 +21,7 @@ import { projectPath } from "@/lib/project-display";
 import type { SigmaPresentationInput } from "@/lib/sigma-presentation";
 import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
 import { fetchSigmaGeoForExpediente } from "@/lib/load-sigma-geo";
-import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
+import { sigmaFichaPath, sigmaFichaSlug } from "@/lib/sigma-ficha-path";
 import {
   bocmAnunciosTabLabel,
   SIGMA_BOCM_SECTION_INTRO,
@@ -223,7 +223,7 @@ export function SigmaExpedienteDetailView({
           <SigmaMetricsPanel metric={metricProp ?? null} compact />
 
           <Link
-            href="/explore"
+            href={`/explore?sigma=${encodeURIComponent(sigmaFichaSlug(ficha.expedienteGrupo))}`}
             className="block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-[var(--portal-accent)] hover:bg-slate-100"
           >
             Ver en el mapa de Madrid

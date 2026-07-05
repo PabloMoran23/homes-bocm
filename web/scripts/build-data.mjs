@@ -542,6 +542,402 @@ function buildLandingNewsSpotlight() {
   );
 }
 
+const LANDING_TOUR_MAX_BBOX_KM2 = 15;
+
+function accumulateBoundsLanding(coords, depth, b) {
+  if (!coords || depth > 14) return;
+  if (
+    Array.isArray(coords) &&
+    coords.length >= 2 &&
+    typeof coords[0] === "number" &&
+    typeof coords[1] === "number"
+  ) {
+    const lng = coords[0];
+    const lat = coords[1];
+    b.minLat = Math.min(b.minLat, lat);
+    b.maxLat = Math.max(b.maxLat, lat);
+    b.minLng = Math.min(b.minLng, lng);
+    b.maxLng = Math.max(b.maxLng, lng);
+    return;
+  }
+  if (Array.isArray(coords)) {
+    for (const c of coords) accumulateBoundsLanding(c, depth + 1, b);
+  }
+}
+
+function approximateBBoxAreaKm2Landing(geometry) {
+  if (!geometry?.type || !geometry.coordinates) return null;
+  const t = geometry.type;
+  if (t !== "Polygon" && t !== "MultiPolygon") return null;
+  const b = { minLat: 90, maxLat: -90, minLng: 180, maxLng: -180 };
+  accumulateBoundsLanding(geometry.coordinates, 0, b);
+  if (b.minLat >= b.maxLat || b.minLng >= b.maxLng) return null;
+  const latSpan = b.maxLat - b.minLat;
+  const lngSpan = b.maxLng - b.minLng;
+  const avgLatRad = ((b.minLat + b.maxLat) / 2) * (Math.PI / 180);
+  return latSpan * 111 * lngSpan * 111 * Math.cos(avgLatRad);
+}
+
+function mergeBoundsLanding(a, b) {
+  return {
+    minLat: Math.min(a.minLat, b.minLat),
+    maxLat: Math.max(a.maxLat, b.maxLat),
+    minLng: Math.min(a.minLng, b.minLng),
+    maxLng: Math.max(a.maxLng, b.maxLng),
+  };
+}
+
+function boundsFromGeometryLanding(geometry) {
+  const b = { minLat: 90, maxLat: -90, minLng: 180, maxLng: -180 };
+  accumulateBoundsLanding(geometry?.coordinates, 0, b);
+  if (b.minLat >= b.maxLat || b.minLng >= b.maxLng) return null;
+  return b;
+}
+
+function scoreLandingTour(metric, catalog, geoMeta) {
+  const spotlight = scoreSpotlight(metric, catalog);
+  if (spotlight > 0) return spotlight;
+
+  const sanitized = sanitizeSigmaExpedienteMetric(metric || {});
+  const sup = Number(sanitized?.sup_total_m2) || 0;
+  if (sup >= 5000) return sup / 50;
+
+  const km2 = geoMeta?.maxFeatureKm2;
+  if (km2 != null && km2 >= 0.005 && km2 <= LANDING_TOUR_MAX_BBOX_KM2) {
+    let score = km2 * 30;
+    const y = yearFromExpedienteNum(catalog?.EXP_TX_NUMERO || geoMeta?.expNum);
+    if (y && y >= 2022) score *= 1.2;
+    else if (y && y >= 2018) score *= 1.1;
+    if (String(catalog?.FAS_TX_DENOM || "").toLowerCase().includes("definitiva")) score *= 1.08;
+    const denom = String(catalog?.EXP_TX_DENOM || "");
+    if (/vivienda|residencial|plan parcial|uzp|pe\.|apr\./i.test(denom)) score *= 1.15;
+    return score;
+  }
+  return 0;
+}
+
+function titleForTour(denom, n) {
+  const d = shortDenom(denom, 50);
+  if (n >= 400) return `Hasta ${n.toLocaleString("es-ES")} viviendas: ${d}`;
+  if (n >= 80) return `${d} — ${n.toLocaleString("es-ES")} viviendas previstas`;
+  if (n > 0) return `${d} · ${n.toLocaleString("es-ES")} viviendas`;
+  return d;
+}
+
+const SPOTLIGHT_CATEGORY_LABELS = {
+  gran_desarrollo_residencial: "Gran desarrollo residencial",
+  residencial_o_vivienda: "Residencial / vivienda",
+  urbanizacion_infraestructuras: "Urbanización e infraestructuras",
+  gestion_reparcelacion: "Gestión o reparcelación",
+  proteccion_catalogo: "Protección patrimonial",
+  equipamiento_dotacional: "Equipamiento público",
+  terciario_comercial_hotelero: "Terciario o comercial",
+  plan_especial_uso_actividad: "Uso en edificio existente",
+  modificacion_planeamiento_general: "Modificación del Plan General",
+  ordenacion_parcela_manzana: "Ordenación de parcela",
+  ajuste_administrativo: "Ajuste administrativo",
+  planeamiento_otros: "Planeamiento urbanístico",
+};
+
+const SPOTLIGHT_CATEGORY_PLAIN = {
+  gran_desarrollo_residencial:
+    "Es un gran desarrollo residencial con muchas viviendas o un ámbito amplio.",
+  residencial_o_vivienda: "Es un proyecto centrado en vivienda o uso residencial.",
+  urbanizacion_infraestructuras: "Organiza urbanización, calles o infraestructuras del ámbito.",
+  gestion_reparcelacion: "Trata la gestión del suelo y la reparcelación entre propietarios.",
+  proteccion_catalogo: "Incide en protección patrimonial o catalogación de edificios.",
+  equipamiento_dotacional: "Busca crear o ampliar equipamiento público o dotacional.",
+  terciario_comercial_hotelero: "Afecta a usos comerciales, hoteleros u oficinas.",
+  plan_especial_uso_actividad: "Regula un uso o actividad concreta en edificio existente.",
+  modificacion_planeamiento_general: "Modifica el planeamiento general de la ciudad.",
+  ordenacion_parcela_manzana: "Ordena una parcela o manzana: volúmenes, usos o condiciones.",
+  ajuste_administrativo: "Es un ajuste técnico o administrativo del planeamiento.",
+  planeamiento_otros: "Es un expediente de planeamiento urbanístico sin categoría más específica.",
+};
+
+const SPOTLIGHT_TIPO_OBRA_PLAIN = {
+  vivienda_residencial:
+    "El proyecto prevé viviendas nuevas o un desarrollo residencial en el ámbito afectado.",
+  edificio_ampliacion:
+    "Afecta a un edificio concreto: ampliación, reforma o nueva edificabilidad.",
+  urbanizacion_redes:
+    "Es una urbanización o actuación sobre redes, servicios o infraestructuras del suelo.",
+  equipamiento_publico:
+    "Destina el ámbito a equipamiento público: colegio, sanidad, dotacional o deportivo.",
+  proteccion_patrimonio:
+    "Protege o regula un bien patrimonial, edificio catalogado o entorno con valor histórico.",
+  reparcelacion_gestion:
+    "Es una actuación de gestión urbanística: reparcelación o redistribución de suelo.",
+  modificacion_planeamiento: "Cambia normas del plan general de Madrid para este ámbito.",
+};
+
+const SPOTLIGHT_TIPO_OBRA_TO_ICON = {
+  vivienda_residencial: "vivienda",
+  edificio_ampliacion: "edificio",
+  garaje_aparcamiento: "garaje",
+  uso_terciario: "terciario",
+  infraestructura_viaria: "viario",
+  urbanizacion_redes: "urbanizacion",
+  equipamiento_publico: "equipamiento",
+  proteccion_patrimonio: "patrimonio",
+  ordenacion_usos_actividad: "usos",
+  reparcelacion_gestion: "gestion",
+  modificacion_planeamiento: "planeamiento",
+  sin_determinar: "generico",
+};
+
+const SPOTLIGHT_CATEGORIA_TO_ICON = {
+  gran_desarrollo_residencial: "vivienda",
+  residencial_o_vivienda: "vivienda",
+  urbanizacion_infraestructuras: "urbanizacion",
+  gestion_reparcelacion: "gestion",
+  proteccion_catalogo: "patrimonio",
+  equipamiento_dotacional: "equipamiento",
+  terciario_comercial_hotelero: "terciario",
+  plan_especial_uso_actividad: "usos",
+  modificacion_planeamiento_general: "planeamiento",
+  ordenacion_parcela_manzana: "edificio",
+  ajuste_administrativo: "generico",
+  planeamiento_otros: "generico",
+};
+
+function spotlightCategoryLabel(clas) {
+  if (!clas?.categoriaProyecto) return null;
+  return SPOTLIGHT_CATEGORY_LABELS[clas.categoriaProyecto] || clas.categoriaProyecto.replace(/_/g, " ");
+}
+
+function spotlightIconKey(clas) {
+  if (!clas) return "generico";
+  if (clas.tipoObra && clas.tipoObra !== "sin_determinar") {
+    return SPOTLIGHT_TIPO_OBRA_TO_ICON[clas.tipoObra] || "generico";
+  }
+  if (clas.categoriaProyecto) {
+    return SPOTLIGHT_CATEGORIA_TO_ICON[clas.categoriaProyecto] || "generico";
+  }
+  return "generico";
+}
+
+function trimSpotlightResumen(text, max = 140) {
+  const s = String(text || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!s) return null;
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  return `${(lastSpace > 80 ? cut.slice(0, lastSpace) : cut).trim()}…`;
+}
+
+function titleCaseDistritoSpotlight(name) {
+  if (!name) return null;
+  const lower = String(name).toLowerCase().replace(/_/g, " ");
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+
+function spotlightAmbitoLabel(catalog, visorFicha) {
+  const vf = visorFicha || {};
+  for (const raw of [vf.denominacionVisor, vf.ambitoOrdenacion, catalog?.EXP_TX_DENOM]) {
+    if (!raw) continue;
+    const s = shortDenom(String(raw), 44);
+    if (s && s !== "Expediente urbanístico") return s;
+  }
+  return null;
+}
+
+function spotlightLocationLine(distrito, ambitoLabel) {
+  const d = titleCaseDistritoSpotlight(distrito);
+  if (d && ambitoLabel) return `${d} · ${ambitoLabel}`;
+  return d || ambitoLabel || null;
+}
+
+function spotlightResumenForCard(clas, visorFicha) {
+  const fromVisor = trimSpotlightResumen(visorFicha?.resumenContenido);
+  if (fromVisor) return fromVisor;
+  if (clas?.tipoObra && clas.tipoObra !== "sin_determinar") {
+    return trimSpotlightResumen(SPOTLIGHT_TIPO_OBRA_PLAIN[clas.tipoObra], 160);
+  }
+  if (clas?.categoriaProyecto) {
+    return trimSpotlightResumen(SPOTLIGHT_CATEGORY_PLAIN[clas.categoriaProyecto], 160);
+  }
+  return "Actuación de planeamiento urbanístico registrada por el Ayuntamiento de Madrid.";
+}
+
+/** Top 20 proyectos para el tour animado del mapa de inicio. */
+function buildLandingMapSpotlight() {
+  const metricsPath = join(outDir, "madrid-sigma-metrics.json");
+  const sigmaPath = join(outDir, "madrid-sigma.json");
+  const ambitosPath = join(outDir, "madrid-sigma-ambitos.geojson");
+  const clasPath = join(outDir, "madrid-sigma-clasificacion.json");
+  const visorPath = join(outDir, "madrid-sigma-visor-slim.json");
+  if (!existsSync(sigmaPath) || !existsSync(ambitosPath)) {
+    console.log("Aviso: sin datos para landing-map-spotlight.json");
+    return;
+  }
+
+  const metrics = existsSync(metricsPath)
+    ? JSON.parse(readFileSync(metricsPath, "utf-8"))
+    : { byExpediente: {} };
+  const sigma = JSON.parse(readFileSync(sigmaPath, "utf-8"));
+  const ambitos = JSON.parse(readFileSync(ambitosPath, "utf-8"));
+  const clasByExp = existsSync(clasPath)
+    ? JSON.parse(readFileSync(clasPath, "utf-8")).byExpediente || {}
+    : {};
+  const visorByExp = existsSync(visorPath)
+    ? JSON.parse(readFileSync(visorPath, "utf-8")).byGrupoExpediente || {}
+    : {};
+
+  const catalogByGrupo = new Map();
+  for (const e of sigma.expedientes || []) {
+    const g = expedienteGrupoKeyFromVariant(e.EXP_TX_NUMERO || "");
+    if (g) catalogByGrupo.set(g, e);
+  }
+
+  /** @type {Map<string, { bounds: object, maxFeatureKm2: number, features: object[], expNum: string }>} */
+  const geoByGrupo = new Map();
+  for (const f of ambitos.features || []) {
+    const expNum = f.properties?.EXP_TX_NUMERO;
+    if (!expNum) continue;
+    const grupo = expedienteGrupoKeyFromVariant(expNum);
+    const featureKm2 = approximateBBoxAreaKm2Landing(f.geometry);
+    if (featureKm2 != null && featureKm2 > LANDING_TOUR_MAX_BBOX_KM2) continue;
+    const featureBounds = boundsFromGeometryLanding(f.geometry);
+    if (!featureBounds) continue;
+
+    let entry = geoByGrupo.get(grupo);
+    if (!entry) {
+      entry = {
+        bounds: { ...featureBounds },
+        maxFeatureKm2: featureKm2 ?? 0,
+        features: [],
+        expNum: String(expNum),
+      };
+      geoByGrupo.set(grupo, entry);
+    } else {
+      entry.bounds = mergeBoundsLanding(entry.bounds, featureBounds);
+      if (featureKm2 != null) entry.maxFeatureKm2 = Math.max(entry.maxFeatureKm2, featureKm2);
+    }
+    entry.features.push(f);
+  }
+
+  const candidates = [];
+  for (const [grupo, geoMeta] of geoByGrupo) {
+    const metric = metrics.byExpediente?.[grupo];
+    const catalog = catalogByGrupo.get(grupo);
+    const score = scoreLandingTour(metric, catalog, geoMeta);
+    if (score <= 0) continue;
+    const sanitized = sanitizeSigmaExpedienteMetric(metric || {});
+    const n = Number(sanitized?.num_viviendas_max) || 0;
+    const denom = catalog?.EXP_TX_DENOM || geoMeta.expNum || grupo;
+    candidates.push({
+      grupo,
+      score,
+      geoMeta,
+      metric: sanitized,
+      catalog,
+      n,
+      denom,
+    });
+  }
+
+  candidates.sort((a, b) => b.score - a.score);
+  const top = candidates.slice(0, 20);
+  if (!top.length) {
+    console.log("Aviso: landing-map-spotlight sin candidatos");
+    return;
+  }
+
+  const tourFeatures = [];
+  const items = top.map((c, index) => {
+    const b = c.geoMeta.bounds;
+    const centerLat = (b.minLat + b.maxLat) / 2;
+    const centerLng = (b.minLng + b.maxLng) / 2;
+    const clas = clasByExp[c.grupo] || null;
+    const visorFicha = visorByExp[c.grupo]?.visorFicha || null;
+    const categoryLabel =
+      spotlightCategoryLabel(clas) || tagForSpotlight(c.metric, c.catalog);
+    const locationLine = spotlightLocationLine(visorFicha?.distrito, spotlightAmbitoLabel(c.catalog, visorFicha));
+    const resumen = spotlightResumenForCard(clas, visorFicha);
+    for (const f of c.geoMeta.features) {
+      tourFeatures.push({
+        type: "Feature",
+        properties: {
+          expedienteGrupo: c.grupo,
+          sigma_layer_kind: f.properties?.sigma_layer_kind ?? null,
+          tourIndex: index,
+        },
+        geometry: f.geometry,
+      });
+    }
+    return {
+      id: `tour-${sigmaSlugFromGrupo(c.grupo)}`,
+      href: `/proyecto/${encodeURIComponent(sigmaSlugFromGrupo(c.grupo))}`,
+      tag: categoryLabel,
+      categoryLabel,
+      categoriaProyecto: clas?.categoriaProyecto ?? null,
+      tipoObra: clas?.tipoObra ?? null,
+      iconKey: spotlightIconKey(clas),
+      locationLine,
+      resumen,
+      dateLabel: dateLabelForExpediente(c.catalog?.EXP_TX_NUMERO || c.grupo),
+      title: titleForTour(c.denom, c.n),
+      dek: resumen,
+      numViviendas: c.n > 0 ? c.n : null,
+      supM2: c.metric?.sup_total_m2 > 0 ? Math.round(c.metric.sup_total_m2) : null,
+      fase: c.catalog?.FAS_TX_DENOM ? String(c.catalog.FAS_TX_DENOM) : null,
+      expedienteGrupo: c.grupo,
+      bounds: [b.minLat, b.minLng, b.maxLat, b.maxLng],
+      center: [centerLat, centerLng],
+      score: Math.round(c.score * 10) / 10,
+    };
+  });
+
+  const geoPayload = { type: "FeatureCollection", features: tourFeatures };
+  const jsonPayload = {
+    generatedAt: new Date().toISOString(),
+    source:
+      "madrid-sigma-ambitos + metrics + clasificación + visor (resumen y distrito)",
+    criteria:
+      "Mayor impacto: viviendas/m² coherentes; resto por tamaño de ámbito en mapa y recencia",
+    items,
+  };
+
+  writeFileSync(join(outDir, "landing-map-spotlight.geojson"), JSON.stringify(geoPayload));
+  writeFileSync(join(outDir, "landing-map-spotlight.json"), JSON.stringify(jsonPayload, null, 2));
+
+  const mapCardsByExp = {};
+  for (const item of items) {
+    const parts = item.locationLine ? item.locationLine.split(" · ") : [];
+    mapCardsByExp[item.expedienteGrupo] = {
+      distrito: parts.length >= 2 ? parts[0] : null,
+      ambitoLabel: parts.length >= 2 ? parts.slice(1).join(" · ") : parts[0] || null,
+      resumen: item.resumen,
+    };
+  }
+  for (const [grupo, clas] of Object.entries(clasByExp)) {
+    if (mapCardsByExp[grupo]) continue;
+    const visorFicha = visorByExp[grupo]?.visorFicha || null;
+    const catalog = catalogByGrupo.get(grupo);
+    if (!clas && !visorFicha?.resumenContenido) continue;
+    mapCardsByExp[grupo] = {
+      distrito: visorFicha?.distrito ? titleCaseDistritoSpotlight(visorFicha.distrito) : null,
+      ambitoLabel: spotlightAmbitoLabel(catalog, visorFicha),
+      resumen: spotlightResumenForCard(clas, visorFicha),
+    };
+  }
+  writeFileSync(
+    join(outDir, "madrid-sigma-map-cards.json"),
+    JSON.stringify({ generatedAt: new Date().toISOString(), byExpediente: mapCardsByExp }),
+  );
+
+  const kb = Math.round(Buffer.byteLength(JSON.stringify(geoPayload), "utf-8") / 1024);
+  const cardsKb = Math.round(
+    Buffer.byteLength(JSON.stringify(mapCardsByExp), "utf-8") / 1024,
+  );
+  console.log(
+    `OK: landing-map-spotlight.json (${items.length} proyectos, ${tourFeatures.length} polígonos, geo ${kb} KB, map-cards ${cardsKb} KB)`,
+  );
+}
+
 /** Mapa SIGMA (grupo-expediente) ↔ fichas BOCM del portal para popups en /madrid/sigma. */
 function buildMadridSigmaBocmProjectsByExpediente(projects) {
   const byExp = new Map();
@@ -1590,6 +1986,7 @@ if (existsSync(sigmaClasificacionExport)) {
     console.warn("SIGMA clasificación web:", err?.message || err);
   }
 }
+buildLandingMapSpotlight();
 if (existsSync(madridAytoIpGeoPath)) {
   copyFileSync(madridAytoIpGeoPath, join(outDir, "madrid-sigma-ip.geojson"));
   console.log("OK: madrid-sigma-ip.geojson copiado");

@@ -437,3 +437,66 @@ export type AdminCoverage = {
   gaps: AdminGap[];
   madridCapital?: MadridCapitalBlock;
 };
+
+export type MunicipioBotStatus =
+  | "done"
+  | "pending"
+  | "in_progress"
+  | "failed"
+  | "skipped";
+
+export type MunicipioBotRow = {
+  slug: string;
+  nombre: string;
+  status: MunicipioBotStatus;
+  bocmCount: number;
+  boletinSourceId: string;
+  comunidadAutonoma: string;
+  comunidadLabel: string;
+  provincia: string;
+  attempts: number;
+  lastRun: string | null;
+  lastError: string | null;
+  prUrl: string | null;
+  openPrUrl?: string | null;
+  blockedReason?: string | null;
+  notes: string;
+  hasManifest: boolean;
+  hasResearch: boolean;
+  hasAdapter: boolean;
+  adapterRef: string | null;
+  adapterPath: string | null;
+  portalUrl: string | null;
+  manifestUpdatedAt: string | null;
+  mergedAt: string | null;
+  mergeCommit: string | null;
+  mergeSubject: string | null;
+  activityAt: string | null;
+  proyectosRows: number;
+  licenciasRows: number;
+  withCoords: number;
+  withGeometry: number;
+  parityOverall: string | null;
+  boletinCounts: Record<string, number>;
+};
+
+export type MunicipioBotsPayload = {
+  generatedAt: string;
+  queueUpdatedAt: string | null;
+  queueDescription?: string | null;
+  minBocmCount?: number | null;
+  summary: {
+    total: number;
+    byStatus: Record<string, number>;
+    byComunidad: Record<string, number>;
+    withManifest: number;
+    withAdapter: number;
+    mergedOrSkipped: number;
+    parityOk: number;
+    withPortalGeometry: number;
+    openPrs: number;
+  };
+  next: Record<string, unknown> | null;
+  openPrsBySlug: Record<string, string>;
+  municipios: MunicipioBotRow[];
+};

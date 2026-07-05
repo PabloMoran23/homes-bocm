@@ -123,10 +123,14 @@ async function loadCatalog(): Promise<{
 }> {
   if (!catalogPromise) {
     catalogPromise = (async () => {
-      const fromDb = await loadCatalogFromSupabase();
-      if (fromDb && fromDb.byGrupo.size > 0) return fromDb;
       const raw = await fetchStaticJson<MadridSigmaDataset>("/data/madrid-sigma.json");
-      return catalogFromDataset(raw);
+      const fromStatic = catalogFromDataset(raw);
+      const fromDb = await loadCatalogFromSupabase();
+      if (!fromDb || fromDb.byGrupo.size === 0) return fromStatic;
+      for (const [grupo, entry] of fromStatic.byGrupo) {
+        if (!fromDb.byGrupo.has(grupo)) fromDb.byGrupo.set(grupo, entry);
+      }
+      return fromDb;
     })();
   }
   return catalogPromise;

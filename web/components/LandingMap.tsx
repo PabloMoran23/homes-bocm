@@ -2,6 +2,11 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useCallback, useState } from "react";
+import { MapProjectSpotlightCard } from "@/components/MapProjectSpotlightCard";
+import type { LandingMapSpotlightFile, LandingMapSpotlightItem } from "@/lib/landing-map-spotlight";
+import type { LandingTourActiveChange } from "@/lib/landing-map-tour";
+import type { MapSpotlightPlacement } from "@/lib/map-spotlight-placement";
 import { useSigmaAmbitosLandingGeo } from "@/lib/madrid-sigma-map";
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import { useInViewport } from "@/lib/use-in-viewport";
@@ -35,17 +40,27 @@ function LandingMapPlaceholder({ hint }: { hint?: string }) {
 type LandingMapProps = {
   /** Precargado en servidor; evita un fetch extra en cliente que puede fallar en producción. */
   sigmaGeojson?: SectorFeatureCollection | null;
+  spotlight?: LandingMapSpotlightFile | null;
+  tourGeojson?: SectorFeatureCollection | null;
 };
 
-export function LandingMap({ sigmaGeojson }: LandingMapProps) {
+export function LandingMap({ sigmaGeojson, spotlight, tourGeojson }: LandingMapProps) {
   const hasServerGeo = Boolean(sigmaGeojson?.features?.length);
+  const hasTour = Boolean(spotlight?.items?.length && tourGeojson?.features?.length);
   const { ref, visible } = useInViewport();
-  const client = useSigmaAmbitosLandingGeo(!hasServerGeo && visible);
+  const client = useSigmaAmbitosLandingGeo(!hasServerGeo && visible && !hasTour);
+  const [activeSpotlight, setActiveSpotlight] = useState<LandingMapSpotlightItem | null>(null);
+  const [cardPlacement, setCardPlacement] = useState<MapSpotlightPlacement>("bottom-left");
+
+  const onTourActiveChange = useCallback(({ item, placement }: LandingTourActiveChange) => {
+    setActiveSpotlight(item);
+    if (placement) setCardPlacement(placement);
+  }, []);
 
   const geo = hasServerGeo ? sigmaGeojson : client.geo;
-  const err = hasServerGeo ? null : client.err;
-  const ready = hasServerGeo || client.ready;
-  const loading = !hasServerGeo && client.loading;
+  const err = hasServerGeo || hasTour ? null : client.err;
+  const ready = hasServerGeo || hasTour || client.ready;
+  const loading = !hasServerGeo && !hasTour && client.loading;
 
   if (err) {
     return (
@@ -67,12 +82,12 @@ export function LandingMap({ sigmaGeojson }: LandingMapProps) {
       <div
         className={`landing-map-live group relative overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
       >
-        {!visible || !ready || !geo?.features?.length ? (
+        {!visible || !ready || (!hasTour && !geo?.features?.length) ? (
           <LandingMapPlaceholder hint={loading ? "Cargando mapa…" : undefined} />
         ) : (
           <MadridUnifiedMap
             ubicacionesGeojson={null}
-            sigmaGeojson={geo}
+            sigmaGeojson={geo ?? null}
             highlightNdp={null}
             onSelectNdp={() => {}}
             showUbicaciones={false}
@@ -80,12 +95,25 @@ export function LandingMap({ sigmaGeojson }: LandingMapProps) {
             interactive={false}
             fitToData={false}
             initialView="preview"
-            landingPulse
-            statsHint="Actividad reciente en Madrid"
+            landingTour={hasTour}
+            landingTourItems={spotlight?.items ?? []}
+            tourGeojson={tourGeojson ?? null}
+            onLandingTourActiveChange={onTourActiveChange}
+            landingPulse={!hasTour}
+            statsHint={hasTour ? null : "Actividad reciente en Madrid"}
             className="h-full w-full rounded-2xl"
             showAttribution={false}
           />
         )}
+
+        {hasTour ? (
+          <MapProjectSpotlightCard
+            item={activeSpotlight}
+            visible={activeSpotlight != null}
+            variant="landing"
+            placement={cardPlacement}
+          />
+        ) : null}
 
         <div className="landing-map-live-overlay pointer-events-none absolute inset-0 z-[1500]" aria-hidden>
           <div className="landing-map-live-badge">

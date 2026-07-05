@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 
@@ -55,6 +55,11 @@ import {
 } from "@/lib/cm-portal-geo";
 import { isCmMapScope } from "@/lib/map-scope";
 import { fetchDominioJson } from "@/lib/dominio-fetch";
+import { MapProjectSpotlightCard } from "@/components/MapProjectSpotlightCard";
+import { buildMapProjectSpotlightItem } from "@/lib/map-project-spotlight";
+import type { SigmaMapCardSlice } from "@/lib/map-project-spotlight";
+import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
+import { sigmaFichaGrupoFromSlug } from "@/lib/sigma-ficha-path";
 import { ambitosProyectosEnVista, PROYECTOS } from "@/lib/ui-labels";
 
 const MadridUnifiedMap = dynamic(
@@ -155,6 +160,8 @@ function Div({ className, children }: { className?: string; children: React.Reac
 export function ExploreMadridApp() {
   const cmMapScope = isCmMapScope();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const sigmaFromUrl = searchParams.get("sigma")?.trim() || null;
   const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
   const [portalGeo, setPortalGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(null);
   const [portalPolygonGeo, setPortalPolygonGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
@@ -184,9 +191,19 @@ export function ExploreMadridApp() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!sigmaFromUrl || cmMapScope) return;
+    setSelectedSigmaGrupo(sigmaFichaGrupoFromSlug(sigmaFromUrl));
+    setShowSigma(true);
+  }, [sigmaFromUrl, cmMapScope]);
+
   const [q, setQ] = useState("");
   const debouncedQ = useDebouncedValue(q, 300);
   const [highlightNdp, setHighlightNdp] = useState<string | null>(null);
+  const [selectedSigmaGrupo, setSelectedSigmaGrupo] = useState<string | null>(null);
+  const [mapCardsByExp, setMapCardsByExp] = useState<Record<string, SigmaMapCardSlice> | null>(
+    null,
+  );
   const [openSuggest, setOpenSuggest] = useState(false);
   const [showUbicaciones, setShowUbicaciones] = useState(false);
   const [showSigma, setShowSigma] = useState(true);
@@ -335,13 +352,13 @@ export function ExploreMadridApp() {
     };
   }, [showSigma, ambitosGeo]);
 
-  /** Popups SIGMA: BOCM + métricas + clasificación solo si hace falta. */
+  /** Popups SIGMA: BOCM + métricas + clasificación + tarjetas de mapa. */
   useEffect(() => {
     if (!showSigma) return;
-    if (bocmByExp && metricsBundle && clasificacionIndex) return;
+    if (bocmByExp && metricsBundle && clasificacionIndex && mapCardsByExp) return;
     let cancelled = false;
     (async () => {
-      const [bocmJson, mb, clJson] = await Promise.all([
+      const [bocmJson, mb, clJson, cardsJson] = await Promise.all([
         bocmByExp
           ? Promise.resolve(null)
           : fetchDominioJson<{ byExpediente?: Record<string, SigmaBocmPopupLink[]> }>(
@@ -355,6 +372,11 @@ export function ExploreMadridApp() {
               "/api/dominio/madrid-sigma-clasificacion",
               "/data/madrid-sigma-clasificacion.json",
             ),
+        mapCardsByExp
+          ? Promise.resolve(null)
+          : fetch("/data/madrid-sigma-map-cards.json")
+              .then((r) => (r.ok ? r.json() : null))
+              .catch(() => null),
       ]);
       if (!cancelled) {
         if (bocmJson?.byExpediente) setBocmByExp(bocmJson.byExpediente);
@@ -365,12 +387,13 @@ export function ExploreMadridApp() {
           setClasificacionIndex(byExp);
           setClasificacionFilters((prev) => prev ?? allSigmaClassificationEnabled(meta));
         }
+        if (cardsJson?.byExpediente) setMapCardsByExp(cardsJson.byExpediente);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex]);
+  }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex, mapCardsByExp]);
 
   useEffect(() => {
     if (mapMode === "ambitos" || mapMode === "ip" || geoCache[mapMode]) return;
@@ -580,6 +603,42 @@ export function ExploreMadridApp() {
     [bocmByExp, metricsBundle],
   );
 
+  const sigmaCatalogByGrupo = useMemo(() => {
+    const map = new Map<
+      string,
+      NonNullable<MadridSigmaDataset["expedientes"]>[number]
+    >();
+    for (const e of sigmaData?.expedientes ?? []) {
+      if (e.EXP_TX_NUMERO) {
+        map.set(expedienteGrupoKeyFromVariant(e.EXP_TX_NUMERO), e);
+      }
+    }
+    return map;
+  }, [sigmaData]);
+
+  const selectedSpotlightItem = useMemo(() => {
+    if (!selectedSigmaGrupo || cmMapScope) return null;
+    const grupo = expedienteGrupoKeyFromVariant(selectedSigmaGrupo);
+    return buildMapProjectSpotlightItem({
+      expedienteGrupo: grupo,
+      catalog: sigmaCatalogByGrupo.get(grupo) ?? null,
+      clasificacion: (clasificacionIndex?.[grupo] ?? null) as import("@/lib/sigma-classification").SigmaClassification | null,
+      metric: metricsBundle?.byExpediente?.[grupo] ?? null,
+      cardSlice: mapCardsByExp?.[grupo] ?? null,
+    });
+  }, [
+    selectedSigmaGrupo,
+    cmMapScope,
+    sigmaCatalogByGrupo,
+    clasificacionIndex,
+    metricsBundle,
+    mapCardsByExp,
+  ]);
+
+  const onSelectSigmaExpediente = useCallback((grupo: string | null) => {
+    setSelectedSigmaGrupo(grupo);
+  }, []);
+
   const goUbicacion = useCallback(
     (ndp: string) => router.push(ubicacionPath(ndp)),
     [router],
@@ -627,7 +686,18 @@ export function ExploreMadridApp() {
           className="h-full w-full"
           fitToData={false}
           initialView="explore"
+          sigmaCardSelection={!cmMapScope && showSigma}
+          selectedSigmaExpediente={selectedSigmaGrupo}
+          onSelectSigmaExpediente={onSelectSigmaExpediente}
         />
+        {!cmMapScope && showSigma ? (
+          <MapProjectSpotlightCard
+            item={selectedSpotlightItem}
+            visible={selectedSpotlightItem != null}
+            variant="explore"
+            onClose={() => setSelectedSigmaGrupo(null)}
+          />
+        ) : null}
         {!dataReady.ubic || (cmMapScope && !dataReady.portal) ? (
           <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/80 md:bg-slate-100/60">
             <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
@@ -677,7 +747,7 @@ export function ExploreMadridApp() {
                 ? portalMapMeta
                   ? `${portalMapMeta.proyectosEnMapa?.toLocaleString("es-ES") ?? "—"} proyectos con polígono o ubicación real en mapa · ${portalMapMeta.proyectosSinUbicacion?.toLocaleString("es-ES") ?? "—"} sin geometría (solo listado, no se dibujan).`
                   : "Vista CM: solo proyectos con polígono SITCM o coordenada real. Sin cogollos en centroide municipal."
-                : "Activa capas arriba del mapa. Busca aquí; en el mapa, pasa el ratón o pulsa un ámbito o licencia para ver el resumen."}
+                : "Activa capas arriba del mapa. Busca aquí; pulsa un ámbito de planeamiento para ver qué implica."}
             </p>
           </div>
           <button

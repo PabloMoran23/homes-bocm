@@ -98,7 +98,10 @@ export function PortalProyectosClusterLayer({
 
     const refresh = () => {
       cluster.clearLayers();
-      const mapped = mapworthyFeatures(data);
+      const mapped = mapworthyFeatures(data).filter(
+        (f): f is (typeof f & { geometry: { type: "Point"; coordinates: [number, number] } }) =>
+          f.geometry.type === "Point",
+      );
       if (!mapped.length) return;
       const bounds = boundsFromLeaflet(map.getBounds());
       const feats = filterPointFeaturesInView(mapped, bounds);

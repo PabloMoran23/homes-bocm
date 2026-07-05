@@ -171,4 +171,14 @@ body {
   .landing-map-live-dot::before {
     animation: none;
   }
+
+  .landing-map-spotlight-card,
+  .map-project-spotlight-card {
+    transition: none;
+  }
+}
+
+.landing-map-spotlight-card,
+.map-project-spotlight-card {
+  will-change: transform, opacity;
 }
