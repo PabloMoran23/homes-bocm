@@ -1,0 +1,22 @@
+name: Merge PRs municipio (babysitter)
+description: >
+  Cada 3 días revisa PRs abiertas de onboarding de municipios, ejecuta checks,
+  mergea las válidas a main y actualiza la cola para el panel admin.
+
+trigger:
+  - type: cron
+    schedule: "0 9 */3 * *"
+
+repository:
+  github: PabloMoran23/homes-bocm
+  branch: main
+
+tools:
+  - memories
+
+model: default
+
+instructions_file: .cursor/prompts/merge-municipio-prs.md
+
+sandbox:
+  install_command: pip install -r requirements-municipio.txt && pip install psycopg2-binary

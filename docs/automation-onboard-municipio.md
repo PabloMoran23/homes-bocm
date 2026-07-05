@@ -6,8 +6,10 @@ Cursor Automation que cada **4 horas** toma el siguiente municipio de la cola BO
 
 | Archivo | Rol |
 |---------|-----|
-| `.cursor/automations/onboard-municipio-ayuntamiento.yaml` | Definición de la automation (cron + repo + tools) |
-| `.cursor/prompts/onboard-municipio-ayuntamiento.md` | Instrucciones detalladas para el agente |
+| `.cursor/automations/onboard-municipio-ayuntamiento.yaml` | Onboarding cada 4h |
+| `.cursor/automations/merge-municipio-prs.yaml` | Merge/revisión cada 3 días |
+| `.cursor/prompts/onboard-municipio-ayuntamiento.md` | Prompt onboarding |
+| `.cursor/prompts/merge-municipio-prs.md` | Prompt merge babysitter |
 | `data/municipios/queue.yaml` | Cola de municipios (BOCM + CCAA) ordenada por volumen en boletines |
 | `municipio/queue.py` | Lógica de cola (claim / done / fail) |
 | `municipio/geometry.py` | Helpers GeoJSON (`geom_geojson`, bbox, centroide) |
@@ -41,13 +43,7 @@ Cuando actualices geometría u otras reglas en el `.md`, **repega en la automati
 
 ### Variables de entorno (opcional)
 
-Para que el agente ejecute sync real a Supabase, configura en la automation o en el dashboard:
-
-```
-SUPABASE_DB_URL=postgresql://...
-```
-
-Sin esto, el agente deja el código listo y documenta sync manual en la PR.
+El sync a Supabase **no corre en Cursor** — lo hace GitHub Actions tras merge (`municipio-post-merge.yml`) con el secret `SUPABASE_DB_URL` del repo.
 
 ## Cola de municipios
 
@@ -93,10 +89,11 @@ PYTHONPATH=. python -m municipio queue done --municipio torrejon-de-ardoz --pr-u
 ## Flujo por municipio
 
 ```
-claim → investigar portal → manifest + adapter → run pipeline (scrape + geocode + sync_supabase + validate) → PR → queue done
+[Onboard bot]  claim → portal → PR (sin tocar queue.yaml)
+[Merge bot]    validate → merge → GitHub Actions post-merge (queue + sync)
 ```
 
-### Pipeline completo (manual)
+Manual completo:
 
 ```bash
 PYTHONPATH=. python -m municipio run --municipio <slug> --step all
@@ -106,12 +103,15 @@ PYTHONPATH=. python -m municipio run --municipio <slug> --step all
 python3 db/sync_municipio_to_supabase.py --municipio <slug>
 ```
 
+Ver también: `docs/automation-merge-municipio-prs.md`
+
 ## Coste
 
 Las automations usan **cloud agents** (Max Mode). Cada municipio es una run de ~15-30 min según complejidad del portal. Con cron cada 4h procesas ~6 municipios/día como máximo.
 
 ## Referencias
 
+- **`/admin/login`** — panel interno (contraseña `ADMIN_PANEL_PASSWORD`; no enlazado en la nav)
 - `data/municipios/SUBAGENT-BRIEF.md` — contrato del adapter
 - `municipio/adapters/pozuelo.py` — referencia Drupal
 - `municipio/adapters/mostoles.py` — referencia tablón sede
