@@ -73,7 +73,21 @@ def main(argv: list[str] | None = None) -> int:
 
     q = sub.add_parser("queue", help="Cola de onboarding automático de municipios")
     qsub = q.add_subparsers(dest="queue_command", required=True)
-    qsub.add_parser("init", help="Inicializar cola desde web/public/data/summary.json")
+    qinit = qsub.add_parser(
+        "init",
+        help="Inicializar cola desde CSVs BOCM + CCAA (history_parsed_incremental)",
+    )
+    qinit.add_argument(
+        "--min-count",
+        type=int,
+        default=1,
+        help="Mínimo de apariciones parseadas por municipio (default: 1 = lista completa)",
+    )
+    qinit.add_argument(
+        "--from-summary",
+        action="store_true",
+        help="Legacy: usar web/public/data/summary.json (top 50, truncado)",
+    )
     qsub.add_parser("status", help="Estado de la cola")
     qsub.add_parser("next", help="Ver siguiente municipio pendiente (sin reservar)")
     qsub.add_parser("claim", help="Reservar siguiente municipio (in_progress)")
@@ -118,7 +132,10 @@ def main(argv: list[str] | None = None) -> int:
         from municipio import queue as qmod
 
         if args.queue_command == "init":
-            qmod.init_from_summary()
+            if getattr(args, "from_summary", False):
+                qmod.init_from_summary(min_bocm_count=args.min_count)
+            else:
+                qmod.init_from_bocm_data(min_bocm_count=args.min_count)
             print(json.dumps(qmod.queue_status(), indent=2, ensure_ascii=False))
             return 0
         if args.queue_command == "status":

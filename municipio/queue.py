@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
 import subprocess
-from dataclasses import dataclass
+from collections import Counter
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -14,6 +16,24 @@ from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, list_manifest_slugs, sl
 
 QUEUE_PATH = MUNICIPIOS_DIR / "queue.yaml"
 SUMMARY_JSON = POC_ROOT / "web" / "public" / "data" / "summary.json"
+BOCM_CSV = POC_ROOT / "output" / "history_parsed_incremental.csv"
+CCAA_CSV = POC_ROOT / "output" / "ccaa_history_parsed_incremental.csv"
+
+TERRITORIO_BY_SOURCE: dict[str, tuple[str, str]] = {
+    "bocm": ("comunidad-madrid", "Comunidad de Madrid"),
+    "boja": ("andalucia", "Andalucía"),
+    "dogv": ("comunitat-valenciana", "Comunitat Valenciana"),
+    "bocyl": ("castilla-y-leon", "Castilla y León"),
+    "docm": ("castilla-mancha", "Castilla-La Mancha"),
+    "boc_canarias": ("canarias", "Canarias"),
+    "bopa": ("asturias", "Principado de Asturias"),
+    "boc_cantabria": ("cantabria", "Cantabria"),
+    "boib": ("illes-balears", "Illes Balears"),
+    "dog": ("galicia", "Galicia"),
+    "bopv": ("euskadi", "Euskadi"),
+    "borm": ("murcia", "Región de Murcia"),
+    "dogc": ("catalunya", "Catalunya"),
+}
 
 AUTOMATION_BRANCH_RE = re.compile(r"^automation/municipio-(.+)$")
 MANIFEST_PATH_RE = re.compile(r"^data/municipios/([^/]+)/manifest\.yaml$")
@@ -42,9 +62,13 @@ class QueueEntry:
     last_error: str | None = None
     pr_url: str | None = None
     notes: str = ""
+    boletin_source_id: str = ""
+    comunidad_autonoma: str = ""
+    provincia: str = ""
+    boletin_counts: dict[str, int] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "slug": self.slug,
             "nombre": self.nombre,
             "bocm_count": self.bocm_count,
@@ -55,6 +79,15 @@ class QueueEntry:
             "pr_url": self.pr_url,
             "notes": self.notes,
         }
+        if self.boletin_source_id:
+            out["boletin_source_id"] = self.boletin_source_id
+        if self.comunidad_autonoma:
+            out["comunidad_autonoma"] = self.comunidad_autonoma
+        if self.provincia:
+            out["provincia"] = self.provincia
+        if self.boletin_counts:
+            out["boletin_counts"] = dict(sorted(self.boletin_counts.items()))
+        return out
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -83,6 +116,12 @@ def _parse_entries(raw: dict[str, Any]) -> list[QueueEntry]:
     for item in items:
         if not isinstance(item, dict):
             continue
+        raw_counts = item.get("boletin_counts") or {}
+        boletin_counts = (
+            {str(k): int(v) for k, v in raw_counts.items()}
+            if isinstance(raw_counts, dict)
+            else {}
+        )
         out.append(
             QueueEntry(
                 slug=str(item.get("slug") or ""),
@@ -94,6 +133,10 @@ def _parse_entries(raw: dict[str, Any]) -> list[QueueEntry]:
                 last_error=item.get("last_error"),
                 pr_url=item.get("pr_url"),
                 notes=str(item.get("notes") or ""),
+                boletin_source_id=str(item.get("boletin_source_id") or ""),
+                comunidad_autonoma=str(item.get("comunidad_autonoma") or ""),
+                provincia=str(item.get("provincia") or ""),
+                boletin_counts=boletin_counts,
             )
         )
     return out
@@ -215,12 +258,204 @@ def _candidate_entries(entries: list[QueueEntry]) -> list[QueueEntry]:
     return candidates
 
 
+def _territorio_for_source(source_id: str) -> tuple[str, str]:
+    sid = (source_id or "bocm").strip().lower() or "bocm"
+    return TERRITORIO_BY_SOURCE.get(sid, (sid.replace("_", "-"), sid.upper()))
+
+
+def _ingest_csv_rows(
+    agg: dict[str, dict[str, Any]],
+    csv_path: Path,
+    *,
+    default_source_id: str,
+) -> None:
+    if not csv_path.is_file():
+        return
+    with csv_path.open(encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):
+            nombre = (row.get("municipio") or "").strip()
+            if not nombre:
+                continue
+            slug = slugify(nombre)
+            source_id = (row.get("boletin_source_id") or default_source_id).strip().lower()
+            if not source_id:
+                source_id = "bocm"
+            provincia = (row.get("municipio_provincia") or "").strip()
+            bucket = agg.setdefault(
+                slug,
+                {
+                    "slug": slug,
+                    "names": Counter(),
+                    "count": 0,
+                    "sources": Counter(),
+                    "provincias": Counter(),
+                },
+            )
+            bucket["names"][nombre] += 1
+            bucket["count"] += 1
+            bucket["sources"][source_id] += 1
+            if provincia:
+                bucket["provincias"][provincia] += 1
+
+
+def aggregate_municipios_from_csv(
+    *,
+    min_bocm_count: int = 1,
+    bocm_csv: Path = BOCM_CSV,
+    ccaa_csv: Path = CCAA_CSV,
+) -> list[dict[str, Any]]:
+    """Lista municipios con al menos una fila parseada (campo municipio no vacío)."""
+    floor = max(1, int(min_bocm_count))
+    agg: dict[str, dict[str, Any]] = {}
+    _ingest_csv_rows(agg, bocm_csv, default_source_id="bocm")
+    _ingest_csv_rows(agg, ccaa_csv, default_source_id="")
+
+    items: list[dict[str, Any]] = []
+    for slug, bucket in agg.items():
+        count = int(bucket["count"])
+        if count < floor:
+            continue
+        source_id, _ = bucket["sources"].most_common(1)[0]
+        ccaa_id, _ = _territorio_for_source(source_id)
+        provincia = ""
+        if bucket["provincias"]:
+            provincia = bucket["provincias"].most_common(1)[0][0]
+        items.append(
+            {
+                "slug": slug,
+                "nombre": bucket["names"].most_common(1)[0][0],
+                "bocm_count": count,
+                "boletin_source_id": source_id,
+                "comunidad_autonoma": ccaa_id,
+                "provincia": provincia,
+                "boletin_counts": dict(bucket["sources"]),
+            }
+        )
+    items.sort(key=lambda x: (-x["bocm_count"], x["slug"]))
+    return items
+
+
+def _default_status_for_slug(
+    slug: str,
+    nombre: str,
+    *,
+    existing_manifests: set[str],
+) -> tuple[str, str]:
+    norm = slug.replace("-", " ")
+    if norm in SKIP_NAMES or nombre.lower() == "madrid":
+        return "skipped", "Pipeline propio (Madrid capital / SIGMA)"
+    if slug in DONE_SLUGS or slug in existing_manifests:
+        return "done", "Adapter ya implementado"
+    return "pending", ""
+
+
+def _merge_entry_status(
+    slug: str,
+    nombre: str,
+    existing: QueueEntry | None,
+    *,
+    existing_manifests: set[str],
+) -> tuple[str, str, int, str | None, str | None, str | None]:
+    if existing is None:
+        status, notes = _default_status_for_slug(slug, nombre, existing_manifests=existing_manifests)
+        return status, notes, 0, None, None, None
+
+    status = existing.status
+    notes = existing.notes
+    if status == "pending" and slug in existing_manifests:
+        status = "done"
+        if not notes:
+            notes = "Adapter ya implementado"
+    elif status not in {"done", "skipped", "in_progress", "failed"}:
+        status, notes = _default_status_for_slug(slug, nombre, existing_manifests=existing_manifests)
+
+    return status, notes, existing.attempts, existing.last_run, existing.last_error, existing.pr_url
+
+
+def init_from_bocm_data(
+    *,
+    min_bocm_count: int = 1,
+    path: Path = QUEUE_PATH,
+    bocm_csv: Path = BOCM_CSV,
+    ccaa_csv: Path = CCAA_CSV,
+) -> dict[str, Any]:
+    if not bocm_csv.is_file() and not ccaa_csv.is_file():
+        raise FileNotFoundError(
+            f"No hay CSVs de boletines ({bocm_csv} / {ccaa_csv}). "
+            "Ejecuta parse_history_nightly.py y parse_ccaa_history_nightly.py."
+        )
+
+    existing_by_slug = {e.slug: e for e in _parse_entries(load_queue(path))}
+    existing_manifests = set(list_manifest_slugs())
+    aggregated = aggregate_municipios_from_csv(
+        min_bocm_count=min_bocm_count,
+        bocm_csv=bocm_csv,
+        ccaa_csv=ccaa_csv,
+    )
+
+    entries: list[QueueEntry] = []
+    for item in aggregated:
+        slug = item["slug"]
+        existing = existing_by_slug.pop(slug, None)
+        status, notes, attempts, last_run, last_error, pr_url = _merge_entry_status(
+            slug,
+            item["nombre"],
+            existing,
+            existing_manifests=existing_manifests,
+        )
+        entries.append(
+            QueueEntry(
+                slug=slug,
+                nombre=item["nombre"],
+                bocm_count=item["bocm_count"],
+                status=status,
+                attempts=attempts,
+                last_run=last_run,
+                last_error=last_error,
+                pr_url=pr_url,
+                notes=notes,
+                boletin_source_id=item["boletin_source_id"],
+                comunidad_autonoma=item["comunidad_autonoma"],
+                provincia=item["provincia"],
+                boletin_counts=item["boletin_counts"],
+            )
+        )
+
+    # Conservar entradas históricas que ya no cumplen el umbral mínimo.
+    for existing in existing_by_slug.values():
+        if existing.status in {"done", "skipped", "in_progress", "failed"}:
+            entries.append(existing)
+
+    entries.sort(key=lambda e: (-e.bocm_count, e.slug))
+
+    floor = max(1, int(min_bocm_count))
+    data = {
+        "version": 2,
+        "description": (
+            "Cola de onboarding de portales municipales (España: BOCM + boletines CCAA). "
+            "Lista completa de municipios con ≥1 proyecto parseado; orden por volumen."
+        ),
+        "min_bocm_count": floor,
+        "sources": {
+            "bocm_csv": str(bocm_csv.relative_to(POC_ROOT)),
+            "ccaa_csv": str(ccaa_csv.relative_to(POC_ROOT)),
+        },
+        "municipios": [e.to_dict() for e in entries],
+    }
+    save_queue(data, path)
+    return data
+
+
 def init_from_summary(
     *,
     min_bocm_count: int = 20,
     exclude_non_cm: bool = True,
     path: Path = QUEUE_PATH,
 ) -> dict[str, Any]:
+    """Legacy: summary.json solo incluye top 50 municipios (truncado)."""
+    if BOCM_CSV.is_file() or CCAA_CSV.is_file():
+        return init_from_bocm_data(min_bocm_count=min_bocm_count, path=path)
+
     if not SUMMARY_JSON.is_file():
         raise FileNotFoundError(f"No existe {SUMMARY_JSON}")
 
@@ -262,6 +497,8 @@ def init_from_summary(
                 bocm_count=count,
                 status=status,
                 notes=notes,
+                boletin_source_id="bocm",
+                comunidad_autonoma="comunidad-madrid",
             )
         )
 

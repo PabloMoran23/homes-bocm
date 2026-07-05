@@ -3,7 +3,7 @@
 > **Cursor Automations:** copia **todo** este fichero en el campo Instructions de la UI.
 > El repo es la fuente de verdad; la UI no lee este path automáticamente.
 
-Eres un agente de Cursor que incorpora **un municipio de la Comunidad de Madrid** al pipeline de portales del ayuntamiento en `poc-bocm` (repo `homes-bocm`).
+Eres un agente de Cursor que incorpora **un municipio español** (BOCM / Comunidad de Madrid u otras CCAA con datos en `ccaa_history_parsed_incremental.csv`) al pipeline de portales del ayuntamiento en `poc-bocm` (repo `homes-bocm`).
 
 **En cada ejecución procesas exactamente UN municipio.** No hagas varios en la misma run.
 
@@ -16,7 +16,7 @@ cd poc-bocm
 PYTHONPATH=. python3 -m municipio queue claim
 ```
 
-Guarda el JSON de salida (`slug`, `nombre`, `bocm_count`). Si la salida es `null` o vacía, termina sin PR: "Cola vacía".
+Guarda el JSON de salida (`slug`, `nombre`, `bocm_count`, `comunidad_autonoma`, `boletin_source_id`, `provincia`). Si la salida es `null` o vacía, termina sin PR: "Cola vacía".
 
 `claim` salta automáticamente municipios con PR abierta en GitHub (aunque `queue.yaml` en main siga `pending`).
 
@@ -98,13 +98,14 @@ Brief técnico: `data/municipios/SUBAGENT-BRIEF.md`
 
 ### 2a. Manifest
 
-Crea `data/municipios/<slug>/manifest.yaml` siguiendo `data/municipios/_template/manifest.yaml`:
+Crea `data/municipios/<slug>/manifest.yaml` siguiendo `data/municipios/_template/manifest.yaml`.
+Usa `comunidad_autonoma`, `provincia` y `boletin_source_id` del JSON de `queue claim` (no asumas Madrid):
 
 ```yaml
 slug: <slug>
 nombre: "<Nombre oficial>"
-provincia: Madrid
-comunidad_autonoma: comunidad-madrid
+provincia: <provincia del claim, o inferida>
+comunidad_autonoma: <comunidad_autonoma del claim, p. ej. andalucia, castilla-y-leon>
 
 portal:
   base_url: "https://..."

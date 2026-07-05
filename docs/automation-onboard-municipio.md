@@ -8,7 +8,7 @@ Cursor Automation que cada **4 horas** toma el siguiente municipio de la cola BO
 |---------|-----|
 | `.cursor/automations/onboard-municipio-ayuntamiento.yaml` | Definición de la automation (cron + repo + tools) |
 | `.cursor/prompts/onboard-municipio-ayuntamiento.md` | Instrucciones detalladas para el agente |
-| `data/municipios/queue.yaml` | Cola de municipios CM ordenada por volumen BOCM |
+| `data/municipios/queue.yaml` | Cola de municipios (BOCM + CCAA) ordenada por volumen en boletines |
 | `municipio/queue.py` | Lógica de cola (claim / done / fail) |
 | `municipio/geometry.py` | Helpers GeoJSON (`geom_geojson`, bbox, centroide) |
 | `municipio/geocode.py` | Asigna `lat`/`lon` (centroide polígono o municipio + jitter) |
@@ -51,11 +51,15 @@ Sin esto, el agente deja el código listo y documenta sync manual en la PR.
 
 ## Cola de municipios
 
-Estado actual (46 municipios CM con ≥20 proyectos BOCM):
+La cola se genera desde los CSV parseados (`output/history_parsed_incremental.csv` + `output/ccaa_history_parsed_incremental.csv`), no desde `summary.json` (que solo guarda el top 50).
 
-- **done:** 9 municipios (Pozuelo, Móstoles, Getafe, Torrejón, Alcalá, Alcobendas, Fuenlabrada, Las Rozas, Rivas)
+**Sin umbral mínimo:** entra cualquier municipio con **≥1 fila parseada** (~845 hoy). Se ordena por volumen (`bocm_count` descendente) para que los bots empiecen por los más activos. Metadata: `boletin_source_id`, `comunidad_autonoma`, `provincia`.
+
+Estado tras regenerar con `queue init`:
+
+- **done:** municipios con adapter ya mergeado en `main`
 - **skipped:** Madrid capital (pipeline SIGMA propio)
-- **pending:** resto, empezando por Torrejón de Ardoz
+- **pending:** resto (~800), ordenados por volumen en boletines
 
 La cola en `main` solo avanza al **mergear** la PR (el `queue.yaml` actualizado vive en la rama).
 Para no repetir municipios con PR abierta sin merge, `claim` consulta GitHub (`gh pr list`)
@@ -73,8 +77,14 @@ PYTHONPATH=. python -m municipio queue status
 # Reservar siguiente (lo hace la automation)
 PYTHONPATH=. python -m municipio queue claim
 
-# Reinicializar cola desde summary.json
-PYTHONPATH=. python -m municipio queue init
+# Reinicializar cola completa desde CSVs BOCM + CCAA (≥1 aparición)
+PYTHONPATH=. python3 -m municipio queue init
+
+# Opcional: filtrar por volumen mínimo
+PYTHONPATH=. python3 -m municipio queue init --min-count 10
+
+# Legacy: solo top 50 de summary.json
+PYTHONPATH=. python3 -m municipio queue init --from-summary --min-count 20
 
 # Marcar completado tras merge
 PYTHONPATH=. python -m municipio queue done --municipio torrejon-de-ardoz --pr-url "https://..."
