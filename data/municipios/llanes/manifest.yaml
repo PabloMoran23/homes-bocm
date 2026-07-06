@@ -1,0 +1,30 @@
+slug: llanes
+nombre: "Llanes"
+provincia: Asturias
+comunidad_autonoma: asturias
+boletin_source_id: bopa
+
+portal:
+  base_url: "https://www.ayuntamientodellanes.com"
+  adapter: municipio.adapters.llanes:LlanesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-llanes/1.0"
+    centroid: [43.4208, -4.7556]
+    geometry:
+      kind: geoserver_wfs
+      wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+      layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+      match_field: "Id._Inventario_Registro_Urbanístico"
+  notes: |
+    Web municipal Liferay (urbanismo, PGOU, PEUT, documentos en IP) +
+    Registro Planeamiento RPGUR Principado de Asturias (instrumentos municipales).
+    Sede llanes.sede.e-ayuntamiento.es con fallo TLS (tablón no scrapeable).
+    Geometría vía WFS visor RPGUR (ámbitos instrumentos LLANES).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
