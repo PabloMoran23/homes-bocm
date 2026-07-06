@@ -1,0 +1,27 @@
+slug: cartama
+nombre: "Cártama"
+provincia: "Cártama/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://cartama.sedelectronica.es"
+  adapter: municipio.adapters.cartama:CartamaAyuntamientoAdapter
+  config:
+    sede_base: "https://cartama.sedelectronica.es"
+    board_url: "https://cartama.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cartama/1.0"
+    centroid: [36.8456, -4.6310]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/), transparencia (/transparency),
+    páginas de procedimiento de planeamiento en www.cartama.es (WAF CloudFront en CI).
+    Sin visor GIS público enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
