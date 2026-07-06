@@ -1,0 +1,27 @@
+slug: mijas
+nombre: "Mijas"
+provincia: "Mijas-Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.mijas.es/portal"
+  adapter: municipio.adapters.mijas:MijasAyuntamientoAdapter
+  config:
+    sede_base: "https://mijas.sedelectronica.es"
+    board_url: "https://mijas.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mijas/1.0"
+    centroid: [36.5958, -4.6372]
+  notes: |
+    Fuentes: WordPress (ZIP planeamiento PGOU/SUP/estudios) + tablón sede espublico.
+    Sede nueva mijas.sedelectronica.es (may 2025); antigua sede.mijas.es solo impuestos.
+    Geometría: unavailable (sin visor GIS enlazable a expedientes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
