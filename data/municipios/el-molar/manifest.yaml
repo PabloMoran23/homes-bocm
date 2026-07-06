@@ -1,0 +1,27 @@
+slug: el-molar
+nombre: "El Molar"
+provincia: "El Molar, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://elmolar.org"
+  adapter: municipio.adapters.el_molar:ElMolarAyuntamientoAdapter
+  config:
+    sede_base: "https://elmolar.sedelectronica.es"
+    board_url: "https://elmolar.sedelectronica.es/board"
+    normas_url: "https://elmolar.org/tramites/normas-subsidiarias/"
+    documentacion_url: "https://elmolar.org/tramites/documentacion/"
+    wp_api: "https://elmolar.org/wp-json/wp/v2"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-molar/1.0"
+  notes: |
+    WordPress (normas subsidiarias + trámites) + sede eHome/espublico (tablón).
+    Licencias: formularios informativos; concesiones vía tablón cuando publiquen.
+    Geometría: unavailable (sin visor GIS municipal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
