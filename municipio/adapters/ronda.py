@@ -53,7 +53,9 @@ RE_TRANSPARENCY_FOLDER = re.compile(
     r'class="gIconLink exp"[^>]*>(.*?)(?:<span class="linkExtraInfo">|$)',
     re.I | re.S,
 )
-RE_REFCAT = re.compile(r"\b(\d{7}[A-Z]{2}\d{3}[A-Z]\d{4}[A-Z]{2})\b")
+RE_REFCAT = re.compile(
+    r"(?i)\b(?:ref\.?\s*catastral\s*:?\s*)?(\d{7}[A-Z]{2}\d{3}[A-Z0-9]{8})\b"
+)
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 
