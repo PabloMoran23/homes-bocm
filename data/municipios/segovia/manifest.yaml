@@ -1,0 +1,25 @@
+slug: segovia
+nombre: "Segovia"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.segovia.es"
+  adapter: municipio.adapters.segovia:SegoviaAyuntamientoAdapter
+  config:
+    web_base: "https://www.segovia.es"
+    sede_base: "https://sede.segovia.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-segovia/1.0 (+urbanismo research)"
+    centroid: [40.948084, -4.11839]
+  notes: |
+    Fuentes: web Drupal (/area/urbanismo, planeamiento PGOU) + sede STA
+    (tablón PTS2_TABLON, catálogo CATSERV). Expedientes privados requieren certificado.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
