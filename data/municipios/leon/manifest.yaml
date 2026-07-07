@@ -1,0 +1,29 @@
+slug: leon
+nombre: "León"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://sede.aytoleon.es/eAdmin"
+  adapter: municipio.adapters.leon:LeonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-leon/1.0"
+    sede_base: "https://sede.aytoleon.es/eAdmin"
+    web_base: "https://aytoleon.es"
+    urbanismo_url: "https://aytoleon.es/es/tu-ayuntamiento/normativas/Paginas/urbanismo.aspx"
+    urbanismo_tablon_id: "3"
+    tramite_ids: [39, 94, 106, 107, 109, 110, 134, 172, 192]
+    centroid: [42.5987, -5.5671]
+  notes: |
+    Sede eAdmin (add4u): tablón digital con sección «Tablón de urbanismo» (6 anuncios)
+    + búsqueda por términos PGOU/convenio/sector. Web corporativa SharePoint: PGOU,
+    modificaciones, convenios urbanísticos e IP (69 PDF). Trámites Obras y Urbanismo
+    en catálogo sede. Sin listado público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
