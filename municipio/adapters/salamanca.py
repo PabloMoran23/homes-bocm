@@ -471,12 +471,14 @@ class SalamancaAyuntamientoAdapter(AyuntamientoAdapter):
             add(self._row_to_proyecto(enriched))
 
         add(
-            {
-                "titulo": "Visor PGOU de Salamanca",
-                "url": VISOR_PGOU_URL,
-                "fecha": None,
-                "origen": "visor_pgou",
-            }
+            self._row_to_proyecto(
+                {
+                    "titulo": "Visor PGOU de Salamanca",
+                    "url": VISOR_PGOU_URL,
+                    "fecha": None,
+                    "origen": "visor_pgou",
+                }
+            )
         )
 
         self._write_jsonl(out_jsonl, rows)
