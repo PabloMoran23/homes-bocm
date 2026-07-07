@@ -1,0 +1,30 @@
+slug: san-lorenzo-de-el-escorial
+nombre: "San Lorenzo de El Escorial"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.aytosanlorenzo.es/eAdmin"
+  adapter: municipio.adapters.san_lorenzo_de_el_escorial:SanLorenzoDeElEscorialAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-lorenzo-de-el-escorial/1.0"
+    sede_base: "https://sede.aytosanlorenzo.es/eAdmin"
+    transparencia_base: "https://transparencia.aytosanlorenzo.es"
+    transparencia_planeamiento: "https://transparencia.aytosanlorenzo.es/urbanismo-y-obras-publicas/planeamiento/"
+    tramite_ids: [87, 111, 121, 128, 136, 143]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "San Lorenzo"
+  notes: |
+    Sede eAdmin (add4u): tablón digital + catálogo trámites urbanismo.
+    Transparencia WordPress: normas subsidiarias, modificaciones, planes especiales (PDFs directos).
+    Geometría partial: WFS SIT CM VPLA_V_AMBITO por nombre de ámbito (UE/APD).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
