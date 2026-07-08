@@ -172,25 +172,6 @@ def _sector_ilike_parts(text: str) -> list[str]:
     return out[:10]
 
 
-def _merge_geometries(features: list[dict[str, Any]]) -> dict[str, Any] | None:
-    polys: list[Any] = []
-    for f in features:
-        g = f.get("geometry")
-        if not isinstance(g, dict):
-            continue
-        t = g.get("type")
-        coords = g.get("coordinates")
-        if t == "Polygon" and coords:
-            polys.append(coords)
-        elif t == "MultiPolygon" and coords:
-            polys.extend(coords)
-    if not polys:
-        return None
-    if len(polys) == 1:
-        return {"type": "Polygon", "coordinates": polys[0]}
-    return {"type": "MultiPolygon", "coordinates": polys}
-
-
 class ArroyomolinosAyuntamientoAdapter(AyuntamientoAdapter):
     """Plone urbanismo (RSS + archivos) + sede espublico tablón + WFS SITCM (partial)."""
 
@@ -221,8 +202,12 @@ class ArroyomolinosAyuntamientoAdapter(AyuntamientoAdapter):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         req = urllib.request.Request(url, data=data, headers=headers)
-        opener = self._opener if "sedelectronica" in url else urllib.request
-        with opener.open(req, timeout=60) as resp:
+        if "sedelectronica" in url:
+            with self._opener.open(req, timeout=60) as resp:
+                raw = resp.read()
+                charset = resp.headers.get_content_charset() or "utf-8"
+                return raw.decode(charset, errors="replace")
+        with urllib.request.urlopen(req, timeout=60) as resp:
             raw = resp.read()
             charset = resp.headers.get_content_charset() or "utf-8"
             return raw.decode(charset, errors="replace")
