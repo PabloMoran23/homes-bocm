@@ -1,0 +1,38 @@
+slug: sevilla-la-nueva
+nombre: "Sevilla la Nueva"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.sevillalanueva.es"
+  adapter: municipio.adapters.sevilla_la_nueva:SevillaLaNuevaAyuntamientoAdapter
+  config:
+    sede_base: "https://sevillalanueva.sedelectronica.es"
+    board_url: "https://sevillalanueva.sedelectronica.es/board/"
+    planeamiento_url: "https://www.sevillalanueva.es/planeamiento/"
+    pgou_avance_url: "https://www.sevillalanueva.es/urbanismo/avance-plan-general-de-ordenacion-urbana/"
+    tramites_url: "https://www.sevillalanueva.es/urbanismo/tramites/"
+    licencias_url: "https://www.sevillalanueva.es/tramites-de-urbanismo-solicitudes-licencias/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sevilla-la-nueva/1.0"
+    centroid: [40.347, -4.027]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "SEVILLA LA NUEVA"
+  notes: |
+    Fuentes: PDFs NNSS/planeamiento WordPress, avance PGOU (Dropbox), tablón eHome,
+    trámites informativos licencia. Geometría partial vía WFS SIT CM (códigos SAU/UE).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_wfs
+  notes: |
+    Polígonos de ámbito SIT CM cuando el título cita código SAU/UE/API.
