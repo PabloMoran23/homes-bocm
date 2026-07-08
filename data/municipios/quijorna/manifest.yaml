@@ -13,6 +13,7 @@ portal:
     urbanismo_url: "https://aytoquijorna.org/concejalias/urbanismo/"
     tramites_url: "https://aytoquijorna.org/concejalias/urbanismo/tramites-y-gestiones-de-urbanismo/"
     normativa_dossier: "https://aytoquijorna.sedelectronica.es/transparency/c3bde2cb-3329-460a-9b0b-d02e55dc25f5/"
+    centroid: [40.4290833, -4.0565378]
     insecure_ssl: true
     request_delay_s: 0.35
     user_agent: "poc-bocm-quijorna/1.0"
