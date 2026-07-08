@@ -359,9 +359,6 @@ class GuadarramaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         if row.get("categoria", "").lower() == "urbanismo":
             pass
-        elif row.get("categoria", "").lower() in {"órganos de gobierno", "organos de gobierno"}:
-            if not re.search(r"(?i)pleno|convocatoria|acuerdo", blob):
-                return None
         elif not RE_PROYECTO.search(blob):
             return None
         tipo = "urbanismo"

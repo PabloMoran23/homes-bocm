@@ -13,6 +13,7 @@ portal:
       - "https://www.guadarrama.es/contents/index3.php?id=30"
       - "https://www.guadarrama.es/contents/index3.php?id=42"
     tramites_url: "https://www.guadarrama.es/contents/index3.php?id=70"
+    centroid: [40.6724354, -4.0890384]
     request_delay_s: 0.35
     user_agent: "poc-bocm-guadarrama/1.0"
   notes: |
