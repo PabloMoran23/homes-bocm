@@ -1,0 +1,27 @@
+slug: guadarrama
+nombre: "Guadarrama"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.guadarrama.es"
+  adapter: municipio.adapters.guadarrama:GuadarramaAyuntamientoAdapter
+  config:
+    sede_base: "https://ayuntamientodeguadarrama.sedelectronica.es"
+    board_url: "https://ayuntamientodeguadarrama.sedelectronica.es/board"
+    urbanismo_urls:
+      - "https://www.guadarrama.es/contents/index3.php?id=30"
+      - "https://www.guadarrama.es/contents/index3.php?id=42"
+    tramites_url: "https://www.guadarrama.es/contents/index3.php?id=70"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-guadarrama/1.0"
+  notes: |
+    Web corporativa (urbanismo PDFs + trámites) y tablón eHome espublico (/board).
+    Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
