@@ -178,9 +178,11 @@ class PatonesAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-patones/1.0")},
         )
-        opener = self._opener if sede or "sedelectronica.es" in url else urllib.request
-        ctx = self._ssl_ctx if sede or "sedelectronica.es" in url else None
-        with opener.open(req, timeout=60, context=ctx) as resp:
+        use_sede = sede or "sedelectronica.es" in url
+        if use_sede:
+            with self._opener.open(req, timeout=60) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        with urllib.request.urlopen(req, timeout=60) as resp:
             return resp.read().decode("utf-8", errors="replace")
 
     def _abs_url(self, href: str) -> str:
