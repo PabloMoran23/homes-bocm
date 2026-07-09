@@ -9,6 +9,7 @@ portal:
   config:
     request_delay_s: 0.35
     user_agent: "poc-bocm-valdilecha/1.0"
+    centroid: [40.2968, -3.0342]
     urbanismo_url: "https://www.valdilecha.org/urbanismo"
     bandos_url: "https://www.valdilecha.org/pleno-municipal/bandos-y-anuncios"
   notes: |
