@@ -1,0 +1,29 @@
+slug: patones
+nombre: "Patones"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://patones.net/site/ayto"
+  adapter: municipio.adapters.patones:PatonesAyuntamientoAdapter
+  config:
+    wp_base: "https://patones.net/site/ayto"
+    sede_base: "https://patones.sedelectronica.es"
+    board_url: "https://patones.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-patones/1.0"
+    geometry:
+      kind: sitcm_wfs
+      municipio_wfs: PATONES
+  notes: |
+    WordPress corporativo (urbanismo, NNSS, planes especiales PDF) +
+    sede espublico gestiona (tablón /board, transparencia urbanismo Wicket).
+    Geometría parcial vía SITCM WFS (15 UE en PATONES).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
