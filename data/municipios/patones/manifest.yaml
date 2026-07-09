@@ -13,6 +13,7 @@ portal:
     request_delay_s: 0.35
     insecure_ssl: true
     user_agent: "poc-bocm-patones/1.0"
+    centroid: [40.8594, -3.4860]
     geometry:
       kind: sitcm_wfs
       municipio_wfs: PATONES
