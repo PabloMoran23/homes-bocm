@@ -1,0 +1,24 @@
+slug: valdilecha
+nombre: "Valdilecha"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.valdilecha.org"
+  adapter: municipio.adapters.valdilecha:ValdilechaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdilecha/1.0"
+    urbanismo_url: "https://www.valdilecha.org/urbanismo"
+    bandos_url: "https://www.valdilecha.org/pleno-municipal/bandos-y-anuncios"
+  notes: |
+    Web Neosoft (valdilecha.org): PGOU en /urbanismo y bandos/edictos en /pleno-municipal/bandos-y-anuncios.
+    Sede eAdmin (valdilecha.eadministracion.es) es SPA Angular; tablón legacy Tablon.do sirve shell sin datos.
+    Geometría partial vía WFS SITCM sitcm:VPLA_V_AMBITO (21 ámbitos PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
