@@ -1,0 +1,26 @@
+slug: ajalvir
+nombre: "Ajalvir"
+provincia: Ajalvir, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villadeajalvir.es"
+  adapter: municipio.adapters.ajalvir:AjalvirAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ajalvir/1.0"
+    sede_base: "https://ajalvir.eadministracion.es"
+    centroid: [40.5342302, -3.4807818]
+  notes: |
+    Joomla + K2 + DOCman (plan-general, tablón, solicitudes).
+    Sede Maggioli sin tablón scrapeable; proyectos desde DOCman y noticias K2.
+    Licencias: impresos normalizados en transparencia/solicitudes.
+
+licencias:
+  enabled: true
+  notes: Impresos de trámites (obra mayor/menor, DR, actividades); no concesiones publicadas.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Avance PGOU (DOCman), noticias urbanismo K2, tablón filtrado.
