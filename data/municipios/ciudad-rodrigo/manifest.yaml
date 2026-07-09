@@ -1,0 +1,25 @@
+slug: ciudad-rodrigo
+nombre: "Ciudad Rodrigo"
+provincia: "Ciudad Rodrigo (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.ciudadrodrigo.es/ayuntamiento/"
+  adapter: municipio.adapters.ciudad_rodrigo:CiudadRodrigoAyuntamientoAdapter
+  config:
+    wp_base: "https://www.ciudadrodrigo.es/ayuntamiento"
+    sede_base: "https://ciudadrodrigo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ciudad-rodrigo/1.0"
+    centroid: [40.5986, -6.5332]
+  notes: |
+    WordPress REST (categorías normativa urbanística + autorizaciones uso excepcional),
+    tablón espublico (/board) y trámites PDF. Sin visor GIS público.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
