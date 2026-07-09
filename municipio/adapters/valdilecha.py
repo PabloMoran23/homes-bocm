@@ -79,7 +79,8 @@ RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_BOCM_DATE = re.compile(r"BOCM-(\d{4})(\d{2})(\d{2})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 RE_AMBIT_CODE = re.compile(
-    r"(?i)\b(AA[\s\-]?\d+|SUS[\s\-]?(?:R|AE)[\s\-]?\d+|APD[\s\-]?I\d+|SUSR\s*\d+)\b"
+    r"(?i)(?:A\.A[\s\-]?\d+|AA[\s\-]?\d+|SUS[\s\-]?(?:R|AE)[\s\-]?\d+|"
+    r"APD[\s\-]?I\d+|SUSR\d+)"
 )
 
 
@@ -117,6 +118,7 @@ def _abs_url(href: str, base: str = WEB_BASE) -> str:
 
 def _normalize_ambit_code(raw: str) -> str:
     t = raw.upper().replace(" ", "").replace("_", "-")
+    t = t.replace("A.A", "AA").replace("A-A", "AA")
     t = re.sub(r"SUSR(\d+)", r"SUS-R-\1", t)
     t = re.sub(r"SUS-R(\d+)", r"SUS-R\1", t)
     t = re.sub(r"SUS-R-(\d+)", lambda m: f"SUS-R-{m.group(1)}", t)
@@ -341,7 +343,7 @@ class ValdilechaAyuntamientoAdapter(AyuntamientoAdapter):
         return self._wfs_cache, self._ambit_names
 
     def _match_ambit_name(self, title: str, names: list[str]) -> str | None:
-        codes = [_normalize_ambit_code(m.group(1)) for m in RE_AMBIT_CODE.finditer(title)]
+        codes = [_normalize_ambit_code(m.group(0)) for m in RE_AMBIT_CODE.finditer(title)]
         norm_names = {_normalize_ambit_code(n): n for n in names}
         for code in codes:
             for norm, orig in norm_names.items():
