@@ -1,0 +1,36 @@
+slug: valdemorillo
+nombre: "Valdemorillo"
+provincia: "Valdemorillo, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytovaldemorillo.com"
+  adapter: municipio.adapters.valdemorillo:ValdemorilloAyuntamientoAdapter
+  config:
+    sede_base: "https://aytovaldemorillo.sedelectronica.es"
+    board_url: "https://aytovaldemorillo.sedelectronica.es/board/"
+    urbanismo_url: "https://aytovaldemorillo.com/urbanismo/"
+    transparency_pgou_url: "https://aytovaldemorillo.sedelectronica.es/transparency/4776aa0e-ebd0-438b-b391-6f8671ede0b2/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdemorillo/1.0"
+    centroid: [40.5016772, -4.0688878]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VALDEMORILLO"
+  notes: |
+    WordPress urbanismo (NNSS PDFs + formularios sede) + tablón eHome + transparencia PGOU avance.
+    Geometría parcial vía WFS SITCM (25 ámbitos NNSS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    WFS idem.comunidad.madrid sitcm:VPLA_V_AMBITO; match por código UA/SAU o nombre ámbito en título.
