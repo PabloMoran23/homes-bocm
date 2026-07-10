@@ -415,7 +415,9 @@ class TorrejonDeVelascoAyuntamientoAdapter(AyuntamientoAdapter):
             str(row.get(k) or "")
             for k in ("titulo", "procedimiento", "categoria", "descripcion")
         )
-        if RE_EXCLUDE.search(blob):
+        if RE_EXCLUDE.search(blob) and not re.search(
+            r"(?i)exposici[oó]n p[uú]blica|informaci[oó]n p[uú]blica", blob
+        ):
             return None
         if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
             return None
