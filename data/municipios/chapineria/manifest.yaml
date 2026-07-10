@@ -1,0 +1,29 @@
+slug: chapineria
+nombre: "Chapinería"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://chapineria.madrid"
+  adapter: municipio.adapters.chapineria:ChapineriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-chapineria/1.0"
+    sede_base: "https://chapineria.sedelectronica.es"
+    board_url: "https://chapineria.sedelectronica.es/board"
+    insecure_ssl: true
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CHAPINERÍA"
+  notes: |
+    WordPress TownPress (urbanismo + área descargas 04.xx) + tablón espublico (/board).
+    Planeamiento vigente: Normas Subsidiarias (SITCM). Geometría partial vía WFS ámbitos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
