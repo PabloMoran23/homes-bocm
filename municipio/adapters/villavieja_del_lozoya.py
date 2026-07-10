@@ -198,9 +198,10 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", f"poc-bocm-{ID_PREFIX}/1.0")},
         )
-        opener = self._opener if use_sede or "sedelectronica.es" in url else urllib.request
-        ctx = self._ssl_ctx if use_sede or "sedelectronica.es" in url else None
-        with opener.urlopen(req, timeout=60, context=ctx) as resp:
+        if use_sede or "sedelectronica.es" in url:
+            with self._opener.open(req, timeout=60) as resp:
+                return resp.read().decode("utf-8", errors="replace")
+        with urllib.request.urlopen(req, timeout=60) as resp:
             return resp.read().decode("utf-8", errors="replace")
 
     def _fetch_json(self, url: str) -> Any:
