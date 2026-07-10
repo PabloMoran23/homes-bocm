@@ -1,0 +1,35 @@
+slug: villavieja-del-lozoya
+nombre: "Villavieja del Lozoya"
+provincia: Villavieja del Lozoya
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://villaviejadellozoya.es"
+  adapter: municipio.adapters.villavieja_del_lozoya:VillaviejaDelLozoyaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villavieja-del-lozoya/1.0"
+    wp_api_base: "https://villaviejadellozoya.es/wp-json/wp/v2"
+    sede_base: "https://villaviejadellozoya.sedelectronica.es"
+    board_url: "https://villaviejadellozoya.sedelectronica.es/board"
+    tablon_category_id: 39
+    urbanismo_category_id: 62
+    seed_pages:
+      - "https://villaviejadellozoya.es/urbanismo/normas-subsidiarias/"
+      - "https://villaviejadellozoya.es/avance-del-plan-general-de-villavieja-del-lozoya/"
+      - "https://villaviejadellozoya.es/category/urbanismo/"
+    geometry:
+      wfs_base: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAVIEJA DEL LOZOYA"
+  notes: |
+    WordPress (tablón municipal REST cat.39 + normas subsidiarias/PGOU PDFs) +
+    sede espublico gestiona (/board, vacío en scrape estático) +
+    SIT CM WFS ámbitos UE (10 polígonos, enriquecimiento partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
