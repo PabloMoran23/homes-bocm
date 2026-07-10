@@ -1031,11 +1031,11 @@ municipios:
 - slug: villavieja-del-lozoya
   nombre: Villavieja del Lozoya
   bocm_count: 15
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-07-10T04:08:05.435882+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/102
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-09T00:03:56.961286+00:00'
+updated_at: '2026-07-10T04:08:05.436762+00:00'
