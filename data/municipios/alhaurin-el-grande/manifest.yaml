@@ -1,0 +1,28 @@
+slug: alhaurin-el-grande
+nombre: "Alhaurín el Grande"
+provincia: "Alhaurín el Grande/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://alhaurinelgrande.sedelectronica.es"
+  adapter: municipio.adapters.alhaurin_el_grande:AlhaurinElGrandeAyuntamientoAdapter
+  config:
+    sede_base: "https://alhaurinelgrande.sedelectronica.es"
+    board_url: "https://alhaurinelgrande.sedelectronica.es/board/"
+    urbanismo_url: "https://alhaurinelgrande.es/concejalia-de-urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alhaurin-el-grande/1.0"
+    centroid: [36.6430, -4.6914]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + PDFs PGOU/planeamiento en WordPress.
+    App iUrban (appnew.iurban.es) es portal ciudadano sin API GIS enlazable.
+    RPGUR Junta Andalucía requiere token; sin geometría por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
