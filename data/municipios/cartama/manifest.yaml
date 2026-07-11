@@ -1,0 +1,30 @@
+slug: cartama
+nombre: "Cártama"
+provincia: "Cártama/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://cartama.sedelectronica.es"
+  adapter: municipio.adapters.cartama:CartamaAyuntamientoAdapter
+  config:
+    sede_base: "https://cartama.sedelectronica.es"
+    board_url: "https://cartama.sedelectronica.es/board/"
+    web_base: "https://www.cartama.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cartama/1.0"
+    web_user_agent: "Mozilla/5.0 (compatible; poc-bocm-cartama/1.0)"
+    centroid: [36.7106, -4.6330]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + procedimientos planeamiento
+    en web Diputación Málaga (cartama.es/413x). Web raíz bloqueada WAF; dossier redirect loop.
+    Transparencia Wicket (~935 docs urbanismo) no scrapeable sin sesión AJAX.
+    Geometría: SGM interno + VITUA sin enlace a expediente — unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
