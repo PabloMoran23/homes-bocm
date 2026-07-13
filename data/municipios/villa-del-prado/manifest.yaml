@@ -1,0 +1,28 @@
+slug: villa-del-prado
+nombre: "Villa del Prado"
+provincia: Villa del Prado, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.villadelprado.es/eAdmin"
+  adapter: municipio.adapters.villa_del_prado:VillaDelPradoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villa-del-prado/1.0"
+    sede_base: "https://sede.villadelprado.es/eAdmin"
+    transparencia_base: "https://transparencia.villadelprado.org"
+    web_base: "https://www.villadelprado.es"
+    urbanismo_url: "https://transparencia.villadelprado.org/index.php/urbanismo"
+    tramite_ids: [5, 8]
+    centroid: [40.2764752, -4.3048032]
+  notes: |
+    Sede eAdmin (add4u): tablón digital + catálogo trámites (comunicación previa, DR obra).
+    Transparencia Joomla: normas subsidiarias, plan especial NNSS, Las Hoyas, plan parcial La Florida.
+    PDFs locales en /images/TRANSPARENCIA/URBANISMO/ y enlaces CCAA madrid.org.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
