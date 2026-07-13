@@ -949,10 +949,10 @@ municipios:
   bocm_count: 17
   status: done
   attempts: 1
-  last_run: '2026-07-09T04:11:06.279039+00:00'
+  last_run: '2026-07-13T00:03:36.004356+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/96
-  notes: ''
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Berrueco
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-09T04:11:06.279886+00:00'
+updated_at: '2026-07-13T00:03:36.005211+00:00'
