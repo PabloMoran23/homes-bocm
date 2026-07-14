@@ -1,7 +1,7 @@
 # Guadarrama — investigación portal ayuntamiento
 
 **Municipio:** Guadarrama (Comunidad de Madrid)  
-**Fecha:** 2026-07-08  
+**Fecha:** 2026-07-14  
 **BOCM regional (referencia):** 18 avisos
 
 ## Resumen
@@ -29,7 +29,7 @@ Guadarrama publica urbanismo en la web corporativa (`guadarrama.es`, CMS estáti
 
 - **URL:** `https://www.guadarrama.es/contents/index3.php?id=42`
 - **Contenido:** Plan Especial PERI Las Cabezuelas (aprobación inicial BOCM 03/06/2026), memoria, planos, estudios acústico/ambiental, inventario arbolado UA5.
-- **Mecanismo:** PDFs en `/docs/urbanismo/`.
+- **Mecanismo:** PDFs en `/docs/urbanismo/` (actualmente embebidos en bloque HTML comentado; el adapter extrae enlaces `.pdf` igualmente).
 
 ### 3. Web corporativa — Trámites (id=70)
 
@@ -77,6 +77,13 @@ Guadarrama publica urbanismo en la web corporativa (`guadarrama.es`, CMS estáti
 - **licencias.jsonl:** Páginas informativas (urbanismo + trámites + sede) + modelos PDF `/docs/tramites/Urbanismo/` + tablón filtrado.
 - **IDs:** `guadarrama-{lic|proy}-{sha256[:14]}`.
 - **source:** `ayuntamiento`.
+
+## Verificación pipeline (2026-07-14)
+
+- Proyectos: 14 filas (`with_geometry`: 0)
+- Licencias: 20 filas (`with_geometry`: 0)
+- Parity: ok (proyectos) / partial (licencias informativas)
+- PR: https://github.com/PabloMoran23/homes-bocm/pull/60
 
 ## Paridad esperada
 
