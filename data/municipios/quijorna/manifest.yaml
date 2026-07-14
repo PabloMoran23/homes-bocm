@@ -1,0 +1,36 @@
+slug: quijorna
+nombre: Quijorna
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytoquijorna.org"
+  adapter: municipio.adapters.quijorna:QuijornaAyuntamientoAdapter
+  config:
+    sede_base: "https://aytoquijorna.sedelectronica.es"
+    board_url: "https://aytoquijorna.sedelectronica.es/board/"
+    board_urbanismo_url: "https://aytoquijorna.sedelectronica.es/board/974e6d5e-f59b-11de-b600-00237da12c6a/"
+    urbanismo_url: "https://aytoquijorna.org/concejalias/urbanismo/"
+    tramites_url: "https://aytoquijorna.org/concejalias/urbanismo/tramites-y-gestiones-de-urbanismo/"
+    normativa_dossier: "https://aytoquijorna.sedelectronica.es/transparency/c3bde2cb-3329-460a-9b0b-d02e55dc25f5/"
+    ordenanzas_dossier: "https://aytoquijorna.sedelectronica.es/transparency/ad88615a-a13d-4576-a91d-63050c8fc9f8/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-quijorna/1.0"
+    insecure_ssl: true
+    centroid: [40.4290833, -4.0565378]
+  notes: |
+    WordPress citygov + sede espublico eHome. NN.SS en transparencia, guías tramitación en web,
+    tablón urbanismo casi vacío. Geometría vía SITCM WFS (27 ámbitos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    SITCM VPLA_V_AMBITO (DS_MUNICIPIO=QUIJORNA). PDFs normativos sin código de ámbito explícito.
