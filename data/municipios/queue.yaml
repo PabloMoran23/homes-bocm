@@ -891,11 +891,11 @@ municipios:
 - slug: sevilla-la-nueva
   nombre: Sevilla la Nueva
   bocm_count: 18
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-14T20:06:25.319091+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/124
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-13T00:03:36.005211+00:00'
+updated_at: '2026-07-14T20:06:25.320006+00:00'
