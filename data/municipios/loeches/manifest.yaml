@@ -1,0 +1,37 @@
+slug: loeches
+nombre: "Loeches"
+provincia: Loeches
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://loeches.es"
+  adapter: municipio.adapters.loeches:LoechesAyuntamientoAdapter
+  config:
+    sede_base: "https://loeches.sedelectronica.es"
+    board_url: "https://loeches.sedelectronica.es/board/"
+    urbanismo_url: "https://loeches.es/urbanismo/"
+    pgou_url: "https://loeches.es/plan-general-de-ordenacion-urbana/"
+    wp_api_base: "https://loeches.es/wp-json/wp/v2"
+    urbanismo_category_id: 34
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-loeches/1.0"
+    insecure_ssl: true
+    centroid: [40.3834989, -3.4092989]
+  notes: |
+    WordPress Mandrake + sede espublico eHome (tablón /board/).
+    Proyectos: WP REST cat. 34, PGOU PDFs, tablón filtrado.
+    Licencias: tablón + páginas informativas trámites.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+      municipio_wfs: "LOECHES"
+  notes: |
+    Sin visor municipal; polígonos vía WFS SITCM VPLA_V_AMBITO cuando el título cita sector/ámbito.
