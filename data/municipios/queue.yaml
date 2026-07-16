@@ -1045,11 +1045,11 @@ municipios:
 - slug: chapineria
   nombre: Chapinería
   bocm_count: 14
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-16T20:06:58.679201+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/134
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-13T00:03:36.005211+00:00'
+updated_at: '2026-07-16T20:06:58.680060+00:00'
