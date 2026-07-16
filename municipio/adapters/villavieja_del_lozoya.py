@@ -232,8 +232,11 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
             },
         )
-        opener = self._opener if sede else urllib.request
-        with opener.urlopen(req, timeout=60) as resp:
+        if sede:
+            resp = self._opener.open(req, timeout=60)
+        else:
+            resp = urllib.request.urlopen(req, timeout=60)
+        with resp:
             return resp.read().decode("utf-8", errors="replace")
 
     def _fetch_json(self, url: str) -> Any:
