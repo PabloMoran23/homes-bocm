@@ -1,0 +1,30 @@
+slug: ronda
+nombre: "Ronda"
+provincia: Málaga
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ronda.sedelectronica.es"
+  adapter: municipio.adapters.ronda:RondaAyuntamientoAdapter
+  config:
+    sede_base: "https://ronda.sedelectronica.es"
+    board_url: "https://ronda.sedelectronica.es/board/"
+    transparency_planeamiento_url: "https://ronda.sedelectronica.es/transparency/0a2ade64-34c4-4f6c-927a-bb54d949eeee/"
+    visor_api_base: "https://geoportal.unodata.urbanismoronda.es/restapi/index.php"
+    visor_api_token: "45d25df428a499da8ec0a98e192d1b98"
+    visor_api_operacion: "VisorAbierto"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ronda/1.0"
+    centroid: [36.74889, -5.16280]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/), transparencia planeamiento urbanístico,
+    visor UNOData (geoportal.unodata.urbanismoronda.es) con geometría por referencia catastral.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
