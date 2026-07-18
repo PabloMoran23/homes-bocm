@@ -1,0 +1,26 @@
+slug: lozoyuela-navas-sieteiglesias
+nombre: "Lozoyuela-Navas-Sieteiglesias"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.lozoyuela.com"
+  adapter: municipio.adapters.lozoyuela_navas_sieteiglesias:LozoyuelaNavasSieteiglesiasAyuntamientoAdapter
+  config:
+    sede_base: "https://lozoyuela.sedelectronica.es"
+    centroid: [40.9263383, -3.6176377]
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lozoyuela-navas-sieteiglesias/1.0"
+    wfs_municipio: "LOZOYUELA-NAVAS-SIETEIGLESIAS"
+  notes: |
+    WordPress (lozoyuela.com): normas subsidiarias, PONP Mazacorta, bandos PGOU, trámites personales.
+    Sede espublico gestiona (lozoyuela.sedelectronica.es): tablón /board, trámites /dossier.
+    Geometría partial vía SITCM WFS (ámbitos sin enlace directo a expedientes del tablón).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

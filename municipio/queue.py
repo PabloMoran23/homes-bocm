@@ -198,7 +198,10 @@ def open_pr_by_slug() -> dict[str, str]:
     Slugs con PR abierta en GitHub → URL de la PR.
     Detecta ramas automation/municipio-<slug> o manifest en el diff.
     """
-    prs = _gh_json(["pr", "list", "--state", "open"], fields="number,headRefName,title,url")
+    prs = _gh_json(
+        ["pr", "list", "--state", "open", "--limit", "200"],
+        fields="number,headRefName,title,url",
+    )
     if not isinstance(prs, list):
         return {}
 
