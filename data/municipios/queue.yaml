@@ -737,11 +737,11 @@ municipios:
 - slug: el-molar
   nombre: El Molar
   bocm_count: 20
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-07-19T16:09:25.632159+00:00'
   last_error: null
-  pr_url: null
+  pr_url: pending
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-17T00:01:26.391459+00:00'
+updated_at: '2026-07-19T16:09:25.633012+00:00'
