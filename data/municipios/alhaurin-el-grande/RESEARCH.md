@@ -12,7 +12,7 @@
 | Concejalía Urbanismo | https://alhaurinelgrande.es/concejalia-de-urbanismo/ | **Operativa** — PDFs PGOU, plan especial SURS-PE-1 |
 | Sede electrónica | https://alhaurinelgrande.sedelectronica.es | **Operativa** — espublico gestiona |
 | Tablón de anuncios | https://alhaurinelgrande.sedelectronica.es/board/ | **Operativa** — tabla HTML con preview-document |
-| Transparencia | https://alhaurinelgrande.sedelectronica.es/transparency | **Operativa** — sección «7. URBANISMO…» (17 docs, Wicket AJAX) |
+| Transparencia | https://alhaurinelgrande.sedelectronica.es/transparency | **Operativa** — sección «7. URBANISMO…» (21 docs, Wicket AJAX) |
 | Catálogo trámites | https://alhaurinelgrande.sedelectronica.es/dossier.5 | Lenta; sin listado histórico público |
 | App ciudadana iUrban | https://appnew.iurban.es/home | Portal SPA; sin API REST pública para expedientes |
 | RPGUR (Junta Andalucía) | https://services8.arcgis.com/C7eTtVXWk1LWUjN8/ArcGIS/rest/services/RPGUR/FeatureServer | ArcGIS con capas PGOU; **requiere token** (error 499) |
@@ -35,6 +35,7 @@
 
 | Expediente | Procedimiento | Descripción |
 |------------|---------------|-------------|
+| 6305/2026 | Planeamiento General / Urbanismo | Consulta pública previa avance POU (memoria, DIE, informes) |
 | 23524/2025 | Datos de la Vía Pública | Audiencia expediente Urbanización Salmerón (publicación BOP) |
 
 ## WordPress — planeamiento / PGOU
@@ -48,6 +49,7 @@ La página de Concejalía de Urbanismo enlaza PDFs de planeamiento descargables:
 | Adaptación parcial LOU PGOU (memorias) | `.../MemoriasyAnexos_AdaptacionParcialLOUAdelPGOU.pdf` |
 | Plan Especial SURS-PE-1 (memoria) | `.../MEMORIA-Division-Poligonal-SURS-PE-1.pdf` |
 | Plan Especial SURS-PE-1 (planos) | `.../PLANOS-Division-Poligonal-SURS-PE.-1.pdf` |
+| Aprobación definitiva plan parcial (memoria/planos) | `.../APROBACION-DEFINITIVA-PLAN-PARCIAL-*.pdf` (may 2026) |
 
 ## Licencias de obra
 

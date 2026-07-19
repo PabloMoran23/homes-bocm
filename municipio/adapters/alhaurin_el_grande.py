@@ -38,7 +38,8 @@ RE_PROYECTO = re.compile(
 RE_BOARD_NON_URBAN = re.compile(
     r"(?i)(selecci[oó]n de personal|nombramiento|convocatoria.*empleo|"
     r"cobranza iae|padrones|bolsa de trabajo|herederos|subvenciones|"
-    r"junta de gobierno local|padr[oó]n (?:fiscal|de agua))",
+    r"junta de gobierno local|padr[oó]n (?:fiscal|de agua)|"
+    r"modificaci[oó]n de cr[eé]dito)",
 )
 RE_SKIP_PDF = re.compile(
     r"(?i)(proteccioncivil|baja.de.suministro|modelo.de.solicitud)",
@@ -247,6 +248,8 @@ class AlhaurinElGrandeAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _board_is_urban(self, row: dict[str, Any]) -> bool:
         blob = row.get("blob") or ""
+        if re.search(r"(?i)modificaci[oó]n de cr[eé]dito", blob):
+            return False
         if RE_BOARD_NON_URBAN.search(blob) and not RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
             return False
         proc = (row.get("procedimiento") or "").lower()
@@ -292,7 +295,9 @@ class AlhaurinElGrandeAyuntamientoAdapter(AyuntamientoAdapter):
             return None
 
         tipo = "urbanismo"
-        if re.search(r"(?i)planeamiento general|aprobaci[oó]n inicial", blob):
+        if re.search(r"(?i)plan de ordenaci[oó]n urbana|\bpou\b|consulta p[uú]blica", blob):
+            tipo = "POU / consulta pública"
+        elif re.search(r"(?i)planeamiento general|aprobaci[oó]n inicial", blob):
             tipo = "planeamiento"
         elif re.search(r"(?i)urbanizaci[oó]n", blob):
             tipo = "urbanización"
