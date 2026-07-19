@@ -499,11 +499,11 @@ municipios:
 - slug: cartama
   nombre: Cártama
   bocm_count: 30
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-19T00:06:07.572040+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/141
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-17T00:01:26.391459+00:00'
+updated_at: '2026-07-19T00:06:07.572951+00:00'
