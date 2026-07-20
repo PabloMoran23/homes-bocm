@@ -793,11 +793,11 @@ municipios:
 - slug: leon
   nombre: León
   bocm_count: 19
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-20T12:09:01.959347+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/55
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-17T00:01:26.391459+00:00'
+updated_at: '2026-07-20T12:09:01.960206+00:00'
