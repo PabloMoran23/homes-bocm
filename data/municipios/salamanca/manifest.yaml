@@ -1,0 +1,25 @@
+slug: salamanca
+nombre: "Salamanca"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytosalamanca.es"
+  adapter: municipio.adapters.salamanca:SalamancaAyuntamientoAdapter
+  config:
+    portal_base: "https://www.aytosalamanca.es"
+    sede_base: "https://www.aytosalamanca.gob.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-salamanca/1.0"
+    centroid: [40.9701, -5.6635]
+  notes: |
+    Fuentes: Liferay urbanismo (planes en tramitación, anuncios categoría 39289),
+    sede STA (tablón edictos con metadata embebida, catálogo STA_AMB_URBANISMO).
+    Visor PGOU GeoVincles sin API pública enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
