@@ -45,9 +45,9 @@ Municipio: **Segovia** (`segovia`) — Castilla y León / BOYL (`bocyl`)
 ## Geometría / visor
 
 - **geometry_status:** `unavailable`
-- **Fuentes:** No se localizó visor ArcGIS/WFS/GeoJSON público enlazado a expedientes. El PGOU se publica como PDF/planos descargables; la página `pgou-consolidado` no expone iframe de visor SIG en el HTML archivado.
+- **Fuentes:** El Ayuntamiento publica un [Gemelo Digital ArcGIS Hub](https://gemelo-digital-aytosegovia.hub.arcgis.com/) (modelo 3D, catastro, LiDAR) accesible desde cloud, pero **no enlaza expedientes/tablon** ni expone FeatureServer consultable por código de expediente. El PGOU se publica como PDF/planos descargables; `pgou-consolidado` no expone iframe de visor SIG en el HTML archivado. `opendata.segovia.es` no responde desde entornos cloud.
 - **Estrategia:** El orquestador aplicará centroide municipal (`manifest.portal.config.centroid`) + jitter en geocode.
-- **Limitaciones:** Sin capa GIS consultable por código de expediente; geometría de ámbito solo en planos PDF no georreferenciados automáticamente.
+- **Limitaciones:** Sin capa GIS pública enlazada a expedientes del tablón STA; geometría de ámbito solo en planos PDF no georreferenciados automáticamente.
 
 ## Limitaciones técnicas
 
