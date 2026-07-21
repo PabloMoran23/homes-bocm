@@ -849,11 +849,11 @@ municipios:
 - slug: arroyomolinos
   nombre: Arroyomolinos
   bocm_count: 18
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-21T12:05:57.020297+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/153
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -1157,9 +1157,9 @@ municipios:
 - slug: robledo-de-chavela
   nombre: Robledo de Chavela
   bocm_count: 13
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-07-21T12:04:21.556439+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-21T00:04:37.853418+00:00'
+updated_at: '2026-07-21T12:05:57.021326+00:00'
