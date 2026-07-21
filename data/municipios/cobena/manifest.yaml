@@ -1,0 +1,30 @@
+slug: cobena
+nombre: "Cobeña"
+provincia: "Cobeña, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-cobena.org"
+  adapter: municipio.adapters.cobena:CobenaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ayto-cobena.org"
+    sede_base: "https://sede.ayto-cobena.org"
+    tablon_url: "https://sede.ayto-cobena.org/PortalCiudadano/Tablon/wfrTablon.aspx"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cobena/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "COBEÑA"
+  notes: |
+    Web corporativa Fontventa S.L: planeamiento en acordeones/list-group con PDFs /media/.
+    Sede ATM eAdministracion: tablón DevExpress (requiere sesión desde home).
+    Geometría: WFS SIT Comunidad de Madrid (sitcm:VPLA_V_AMBITO).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
