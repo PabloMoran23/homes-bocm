@@ -1,0 +1,30 @@
+slug: arroyomolinos
+nombre: "Arroyomolinos"
+provincia: "Arroyomolinos, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-arroyomolinos.org"
+  adapter: municipio.adapters.arroyomolinos:ArroyomolinosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arroyomolinos/1.0"
+    sede_base: "https://arroyomolinos.sedelectronica.es"
+    board_url: "https://arroyomolinos.sedelectronica.es/board"
+    insecure_ssl: true
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "ARROYOMOLINOS"
+  notes: |
+    Portal Plone (ayto-arroyomolinos.org): RSS urbanismo, archivos PDF por año, trámites.
+    Sede espublico gestiona (arroyomolinos.sedelectronica.es/board): tablón HTML.
+    Geometría partial vía WFS SITCM (ámbitos SAU/UE/APD); visor TecnoGeo sin API pública.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
