@@ -81,10 +81,10 @@ Guadarrama publica urbanismo en la web corporativa (`guadarrama.es`, CMS estáti
 
 ## Verificación pipeline (2026-07-21)
 
-- Proyectos: 13 filas (`with_geometry`: ver parity-report tras enrich)
+- Proyectos: 13 filas (`with_geometry`: 7 / 13)
 - Licencias: 20 filas (`with_geometry`: 0)
 - Parity: ok (proyectos) / partial (licencias informativas)
-- SITCM: polígonos parciales por palabras clave en títulos PDF
+- SITCM: polígonos parciales (PERI Las Cabezuelas, La Mata, etc.) por palabras clave en títulos PDF
 
 ## Paridad esperada
 
