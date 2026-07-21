@@ -1117,10 +1117,10 @@ municipios:
   bocm_count: 13
   status: done
   attempts: 1
-  last_run: '2026-07-17T00:08:34.092727+00:00'
+  last_run: '2026-07-21T00:04:37.852482+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/135
-  notes: ''
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cobeña, Madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-17T00:08:34.093671+00:00'
+updated_at: '2026-07-21T00:04:37.853418+00:00'
