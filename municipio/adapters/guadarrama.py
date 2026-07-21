@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.sitcm import _merge_geometries, resolve_ambito_geometry
 
 WEB_BASE = "https://www.guadarrama.es"
 SEDE_BASE = "https://ayuntamientodeguadarrama.sedelectronica.es"
@@ -22,6 +24,25 @@ ANUNCIOS_URB_URL = f"{WEB_BASE}/contents/index3.php?id=42"
 TRAMITES_URL = f"{WEB_BASE}/contents/index3.php?id=70"
 MUNICIPIO = "Guadarrama"
 ID_PREFIX = "guadarrama"
+
+WFS_BASE = "https://idem.comunidad.madrid/geoserver3/ows"
+WFS_TYPE = "sitcm:VPLA_V_AMBITO"
+WFS_MUNICIPIO = "GUADARRAMA"
+
+# Palabras clave en títulos PDF → ámbito SITCM (Comunidad de Madrid).
+AMBITO_KEYWORDS: tuple[tuple[str, str], ...] = (
+    ("cabezuelas", "PERI DE LAS CABEZUELAS"),
+    ("la mata", "S-IX INDUSTRIAL DE LA MATA"),
+    ("los fresnos", "UA-C LOS FRESNOS DE LA JAROSA"),
+    ("jarosa", "UA-C LOS FRESNOS DE LA JAROSA"),
+    ("navalafuente", "PERI DE NAVALAFUENTE"),
+    ("grandes valles", "UA-E GRANDES VALLES"),
+    ("los builes", "S-VIII LOS BUILES"),
+    ("los cercados", "S-VII LOS CERCADOS"),
+    ("dehesa de arriba", "S-VI DEHESA DE ARRIBA"),
+    ("dehesa de los panes", "S-V DEHESA DE LOS PANES"),
+    ("la serrana", "S-IV LA SERRANA"),
+)
 
 DEFAULT_URBANISMO_URLS = (URBANISMO_URL, ANUNCIOS_URB_URL)
 
@@ -142,6 +163,97 @@ class GuadarramaAyuntamientoAdapter(AyuntamientoAdapter):
             str(u) for u in (self.config.get("urbanismo_urls") or DEFAULT_URBANISMO_URLS)
         ]
         self.tramites_url = str(self.config.get("tramites_url") or TRAMITES_URL)
+        self._sitcm_cache: dict[str, dict[str, Any]] | None = None
+
+    def _fetch_json(self, url: str) -> Any:
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-guadarrama/1.0")},
+        )
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+
+    def _load_sitcm_ambitos(self) -> dict[str, dict[str, Any]]:
+        if self._sitcm_cache is not None:
+            return self._sitcm_cache
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeName": WFS_TYPE,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "count": "50",
+                "CQL_FILTER": f"DS_MUNICIPIO='{WFS_MUNICIPIO}'",
+            }
+        )
+        url = f"{WFS_BASE}?{params}"
+        try:
+            data = self._fetch_json(url)
+        except (urllib.error.URLError, json.JSONDecodeError):
+            self._sitcm_cache = {}
+            return self._sitcm_cache
+        cache: dict[str, dict[str, Any]] = {}
+        for feat in data.get("features") or []:
+            if not isinstance(feat, dict):
+                continue
+            name = str((feat.get("properties") or {}).get("DS_NOMB_AMB") or "").strip()
+            if name:
+                cache[name.upper()] = feat
+        self._sitcm_cache = cache
+        return cache
+
+    def _geometry_from_ambit(self, ambit_name: str) -> dict[str, Any] | None:
+        cache = self._load_sitcm_ambitos()
+        feat = cache.get(ambit_name.upper())
+        if not feat:
+            return None
+        merged = _merge_geometries([feat])
+        if not merged:
+            return None
+        cql = f"DS_MUNICIPIO='{WFS_MUNICIPIO}' AND DS_NOMB_AMB='{ambit_name.replace(chr(39), chr(39)*2)}'"
+        query_url = (
+            f"{WFS_BASE}?service=WFS&version=2.0.0&request=GetFeature&typeName={WFS_TYPE}"
+            f"&outputFormat=application/json&srsName=EPSG:4326&CQL_FILTER={urllib.parse.quote(cql)}"
+        )
+        return {
+            "geom_geojson": merged,
+            "geometry_source": "portal_wfs",
+            "geometry_source_url": query_url,
+            "coord_source": "portal_geometry_centroid",
+            "ambito_sit": ambit_name,
+        }
+
+    def _fetch_geometry(self, title: str) -> dict[str, Any] | None:
+        geom, _meta = resolve_ambito_geometry(WFS_MUNICIPIO, title)
+        if geom:
+            return {
+                "geom_geojson": geom,
+                "geometry_source": "portal_wfs",
+                "geometry_source_url": "https://idem.comunidad.madrid/geoserver3/ows",
+                "coord_source": "portal_geometry_centroid",
+                "ambito_sit": _meta.get("ambito_name"),
+            }
+        title_low = (title or "").lower()
+        for keyword, ambit in AMBITO_KEYWORDS:
+            if keyword in title_low:
+                hit = self._geometry_from_ambit(ambit)
+                if hit:
+                    return hit
+        return None
+
+    def _enrich_geometry(self, rec: dict[str, Any]) -> None:
+        if record_geometry(rec):
+            return
+        geom = self._fetch_geometry(str(rec.get("titulo") or ""))
+        if not geom:
+            return
+        rec.update(geom)
+        centroid = geometry_centroid(geom["geom_geojson"])
+        if centroid:
+            rec["lat"], rec["lon"] = centroid
 
     def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
@@ -372,7 +484,7 @@ class GuadarramaAyuntamientoAdapter(AyuntamientoAdapter):
             tipo = "convenio"
         elif re.search(r"(?i)estudio de detalle|edtu", blob):
             tipo = "estudio de detalle"
-        return {
+        rec = {
             "id": _stable_id("proy", row.get("expediente") or row["url"]),
             "municipio": MUNICIPIO,
             "titulo": row["titulo"][:500],
@@ -383,10 +495,12 @@ class GuadarramaAyuntamientoAdapter(AyuntamientoAdapter):
             "expte": row.get("expediente") or None,
             "origen": row.get("origen"),
         }
+        self._enrich_geometry(rec)
+        return rec
 
     def _doc_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any]:
         key = row.get("pdf_url") or row["url"]
-        return {
+        rec = {
             "id": _stable_id("proy", key),
             "municipio": MUNICIPIO,
             "titulo": row["titulo"][:500],
@@ -397,6 +511,8 @@ class GuadarramaAyuntamientoAdapter(AyuntamientoAdapter):
             "source": "ayuntamiento",
             "origen": row.get("origen"),
         }
+        self._enrich_geometry(rec)
+        return rec
 
     def _doc_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
         titulo = row.get("titulo") or ""

@@ -18,7 +18,7 @@ portal:
     user_agent: "poc-bocm-guadarrama/1.0"
   notes: |
     Web corporativa (urbanismo PDFs + trámites) y tablón eHome espublico (/board).
-    Sin visor GIS municipal enlazado a expedientes.
+    Geometría parcial vía WFS SITCM (ámbitos planeamiento CM) por palabras clave en títulos.
 
 licencias:
   enabled: true

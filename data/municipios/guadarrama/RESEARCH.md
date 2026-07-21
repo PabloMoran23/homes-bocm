@@ -63,13 +63,14 @@ Guadarrama publica urbanismo en la web corporativa (`guadarrama.es`, CMS estáti
 
 ## Geometría / visor
 
-- **geometry_status:** `unavailable`
-- **Fuentes exploradas:**
-  - Web urbanismo: planos PDF/JPG de normas y planes (sin servicio WFS/ArcGIS municipal).
-  - IDEM Comunidad de Madrid: visor SIT de planeamiento urbanístico regional (`idem.madrid.org/cartografia/sitcm`) — polígonos de instrumentos aprobados, sin campo expediente municipal.
+- **geometry_status:** `partial`
+- **Fuentes:**
+  - WFS SITCM Comunidad de Madrid: `https://idem.comunidad.madrid/geoserver3/ows` capa `sitcm:VPLA_V_AMBITO`, filtro `DS_MUNICIPIO='GUADARRAMA'`.
+  - Ámbitos disponibles: PERI DE LAS CABEZUELAS, S-IX INDUSTRIAL DE LA MATA, UA-C LOS FRESNOS DE LA JAROSA, PERI DE NAVALAFUENTE, sectores S-I…S-IX, etc.
+  - Web urbanismo: planos PDF/JPG sin georreferencia directa.
   - Sede `/expedientes`: requiere autenticación; no expone geometría pública.
-- **Estrategia:** No hay visor urbanístico público del ayuntamiento con polígonos enlazables a expedientes/licencias. El orquestador aplicará centroide municipio + jitter.
-- **Limitaciones:** Tablón y web publican PDFs/anuncios sin coordenadas ni geometría SIG por expediente.
+- **Estrategia:** El adapter cruza títulos PDF (palabras clave: «cabezuelas», «la mata», «fresnos», …) con ámbitos SITCM vía WFS. Sin visor municipal enlazado a expediente.
+- **Limitaciones:** Normas subsidiarias, certificados genéricos y tablón sin sector identificable no obtienen polígono; el orquestador aplica centroide + jitter.
 
 ## Estrategia de ingesta
 
@@ -78,12 +79,12 @@ Guadarrama publica urbanismo en la web corporativa (`guadarrama.es`, CMS estáti
 - **IDs:** `guadarrama-{lic|proy}-{sha256[:14]}`.
 - **source:** `ayuntamiento`.
 
-## Verificación pipeline (2026-07-14)
+## Verificación pipeline (2026-07-21)
 
-- Proyectos: 14 filas (`with_geometry`: 0)
+- Proyectos: 13 filas (`with_geometry`: ver parity-report tras enrich)
 - Licencias: 20 filas (`with_geometry`: 0)
 - Parity: ok (proyectos) / partial (licencias informativas)
-- PR: https://github.com/PabloMoran23/homes-bocm/pull/60
+- SITCM: polígonos parciales por palabras clave en títulos PDF
 
 ## Paridad esperada
 
