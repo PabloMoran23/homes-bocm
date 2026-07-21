@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.geometry import geometry_centroid, record_geometry
 
 SEDE_BASE = "https://sede.villadelprado.es/eAdmin"
 TRANSP_BASE = "https://transparencia.villadelprado.org"
@@ -20,6 +21,10 @@ WEB_BASE = "https://www.villadelprado.es"
 URBANISMO_URL = f"{TRANSP_BASE}/index.php/urbanismo"
 MUNICIPIO = "Villa del Prado"
 ID_PREFIX = "villa-del-prado"
+
+WFS_BASE = "https://idem.comunidad.madrid/geoserver3/ows"
+WFS_TYPE = "sitcm:VPLA_V_AMBITO"
+WFS_MUNICIPIO = "VILLA DEL PRADO"
 
 TABLON_ALL = f"{SEDE_BASE}/Tablon.do?action=verAnuncios"
 TRAMITES_URL = f"{SEDE_BASE}/Registrar.do?action=inicioPortalTramites"
@@ -73,6 +78,9 @@ RE_BOCM_DATE = re.compile(r"BOCM-(\d{4})(\d{2})(\d{2})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 RE_SKIP_TITLE = re.compile(
     r"(?i)^(indice|cap[ií]tulos?|planos?|hojas?|de acuerdo|bocm)$",
+)
+RE_AMBIT_CODE = re.compile(
+    r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*)\b",
 )
 
 
@@ -149,6 +157,42 @@ def _proyecto_tipo(title: str, url: str = "") -> str:
     return "urbanismo"
 
 
+def _sector_ilike_parts(text: str) -> list[str]:
+    s = text.strip()
+    low = s.lower()
+    for marker in (" del pgou", " pgou", " bocm", " aprob", " anuncio", " plano", " sector"):
+        if marker in low:
+            low = low.split(marker, 1)[0]
+    parts = [p for p in re.split(r"[\s,;/|()]+", low) if len(p) >= 3]
+    out: list[str] = []
+    seen: set[str] = set()
+    for p in parts:
+        k = p.lower()
+        if k not in seen and not re.fullmatch(r"\d{4}", p):
+            seen.add(k)
+            out.append(p)
+    return out[:10]
+
+
+def _merge_geometries(features: list[dict[str, Any]]) -> dict[str, Any] | None:
+    polys: list[Any] = []
+    for f in features:
+        g = f.get("geometry")
+        if not isinstance(g, dict):
+            continue
+        t = g.get("type")
+        coords = g.get("coordinates")
+        if t == "Polygon" and isinstance(coords, list):
+            polys.append(coords)
+        elif t == "MultiPolygon" and isinstance(coords, list):
+            polys.extend(coords)
+    if not polys:
+        return None
+    if len(polys) == 1:
+        return {"type": "Polygon", "coordinates": polys[0]}
+    return {"type": "MultiPolygon", "coordinates": polys}
+
+
 class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
     """Sede eAdmin (tablón + trámites) + transparencia Joomla (planeamiento PDFs)."""
 
@@ -161,6 +205,11 @@ class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
         self.urbanismo_url = str(self.config.get("urbanismo_url") or URBANISMO_URL)
         self.search_terms = list(self.config.get("search_terms") or DEFAULT_SEARCH_TERMS)
         self.tramite_ids = [int(x) for x in (self.config.get("tramite_ids") or DEFAULT_TRAMITE_IDS)]
+        geom_cfg = self.config.get("geometry") or {}
+        self.wfs_url = str(geom_cfg.get("wfs_url") or WFS_BASE)
+        self.wfs_type = str(geom_cfg.get("type_name") or WFS_TYPE)
+        self.wfs_municipio = str(geom_cfg.get("municipio_filter") or WFS_MUNICIPIO)
+        self._wfs_cache: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str, data: bytes | None = None) -> str:
         time.sleep(self.delay_s)
@@ -172,6 +221,9 @@ class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
             raw = resp.read()
             charset = resp.headers.get_content_charset() or "iso-8859-1"
             return raw.decode(charset, errors="replace")
+
+    def _fetch_json(self, url: str) -> Any:
+        return json.loads(self._fetch(url))
 
     def _parse_tablon_html(self, html: str) -> dict[str, dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}
@@ -300,6 +352,136 @@ class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
+    def _wfs_query(self, cql: str, count: int = 20) -> list[dict[str, Any]]:
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeName": self.wfs_type,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "count": str(count),
+                "CQL_FILTER": cql,
+            }
+        )
+        url = f"{self.wfs_url}?{params}"
+        try:
+            data = self._fetch_json(url)
+        except (urllib.error.URLError, json.JSONDecodeError):
+            return []
+        if not isinstance(data, dict):
+            return []
+        return [f for f in (data.get("features") or []) if isinstance(f, dict)]
+
+    def _load_wfs_ambitos(self) -> dict[str, dict[str, Any]]:
+        if self._wfs_cache is not None:
+            return self._wfs_cache
+        muni = self.wfs_municipio.replace("'", "''")
+        feats = self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120)
+        cache: dict[str, dict[str, Any]] = {}
+        for f in feats:
+            props = f.get("properties") or {}
+            name = str(props.get("DS_NOMB_AMB") or "").strip()
+            if not name:
+                continue
+            cache.setdefault(name.upper(), f)
+            code_m = RE_AMBIT_CODE.search(name)
+            if code_m:
+                cache.setdefault(code_m.group(1).upper(), f)
+        self._wfs_cache = cache
+        return cache
+
+    def _fetch_geometry(self, titulo: str) -> dict[str, Any] | None:
+        title = titulo or ""
+        cache = self._load_wfs_ambitos()
+        candidates: list[tuple[float, str, dict[str, Any]]] = []
+
+        for m in RE_AMBIT_CODE.finditer(title):
+            code = m.group(1).upper()
+            feat = cache.get(code)
+            if feat:
+                candidates.append((100.0, code, feat))
+
+        parts = _sector_ilike_parts(title)
+        muni = self.wfs_municipio.replace("'", "''")
+        if parts:
+            pattern = "%" + "%".join(p.replace("'", "''") for p in parts[:6]) + "%"
+            feats = self._wfs_query(
+                f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '{pattern}'",
+                count=10,
+            )
+            title_low = title.lower()
+            for f in feats:
+                name = str((f.get("properties") or {}).get("DS_NOMB_AMB") or "")
+                if not name:
+                    continue
+                score = sum(5 for p in parts if p.lower() in name.lower())
+                if name.lower() in title_low:
+                    score += 30
+                candidates.append((float(score), name, f))
+
+        keywords = [
+            w
+            for w in re.findall(r"[a-záéíóúñ]{5,}", title.lower())
+            if w not in {"anuncio", "aprob", "definitiva", "inicial", "expediente", "comunidad", "memoria", "plano", "parcial", "sector"}
+        ]
+        for kw in keywords[:4]:
+            feats = self._wfs_query(
+                f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '%{kw.replace(chr(39), chr(39)*2)}%'",
+                count=5,
+            )
+            for f in feats:
+                name = str((f.get("properties") or {}).get("DS_NOMB_AMB") or "")
+                if name:
+                    score = 8.0 if kw in name.lower() else 4.0
+                    candidates.append((score, name, f))
+
+        if not candidates:
+            return None
+
+        candidates.sort(key=lambda x: (-x[0], x[1]))
+        best_score, best_name, _ = candidates[0]
+        if best_score < 5:
+            return None
+
+        same_name = [
+            f
+            for _, name, f in candidates
+            if str((f.get("properties") or {}).get("DS_NOMB_AMB") or "") == best_name
+        ]
+        if not same_name:
+            same_name = [candidates[0][2]]
+
+        merged = _merge_geometries(same_name)
+        if not merged:
+            return None
+
+        cql = (
+            f"DS_MUNICIPIO='{self.wfs_municipio.replace(chr(39), chr(39)*2)}' "
+            f"AND DS_NOMB_AMB='{best_name.replace(chr(39), chr(39)*2)}'"
+        )
+        return {
+            "geom_geojson": merged,
+            "geometry_source": "portal_wfs",
+            "geometry_source_url": (
+                f"{self.wfs_url}?service=WFS&request=GetFeature&CQL_FILTER={urllib.parse.quote(cql)}"
+            ),
+            "coord_source": "portal_geometry_centroid",
+            "ambito_sit": best_name,
+        }
+
+    def _enrich_geometry(self, rec: dict[str, Any]) -> None:
+        if record_geometry(rec):
+            return
+        geom = self._fetch_geometry(rec.get("titulo") or "")
+        if geom:
+            rec.update(geom)
+            cen = geometry_centroid(geom["geom_geojson"])
+            if cen:
+                rec.setdefault("lat", cen[0])
+                rec.setdefault("lon", cen[1])
+
     def _title_to_licencia(self, rec: dict[str, Any]) -> dict[str, Any] | None:
         title = rec["titulo"]
         if not RE_LICENCIA.search(title):
@@ -341,6 +523,7 @@ class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
         }
         if rec.get("pdf_url"):
             out["pdf_url"] = rec["pdf_url"]
+        self._enrich_geometry(out)
         return out
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
@@ -416,6 +599,7 @@ class VillaDelPradoAyuntamientoAdapter(AyuntamientoAdapter):
                 rows.append(rec)
 
         for rec in self._collect_transparencia_proyectos():
+            self._enrich_geometry(rec)
             add(rec)
         tablon = self._collect_tablon()
         for rec in tablon.values():

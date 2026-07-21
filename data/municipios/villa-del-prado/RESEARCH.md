@@ -45,14 +45,13 @@ Estrategia adapter: filas informativas de trámites + scraping del tablón cuand
 
 ## Geometría / visor
 
-- **geometry_status:** `unavailable`
-- **Fuentes revisadas:**
-  - Cartografía CCAA (`madrid.org/cartografia/planea/...`) — PDFs del PGOU/normas subsidiarias, sin geometría vectorial enlazable a expedientes
-  - Visor SIT Comunidad de Madrid (referenciado en otros municipios madrileños) — capas regionales sin código de expediente municipal
-  - No hay visor urbanístico propio, ArcGIS, WFS ni GeoJSON en datos abiertos locales
-  - Google Drive y PDFs de planeamiento sin georreferencia
-- **Estrategia:** el orquestador aplicará centroide municipal + jitter vía `geocode`
-- **Limitaciones:** publicaciones en PDF sin coords; tablón sin geometría; consulta de expedientes en sede requiere login
+- **geometry_status:** `partial`
+- **Fuentes:**
+  - WFS SIT CM `sitcm:VPLA_V_AMBITO` filtro `DS_MUNICIPIO='VILLA DEL PRADO'` — 29 polígonos de ámbitos (UE-03…UE-24, S-01, S-03, …) con campo `DS_NOMB_AMB`.
+  - Cartografía CCAA (`madrid.org/cartografia/planea/...`) — PDFs del PGOU/normas subsidiarias, sin geometría vectorial enlazable a expedientes.
+  - Google Drive y PDFs de planeamiento sin georreferencia.
+- **Estrategia:** emparejar título del proyecto con `DS_NOMB_AMB` o códigos de sector (`UE-10`, `S-01`, …) vía WFS `CQL_FILTER` + `EPSG:4326`; resto con centroide municipal + jitter vía `geocode`.
+- **Limitaciones:** sin visor urbanístico propio con query por expediente; plan especial / Las Hoyas sin ámbito homónimo en SIT; tablón sin geometría.
 
 ## Limitaciones generales
 

@@ -15,10 +15,15 @@ portal:
     urbanismo_url: "https://transparencia.villadelprado.org/index.php/urbanismo"
     tramite_ids: [5, 8]
     centroid: [40.2764752, -4.3048032]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLA DEL PRADO"
   notes: |
     Sede eAdmin (add4u): tablón digital + catálogo trámites (comunicación previa, DR obra).
     Transparencia Joomla: normas subsidiarias, plan especial NNSS, Las Hoyas, plan parcial La Florida.
     PDFs locales en /images/TRANSPARENCIA/URBANISMO/ y enlaces CCAA madrid.org.
+    Geometría partial vía WFS SIT CM (VPLA_V_AMBITO, 29 ámbitos).
 
 licencias:
   enabled: true
