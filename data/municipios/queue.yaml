@@ -905,11 +905,11 @@ municipios:
 - slug: aranda-de-duero
   nombre: Aranda de Duero
   bocm_count: 17
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-22T08:05:17.009379+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/157
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-21T00:04:37.853418+00:00'
+updated_at: '2026-07-22T08:05:17.010270+00:00'
