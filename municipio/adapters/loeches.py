@@ -42,10 +42,14 @@ RE_LICENCIA = re.compile(
 )
 RE_PROYECTO = re.compile(
     r"(?i)(urban|planeam|plan (?:parcial|especial|general)|pgou|convenio|"
-    r"informaci[oó]n p[uú]blica|expediente|edicto|reparcel|aprobaci[oó]n|"
+    r"informaci[oó]n p[uú]blica|edicto|reparcel|aprobaci[oó]n|"
     r"modificaci[oó]n|sector|industrial|ronda|bocm|memoria|plano|"
     r"construcci|suelo|parcela|urbanizaci|normas subsidiarias|"
     r"\b(?:UE|AD|AN|AI|PAU|S|U)-\d+\b)",
+)
+RE_EXCLUDE = re.compile(
+    r"(?i)(convocatoria.*pleno|sesi[oó]n ordinaria.*pleno|pleno.*convocatoria|"
+    r"padr[oó]n fiscal|empleo p[uú]blico|calificaciones.*ejercicio)",
 )
 RE_AMBIT_CODE = re.compile(
     r"(?i)\b((?:UE|AD|AN|AI|PAU|S|U)-\d+[A-Z0-9-]*)\b",
@@ -378,6 +382,31 @@ class LoechesAyuntamientoAdapter(AyuntamientoAdapter):
         if not cache:
             return None
 
+        low = (title or "").lower()
+        keyword_ambits: list[str] = []
+        if re.search(r"(?i)sector industrial|nuevo sector industrial", title or ""):
+            keyword_ambits.extend(["S-5 EL CRUCERO", "S-6 LOS PRADOS"])
+        if "caballo" in low or "poligono el caballo" in low.replace("í", "i"):
+            keyword_ambits.append("S-6 LOS PRADOS")
+        if keyword_ambits:
+            feats = [cache[k.upper()] for k in keyword_ambits if k.upper() in cache]
+            merged = _merge_geometries(feats)
+            if merged:
+                names = [k for k in keyword_ambits if k.upper() in cache]
+                cql = (
+                    f"DS_MUNICIPIO='{self.wfs_municipio.replace(chr(39), chr(39)*2)}' "
+                    f"AND DS_NOMB_AMB IN ({','.join(repr(n) for n in names)})"
+                )
+                return {
+                    "geom_geojson": merged,
+                    "geometry_source": "portal_wfs",
+                    "geometry_source_url": (
+                        f"{self.wfs_url}?service=WFS&request=GetFeature&CQL_FILTER={urllib.parse.quote(cql)}"
+                    ),
+                    "coord_source": "portal_geometry_centroid",
+                    "ambito_sit": names[0] if len(names) == 1 else "industrial",
+                }
+
         code_m = RE_AMBIT_CODE.search(title or "")
         if code_m:
             key = code_m.group(1).upper().replace(" ", "")
@@ -475,6 +504,8 @@ class LoechesAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = self._board_blob(row)
+        if RE_EXCLUDE.search(blob):
+            return None
         if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
             return None
         if row.get("categoria", "").lower() == "urbanismo":

@@ -16,6 +16,7 @@ portal:
     request_delay_s: 0.35
     insecure_ssl: true
     user_agent: "poc-bocm-loeches/1.0"
+    centroid: [40.3834989, -3.4092989]
     geometry:
       kind: wfs
       wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
