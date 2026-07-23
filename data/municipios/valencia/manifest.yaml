@@ -1,0 +1,25 @@
+slug: valencia
+nombre: "València"
+provincia: València
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.valencia.es"
+  adapter: municipio.adapters.valencia:ValenciaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valencia/1.0"
+    sede_timeout_s: 120
+    fetch_detail_dates: true
+    centroid: [39.4699, -0.3763]
+  notes: |
+    Proyectos: NSF urbanismo2.nsf (instrumentos en trámite/aprobados) embebido en Liferay,
+    Asset Publisher proyectos urbanos y planes de participación pública.
+    Licencias: catálogo sede electrónica (materias LA y UR.LC); sin registro de concesiones.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
