@@ -10,9 +10,7 @@ portal:
     wp_base: "https://villaviejadellozoya.es"
     sede_base: "https://villaviejadellozoya.sedelectronica.es"
     board_url: "https://villaviejadellozoya.sedelectronica.es/board/"
-    nnss_url: "https://villaviejadellozoya.es/urbanismo/normas-subsidiarias/"
-    urbanizaciones_url: "https://villaviejadellozoya.es/urbanizaciones/"
-    licencias_url: "https://villaviejadellozoya.es/licencias-de-obra-mayor-y-menor/"
+    transparency_url: "https://villaviejadellozoya.sedelectronica.es/transparency/"
     request_delay_s: 0.35
     insecure_ssl: true
     user_agent: "poc-bocm-villavieja-del-lozoya/1.0"
@@ -23,8 +21,8 @@ portal:
       type_name: "sitcm:VPLA_V_AMBITO"
       municipio_filter: "VILLAVIEJA DEL LOZOYA"
   notes: |
-    WordPress (Divi) con NNSS y urbanizaciones en PDF; sede espublico gestiona (tablón vacío jul-2026).
-    Ámbitos de planeamiento en WFS SIT Comunidad de Madrid.
+    WordPress (urbanismo, NNSS, PGOU avance, urbanizaciones) + sede espublico gestiona.
+    Ámbitos de planeamiento en WFS SIT Comunidad de Madrid (geometría partial).
 
 licencias:
   enabled: true

@@ -22,27 +22,19 @@ SEDE_BASE = "https://villaviejadellozoya.sedelectronica.es"
 MUNICIPIO = "Villavieja del Lozoya"
 ID_PREFIX = "villavieja-del-lozoya"
 
-NNSS_URL = f"{WP_BASE}/urbanismo/normas-subsidiarias/"
-URBANIZACIONES_URL = f"{WP_BASE}/urbanizaciones/"
-LICENCIAS_URL = f"{WP_BASE}/licencias-de-obra-mayor-y-menor/"
-OCUPACION_URL = f"{WP_BASE}/licencia-de-1a-ocupacion/"
-
 WFS_BASE = "https://idem.comunidad.madrid/geoserver3/ows"
 WFS_TYPE = "sitcm:VPLA_V_AMBITO"
 WFS_MUNICIPIO = "VILLAVIEJA DEL LOZOYA"
 
-RE_PREVIEW = re.compile(
-    r'href="(https://villaviejadellozoya\.sedelectronica\.es/preview-document/[^"]+)"',
-    re.I,
-)
-RE_CATALOG = re.compile(
-    r'href="(https://villaviejadellozoya\.sedelectronica\.es/catalog/t/[^"]+)"[^>]*>([^<]+)</a>',
-    re.I,
-)
-RE_WP_PDF = re.compile(
-    r'href="((?:https://villaviejadellozoya\.es)?/wp-content/uploads/[^"]+\.pdf[^"]*)"',
-    re.I,
-)
+DEFAULT_SEED_PAGES: list[str] = [
+    f"{WP_BASE}/urbanismo/",
+    f"{WP_BASE}/urbanismo/normas-subsidiarias/",
+    f"{WP_BASE}/avance-del-plan-general-de-villavieja-del-lozoya/",
+    f"{WP_BASE}/urbanizaciones/",
+    f"{WP_BASE}/licencias-de-obra-mayor-y-menor/",
+    f"{WP_BASE}/licencia-de-1a-ocupacion/",
+]
+
 RE_LICENCIA = re.compile(
     r"(?i)(licencia|licencias|solicitud de licencia|comunicaci[oó]n previa|"
     r"declaraci[oó]n responsable|autorizaci[oó]n (?:previa|urban)|obra menor|obra mayor|"
@@ -50,22 +42,41 @@ RE_LICENCIA = re.compile(
 )
 RE_PROYECTO = re.compile(
     r"(?i)(urban|planeam|plan (?:parcial|especial|general)|pgou|nnss|normas subsidiarias|"
-    r"informaci[oó]n p[uú]blica|expediente|proyecto|modificaci[oó]n|aprobaci[oó]n (?:inicial|definitiva)|"
-    r"reparcel|sector|edicto|bocm|urbanizaci[oó]n|actuaci[oó]n|unidad(?:es)? de ejecuci[oó]n|"
-    r"\b(?:UE|AD|AN|AI|PAU|S)-[A-Z0-9-]+\b|tercio de la laguna|los llanos)",
+    r"informaci[oó]n p[uú]blica|expediente|proyecto de|modificaci[oó]n|aprobaci[oó]n|"
+    r"reparcel|convenio|urbanizaci[oó]n|unidad(?:es)? de ejecuci[oó]n|actuaci[oó]n|"
+    r"estatutos|compensaci[oó]n|bocm|edicto|estudio (?:ac[uú]stico|ambiental)|"
+    r"\b(?:UE|AD|AN|AI|PAU|S)-[\w\d-]+\b|tercio de la laguna|los llanos|las cabezas|"
+    r"la cañada|el molinillo|la solanilla)",
 )
 RE_EXCLUDE = re.compile(
-    r"(?i)(padr[oó]n|presupuest|funcionario|empleado|plusvalia|basura|"
-    r"residuos|vehiculos|igualdad|cineg[eé]tica|cuentas \d{4})",
+    r"(?i)(padr[oó]n|presupuest|empleo|bolsa|igualdad|guerra civil|naturaleza viva|"
+    r"mirador|nevera|finca riosequillo|bolet[ií]n informativo la fragua)",
 )
 RE_AMBIT_CODE = re.compile(
-    r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-[A-Z0-9-]+)\b",
+    r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-[\w\d-]+)\b",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
-RE_FECHA_YMD = re.compile(r"\b((?:19|20)\d{2})(\d{2})(\d{2})\b")
-RE_FECHA_YM = re.compile(r"/(\d{4})-(\d{2})/")
-RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
-RE_BOCM = re.compile(r"BOCM[- ]?(\d{4})(\d{2})(\d{2})", re.I)
+RE_FECHA_YM = re.compile(r"/(?:uploads|wp-content/uploads)/(\d{4})/(\d{2})/")
+RE_PDF_HREF = re.compile(r'href="([^"]+\.(?:pdf|PDF)[^"]*)"', re.I)
+RE_ACCORDION_PANEL = re.compile(
+    r'vc_tta-title-text">([^<]+)</span>.*?vc_tta-panel-body">(.*?)</div></div></div></div></div></div>',
+    re.I | re.S,
+)
+RE_LINK_TEXT_PDF = re.compile(
+    r'(?:<a[^>]+href="([^"]+\.(?:pdf|PDF)[^"]*)"[^>]*>([^<]+)</a>|'
+    r'<a[^>]+class="pdfemb-viewer"[^>]+data-[^>]+>([^<]+)</a>)',
+    re.I | re.S,
+)
+RE_H1 = re.compile(r"<h1[^>]*>([^<]+)", re.I)
+RE_BOARD_PREVIEW = re.compile(
+    r'href="(https://villaviejadellozoya\.sedelectronica\.es/preview-document/[^"]+)"',
+    re.I,
+)
+RE_BOARD_ROW = re.compile(r"<tr>\s*(.*?)\s*</tr>", re.I | re.S)
+RE_BOARD_CELL = re.compile(
+    r'data-label="([^"]+)"[^>]*>\s*(?:<span>)?(.*?)(?:</span>)?\s*</td>',
+    re.I | re.S,
+)
 
 
 def _stable_id(kind: str, key: str) -> str:
@@ -88,80 +99,45 @@ def _parse_fecha_dmy(text: str) -> str | None:
         return None
 
 
-def _fecha_from_blob(text: str) -> str | None:
-    dmy = _parse_fecha_dmy(text)
-    if dmy:
-        return dmy
-    m = RE_BOCM.search(text or "")
-    if m:
-        try:
-            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    m = RE_FECHA_YMD.search(text or "")
-    if m:
-        try:
-            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).strftime("%Y-%m-%d")
-        except ValueError:
-            pass
-    m = RE_FECHA_YM.search(text or "")
+def _fecha_from_url(url: str) -> str | None:
+    m = RE_FECHA_YM.search(url)
     if m:
         try:
             return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
         except ValueError:
             pass
-    years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2030]
-    if years:
-        return f"{max(years)}-01-01"
+    m = re.search(r"BOCM-(\d{8})", url, re.I)
+    if m:
+        raw = m.group(1)
+        try:
+            return datetime(int(raw[:4]), int(raw[4:6]), int(raw[6:8])).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
     return None
-
-
-def _pdf_tipo(name: str, section: str = "") -> str:
-    n = (name + " " + section).lower()
-    if "indice" in n or "índice" in n:
-        return "índice NNSS"
-    if "acuerdo" in n:
-        return "acuerdo NNSS"
-    if "memoria" in n:
-        return "memoria NNSS"
-    if "catalogo" in n or "catálogo" in n or "fichas" in n:
-        return "catálogo NNSS"
-    if "normas" in n or "capitulo" in n or "capítulo" in n:
-        return "normas subsidiarias"
-    if "plano" in n or "ordenaci" in n or "alineacion" in n:
-        return "planos ordenación"
-    if "bocm" in n:
-        return "anuncio BOCM"
-    if "callejero" in n:
-        return "callejero urbanización"
-    if "estatuto" in n or "bases" in n:
-        return "estatutos urbanización"
-    if "urbaniz" in n:
-        return "urbanización"
-    return "documento urbanismo"
 
 
 def _proyecto_tipo(title: str) -> str:
     n = title.lower()
-    if re.search(r"\bue-[a-z0-9-]+\b", n) or "unidad de ejecuci" in n:
+    if re.search(r"\bue-[\w-]+\b", n) or "unidad de ejecuci" in n:
         return "unidad de ejecución"
-    if "informaci" in n or "bocm" in n:
-        return "información pública"
-    if "nnss" in n or "normas subsidiarias" in n or "planeamiento" in n:
-        return "planeamiento"
-    if "urbaniz" in n:
+    if "urbanizaci" in n or "compensaci" in n or "estatutos" in n:
         return "urbanización"
-    if "actuaci" in n:
-        return "actuación urbanística"
+    if "normas subsidiarias" in n or "nnss" in n:
+        return "normas subsidiarias"
+    if "plan general" in n or "pgou" in n or "avance" in n:
+        return "planeamiento"
+    if "informaci" in n:
+        return "información pública"
     if "modificaci" in n:
         return "modificación planeamiento"
+    if "aprobaci" in n:
+        return "aprobación"
     return "urbanismo"
 
 
 def _sector_ilike_parts(text: str) -> list[str]:
-    s = text.strip()
-    low = s.lower()
-    for marker in (" del pgou", " pgou", " bocm", " aprob", " anuncio", " nnss", " urbaniz"):
+    low = text.lower()
+    for marker in (" bocm", " aprob", " anuncio", " del pgou", " nnss", " de villavieja"):
         if marker in low:
             low = low.split(marker, 1)[0]
     parts = [p for p in re.split(r"[\s,;/|()\"«»]+", low) if len(p) >= 3]
@@ -195,7 +171,7 @@ def _merge_geometries(features: list[dict[str, Any]]) -> dict[str, Any] | None:
 
 
 class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
-    """WordPress NNSS/urbanizaciones + sede espublico + ámbitos SIT WFS."""
+    """WordPress (planeamiento PDFs) + sede espublico + WFS SITCM (geometría partial)."""
 
     def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
         super().__init__(slug, config, base_url or WP_BASE)
@@ -203,10 +179,10 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
         self.wp_base = str(self.config.get("wp_base") or WP_BASE).rstrip("/")
         self.sede_base = str(self.config.get("sede_base") or SEDE_BASE).rstrip("/")
         self.board_url = str(self.config.get("board_url") or f"{self.sede_base}/board/")
-        self.dossier_url = str(self.config.get("dossier_url") or f"{self.sede_base}/dossier")
-        self.nnss_url = str(self.config.get("nnss_url") or NNSS_URL)
-        self.urbanizaciones_url = str(self.config.get("urbanizaciones_url") or URBANIZACIONES_URL)
-        self.licencias_url = str(self.config.get("licencias_url") or LICENCIAS_URL)
+        self.transparency_url = str(
+            self.config.get("transparency_url") or f"{self.sede_base}/transparency/"
+        )
+        self.seed_pages = [str(u) for u in (self.config.get("seed_pages") or DEFAULT_SEED_PAGES)]
         geom_cfg = self.config.get("geometry") or {}
         self.wfs_url = str(geom_cfg.get("wfs_url") or WFS_BASE)
         self.wfs_type = str(geom_cfg.get("type_name") or WFS_TYPE)
@@ -222,22 +198,15 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
         )
         self._wfs_cache: dict[str, dict[str, Any]] | None = None
 
-    def _fetch(self, url: str, *, sede: bool = False) -> str:
+    def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
-            headers={
-                "User-Agent": self.config.get(
-                    "user_agent", "poc-bocm-villavieja-del-lozoya/1.0"
-                )
-            },
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-villavieja-del-lozoya/1.0")},
         )
-        if sede:
-            resp = self._opener.open(req, timeout=60)
-        else:
-            resp = urllib.request.urlopen(req, timeout=60)
-        with resp:
-            return resp.read().decode("utf-8", errors="replace")
+        with self._opener.open(req, timeout=60) as resp:
+            charset = resp.headers.get_content_charset() or "utf-8"
+            return resp.read().decode(charset, errors="replace")
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))
@@ -245,209 +214,203 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
     def _abs_wp(self, href: str) -> str:
         return urllib.parse.urljoin(f"{self.wp_base}/", href)
 
-    def _parse_board_table(self, html: str, origen: str) -> list[dict[str, Any]]:
-        tbody_m = re.search(r'<tbody[^>]*id="[^"]*">(.*?)</tbody>', html, re.S | re.I)
-        if not tbody_m:
-            return []
+    def _parse_accordion_panels(self, html: str, page_url: str) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
-        for tr in re.findall(r"<tr>(.*?)</tr>", tbody_m.group(1), re.S):
-            if "preview-document" not in tr:
+        for m in RE_ACCORDION_PANEL.finditer(html):
+            title = unescape(m.group(1).strip())
+            body = m.group(2)
+            pdfs: list[tuple[str, str]] = []
+            for pm in RE_LINK_TEXT_PDF.finditer(body):
+                if pm.group(1):
+                    pdfs.append((self._abs_wp(pm.group(1)), unescape(pm.group(2).strip())))
+                elif pm.group(3):
+                    label = unescape(pm.group(3).strip())
+                    pdf_m = re.search(r'href="([^"]+\.(?:pdf|PDF)[^"]*)"', body[pm.start() : pm.end() + 200], re.I)
+                    if pdf_m:
+                        pdfs.append((self._abs_wp(pdf_m.group(1)), label))
+            for pdf_m in RE_PDF_HREF.finditer(body):
+                pdf_url = self._abs_wp(pdf_m.group(1))
+                if not any(u == pdf_url for u, _ in pdfs):
+                    name = unescape(Path(urllib.parse.urlparse(pdf_url).path).name)
+                    pdfs.append((pdf_url, name))
+            blob = _strip_html(body)
+            if pdfs:
+                for pdf_url, label in pdfs:
+                    titulo = f"{title} — {label}" if label and label.lower() not in title.lower() else title
+                    rows.append(
+                        {
+                            "titulo": titulo[:500],
+                            "fecha": _fecha_from_url(pdf_url),
+                            "url": page_url,
+                            "pdf_url": pdf_url,
+                            "origen": "wp_accordion",
+                        }
+                    )
+            elif RE_PROYECTO.search(title) or RE_PROYECTO.search(blob):
+                rows.append(
+                    {
+                        "titulo": title[:500],
+                        "fecha": None,
+                        "url": page_url,
+                        "origen": "wp_accordion",
+                        "nota": blob[:300] if blob else None,
+                    }
+                )
+        return rows
+
+    def _parse_page_pdfs(self, html: str, page_url: str) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        h1_m = RE_H1.search(html)
+        page_title = _strip_html(h1_m.group(1)) if h1_m else page_url
+        seen: set[str] = set()
+        for m in re.finditer(
+            r'<a[^>]+href="([^"]+\.(?:pdf|PDF)[^"]*)"[^>]*>([^<]*)</a>',
+            html,
+            re.I,
+        ):
+            pdf_url = self._abs_wp(m.group(1))
+            if pdf_url in seen:
                 continue
-            cells = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
-            if len(cells) < 6:
-                continue
-            link_m = RE_PREVIEW.search(tr)
-            title_m = re.search(r'title="([^"]*)"', tr, re.I)
-            doc = _strip_html(cells[0])
-            titulo = (title_m.group(1).strip() if title_m else "") or doc
+            seen.add(pdf_url)
+            label = unescape(m.group(2).strip()) or Path(urllib.parse.urlparse(pdf_url).path).name
+            titulo = label if len(label) > 8 else f"{page_title} — {label}"
+            if page_title.lower() not in titulo.lower() and "bocm" not in titulo.lower():
+                titulo = f"{page_title} — {titulo}"
             rows.append(
                 {
                     "titulo": titulo[:500],
-                    "doc_label": doc[:500],
-                    "expediente": _strip_html(cells[1]),
-                    "procedimiento": _strip_html(cells[2]),
-                    "categoria": _strip_html(cells[3]),
-                    "descripcion": _strip_html(cells[4]),
-                    "fecha": _parse_fecha_dmy(_strip_html(cells[5])),
-                    "url": link_m.group(1) if link_m else self.board_url,
-                    "pdf_url": link_m.group(1) if link_m else None,
-                    "origen": origen,
+                    "fecha": _fecha_from_url(pdf_url),
+                    "url": page_url,
+                    "pdf_url": pdf_url,
+                    "origen": "wp_pdf",
+                }
+            )
+        intro = _strip_html(html[html.find("<body") : html.find("</body")])[:800]
+        if RE_PROYECTO.search(intro) and not rows:
+            rows.append(
+                {
+                    "titulo": page_title[:500],
+                    "fecha": None,
+                    "url": page_url,
+                    "origen": "wp_page",
+                    "nota": intro[:400],
                 }
             )
         return rows
 
-    def _parse_board_links(self, html: str, origen: str) -> list[dict[str, Any]]:
+    def _collect_wp(self) -> list[dict[str, Any]]:
+        by_key: dict[str, dict[str, Any]] = {}
+        for page_url in self.seed_pages:
+            try:
+                html = self._fetch(page_url)
+            except urllib.error.URLError:
+                continue
+            items = self._parse_accordion_panels(html, page_url)
+            items.extend(self._parse_page_pdfs(html, page_url))
+            for rec in items:
+                key = rec.get("pdf_url") or rec["url"] + "|" + rec["titulo"]
+                by_key[key] = rec
+        return list(by_key.values())
+
+    def _parse_board(self, html: str) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
-        for m in RE_PREVIEW.finditer(html):
-            url = m.group(1)
-            local = html[max(0, m.start() - 400) : m.end() + 200]
-            title_m = re.search(r'title="([^"]*)"', local, re.I)
-            titulo = unescape(title_m.group(1).strip()) if title_m else url
-            rows.append(
-                {
-                    "titulo": titulo[:500],
-                    "doc_label": titulo[:500],
-                    "expediente": "",
-                    "procedimiento": "",
-                    "categoria": "",
-                    "descripcion": titulo,
-                    "fecha": _fecha_from_blob(titulo),
-                    "url": url,
-                    "pdf_url": url,
-                    "origen": origen,
-                }
-            )
+        tbody_m = re.search(r"<tbody[^>]*>(.*?)</tbody>", html, re.I | re.S)
+        if tbody_m:
+            for row_m in RE_BOARD_ROW.finditer(tbody_m.group(1)):
+                row_html = row_m.group(1)
+                if "emptyRow" in row_html:
+                    continue
+                cells: dict[str, str] = {}
+                doc_url = self.board_url
+                for cm in RE_BOARD_CELL.finditer(row_html):
+                    label, val = cm.group(1), cm.group(2)
+                    link_m = re.search(r'href="([^"]+)"', val, re.I)
+                    if link_m:
+                        doc_url = urllib.parse.urljoin(f"{self.sede_base}/", link_m.group(1))
+                    cells[label] = _strip_html(val)
+                titulo = cells.get("Descripción") or cells.get("Documento") or ""
+                if not titulo:
+                    continue
+                rows.append(
+                    {
+                        "titulo": titulo[:500],
+                        "expediente": cells.get("Expediente", ""),
+                        "procedimiento": cells.get("Procedimiento", ""),
+                        "categoria": cells.get("Categoría", ""),
+                        "fecha": _parse_fecha_dmy(cells.get("Fecha de Publicación", "")),
+                        "url": doc_url,
+                        "origen": "sede_board",
+                    }
+                )
+        if not rows:
+            for m in RE_BOARD_PREVIEW.finditer(html):
+                url = m.group(1)
+                local = html[max(0, m.start() - 400) : m.end() + 200]
+                title_m = re.search(r'title="([^"]*)"', local, re.I)
+                titulo = unescape(title_m.group(1).strip()) if title_m else url
+                rows.append(
+                    {
+                        "titulo": titulo[:500],
+                        "expediente": "",
+                        "procedimiento": "",
+                        "categoria": "",
+                        "fecha": _fecha_from_blob(titulo),
+                        "url": url,
+                        "pdf_url": url,
+                        "origen": "sede_board",
+                    }
+                )
         return rows
 
     def _collect_board(self) -> list[dict[str, Any]]:
-        by_url: dict[str, dict[str, Any]] = {}
-        for url, origen in ((self.board_url, "tablon"), (f"{self.sede_base}/info.0", "info_tablon")):
-            try:
-                html = self._fetch(url, sede=True)
-            except urllib.error.URLError:
-                continue
-            items = self._parse_board_table(html, origen)
-            if not items:
-                items = self._parse_board_links(html, origen)
-            for rec in items:
-                by_url[rec["url"]] = rec
-        return list(by_url.values())
-
-    def _collect_tramites(self) -> list[dict[str, Any]]:
         try:
-            html = self._fetch(self.dossier_url, sede=True)
+            html = self._fetch(self.board_url)
         except urllib.error.URLError:
             return []
-        if not html.strip():
-            return []
-        rows: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        for m in RE_CATALOG.finditer(html):
-            url, titulo = m.group(1), unescape(m.group(2).strip())
-            if url in seen:
-                continue
-            seen.add(url)
-            if not RE_LICENCIA.search(titulo) and not RE_PROYECTO.search(titulo):
-                continue
-            rows.append(
-                {
-                    "titulo": titulo[:500],
-                    "url": url,
-                    "origen": "catalogo_tramites",
-                }
-            )
-        return rows
-
-    def _collect_wp_pdfs(self, page_url: str, section: str) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(page_url)
-        except urllib.error.URLError:
-            return []
-        rows: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        for m in RE_WP_PDF.finditer(html):
-            pdf = self._abs_wp(m.group(1))
-            if pdf in seen:
-                continue
-            seen.add(pdf)
-            name = unescape(urllib.parse.unquote(Path(pdf).name))
-            if RE_EXCLUDE.search(name):
-                continue
-            titulo = f"{section}: {name}"
-            rec: dict[str, Any] = {
-                "id": _stable_id("proy", pdf),
-                "municipio": MUNICIPIO,
-                "titulo": titulo[:500],
-                "fecha": _fecha_from_blob(pdf + " " + name),
-                "tipo": _pdf_tipo(name, section),
-                "url": page_url,
-                "pdf_url": pdf,
-                "source": "ayuntamiento",
-                "origen": f"wp_{section.lower().replace(' ', '_')}",
-            }
-            self._enrich_geometry(rec)
-            rows.append(rec)
-        return rows
+        return self._parse_board(html)
 
     def _collect_licencia_info_pages(self) -> list[dict[str, Any]]:
-        rows: list[dict[str, Any]] = [
+        return [
+            {
+                "id": _stable_id("lic", f"{self.wp_base}/licencias-de-obra-mayor-y-menor/"),
+                "fecha_concesion": None,
+                "tipo": "trámite licencia de obra",
+                "distrito": None,
+                "lat": None,
+                "lon": None,
+                "titulo": "Solicitud de licencia de obra mayor y menor",
+                "url": f"{self.wp_base}/licencias-de-obra-mayor-y-menor/",
+                "source": "ayuntamiento",
+                "nota": "Formularios y documentación requerida (web municipal)",
+                "origen": "wp_tramite",
+            },
+            {
+                "id": _stable_id("lic", f"{self.wp_base}/licencia-de-1a-ocupacion/"),
+                "fecha_concesion": None,
+                "tipo": "trámite licencia de primera ocupación",
+                "distrito": None,
+                "lat": None,
+                "lon": None,
+                "titulo": "Licencia de primera ocupación",
+                "url": f"{self.wp_base}/licencia-de-1a-ocupacion/",
+                "source": "ayuntamiento",
+                "nota": "Trámite informativo en web municipal",
+                "origen": "wp_tramite",
+            },
             {
                 "id": _stable_id("lic", self.board_url),
                 "fecha_concesion": None,
-                "tipo": "tablón licencias urbanísticas",
+                "tipo": "tablón de anuncios",
                 "distrito": None,
                 "lat": None,
                 "lon": None,
-                "titulo": "Tablón de anuncios — licencias y urbanismo",
+                "titulo": "Tablón de anuncios — sede electrónica",
                 "url": self.board_url,
                 "source": "ayuntamiento",
-                "nota": "Anuncios y exposiciones públicas en sede electrónica",
+                "nota": "Anuncios y exposiciones públicas (espublico gestiona)",
                 "origen": "sede_tablon",
             },
-            {
-                "id": _stable_id("lic", self.licencias_url),
-                "fecha_concesion": None,
-                "tipo": "modelos licencia obra",
-                "distrito": None,
-                "lat": None,
-                "lon": None,
-                "titulo": "Solicitud de obra mayor y obra menor",
-                "url": self.licencias_url,
-                "source": "ayuntamiento",
-                "nota": "Modelos PDF y requisitos; concesiones en tablón cuando se publiquen",
-                "origen": "wp_licencias",
-            },
-            {
-                "id": _stable_id("lic", OCUPACION_URL),
-                "fecha_concesion": None,
-                "tipo": "licencia primera ocupación",
-                "distrito": None,
-                "lat": None,
-                "lon": None,
-                "titulo": "Licencia de 1ª ocupación",
-                "url": OCUPACION_URL,
-                "source": "ayuntamiento",
-                "nota": "Página informativa de trámite",
-                "origen": "wp_licencias",
-            },
-            {
-                "id": _stable_id("lic", self.sede_base),
-                "fecha_concesion": None,
-                "tipo": "sede electrónica urbanismo",
-                "distrito": None,
-                "lat": None,
-                "lon": None,
-                "titulo": "Sede electrónica — trámites urbanísticos",
-                "url": f"{self.sede_base}/",
-                "source": "ayuntamiento",
-                "nota": "Presentación de solicitudes y consulta de expedientes",
-                "origen": "sede",
-            },
         ]
-        try:
-            html = self._fetch(self.licencias_url)
-        except urllib.error.URLError:
-            return rows
-        for m in RE_WP_PDF.finditer(html):
-            pdf = self._abs_wp(m.group(1))
-            name = unescape(urllib.parse.unquote(Path(pdf).name))
-            rows.append(
-                {
-                    "id": _stable_id("lic", pdf),
-                    "fecha_concesion": _fecha_from_blob(pdf),
-                    "tipo": "modelo solicitud licencia",
-                    "distrito": None,
-                    "lat": None,
-                    "lon": None,
-                    "titulo": name[:500],
-                    "url": self.licencias_url,
-                    "pdf_url": pdf,
-                    "source": "ayuntamiento",
-                    "nota": "Modelo descargable; no es concesión publicada",
-                    "origen": "wp_modelo",
-                }
-            )
-        return rows
 
     def _wfs_query(self, cql: str, count: int = 50) -> list[dict[str, Any]]:
         params = urllib.parse.urlencode(
@@ -502,6 +465,13 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             feat = cache.get(code)
             if feat:
                 candidates.append((100.0, code, feat))
+
+        title_upper = title.upper()
+        for name, feat in cache.items():
+            if len(name) < 4:
+                continue
+            if name in title_upper:
+                candidates.append((80.0, name, feat))
 
         parts = _sector_ilike_parts(title)
         muni = self.wfs_municipio.replace("'", "''")
@@ -576,9 +546,7 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             if not name:
                 continue
             fig = str(props.get("DS_FIG_DES") or props.get("DS_CLAS_SUE") or "").strip()
-            titulo = f"{name}"
-            if fig:
-                titulo = f"{name} — {fig}"
+            titulo = f"{name} — {fig}" if fig else name
             merged = _merge_geometries([f])
             rec: dict[str, Any] = {
                 "id": _stable_id("proy", f"sit:{name}"),
@@ -586,7 +554,7 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
                 "titulo": titulo[:500],
                 "fecha": None,
                 "tipo": _proyecto_tipo(name),
-                "url": self.nnss_url,
+                "url": f"{self.wp_base}/urbanismo/normas-subsidiarias/",
                 "source": "ayuntamiento",
                 "origen": "sit_wfs",
                 "ambito_sit": name,
@@ -608,13 +576,63 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(rec)
         return rows
 
-    def _board_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
+    def _wp_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        blob = row["titulo"]
+        if RE_EXCLUDE.search(blob):
+            return None
+        if not RE_PROYECTO.search(blob):
+            return None
+        key = row.get("pdf_url") or row["url"] + "|" + row["titulo"]
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", key),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha"),
+            "tipo": _proyecto_tipo(row["titulo"]),
+            "url": row.get("pdf_url") or row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+        }
+        if row.get("pdf_url"):
+            rec["pdf_url"] = row["pdf_url"]
+        if row.get("nota"):
+            rec["nota"] = row["nota"]
+        self._enrich_geometry(rec)
+        return rec
+
+    def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = " ".join(
             str(row.get(k) or "")
-            for k in ("titulo", "procedimiento", "categoria", "descripcion", "doc_label")
+            for k in ("titulo", "procedimiento", "categoria", "descripcion")
         )
         if RE_EXCLUDE.search(blob):
             return None
+        if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
+            return None
+        if not RE_PROYECTO.search(blob):
+            return None
+        key = row.get("expediente") or row["url"]
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", key),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha"),
+            "tipo": _proyecto_tipo(blob),
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "expte": row.get("expediente") or None,
+            "origen": row.get("origen"),
+        }
+        if row.get("pdf_url"):
+            rec["pdf_url"] = row["pdf_url"]
+        self._enrich_geometry(rec)
+        return rec
+
+    def _board_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        blob = " ".join(
+            str(row.get(k) or "")
+            for k in ("titulo", "procedimiento", "categoria")
+        )
         if not RE_LICENCIA.search(blob):
             return None
         key = row.get("expediente") or row["url"]
@@ -632,76 +650,6 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             "origen": row.get("origen"),
             **({"pdf_url": row["pdf_url"]} if row.get("pdf_url") else {}),
         }
-
-    def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
-        blob = " ".join(
-            str(row.get(k) or "")
-            for k in ("titulo", "procedimiento", "categoria", "descripcion", "doc_label")
-        )
-        if RE_EXCLUDE.search(blob):
-            return None
-        if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
-            return None
-        if row.get("categoria", "").lower() == "urbanismo":
-            pass
-        elif not RE_PROYECTO.search(blob):
-            return None
-        key = row.get("expediente") or row["url"]
-        rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
-            "titulo": row["titulo"],
-            "fecha": row.get("fecha") or _fecha_from_blob(row["titulo"]),
-            "tipo": _proyecto_tipo(blob),
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "expte": row.get("expediente") or None,
-            "origen": row.get("origen"),
-        }
-        if row.get("pdf_url"):
-            rec["pdf_url"] = row["pdf_url"]
-        self._enrich_geometry(rec)
-        return rec
-
-    def _tramite_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
-        if not RE_LICENCIA.search(row["titulo"]):
-            return None
-        if RE_EXCLUDE.search(row["titulo"]):
-            return None
-        return {
-            "id": _stable_id("lic", row["url"]),
-            "fecha_concesion": None,
-            "tipo": "trámite licencia",
-            "distrito": None,
-            "lat": None,
-            "lon": None,
-            "titulo": row["titulo"],
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "nota": "Página informativa de trámite; no concesión publicada en tablón",
-            "origen": row.get("origen"),
-        }
-
-    def _tramite_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
-        if not RE_PROYECTO.search(row["titulo"]):
-            return None
-        if RE_LICENCIA.search(row["titulo"]) and not re.search(
-            r"(?i)planeam|actuaci[oó]n urban|modificaci[oó]n del planeamiento|urban",
-            row["titulo"],
-        ):
-            return None
-        rec: dict[str, Any] = {
-            "id": _stable_id("proy", row["url"]),
-            "municipio": MUNICIPIO,
-            "titulo": row["titulo"],
-            "fecha": None,
-            "tipo": _proyecto_tipo(row["titulo"]),
-            "url": row["url"],
-            "source": "ayuntamiento",
-            "origen": row.get("origen"),
-        }
-        self._enrich_geometry(rec)
-        return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
         with path.open("w", encoding="utf-8") as f:
@@ -730,22 +678,12 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for item in self._collect_tramites():
-            rec = self._tramite_to_licencia(item)
-            if rec and rec["id"] not in seen:
-                seen.add(rec["id"])
-                rows.append(rec)
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
             "status": "ok",
-            "tablon": sum(1 for r in rows if r.get("origen") in ("tablon", "info_tablon")),
-            "tramites": sum(1 for r in rows if r.get("origen") == "catalogo_tramites"),
-            "info": sum(
-                1
-                for r in rows
-                if r.get("origen") in ("sede_tablon", "sede", "wp_licencias", "wp_modelo")
-            ),
+            "info": sum(1 for r in rows if r.get("origen") in ("wp_tramite", "sede_tablon")),
+            "board": sum(1 for r in rows if r.get("origen") == "sede_board"),
         }
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
@@ -755,10 +693,6 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             existing[rec["id"]] = rec
         for item in self._collect_board():
             rec = self._board_to_licencia(item)
-            if rec:
-                existing[rec["id"]] = rec
-        for item in self._collect_tramites():
-            rec = self._tramite_to_licencia(item)
             if rec:
                 existing[rec["id"]] = rec
         rows = list(existing.values())
@@ -787,14 +721,10 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(rec["id"])
                 rows.append(rec)
 
+        for item in self._collect_wp():
+            add(self._wp_to_proyecto(item))
         for item in self._collect_board():
             add(self._board_to_proyecto(item))
-        for item in self._collect_tramites():
-            add(self._tramite_to_proyecto(item))
-        for rec in self._collect_wp_pdfs(self.nnss_url, "NNSS Villavieja"):
-            add(rec)
-        for rec in self._collect_wp_pdfs(self.urbanizaciones_url, "Urbanización"):
-            add(rec)
         for rec in self._collect_sit_ambitos():
             add(rec)
 
@@ -802,11 +732,10 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
         return {
             "rows": len(rows),
             "status": "ok",
-            "tablon": sum(1 for r in rows if r.get("origen") in ("tablon", "info_tablon")),
+            "wp": sum(1 for r in rows if str(r.get("origen", "")).startswith("wp_")),
             "sit_wfs": sum(1 for r in rows if r.get("origen") == "sit_wfs"),
-            "wp_nnss": sum(1 for r in rows if r.get("origen") == "wp_nnss_villavieja"),
-            "wp_urbaniz": sum(1 for r in rows if r.get("origen") == "wp_urbanización"),
-            "tramites": sum(1 for r in rows if r.get("origen") == "catalogo_tramites"),
+            "board": sum(1 for r in rows if r.get("origen") == "sede_board"),
+            "with_geometry": sum(1 for r in rows if record_geometry(r)),
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
@@ -826,3 +755,7 @@ class VillaviejaDelLozoyaAyuntamientoAdapter(AyuntamientoAdapter):
             encoding="utf-8",
         )
         return {"rows": after, "added": max(0, after - before), "status": "ok"}
+
+
+def _fecha_from_blob(text: str) -> str | None:
+    return _parse_fecha_dmy(text) or _fecha_from_url(text)
