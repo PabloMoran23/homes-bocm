@@ -1003,11 +1003,11 @@ municipios:
 - slug: valdilecha
   nombre: Valdilecha
   bocm_count: 15
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-23T08:08:12.727269+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/163
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-21T00:04:37.853418+00:00'
+updated_at: '2026-07-23T08:08:12.728231+00:00'
