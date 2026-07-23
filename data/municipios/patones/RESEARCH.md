@@ -60,8 +60,9 @@ bando desbroce fincas, calendario fiscal. Pocos anuncios visibles sin búsqueda 
 1. Scrape PDFs y páginas semilla WordPress (urbanismo, NNSS, planes especiales, bandos, boletín).
 2. Scrape tabla tablón `/board` (patrón espublico, dominio `patones.sedelectronica.es`).
 3. Páginas informativas licencias (tablón + consulta expedientes).
-4. Enriquecer geometría con SITCM WFS cuando el título contiene código de ámbito (UE-n).
-5. IDs estables: `patones-{lic|proy}-{sha256[:14]}`.
+4. Semillas de ámbitos SIT WFS (15 UE) con `geom_geojson`.
+5. Enriquecer geometría con SITCM WFS cuando el título contiene código de ámbito (UE-n).
+6. IDs estables: `patones-{lic|proy}-{sha256[:14]}`.
 
 ## Referencia adapters
 

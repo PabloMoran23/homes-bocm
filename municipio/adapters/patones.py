@@ -234,6 +234,81 @@ class PatonesAyuntamientoAdapter(AyuntamientoAdapter):
         if centroid:
             rec["lat"], rec["lon"] = centroid
 
+    def _wfs_query(self, cql: str, count: int = 50) -> list[dict[str, Any]]:
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeName": WFS_TYPE,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "count": str(count),
+                "CQL_FILTER": cql,
+            }
+        )
+        url = f"{WFS_BASE}?{params}"
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-patones/1.0")},
+            )
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.loads(resp.read().decode("utf-8", errors="replace"))
+        except (urllib.error.URLError, json.JSONDecodeError):
+            return []
+        if not isinstance(data, dict):
+            return []
+        return [f for f in (data.get("features") or []) if isinstance(f, dict)]
+
+    def _collect_sit_ambitos(self) -> list[dict[str, Any]]:
+        muni = self.municipio_wfs.replace("'", "''")
+        feats = self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120)
+        rows: list[dict[str, Any]] = []
+        for f in feats:
+            props = f.get("properties") or {}
+            name = str(props.get("DS_NOMB_AMB") or "").strip()
+            if not name:
+                continue
+            geom = f.get("geometry")
+            if not isinstance(geom, dict):
+                continue
+            fig = str(props.get("DS_FIG_DES") or props.get("DS_CLAS_SUE") or "").strip()
+            titulo = f"{name} — {fig}" if fig else name
+            cql = f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB='{name.replace(chr(39), chr(39)*2)}'"
+            params = urllib.parse.urlencode(
+                {
+                    "service": "WFS",
+                    "version": "2.0.0",
+                    "request": "GetFeature",
+                    "typeName": WFS_TYPE,
+                    "outputFormat": "application/json",
+                    "srsName": "EPSG:4326",
+                    "count": "5",
+                    "CQL_FILTER": cql,
+                }
+            )
+            rec: dict[str, Any] = {
+                "id": _stable_id("proy", f"sit:{name}"),
+                "municipio": MUNICIPIO,
+                "titulo": titulo[:500],
+                "fecha": None,
+                "tipo": _proyecto_tipo(name),
+                "url": f"{self.sede_base}/transparency/",
+                "source": "ayuntamiento",
+                "origen": "sit_wfs",
+                "ambito_sit": name,
+                "geom_geojson": geom,
+                "geometry_source": "cm_sit_wfs",
+                "geometry_source_url": f"{WFS_BASE}?{params}",
+                "coord_source": "portal_geometry_centroid",
+            }
+            centroid = geometry_centroid(geom)
+            if centroid:
+                rec["lat"], rec["lon"] = centroid
+            rows.append(rec)
+        return rows
+
     def _extract_pdfs(self, html: str, page_url: str) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
@@ -524,6 +599,8 @@ class PatonesAyuntamientoAdapter(AyuntamientoAdapter):
             add(rec)
         for item in self._collect_board():
             add(self._board_to_proyecto(item))
+        for rec in self._collect_sit_ambitos():
+            add(rec)
 
         self._write_jsonl(out_jsonl, rows)
         return {
@@ -531,6 +608,7 @@ class PatonesAyuntamientoAdapter(AyuntamientoAdapter):
             "status": "ok",
             "wp": sum(1 for r in rows if str(r.get("origen", "")).startswith("wp")),
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon"),
+            "sit_wfs": sum(1 for r in rows if r.get("origen") == "sit_wfs"),
             "with_geometry": sum(1 for r in rows if r.get("geom_geojson")),
         }
 
