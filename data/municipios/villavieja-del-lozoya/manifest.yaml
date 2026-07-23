@@ -1,0 +1,32 @@
+slug: villavieja-del-lozoya
+nombre: "Villavieja del Lozoya"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://villaviejadellozoya.es"
+  adapter: municipio.adapters.villavieja_del_lozoya:VillaviejaDelLozoyaAyuntamientoAdapter
+  config:
+    wp_base: "https://villaviejadellozoya.es"
+    sede_base: "https://villaviejadellozoya.sedelectronica.es"
+    board_url: "https://villaviejadellozoya.sedelectronica.es/board/"
+    transparency_url: "https://villaviejadellozoya.sedelectronica.es/transparency/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-villavieja-del-lozoya/1.0"
+    centroid: [41.0063622, -3.6716291]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAVIEJA DEL LOZOYA"
+  notes: |
+    WordPress (urbanismo, NNSS, PGOU avance, urbanizaciones) + sede espublico gestiona.
+    Ámbitos de planeamiento en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
