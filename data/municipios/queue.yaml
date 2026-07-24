@@ -1045,9 +1045,9 @@ municipios:
 - slug: chapineria
   nombre: Chapinería
   bocm_count: 14
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-07-24T04:03:59.693914+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-21T00:04:37.853418+00:00'
+updated_at: '2026-07-24T04:03:59.693914+00:00'
