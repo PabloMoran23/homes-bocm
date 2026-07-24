@@ -1061,9 +1061,9 @@ municipios:
   bocm_count: 14
   status: done
   attempts: 1
-  last_run: '2026-07-24T12:04:05.464926+00:00'
+  last_run: '2026-07-24T12:04:21.601195+00:00'
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/104
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/167
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-24T12:04:05.465904+00:00'
+updated_at: '2026-07-24T12:04:21.602092+00:00'
