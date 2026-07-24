@@ -1087,11 +1087,11 @@ municipios:
 - slug: valdemorillo
   nombre: Valdemorillo
   bocm_count: 14
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-07-24T20:10:08.996106+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/169
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-21T00:04:37.853418+00:00'
+updated_at: '2026-07-24T20:10:08.997028+00:00'
