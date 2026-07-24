@@ -1,0 +1,25 @@
+slug: palencia
+nombre: "Palencia"
+provincia: Palencia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytopalencia.es"
+  adapter: municipio.adapters.palencia:PalenciaAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytopalencia.es"
+    sede_base: "https://sede.aytopalencia.es"
+    centroid: [42.4096322, -4.6161004]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-palencia/1.0"
+  notes: |
+    Fuentes: Drupal 9 /area/urbanismo-e-infraestructura (documentos en trámite,
+    PGOU/modificaciones, archivo, convenios), tablón Absis sede.aytopalencia.es,
+    trámites informativos /tramite/* (licencias/obra). pgou.aytopalencia.es (avance PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
