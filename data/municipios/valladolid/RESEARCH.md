@@ -25,17 +25,16 @@ Municipio: **Valladolid** (`valladolid`) — Castilla y León, provincia Vallado
 
 ## Proyectos / expedientes urbanísticos
 
-**Fuente principal:** tablón oficial filtrado por temas de urbanismo:
+**Fuente principal:** PLAU-i (Junta CyL) — listado paginado de instrumentos de planeamiento del municipio (`municipio=186`, `provincia=47`).
+
+**Fuente complementaria:** tablón oficial filtrado por temas de urbanismo:
 
 - `ANUNCIO DE INFORMACIÓN PÚBLICA`
-- `Exposición pública aprobación inicial`
 - Búsqueda texto: `planeamiento`, `urbanismo`
 
 Remitentes habituales: Sección de Planeamiento, Gestión Urbanística, Gerencia de Urbanismo, Servicio Control Legalidad Urbanística.
 
-**Formato:** HTML + PDF; metadatos en `<dl class="features modelEdicto">` (fecha publicación `pval-s-fecha-publicacion`).
-
-**PLAU-i:** documentos de información pública de instrumentos de planeamiento (CyL); listado por municipio (`municipio=186`) pero sin API JSON ni geometría por expediente.
+**Formato:** HTML + PDF; metadatos en `<dl class="features modelEdicto">` (fecha publicación `pval-s-fecha-publicacion`). La paginación `.relaciones` del tablón devuelve HTTP 500 (no usada).
 
 ## Licencias de obra
 
@@ -58,12 +57,13 @@ Campos útiles: `JOIN_NUMER` (expediente, p. ej. `2026/DME_01/000684`), `FECHA` 
   - **Proyectos:** PGOU/PLAU-i y visores temáticos (`www10.ava.es/Visor/`) muestran planeamiento zonal, no delimitación por expediente del tablón.
 - **Estrategia adapter:**
   - Licencias: paginar query ArcGIS por año configurado; rellenar `geom_geojson` + centroide.
-  - Proyectos: solo metadatos tablón; sin query GIS (el orquestador aplicará centroide municipio + jitter).
+  - Proyectos: PLAU-i paginado + búsquedas tablón (sin geometría por expediente).
 - **Limitaciones:** tablón/IP son PDF sin georreferencia; DROUS no enlaza con códigos de expedientes de planeamiento del tablón; PLAU-i requiere sesión/formulario HTML.
 
 ## Limitaciones generales
 
-- Tablón mezcla tráfico, empleo público, hacienda — requiere filtro por remitente/tema/regex.
+- Tablón mezcla tráfico, empleo público, hacienda — requiere filtro por remitente/tema/regex; búsquedas pueden hacer timeout (adapter tolera fallos).
+- Paginación tablón `.relaciones` devuelve HTTP 500.
 - Sin API REST del tablón; scrape HTML determinista.
 - DROUS histórico voluminoso (>20k features 2023–2026); adapter limita años en `manifest.config.drous_years`.
 - `contribuyente.valladolid.es` (STA) exige login para expedientes personales.

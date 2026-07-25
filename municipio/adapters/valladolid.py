@@ -22,13 +22,14 @@ ID_PREFIX = "valladolid"
 
 TABLON_LIST = f"{BASE}/es/tablon-oficial/ayuntamiento-valladolid/anuncios-edictos"
 TABLON_SEARCH = f"{BASE}/es/tablon-oficial/ayuntamiento-valladolid-tablon-oficial.buscar"
+PLAI_BASE = "https://servicios.jcyl.es/PlanPublica"
+PLAI_MUNICIPIO = 186
+PLAI_PROVINCIA = 47
 
 DEFAULT_TABLON_SEARCHES: list[tuple[str, str]] = [
     ("S_TEMA_EDICTO_min", "ANUNCIO DE INFORMACIÓN PÚBLICA"),
-    ("S_TEMA_EDICTO_min", "Exposición pública aprobación inicial"),
     ("text", "planeamiento"),
     ("text", "urbanismo"),
-    ("text", "actuación"),
 ]
 
 DEFAULT_DROUS_LAYERS: list[dict[str, Any]] = [
@@ -119,7 +120,9 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
     def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
         super().__init__(slug, config, base_url or BASE)
         self.delay_s = float(self.config.get("request_delay_s", 0.35))
-        self.tablon_max_pages = int(self.config.get("tablon_max_pages", 40))
+        self.tablon_timeout_s = int(self.config.get("tablon_timeout_s", 45))
+        self.plai_max_pages = int(self.config.get("plai_max_pages", 12))
+        self.plai_page_size = int(self.config.get("plai_page_size", 15))
         self.drous_page_size = int(self.config.get("drous_page_size", 1000))
         raw_searches = self.config.get("tablon_searches")
         if raw_searches:
@@ -134,12 +137,24 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             years = {int(y) for y in (self.config.get("drous_years") or [2026, 2025])}
             self.drous_layers = [layer for layer in DEFAULT_DROUS_LAYERS if int(layer["year"]) in years]
 
-    def _fetch(self, url: str, *, data: bytes | None = None) -> str:
+    def _fetch(
+        self,
+        url: str,
+        *,
+        data: bytes | None = None,
+        timeout_s: int | None = None,
+    ) -> str:
         time.sleep(self.delay_s)
         headers = {"User-Agent": self.config.get("user_agent", "poc-bocm-valladolid/1.0")}
         req = urllib.request.Request(url, data=data, headers=headers)
-        with urllib.request.urlopen(req, timeout=90) as resp:
+        with urllib.request.urlopen(req, timeout=timeout_s or 90) as resp:
             return resp.read().decode("utf-8", errors="replace")
+
+    def _safe_fetch(self, url: str, *, timeout_s: int | None = None) -> str | None:
+        try:
+            return self._fetch(url, timeout_s=timeout_s)
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+            return None
 
     def _fetch_json(self, url: str) -> dict[str, Any]:
         time.sleep(self.delay_s)
@@ -181,11 +196,6 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _tablon_list_url(self, offset: int) -> str:
-        if offset <= 0:
-            return TABLON_LIST
-        return f"{TABLON_LIST}.relaciones,{offset},10"
-
     def _search_tablon(self, param: str, value: str) -> list[dict[str, str]]:
         qs = urllib.parse.urlencode(
             {
@@ -194,11 +204,89 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
                 param: value,
             }
         )
-        try:
-            html = self._fetch(f"{TABLON_SEARCH}?{qs}")
-        except urllib.error.URLError:
+        html = self._safe_fetch(f"{TABLON_SEARCH}?{qs}", timeout_s=self.tablon_timeout_s)
+        if not html:
             return []
         return self._parse_tablon_items(html)
+
+    def _plai_page_url(self, offset: int) -> str:
+        params = {
+            "pager.size": str(self.plai_page_size),
+            "pager.reload": "no",
+            "municipio": str(self.config.get("plai_municipio") or PLAI_MUNICIPIO),
+            "provincia": str(self.config.get("plai_provincia") or PLAI_PROVINCIA),
+            "urlResults": "searchVPubDocMuniPlai.do",
+            "pager.offset": str(offset),
+            "pager.sortindex": "3",
+            "pager.sortname": "fPublicacion",
+        }
+        return f"{PLAI_BASE}/searchVPubDocMuniPlai.do?{urllib.parse.urlencode(params)}"
+
+    @staticmethod
+    def _parse_plai_rows(html: str) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S | re.I):
+            cells = [
+                _strip_html(c)
+                for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.S | re.I)
+            ]
+            cells = [c for c in cells if c]
+            if len(cells) < 5 or cells[0] in {"Libro", "Tipo"}:
+                continue
+            titulo = cells[-2] if len(cells) >= 5 else cells[-1]
+            if not titulo or titulo.lower().startswith("no hay documentos"):
+                continue
+            fecha = _parse_fecha_dmy(cells[2]) or cells[2]
+            doc_m = re.search(r"doGoBoletin\('(\d+)'", tr) or re.search(
+                r"doOpenDocumento\((\d+)\)", tr
+            )
+            doc_id = doc_m.group(1) if doc_m else titulo
+            url = (
+                f"{PLAI_BASE}/openDocumento.do?cDocId={doc_id}"
+                if doc_m and "doOpenDocumento" in tr
+                else f"{PLAI_BASE}/searchVPubDocMuniPlai.do?provincia={PLAI_PROVINCIA}&municipio={PLAI_MUNICIPIO}"
+            )
+            rows.append(
+                {
+                    "title": titulo,
+                    "url": url,
+                    "fecha": fecha or "",
+                    "instrumento": cells[1] if len(cells) > 1 else "",
+                    "origen": "plai_jcyl",
+                }
+            )
+        return rows
+
+    def _collect_plai_proyectos(self) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for page in range(self.plai_max_pages):
+            offset = page * self.plai_page_size
+            html = self._safe_fetch(self._plai_page_url(offset), timeout_s=60)
+            if not html:
+                break
+            parsed = self._parse_plai_rows(html)
+            if not parsed:
+                break
+            for item in parsed:
+                if item["url"] in seen:
+                    continue
+                seen.add(item["url"])
+                fecha = _parse_fecha_dmy(item.get("fecha") or "") or item.get("fecha")
+                rows.append(
+                    {
+                        "id": _stable_id("proy", item["url"] + item["title"]),
+                        "municipio": MUNICIPIO,
+                        "titulo": item["title"][:500],
+                        "fecha": fecha,
+                        "tipo": _proyecto_tipo(item["title"], item.get("instrumento", "")),
+                        "url": item["url"],
+                        "source": "ayuntamiento",
+                        "origen": "plai_jcyl",
+                        "instrumento": item.get("instrumento") or None,
+                    }
+                )
+        return rows
 
     def _is_proyecto_row(self, row: dict[str, str]) -> bool:
         blob = f"{row['title']} {row['remitente']} {row['tema']}"
@@ -237,17 +325,19 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
         for param, value in self.tablon_searches:
             add_from_items(self._search_tablon(param, value))
 
-        for offset in range(0, self.tablon_max_pages * 10, 10):
-            try:
-                html = self._fetch(self._tablon_list_url(offset))
-            except urllib.error.URLError:
-                break
-            items = self._parse_tablon_items(html)
-            if not items:
-                break
-            add_from_items(items)
+        html = self._safe_fetch(TABLON_LIST, timeout_s=self.tablon_timeout_s)
+        if html:
+            add_from_items(self._parse_tablon_items(html))
 
         return rows
+
+    def _collect_proyectos(self) -> list[dict[str, Any]]:
+        by_id: dict[str, dict[str, Any]] = {}
+        for rec in self._collect_plai_proyectos():
+            by_id[rec["id"]] = rec
+        for rec in self._collect_tablon_proyectos():
+            by_id[rec["id"]] = rec
+        return list(by_id.values())
 
     def _drous_query_url(
         self,
@@ -436,24 +526,37 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
         return {"rows": len(rows), "added": added, "status": "ok"}
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
-        rows = self._collect_tablon_proyectos()
+        rows = self._collect_proyectos()
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "source": "tablon_proxia"}
+        plai = sum(1 for r in rows if r.get("origen") == "plai_jcyl")
+        tablon = len(rows) - plai
+        return {
+            "rows": len(rows),
+            "status": "ok",
+            "source": "plai_tablon",
+            "plai_rows": plai,
+            "tablon_rows": tablon,
+        }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        self.backfill_proyectos(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
+        existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
+        added = 0
+        for rec in self._collect_proyectos():
+            if rec["id"] not in existing:
+                added += 1
+            existing[rec["id"]] = rec
+        rows = list(existing.values())
+        self._write_jsonl(out_jsonl, rows)
         state_path.write_text(
             json.dumps(
                 {
                     "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
+                    "count": len(rows),
+                    "added": added,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        return {"rows": len(rows), "added": added, "status": "ok"}
