@@ -58,8 +58,8 @@ RE_PROYECTO = re.compile(
 RE_NOISE = re.compile(
     r"(?i)(tr[aá]fico|omu\b|multas? de|sancion|denuncias? de|proceso selectivo|"
     r"oposici[oó]n|empleo p[uú]blico|convocatoria.{0,30}(?:puesto|t[eé]cnico|funcionario|"
-    r"libre designaci[oó]n|bolsa)|modificaci[oó]n de cr[eé]ditos|padr[oó]n|ivtm|"
-    r"recaudaci[oó]n|notificaci[oó]n.{0,20}tr[aá]fico|disciplina vial)",
+    r"libre designaci[oó]n|bolsa|comisi[oó]n de servicios)|modificaci[oó]n de cr[eé]ditos|"
+    r"padr[oó]n|ivtm|recaudaci[oó]n|notificaci[oó]n.{0,20}tr[aá]fico|disciplina vial)",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_FECHA_DMY_DASH = re.compile(r"(\d{1,2})-(\d{1,2})-(\d{4})")
@@ -217,8 +217,6 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             "provincia": str(self.config.get("plai_provincia") or PLAI_PROVINCIA),
             "urlResults": "searchVPubDocMuniPlai.do",
             "pager.offset": str(offset),
-            "pager.sortindex": "3",
-            "pager.sortname": "fPublicacion",
         }
         return f"{PLAI_BASE}/searchVPubDocMuniPlai.do?{urllib.parse.urlencode(params)}"
 
@@ -233,26 +231,27 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             cells = [c for c in cells if c]
             if len(cells) < 5 or cells[0] in {"Libro", "Tipo"}:
                 continue
-            titulo = cells[-2] if len(cells) >= 5 else cells[-1]
-            if not titulo or titulo.lower().startswith("no hay documentos"):
+            titulo = cells[4] if len(cells) > 4 else cells[-1]
+            if not titulo or re.fullmatch(r"\d{1,2}/\d{1,2}/\d{4}", titulo):
                 continue
-            fecha = _parse_fecha_dmy(cells[2]) or cells[2]
+            fecha_pub = cells[2]
             doc_m = re.search(r"doGoBoletin\('(\d+)'", tr) or re.search(
                 r"doOpenDocumento\((\d+)\)", tr
             )
-            doc_id = doc_m.group(1) if doc_m else titulo
+            doc_id = doc_m.group(1) if doc_m else None
             url = (
                 f"{PLAI_BASE}/openDocumento.do?cDocId={doc_id}"
-                if doc_m and "doOpenDocumento" in tr
-                else f"{PLAI_BASE}/searchVPubDocMuniPlai.do?provincia={PLAI_PROVINCIA}&municipio={PLAI_MUNICIPIO}"
+                if doc_id and "doOpenDocumento" in tr
+                else f"{PLAI_BASE}/searchVPubDocMuniPlai.do?provincia={PLAI_PROVINCIA}&municipio={PLAI_MUNICIPIO}#{titulo[:40]}"
             )
             rows.append(
                 {
                     "title": titulo,
                     "url": url,
-                    "fecha": fecha or "",
+                    "fecha": fecha_pub,
                     "instrumento": cells[1] if len(cells) > 1 else "",
                     "origen": "plai_jcyl",
+                    "doc_id": doc_id or "",
                 }
             )
         return rows
@@ -269,13 +268,14 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             if not parsed:
                 break
             for item in parsed:
-                if item["url"] in seen:
+                key = item["url"] + item["title"]
+                if key in seen:
                     continue
-                seen.add(item["url"])
+                seen.add(key)
                 fecha = _parse_fecha_dmy(item.get("fecha") or "") or item.get("fecha")
                 rows.append(
                     {
-                        "id": _stable_id("proy", item["url"] + item["title"]),
+                        "id": _stable_id("proy", key),
                         "municipio": MUNICIPIO,
                         "titulo": item["title"][:500],
                         "fecha": fecha,
