@@ -11,7 +11,11 @@ portal:
     user_agent: "poc-bocm-valladolid/1.0"
     centroid_lat: 41.652946
     centroid_lon: -4.728390
-    tablon_max_pages: 40
+    tablon_timeout_s: 45
+    plai_max_pages: 12
+    plai_page_size: 15
+    plai_municipio: 186
+    plai_provincia: 47
     drous_years: [2026, 2025]
     drous_page_size: 1000
     geometry:
@@ -24,10 +28,9 @@ portal:
           layer_id: 6
           url: "https://gisava.valladolid.es/server/rest/services/SDE_Drous_2025/FeatureServer/6"
   notes: |
-    Tablón oficial Proxia (anuncios/edictos) para expedientes de planeamiento e IP.
+    PLAU-i (Junta CyL) para instrumentos de planeamiento + tablón Proxia (IP reciente).
     Visor DROUS (ArcGIS FeatureServer) para licencias de obra con polígono catastral.
     Sede electrónica OpenCMS para trámites urbanismo (sin listado público de concesiones).
-    PLAU-i (Junta CyL) y PGOU en www10.ava.es sin enlace directo expediente→geometría.
 
 licencias:
   enabled: true
