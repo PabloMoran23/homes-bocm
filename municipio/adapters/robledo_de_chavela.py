@@ -13,8 +13,8 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
-from municipio.geometry import geometry_centroid
-from municipio.gis.sitcm import resolve_ambito_geometry
+from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.sitcm import WFS_BASE, _merge_geometries, resolve_ambito_geometry
 
 WP_BASE = "https://robledodechavela.es"
 SEDE_EADMIN = "https://robledodechavela.eadministracion.es"
@@ -22,6 +22,24 @@ SEDE_LEGACY = "https://robledodechavela.sedelectronica.es"
 MUNICIPIO = "Robledo de Chavela"
 ID_PREFIX = "robledo-de-chavela"
 WFS_MUNICIPIO = "ROBLEDO DE CHAVELA"
+WFS_TYPE = "sitcm:VPLA_V_AMBITO"
+
+AMBITO_KEYWORDS: tuple[tuple[str, str], ...] = (
+    ("canopus", "UA-15 CANOPUS"),
+    ("suiza", "UA-12 LA SUIZA ESPAÑOLA 1ª FASE"),
+    ("doctor pérez", "UA-0 DOCTOR PÉREZ SUÁREZ"),
+    ("doctor perez", "UA-0 DOCTOR PÉREZ SUÁREZ"),
+    ("pérez suárez", "UA-0 DOCTOR PÉREZ SUÁREZ"),
+    ("perez suarez", "UA-0 DOCTOR PÉREZ SUÁREZ"),
+    ("arqueta", "S-II LA ARQUETA"),
+    ("navahonda", "S-IV VIRGEN DE NAVAHONDA"),
+    ("elisadero", "S-V ELISADERO"),
+    ("el pinar", "S-VI EL PINAR"),
+    ("villalba", "UA-6 VILLALBA"),
+    ("zona industrial", "UA-11 ZONA INDUSTRIAL"),
+    ("los prados", "UA-1 LOS PRADOS"),
+    ("ensanche este", "UA-8 ENSANCHE ESTE"),
+)
 
 DEFAULT_STATIC_PDFS: list[dict[str, str]] = [
     {
@@ -142,6 +160,7 @@ class RobledoDeChavelaAyuntamientoAdapter(AyuntamientoAdapter):
         self.static_pdfs = list(self.config.get("static_pdfs") or DEFAULT_STATIC_PDFS)
         self.wfs_municipio = str(self.config.get("wfs_municipio") or WFS_MUNICIPIO)
         self._sitemap_urls: list[str] | None = None
+        self._sitcm_cache: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
@@ -279,23 +298,93 @@ class RobledoDeChavelaAyuntamientoAdapter(AyuntamientoAdapter):
             },
         ]
 
+    def _fetch_json(self, url: str) -> Any:
+        return json.loads(self._fetch(url))
+
+    def _load_sitcm_ambitos(self) -> dict[str, dict[str, Any]]:
+        if self._sitcm_cache is not None:
+            return self._sitcm_cache
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeName": WFS_TYPE,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "count": "50",
+                "CQL_FILTER": f"DS_MUNICIPIO='{self.wfs_municipio}'",
+            }
+        )
+        url = f"{WFS_BASE}?{params}"
+        try:
+            data = self._fetch_json(url)
+        except (urllib.error.URLError, json.JSONDecodeError):
+            self._sitcm_cache = {}
+            return self._sitcm_cache
+        cache: dict[str, dict[str, Any]] = {}
+        for feat in data.get("features") or []:
+            if not isinstance(feat, dict):
+                continue
+            name = str((feat.get("properties") or {}).get("DS_NOMB_AMB") or "").strip()
+            if name:
+                cache[name.upper()] = feat
+        self._sitcm_cache = cache
+        return cache
+
+    def _geometry_from_ambit(self, ambit_name: str) -> dict[str, Any] | None:
+        cache = self._load_sitcm_ambitos()
+        feat = cache.get(ambit_name.upper())
+        if not feat:
+            return None
+        merged = _merge_geometries([feat])
+        if not merged:
+            return None
+        cql = (
+            f"DS_MUNICIPIO='{self.wfs_municipio}' AND "
+            f"DS_NOMB_AMB='{ambit_name.replace(chr(39), chr(39) * 2)}'"
+        )
+        query_url = (
+            f"{WFS_BASE}?service=WFS&version=2.0.0&request=GetFeature&typeName={WFS_TYPE}"
+            f"&outputFormat=application/json&srsName=EPSG:4326&CQL_FILTER={urllib.parse.quote(cql)}"
+        )
+        return {
+            "geom_geojson": merged,
+            "geometry_source": "portal_wfs",
+            "geometry_source_url": query_url,
+            "coord_source": "portal_geometry_centroid",
+            "ambito_sit": ambit_name,
+        }
+
+    def _fetch_geometry(self, title: str) -> dict[str, Any] | None:
+        geom, meta = resolve_ambito_geometry(self.wfs_municipio, title)
+        if geom:
+            return {
+                "geom_geojson": geom,
+                "geometry_source": "portal_wfs",
+                "geometry_source_url": (
+                    "https://idem.comunidad.madrid/geoserver3/ows"
+                    f"?service=WFS&typeName={WFS_TYPE}&CQL_FILTER=DS_MUNICIPIO='{self.wfs_municipio}'"
+                ),
+                "coord_source": "portal_geometry_centroid",
+                "ambito_sit": meta.get("ambito_name"),
+            }
+        title_low = (title or "").lower()
+        for keyword, ambit in AMBITO_KEYWORDS:
+            if keyword in title_low:
+                hit = self._geometry_from_ambit(ambit)
+                if hit:
+                    return hit
+        return None
+
     def _enrich_geometry(self, rec: dict[str, Any]) -> None:
-        if rec.get("geom_geojson"):
+        if record_geometry(rec):
             return
-        titulo = rec.get("titulo") or ""
-        geom, meta = resolve_ambito_geometry(self.wfs_municipio, titulo)
+        geom = self._fetch_geometry(str(rec.get("titulo") or ""))
         if not geom:
             return
-        rec["geom_geojson"] = geom
-        rec["geometry_source"] = "portal_wfs"
-        rec["geometry_source_url"] = (
-            "https://idem.comunidad.madrid/geoserver3/ows"
-            f"?service=WFS&typeName=sitcm:VPLA_V_AMBITO&CQL_FILTER=DS_MUNICIPIO='{self.wfs_municipio}'"
-        )
-        rec["coord_source"] = "portal_geometry_centroid"
-        if meta.get("ambito_name"):
-            rec["ambito_sit"] = meta["ambito_name"]
-        centroid = geometry_centroid(geom)
+        rec.update(geom)
+        centroid = geometry_centroid(geom["geom_geojson"])
         if centroid:
             rec["lat"], rec["lon"] = centroid
 
