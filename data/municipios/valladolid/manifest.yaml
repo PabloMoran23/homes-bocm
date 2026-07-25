@@ -1,0 +1,37 @@
+slug: valladolid
+nombre: "Valladolid"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.valladolid.gob.es"
+  adapter: municipio.adapters.valladolid:ValladolidAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valladolid/1.0"
+    centroid_lat: 41.652946
+    centroid_lon: -4.728390
+    tablon_max_pages: 40
+    drous_years: [2026, 2025]
+    drous_page_size: 1000
+    geometry:
+      kind: arcgis_featureserver
+      drous_layers:
+        - year: 2026
+          layer_id: 7
+          url: "https://gisava.valladolid.es/server/rest/services/SDE_Drous_2026/FeatureServer/7"
+        - year: 2025
+          layer_id: 6
+          url: "https://gisava.valladolid.es/server/rest/services/SDE_Drous_2025/FeatureServer/6"
+  notes: |
+    Tablón oficial Proxia (anuncios/edictos) para expedientes de planeamiento e IP.
+    Visor DROUS (ArcGIS FeatureServer) para licencias de obra con polígono catastral.
+    Sede electrónica OpenCMS para trámites urbanismo (sin listado público de concesiones).
+    PLAU-i (Junta CyL) y PGOU en www10.ava.es sin enlace directo expediente→geometría.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
