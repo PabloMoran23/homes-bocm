@@ -1,0 +1,32 @@
+slug: cartama
+nombre: "Cártama"
+provincia: "Cártama/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://cartama.sedelectronica.es"
+  adapter: municipio.adapters.cartama:CartamaAyuntamientoAdapter
+  config:
+    sede_base: "https://cartama.sedelectronica.es"
+    board_url: "https://cartama.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cartama/1.0"
+    centroid: [36.7107, -4.6330]
+    transparency_folders:
+      - url: "https://cartama.sedelectronica.es/transparency/1a413180-45e2-45fd-aa76-a4420deba94a/"
+        titulo: "Innovación PGOU SG-3 acceso Cártama Estación-El Sexmo (PP. 1733/2020)"
+      - url: "https://cartama.sedelectronica.es/transparency/25e365e8-9ed9-4955-bf57-9af459854bc5/"
+        titulo: "Plan Especial depuradora aguas residuales industriales (PP. 1509/2022)"
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) y carpetas transparencia urbanismo.
+    Web www.cartama.es bloqueada (CloudFront 403) en CI.
+    Visor PRP Málaga / SITUA sin API REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
