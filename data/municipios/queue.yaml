@@ -1103,7 +1103,7 @@ municipios:
   bocm_count: 13
   status: done
   attempts: 1
-  last_run: '2026-07-26T00:06:40.982380+00:00'
+  last_run: '2026-07-26T04:03:03.410734+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/107
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-26T00:06:40.983332+00:00'
+updated_at: '2026-07-26T04:03:03.411574+00:00'
