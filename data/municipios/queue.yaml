@@ -765,11 +765,11 @@ municipios:
 - slug: salamanca
   nombre: Salamanca
   bocm_count: 20
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-07-27T20:08:42.452591+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/179
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-25T00:02:54.858769+00:00'
+updated_at: '2026-07-27T20:08:42.453441+00:00'
