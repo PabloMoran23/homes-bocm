@@ -15,6 +15,7 @@ portal:
     transparency_url: "https://elmolar.sedelectronica.es/transparency"
     documentacion_url: "https://elmolar.org/tramites/documentacion/"
     insecure_ssl: true
+    centroid: [40.735126, -3.576261]
     geometry:
       wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
       type_name: "sitcm:VPLA_V_AMBITO"
