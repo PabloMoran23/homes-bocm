@@ -751,9 +751,9 @@ municipios:
 - slug: llanes
   nombre: Llanes
   bocm_count: 20
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-27T12:05:19.552207+00:00'
   last_error: null
   pr_url: null
   notes: ''
