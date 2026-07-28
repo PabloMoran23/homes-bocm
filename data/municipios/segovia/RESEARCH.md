@@ -44,10 +44,13 @@ Municipio: **Segovia** (`segovia`) — Castilla y León / BOYL (`bocyl`)
 
 ## Geometría / visor
 
-- **geometry_status:** `unavailable`
-- **Fuentes:** El Ayuntamiento publica un [Gemelo Digital ArcGIS Hub](https://gemelo-digital-aytosegovia.hub.arcgis.com/) (modelo 3D, catastro, LiDAR) accesible desde cloud, pero **no enlaza expedientes/tablon** ni expone FeatureServer consultable por código de expediente. El PGOU se publica como PDF/planos descargables; `pgou-consolidado` no expone iframe de visor SIG en el HTML archivado. `opendata.segovia.es` no responde desde entornos cloud.
-- **Estrategia:** El orquestador aplicará centroide municipal (`manifest.portal.config.centroid`) + jitter en geocode.
-- **Limitaciones:** Sin capa GIS pública enlazada a expedientes del tablón STA; geometría de ámbito solo en planos PDF no georreferenciados automáticamente.
+- **geometry_status:** `partial`
+- **Fuentes:**
+  - IDECyL WFS `urbanismo:plau_cyl_sectores`, `plau_cyl_planes_parciales`, `plau_cyl_instrumentos_ambito` (filtro `n_mun='Segovia'`, `srsName=EPSG:4326`)
+  - Visor SiuCyL regional: https://www.jcyl.es/plau/
+  - Gemelo Digital ArcGIS Hub municipal: https://gemelo-digital-aytosegovia.hub.arcgis.com/ (modelo 3D/catastro; sin enlace a expedientes STA)
+- **Estrategia:** query WFS JCyL por municipio; polígonos en `geom_geojson` + centroide. Anuncios tablón/web sin match GIS → geocode con centroide + jitter.
+- **Limitaciones:** El ayuntamiento no expone FeatureServer enlazado al tablón; geometría parcelaria de licencias no disponible. `opendata.segovia.es` no responde desde algunos entornos cloud.
 
 ## Limitaciones técnicas
 

@@ -13,9 +13,12 @@ portal:
     sede_insecure_ssl: true
     user_agent: "poc-bocm-segovia/1.0 (+urbanismo research)"
     centroid: [40.948084, -4.11839]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Segovia
   notes: |
     Fuentes: web Drupal (/area/urbanismo, planeamiento PGOU) + sede STA
-    (tablón PTS2_TABLON, catálogo CATSERV). Expedientes privados requieren certificado.
+    (tablón PTS2_TABLON, catálogo CATSERV) + IDECyL WFS SiuCyL (sectores/PP).
+    Wayback fallback si segovia.es/sede bloquean la IP. Expedientes privados requieren certificado.
 
 licencias:
   enabled: true

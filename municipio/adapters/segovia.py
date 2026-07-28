@@ -16,6 +16,7 @@ from typing import Any
 from urllib.parse import urljoin, unquote
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.geometry import geometry_centroid, record_geometry
 
 WEB_BASE = "https://www.segovia.es"
 SEDE_BASE = "https://sede.segovia.es"
@@ -23,6 +24,13 @@ MUNICIPIO = "Segovia"
 ID_PREFIX = "segovia"
 WAYBACK_SNAPSHOT = "20250712100341"
 WAYBACK_PREFIX = f"https://web.archive.org/web/{WAYBACK_SNAPSHOT}/"
+WFS_BASE = "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+
+WFS_LAYERS: tuple[tuple[str, str], ...] = (
+    ("urbanismo:plau_cyl_instrumentos_ambito", "instrumento"),
+    ("urbanismo:plau_cyl_planes_parciales", "plan parcial"),
+    ("urbanismo:plau_cyl_sectores", "sector"),
+)
 
 TABLON_URL = f"{SEDE_BASE}/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON&KEY=all"
 CATALOGO_URL = f"{SEDE_BASE}/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO"
@@ -193,6 +201,9 @@ class SegoviaAyuntamientoAdapter(AyuntamientoAdapter):
         self._prefer_wayback = bool(self.config.get("prefer_wayback", False))
         self._direct_blocked = self._prefer_wayback
         self._direct_timeout_s = float(self.config.get("direct_timeout_s", 8))
+        self.wfs_base = str(self.config.get("wfs_base") or WFS_BASE).rstrip("/")
+        self.wfs_municipio = str(self.config.get("wfs_municipio") or MUNICIPIO)
+        self._wfs_cache: list[dict[str, Any]] | None = None
 
     def _fetch(self, url: str, *, use_sede_ssl: bool = False) -> str:
         time.sleep(self.delay_s)
@@ -220,6 +231,95 @@ class SegoviaAyuntamientoAdapter(AyuntamientoAdapter):
         if last_err:
             raise last_err
         raise urllib.error.URLError("fetch failed")
+
+    def _fetch_json(self, url: str) -> Any:
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-segovia/1.0")},
+        )
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+
+    def _wfs_query_url(self, layer: str) -> str:
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeName": layer,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "CQL_FILTER": f"n_mun = '{self.wfs_municipio}'",
+            }
+        )
+        return f"{self.wfs_base}?{params}"
+
+    def _collect_wfs_proyectos(self) -> list[dict[str, Any]]:
+        if self._wfs_cache is not None:
+            return self._wfs_cache
+        rows: list[dict[str, Any]] = []
+        for layer, default_tipo in WFS_LAYERS:
+            url = self._wfs_query_url(layer)
+            try:
+                data = self._fetch_json(url)
+            except (urllib.error.URLError, json.JSONDecodeError):
+                continue
+            for feat in data.get("features") or []:
+                if not isinstance(feat, dict):
+                    continue
+                props = feat.get("properties") or {}
+                geom = feat.get("geometry")
+                titulo = _clean_title(str(props.get("n_titulo") or ""))
+                if not titulo:
+                    sector = str(props.get("n_sector") or "").strip()
+                    num = str(props.get("n_num_sect") or "").strip()
+                    titulo = f"{sector} ({num})" if sector else num
+                if not titulo:
+                    titulo = str(props.get("c_id_sect") or props.get("c_plan") or layer)
+                instrum = str(props.get("n_instrum") or props.get("c_instrum") or "")
+                blob = f"{titulo} {instrum}"
+                fecha = _parse_fecha_iso(str(props.get("f_bocyl") or "")) or _parse_fecha_iso(
+                    str(props.get("f_aprob") or "")
+                )
+                doc_url = str(props.get("url_doc_info") or "").strip() or url
+                key = str(props.get("c_id_sect") or props.get("c_plan") or props.get("fid") or titulo)
+                rec: dict[str, Any] = {
+                    "id": _stable_id("proy", f"wfs:{layer}:{key}"),
+                    "municipio": MUNICIPIO,
+                    "titulo": titulo,
+                    "fecha": fecha,
+                    "tipo": _proyecto_tipo(blob) if blob.strip() else default_tipo,
+                    "url": doc_url,
+                    "source": "ayuntamiento",
+                    "origen": "idecyl_wfs",
+                    "wfs_layer": layer,
+                    "sector_id": props.get("c_id_sect"),
+                    "instrumento": instrum or None,
+                }
+                if isinstance(geom, dict) and geom.get("type"):
+                    rec["geom_geojson"] = geom
+                    rec["geometry_source"] = "portal_wfs"
+                    rec["geometry_source_url"] = url
+                    rec["coord_source"] = "portal_geometry_centroid"
+                    centroid = geometry_centroid(geom)
+                    if centroid:
+                        rec["lat"], rec["lon"] = centroid
+                rows.append(rec)
+        self._wfs_cache = rows
+        return rows
+
+    def _enrich_geometry(self, rec: dict[str, Any]) -> None:
+        if record_geometry(rec):
+            return
+        titulo = str(rec.get("titulo") or "").lower()
+        for wfs_rec in self._collect_wfs_proyectos():
+            wfs_title = str(wfs_rec.get("titulo") or "").lower()
+            if titulo and (titulo in wfs_title or wfs_title in titulo):
+                for key in ("geom_geojson", "geometry_source", "geometry_source_url", "coord_source", "lat", "lon"):
+                    if wfs_rec.get(key) is not None:
+                        rec[key] = wfs_rec[key]
+                return
 
     def _tablon_detail_url(self, dboid: str) -> str:
         return (
@@ -453,6 +553,7 @@ class SegoviaAyuntamientoAdapter(AyuntamientoAdapter):
             rec["pdf_url"] = row["pdf_url"]
         if m := RE_EXPTE.search(titulo):
             rec["expte"] = m.group(1)
+        self._enrich_geometry(rec)
         return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
@@ -543,13 +644,19 @@ class SegoviaAyuntamientoAdapter(AyuntamientoAdapter):
             )
         )
 
+        for wfs_rec in self._collect_wfs_proyectos():
+            add(wfs_rec)
+
         self._write_jsonl(out_jsonl, rows)
+        with_geom = sum(1 for r in rows if record_geometry(r))
         return {
             "rows": len(rows),
+            "with_geometry": with_geom,
             "status": "ok",
             "web": sum(1 for r in rows if str(r.get("origen", "")).startswith("web_")),
             "tramites": sum(1 for r in rows if r.get("origen") == "catalogo_tramites"),
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon_sta"),
+            "wfs": sum(1 for r in rows if r.get("origen") == "idecyl_wfs"),
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
