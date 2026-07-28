@@ -1,0 +1,31 @@
+slug: manzanares-el-real
+nombre: "Manzanares el Real"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://manzanareselreal.es"
+  adapter: municipio.adapters.manzanares_el_real:ManzanaresElRealAyuntamientoAdapter
+  config:
+    sede_base: "https://manzanareselreal.sedelectronica.es"
+    board_url: "https://manzanareselreal.sedelectronica.es/board"
+    urbanismo_url: "https://manzanareselreal.es/ordenacion-del-territorio/urbanismo/"
+    normativa_dossier: "https://manzanareselreal.sedelectronica.es/transparency/70fa3e9b-9aec-443a-9c20-882f0ecd03df/"
+    pgou_service_url: "https://manzanareselreal.sedelectronica.es/citizen-service/1b89ac11-06c5-41e5-bcfe-aa2b2a56b298"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-manzanares-el-real/1.0"
+    insecure_ssl: true
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "MANZANARES EL REAL"
+  notes: |
+    WordPress Ganesa + sede eHome (espublico gestiona): tablón, transparencia normativa,
+    noticias urbanismo y ámbitos SITCM (WFS IDEM) para geometría partial.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
