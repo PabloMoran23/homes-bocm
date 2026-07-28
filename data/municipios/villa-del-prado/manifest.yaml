@@ -1,0 +1,29 @@
+slug: villa-del-prado
+nombre: "Villa del Prado"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villadelprado.es"
+  adapter: municipio.adapters.villa_del_prado:VillaDelPradoAyuntamientoAdapter
+  config:
+    transparencia_base: "http://transparencia.villadelprado.org"
+    urbanismo_url: "http://transparencia.villadelprado.org/index.php/urbanismo"
+    sede_base: "https://sede.villadelprado.es"
+    centroid: [40.276496, -4.305911]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villa-del-prado/1.0"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLA DEL PRADO"
+  notes: |
+    Joomla corporativa + portal transparencia (urbanismo PDFs/BOCM/Drive).
+    Sede eAdmin inaccesible (connection reset). Geometría parcial vía WFS SITCM.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
