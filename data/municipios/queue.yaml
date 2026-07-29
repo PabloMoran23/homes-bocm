@@ -851,7 +851,7 @@ municipios:
   bocm_count: 18
   status: done
   attempts: 1
-  last_run: '2026-07-29T04:03:59.379890+00:00'
+  last_run: '2026-07-29T08:05:50.513311+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/185
   notes: 19 proy/2 geom, 4 lic; Plone+espublico+SITCM partial
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-29T04:03:59.380812+00:00'
+updated_at: '2026-07-29T08:05:50.514204+00:00'
