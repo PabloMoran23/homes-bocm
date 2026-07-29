@@ -9,6 +9,7 @@ portal:
   config:
     request_delay_s: 0.35
     user_agent: "poc-bocm-arroyomolinos/1.0"
+    centroid: [40.26951, -3.91946]
     sede_base: "https://arroyomolinos.sedelectronica.es"
     board_url: "https://arroyomolinos.sedelectronica.es/board"
     insecure_ssl: true
