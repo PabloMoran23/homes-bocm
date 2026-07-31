@@ -1,0 +1,25 @@
+slug: burgos
+nombre: Burgos
+provincia: Burgos
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytoburgos.es"
+  adapter: municipio.adapters.burgos:BurgosAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.aytoburgos.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-burgos/1.0 (+urbanismo research)"
+    centroid: [42.3439, -3.6969]
+  notes: |
+    Fuentes: sede STA (tablón PTS2_TABLON + catálogo CATSERV), portal Liferay
+    (instrumentos-planeamiento-gestion, anuncios-urbanismo). Visor IDE en
+    ide.aytoburgos.es (no accesible vía API desde CI).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
