@@ -1,0 +1,27 @@
+slug: camarma-de-esteruelas
+nombre: "Camarma de Esteruelas"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "http://www.camarmadeesteruelas.es"
+  adapter: municipio.adapters.camarma_de_esteruelas:CamarmaDeEsteruelasAyuntamientoAdapter
+  config:
+    sede_base: "https://camarmadeesteruelas.sedelectronica.es"
+    board_url: "https://camarmadeesteruelas.sedelectronica.es/board"
+    ayuntamiento_url: "http://www.camarmadeesteruelas.es/ayuntamiento/"
+    transparency_url: "https://camarmadeesteruelas.sedelectronica.es/transparency"
+    centroid: [40.5497252, -3.3785043]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-camarma-de-esteruelas/1.0"
+  notes: |
+    Web Umbraco/Bootstrap (ordenanzas urbanismo en /ayuntamiento/) y tablón eHome espublico (/board).
+    Transparencia sede: sección 7 Urbanismo (152 docs, Wicket AJAX).
+    Geometría parcial vía WFS SITCM (ámbitos planeamiento CM).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,25 @@
+slug: aranda-de-duero
+nombre: "Aranda de Duero"
+provincia: "Aranda de Duero (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.arandadeduero.es"
+  adapter: municipio.adapters.aranda_de_duero:ArandaDeDueroAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.arandadeduero.es"
+    transparencia_base: "https://transparencia.arandadeduero.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-aranda-de-duero/1.0"
+    centroid: [41.6704, -3.6897]
+  notes: |
+    Fuentes: sede STA (tablón dataset_PTS2_TABLON + catálogo CATSERV urbanismo),
+    transparencia (PGOU 2023 PDFs, convenios urbanísticos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

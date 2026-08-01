@@ -1,0 +1,40 @@
+slug: quijorna
+nombre: "Quijorna"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytoquijorna.org"
+  adapter: municipio.adapters.quijorna:QuijornaAyuntamientoAdapter
+  config:
+    sede_base: "https://aytoquijorna.sedelectronica.es"
+    board_url: "https://aytoquijorna.sedelectronica.es/board"
+    board_urbanismo_url: "https://aytoquijorna.sedelectronica.es/board/974e6d5e-f59b-11de-b600-00237da12c6a/"
+    normativa_url: "https://aytoquijorna.org/concejalias/urbanismo/normativa-urbanistica/"
+    tramites_url: "https://aytoquijorna.org/concejalias/urbanismo/tramites-y-gestiones-de-urbanismo/"
+    catalogo_url: "https://aytoquijorna.org/concejalias/urbanismo/catalogo-de-procedimientos-y-actuaciones-urbanisticas/"
+    transparency_normativa_url: "https://aytoquijorna.sedelectronica.es/transparency/07b48e79-055a-4d36-8e84-13c209f18f6b/"
+    transparency_sector5_url: "https://aytoquijorna.sedelectronica.es/transparency/f3a06c71-7022-4309-8f9d-eb96272419be/"
+    transparency_complementaria_url: "https://aytoquijorna.sedelectronica.es/transparency/ad88615a-a13d-4576-a91d-63050c8fc9f8/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-quijorna/1.0"
+    centroid: [40.4290833, -4.0565378]
+  notes: |
+    WordPress (aytoquijorna.org, tema citygov) + sede espublico gestiona (aytoquijorna.sedelectronica.es).
+    Fuentes: tablón /board, transparencia NNSS/Sector 5/ordenanzas, PDFs trámites urbanismo.
+    Certificado sede inválido → insecure_ssl.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers:
+    - kind: sitcm_ambito
+  notes: |
+    SITCM WFS (idem.comunidad.madrid) parcial: ámbitos cuando el título cita Sector/UE.
+    Sin visor urbanístico municipal enlazado a expedientes.

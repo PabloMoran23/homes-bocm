@@ -1,0 +1,36 @@
+slug: los-molinos
+nombre: "Los Molinos"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sede.ayuntamiento-losmolinos.es/eAdmin"
+  adapter: municipio.adapters.los_molinos:LosMolinosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-molinos/1.0"
+    sede_base: "https://sede.ayuntamiento-losmolinos.es/eAdmin"
+    wp_base: "https://www.ayuntamiento-losmolinos.es"
+    transparencia_base: "https://transparencia.ayuntamiento-losmolinos.es"
+    transparencia_pages:
+      - page_id: 185
+        section: planeamiento
+        tipo: planeamiento
+    wp_seed_pages:
+      - "https://www.ayuntamiento-losmolinos.es/?page_id=36668"
+      - "https://www.ayuntamiento-losmolinos.es/?p=40276"
+      - "https://www.ayuntamiento-losmolinos.es/?p=10954"
+    tramite_ids: [34, 35, 36, 37, 51]
+    centroid: [40.7156, -4.0739]
+    geometry:
+      municipio_filter: "LOS MOLINOS"
+  notes: |
+    WordPress institucional (urbanismo + avance PGOU) + sede eAdmin (tablón + trámites)
+    + transparencia (estudio de detalle). Geometría parcial vía WFS SITCM (Comunidad de Madrid).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

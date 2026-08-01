@@ -1003,11 +1003,11 @@ municipios:
 - slug: valdilecha
   nombre: Valdilecha
   bocm_count: 15
-  status: done
-  attempts: 1
-  last_run: '2026-08-01T04:04:33.315136+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/197
+  pr_url: null
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -1059,12 +1059,12 @@ municipios:
 - slug: palencia
   nombre: Palencia
   bocm_count: 14
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-01T17:45:40.422601+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/167
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 30711005098
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Palencia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-01T04:04:33.315985+00:00'
+updated_at: '2026-08-01T17:45:40.424362+00:00'
