@@ -37,6 +37,13 @@ TERRITORIO_BY_SOURCE: dict[str, tuple[str, str]] = {
 
 AUTOMATION_BRANCH_RE = re.compile(r"^automation/municipio-(.+)$")
 MANIFEST_PATH_RE = re.compile(r"^data/municipios/([^/]+)/manifest\.yaml$")
+BRANCH_SLUG_SUFFIX_RE = re.compile(r"-v\d+$")
+OPEN_PR_LIST_LIMIT = 500
+
+
+def normalize_open_pr_slug(slug: str) -> str:
+    """Ramas automation/municipio-<slug>-v2 → slug base de cola."""
+    return BRANCH_SLUG_SUFFIX_RE.sub("", slug.strip())
 
 # Municipios con pipeline propio (no portal genérico).
 SKIP_NAMES = {
@@ -198,7 +205,10 @@ def open_pr_by_slug() -> dict[str, str]:
     Slugs con PR abierta en GitHub → URL de la PR.
     Detecta ramas automation/municipio-<slug> o manifest en el diff.
     """
-    prs = _gh_json(["pr", "list", "--state", "open"], fields="number,headRefName,title,url")
+    prs = _gh_json(
+        ["pr", "list", "--state", "open", "--limit", str(OPEN_PR_LIST_LIMIT)],
+        fields="number,headRefName,title,url",
+    )
     if not isinstance(prs, list):
         return {}
 
@@ -209,23 +219,23 @@ def open_pr_by_slug() -> dict[str, str]:
         number = pr.get("number")
         url = str(pr.get("url") or "")
         head = str(pr.get("headRefName") or "")
+        slug: str | None = None
         m = AUTOMATION_BRANCH_RE.match(head)
         if m:
-            out.setdefault(m.group(1), url)
-            continue
-        if number is None:
-            continue
-        files = _gh_json(["pr", "view", str(number)], fields="files")
-        if not isinstance(files, dict):
-            continue
-        for item in files.get("files") or []:
-            if not isinstance(item, dict):
-                continue
-            path = str(item.get("path") or "")
-            m2 = MANIFEST_PATH_RE.match(path)
-            if m2:
-                out.setdefault(m2.group(1), url)
-                break
+            slug = normalize_open_pr_slug(m.group(1))
+        elif number is not None:
+            files = _gh_json(["pr", "view", str(number)], fields="files")
+            if isinstance(files, dict):
+                for item in files.get("files") or []:
+                    if not isinstance(item, dict):
+                        continue
+                    path = str(item.get("path") or "")
+                    m2 = MANIFEST_PATH_RE.match(path)
+                    if m2 and m2.group(1) != "_template":
+                        slug = m2.group(1)
+                        break
+        if slug:
+            out.setdefault(slug, url)
     return out
 
 
