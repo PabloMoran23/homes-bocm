@@ -989,11 +989,11 @@ municipios:
 - slug: los-molinos
   nombre: Los Molinos
   bocm_count: 15
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-01T00:01:09.955591+00:00'
+  last_run: '2026-08-01T00:04:57.194334+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/196
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-23T04:09:34.369148+00:00'
+updated_at: '2026-08-01T00:04:57.195344+00:00'
