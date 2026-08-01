@@ -1,0 +1,25 @@
+slug: robledo-de-chavela
+nombre: "Robledo de Chavela"
+provincia: "Robledo de Chavela, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://robledodechavela.es"
+  adapter: municipio.adapters.robledo_de_chavela:RobledoDeChavelaAyuntamientoAdapter
+  config:
+    sede_eadmin: "https://robledodechavela.eadministracion.es"
+    sede_legacy: "https://robledodechavela.sedelectronica.es"
+    wfs_municipio: "ROBLEDO DE CHAVELA"
+    centroid: [40.5009201, -4.2380999]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-robledo-de-chavela/1.0"
+  notes: |
+    WordPress (bandos, información pública) + sede eAdmin Maggioli (SPA) + SITCM WFS.
+    Sede legacy espublico inactiva; tablón no scrapeable en SPA Angular.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
