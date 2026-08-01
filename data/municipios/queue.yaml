@@ -849,12 +849,12 @@ municipios:
 - slug: arroyomolinos
   nombre: Arroyomolinos
   bocm_count: 18
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-01T00:02:38.169057+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/186
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Arroyomolinos, Madrid
@@ -877,11 +877,11 @@ municipios:
 - slug: quijorna
   nombre: Quijorna
   bocm_count: 18
-  status: done
-  attempts: 1
-  last_run: '2026-07-30T08:04:58.073955+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/189
+  pr_url: null
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-30T08:04:58.074842+00:00'
+updated_at: '2026-08-01T00:02:38.170129+00:00'
