@@ -1,0 +1,25 @@
+slug: leon
+nombre: "León"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytoleon.es"
+  adapter: municipio.adapters.leon:LeonAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.aytoleon.es/eAdmin"
+    wp_base: "https://aytoleon.es"
+    urbanismo_url: "https://aytoleon.es/es/tu-ayuntamiento/normativas/Paginas/urbanismo.aspx"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-leon/1.0"
+    centroid: [42.5987, -5.5671]
+  notes: |
+    Fuentes: portal SharePoint urbanismo (PGOU, convenios, planeamiento, gestión
+    urbanística) + tablón sede eAdmin add4u + catálogo trámites licencias/obras.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
