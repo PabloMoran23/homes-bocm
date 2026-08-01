@@ -1,0 +1,31 @@
+slug: salamanca
+nombre: "Salamanca"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytosalamanca.es"
+  adapter: municipio.adapters.salamanca:SalamancaAyuntamientoAdapter
+  config:
+    liferay_base: "https://www.aytosalamanca.es"
+    sede_base: "https://www.aytosalamanca.gob.es"
+    tablon_url: "https://www.aytosalamanca.gob.es/es/edictos/"
+    catalogo_url: "https://www.aytosalamanca.gob.es/sta/CarpetaPublic/?APP_CODE=STA&PAGE_CODE=CATALOGO"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-salamanca/1.0"
+    centroid: [40.9651, -5.6635]
+    geometry:
+      kind: wfs
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+      layer: "urbanismo:plau_cyl_sectores"
+      municipio_filter: "Salamanca"
+  notes: |
+    Liferay planes-tramitacion + archivo urbanístico; STA tablón edictos y catálogo;
+    geometría parcial vía SIUCyL WFS sectores.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
