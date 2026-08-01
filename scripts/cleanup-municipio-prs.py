@@ -189,6 +189,7 @@ def rebase_and_push(number: int, slug: str) -> bool:
 
 
 def merge_pr(number: int, title: str) -> bool:
+    run(["gh", "pr", "ready", str(number)], check=False)
     for _ in range(12):
         view = gh_json(["pr", "view", str(number), "--json", "mergeable,mergeStateStatus"])
         mergeable = view.get("mergeable")
