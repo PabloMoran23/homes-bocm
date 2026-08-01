@@ -1,7 +1,7 @@
 # Villavieja del Lozoya — investigación portal ayuntamiento
 
 **Municipio:** Villavieja del Lozoya (Comunidad de Madrid)  
-**Fecha:** 2026-07-23  
+**Fecha:** 2026-07-23 (re-verificado 2026-08-01)  
 **BOCM regional (referencia):** 15 avisos
 
 ## Resumen
