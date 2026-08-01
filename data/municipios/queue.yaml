@@ -989,11 +989,11 @@ municipios:
 - slug: los-molinos
   nombre: Los Molinos
   bocm_count: 15
-  status: done
-  attempts: 0
-  last_run: '2026-07-23T04:09:34.368219+00:00'
+  status: in_progress
+  attempts: 1
+  last_run: '2026-08-01T00:01:09.955591+00:00'
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/162
+  pr_url: null
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid

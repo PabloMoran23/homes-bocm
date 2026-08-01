@@ -21,6 +21,7 @@ portal:
       - "https://www.ayuntamiento-losmolinos.es/?p=40276"
       - "https://www.ayuntamiento-losmolinos.es/?p=10954"
     tramite_ids: [34, 35, 36, 37, 51]
+    centroid: [40.7156, -4.0739]
     geometry:
       municipio_filter: "LOS MOLINOS"
   notes: |
