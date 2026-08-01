@@ -72,7 +72,9 @@ def _gh_repo() -> str:
 def slug_from_branch(head_ref: str) -> str | None:
     m = AUTOMATION_BRANCH_RE.match(head_ref or "")
     if m:
-        return m.group(1)
+        from municipio.queue import normalize_open_pr_slug
+
+        return normalize_open_pr_slug(m.group(1))
     return None
 
 
@@ -117,6 +119,8 @@ def list_open_municipio_prs() -> list[MunicipioPrCandidate]:
             "list",
             "--state",
             "open",
+            "--limit",
+            "500",
             "--json",
             "number,title,url,headRefName,mergeable,reviewDecision,statusCheckRollup",
         ]
