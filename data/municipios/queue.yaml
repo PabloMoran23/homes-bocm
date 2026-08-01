@@ -737,12 +737,12 @@ municipios:
 - slug: el-molar
   nombre: El Molar
   bocm_count: 20
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-07-29T00:06:06.492651+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/177
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Molar, Madrid
@@ -793,11 +793,11 @@ municipios:
 - slug: leon
   nombre: León
   bocm_count: 19
-  status: done
+  status: pending
   attempts: 0
-  last_run: '2026-07-28T04:10:05.128061+00:00'
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/181
+  pr_url: null
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -849,12 +849,12 @@ municipios:
 - slug: arroyomolinos
   nombre: Arroyomolinos
   bocm_count: 18
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-01T00:02:38.169057+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/186
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Arroyomolinos, Madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-07-28T04:10:05.130262+00:00'
+updated_at: '2026-08-01T00:02:38.170129+00:00'
