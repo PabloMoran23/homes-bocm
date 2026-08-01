@@ -1,0 +1,34 @@
+slug: mijas
+nombre: "Mijas"
+provincia: "Mijas, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.mijas.es/portal"
+  adapter: municipio.adapters.mijas:MijasAyuntamientoAdapter
+  config:
+    sede_base: "https://mijas.sedelectronica.es"
+    board_url: "https://mijas.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mijas/1.0"
+    centroid: [36.5957, -4.6375]
+    seed_pages:
+      - "https://www.mijas.es/portal/urbanismo/derecho-a-la-informacion/"
+      - "https://www.mijas.es/portal/urbanismo/planes-parciales-de-ordenacion-planes-especiales-y-expedientes-de-adaptacion-al-pgou/"
+      - "https://www.mijas.es/portal/urbanismo/planeamiento/"
+      - "https://www.mijas.es/portal/urbanismo/licencias-de-obras-mayores/"
+    licencias_url: "https://www.mijas.es/portal/urbanismo/licencias-de-obra-menor-concedidas-por-decreto/"
+  notes: |
+    Fuentes: WordPress urbanismo (derecho a la información, planes parciales, planeamiento,
+    licencias mayores) + tablón espublico gestiona (mijas.sedelectronica.es/board).
+    Sede legacy ASP.NET (sede.mijas.es) redirige al tablón espublico.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
