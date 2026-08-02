@@ -174,7 +174,7 @@ class BustarviejoAyuntamientoAdapter(AyuntamientoAdapter):
         self.wfs_type = str(geom_cfg.get("type_name") or WFS_TYPE)
         self.wfs_municipio = str(geom_cfg.get("municipio_filter") or WFS_MUNICIPIO)
         self._wfs_cache: dict[str, dict[str, Any]] | None = None
-        self._wp_post_urls: list[str] | None = None
+        self._wp_urls_cache: list[str] | None = None
 
     def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
@@ -395,16 +395,15 @@ class BustarviejoAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _wp_post_urls(self) -> list[str]:
-        if self._wp_post_urls is not None:
-            return self._wp_post_urls
-        urls: list[str] = []
+        if self._wp_urls_cache is not None:
+            return self._wp_urls_cache
         try:
             xml = self._fetch(f"{self.wp_base}/wp-sitemap-posts-post-1.xml")
         except urllib.error.URLError:
-            self._wp_post_urls = []
-            return self._wp_post_urls
+            self._wp_urls_cache = []
+            return self._wp_urls_cache
         urls = [m.group(1) for m in re.finditer(r"<loc>([^<]+)</loc>", xml)]
-        self._wp_post_urls = urls
+        self._wp_urls_cache = urls
         return urls
 
     def _parse_wp_post(self, url: str) -> dict[str, Any] | None:
