@@ -345,19 +345,36 @@ class CercedillaAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _collect_pgou_post(self) -> dict[str, Any] | None:
+        title = "Avance del Plan General de Ordenación Urbana de Cercedilla"
+        fecha: str | None = None
         try:
             posts = self._fetch_json(
                 f"{WEB_BASE}/wp-json/wp/v2/posts?slug=avance-plan-general-ordenacion-urbana-cercedilla"
             )
+            if posts:
+                post = posts[0]
+                title = _strip_html(post.get("title", {}).get("rendered", "")) or title
+                fecha = (post.get("date") or "")[:10] or None
         except (urllib.error.URLError, json.JSONDecodeError):
-            return None
-        if not posts:
-            return None
-        post = posts[0]
-        title = _strip_html(post.get("title", {}).get("rendered", ""))
-        if not title:
-            title = "Avance del Plan General de Ordenación Urbana de Cercedilla"
-        fecha = (post.get("date") or "")[:10] or None
+            pass
+        if not fecha:
+            try:
+                html = self._fetch(self.pgou_url)
+                for pat in (
+                    r"<h1[^>]*class=\"[^\"]*entry-title[^\"]*\"[^>]*>([^<]+)",
+                    r"<title>([^<|]+)",
+                ):
+                    m = re.search(pat, html, re.I)
+                    if m:
+                        parsed = _strip_html(m.group(1))
+                        if parsed and len(parsed) > 10:
+                            title = parsed[:500]
+                            break
+                m = re.search(r'"datePublished":"(\d{4}-\d{2}-\d{2})', html)
+                if m:
+                    fecha = m.group(1)
+            except urllib.error.URLError:
+                return None
         rec = {
             "id": _stable_id("proy", self.pgou_url),
             "municipio": MUNICIPIO,
