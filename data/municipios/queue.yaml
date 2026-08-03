@@ -1395,11 +1395,11 @@ municipios:
 - slug: los-santos-de-la-humosa
   nombre: Los Santos de la Humosa
   bocm_count: 11
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-03T04:08:59.449807+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/217
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-01T17:53:04.696152+00:00'
+updated_at: '2026-08-03T04:08:59.450841+00:00'
