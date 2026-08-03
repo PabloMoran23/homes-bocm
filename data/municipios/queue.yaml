@@ -1453,10 +1453,10 @@ municipios:
   bocm_count: 10
   status: done
   attempts: 1
-  last_run: '2026-08-03T12:01:20.439244+00:00'
+  last_run: '2026-08-03T12:12:50.332656+00:00'
   last_error: null
-  pr_url: null
-  notes: 'RESEARCH.md — espublico sede + SITCM partial'
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/221
+  notes: RESEARCH.md — espublico sede + SITCM partial
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cadalso de los Vidrios, Madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-03T12:01:20.440307+00:00'
+updated_at: '2026-08-03T12:12:50.333617+00:00'
