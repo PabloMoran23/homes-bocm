@@ -154,8 +154,13 @@ class CadalsoDeLosVidriosAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
+        parsed = urllib.parse.urlsplit(url)
+        safe_path = urllib.parse.quote(parsed.path, safe="/%")
+        safe_url = urllib.parse.urlunsplit(
+            (parsed.scheme, parsed.netloc, safe_path, parsed.query, parsed.fragment)
+        )
         req = urllib.request.Request(
-            url,
+            safe_url,
             headers={"User-Agent": self.config.get("user_agent", f"poc-bocm-{ID_PREFIX}/1.0")},
         )
         with self._opener.open(req, timeout=60) as resp:
