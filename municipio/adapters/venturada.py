@@ -100,6 +100,15 @@ def _parse_fecha_dmy(text: str) -> str | None:
         return None
 
 
+def _iso_date_wp(date_str: str) -> str | None:
+    if not date_str:
+        return None
+    try:
+        return datetime.fromisoformat(date_str.replace("Z", "+00:00")).strftime("%Y-%m-%d")
+    except ValueError:
+        return date_str[:10] if len(date_str) >= 10 else None
+
+
 def _fecha_from_url(url: str) -> str | None:
     m = RE_FECHA_YM.search(url)
     if m:
