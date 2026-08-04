@@ -1661,11 +1661,11 @@ municipios:
 - slug: la-cabrera
   nombre: La Cabrera
   bocm_count: 9
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-04T20:26:23.516337+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/236
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-01T17:53:04.696152+00:00'
+updated_at: '2026-08-04T20:26:23.517252+00:00'
