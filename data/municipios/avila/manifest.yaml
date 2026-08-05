@@ -1,0 +1,27 @@
+slug: avila
+nombre: "Ávila"
+provincia: Ávila
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.avila.es"
+  adapter: municipio.adapters.avila:AvilaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.avila.es"
+    sede_base: "https://sede.avila.es/GDCarpetaCiudadano"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-avila/1.0 (+urbanismo research)"
+    centroid: [40.6566, -4.6818]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Ávila"
+  notes: |
+    Fuentes: web Joomla/K2 (RSS planeamiento urbanístico) + sede GDCarpetaCiudadano
+    (tablón de anuncios con búsqueda) + trámites WP (/tramites/385-licencias,
+    /tramites/877-urbanismo) + IDECyL WFS SiuCyL (instrumentos, PP, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
