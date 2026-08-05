@@ -1,0 +1,27 @@
+slug: cercedilla
+nombre: "Cercedilla"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://cercedilla.es"
+  adapter: municipio.adapters.cercedilla:CercedillaAyuntamientoAdapter
+  config:
+    sede_base: "https://sederecaudacioncercedilla.eadministracion.es"
+    urbanismo_url: "https://cercedilla.es/departamento-de-urbanismo/"
+    pgou_url: "https://cercedilla.es/avance-plan-general-ordenacion-urbana-cercedilla/"
+    anuncios_url: "https://cercedilla.es/anuncios-oficiales/"
+    centroid: [40.7414, -4.0575]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cercedilla/1.0"
+  notes: |
+    WordPress (urbanismo + avance PGOU + anuncios oficiales PDF).
+    Sede eAdministración Maggioli sin tablón scrapeable (/board 404).
+    Geometría parcial vía WFS SITCM (9 ámbitos UA/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
