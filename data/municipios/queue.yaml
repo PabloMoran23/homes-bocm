@@ -1213,11 +1213,11 @@ municipios:
 - slug: valdeolmos-alalpardo
   nombre: Valdeolmos-Alalpardo
   bocm_count: 13
-  status: done
-  attempts: 1
-  last_run: '2026-08-02T02:06:51.377741+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/204
+  pr_url: null
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -1423,12 +1423,12 @@ municipios:
 - slug: venturada
   nombre: Venturada
   bocm_count: 11
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-05T00:13:31.785120+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/219
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Venturada
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-02T02:06:51.378653+00:00'
+updated_at: '2026-08-05T00:13:31.785996+00:00'
