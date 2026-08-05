@@ -1,0 +1,28 @@
+slug: alhaurin-de-la-torre
+nombre: "Alhaurín de la Torre"
+provincia: "Alhaurín de la Torre/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://alhaurindelatorre.es"
+  adapter: municipio.adapters.alhaurin_de_la_torre:AlhaurinDeLaTorreAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.alhaurindelatorre.es"
+    wp_base: "https://alhaurindelatorre.es"
+    wp_categories: [91, 92, 93, 90]
+    tablon_max_pages: 12
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alhaurin-de-la-torre/1.0"
+    centroid: [36.6636, -4.5612]
+  notes: |
+    Fuentes: WordPress urbanismo (PGOU PDFs, obras, planimetría) + tablón SWAL sede.
+    Sin visor GIS público; planimetría en PDF estático.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
