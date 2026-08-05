@@ -1,0 +1,33 @@
+slug: pedrezuela
+nombre: "Pedrezuela"
+provincia: Pedrezuela, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://pedrezuela.info"
+  adapter: municipio.adapters.pedrezuela:PedrezuelaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pedrezuela/1.0"
+    sede_base: "https://pedrezuela.sedelectronica.es"
+    board_url: "https://pedrezuela.sedelectronica.es/board/"
+    dossier_url: "https://pedrezuela.sedelectronica.es/dossier"
+    transparency_url: "https://pedrezuela.sedelectronica.es/transparency"
+    documentacion_url: "https://pedrezuela.info/tramites/"
+    insecure_ssl: true
+    centroid: [40.745115, -3.603039]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PEDREZUELA"
+  notes: |
+    WordPress Genesis (pedrezuela.info) con sección urbanismo/PGOU y formularios PDF.
+    Sede espublico gestiona (pedrezuela.sedelectronica.es): tablón /board/, transparencia,
+    catálogo /dossier. Geometría partial vía WFS SITCM Comunidad de Madrid (10 ámbitos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
