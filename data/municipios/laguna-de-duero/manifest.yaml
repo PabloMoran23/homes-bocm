@@ -1,0 +1,30 @@
+slug: laguna-de-duero
+nombre: "Laguna de Duero"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://lagunadeduero.sedelectronica.es"
+  adapter: municipio.adapters.laguna_de_duero:LagunaDeDueroAyuntamientoAdapter
+  config:
+    sede_base: "https://lagunadeduero.sedelectronica.es"
+    board_url: "https://lagunadeduero.sedelectronica.es/board"
+    dossier_url: "https://lagunadeduero.sedelectronica.es/dossier"
+    plai_municipio: 75
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Laguna de Duero"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-laguna-de-duero/1.0 (+urbanismo research)"
+    centroid: [41.5815, -4.7230]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board, trámites /dossier),
+    PLAI JCYL (municipio 075, Valladolid) y capas SIUCyL WFS (sectores/PP).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
