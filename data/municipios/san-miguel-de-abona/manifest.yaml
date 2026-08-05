@@ -1,0 +1,27 @@
+slug: san-miguel-de-abona
+nombre: "San Miguel de Abona"
+provincia: "San Miguel de Abona"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.sanmigueldeabona.es"
+  adapter: municipio.adapters.san_miguel_de_abona:SanMiguelDeAbonaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.sanmigueldeabona.es"
+    edictos_rss: "https://sede.sanmigueldeabona.es/publico/sindicacion/edictos/RSS"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-miguel-de-abona/1.0"
+    centroid: [28.0983, -16.6172]
+  notes: |
+    Fuentes: WordPress (información pública, PGO supletorio, modelos-formularios)
+    + sede Galileo (edictos RSS, procedimientos, informe urbanístico).
+    Sin listado público de licencias concedidas; formularios y trámites informativos.
+    Visor IDECanarias/Grafcan (callejero/catastro) sin enlace a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
