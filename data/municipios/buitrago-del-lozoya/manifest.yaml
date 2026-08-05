@@ -1,0 +1,30 @@
+slug: buitrago-del-lozoya
+nombre: "Buitrago del Lozoya"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.buitrago.org"
+  adapter: municipio.adapters.buitrago_del_lozoya:BuitragoDelLozoyaAyuntamientoAdapter
+  config:
+    site_base: "https://www.buitrago.org"
+    sede_base: "https://buitragodellozoya.sedelectronica.es"
+    board_url: "https://buitragodellozoya.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-buitrago-del-lozoya/1.0"
+    centroid: [41.0122, -3.4364]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "BUITRAGO DEL LOZOYA"
+  notes: |
+    Joomla (normativa/urbanismo, tablón municipal, trámites) + sede espublico gestiona.
+    Ámbitos de planeamiento en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
