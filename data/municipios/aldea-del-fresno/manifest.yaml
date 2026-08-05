@@ -1,0 +1,32 @@
+slug: aldea-del-fresno
+nombre: "Aldea del Fresno"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aldeadelfresno.es"
+  adapter: municipio.adapters.aldea_del_fresno:AldeaDelFresnoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aldea-del-fresno/1.0"
+    wp_base: "https://www.aldeadelfresno.es"
+    sede_base: "https://aldeadelfresno.sedelectronica.es"
+    board_url: "https://aldeadelfresno.sedelectronica.es/board/"
+    transparency_url: "https://aldeadelfresno.sedelectronica.es/transparency/"
+    insecure_ssl: true
+    centroid: [40.3248, -4.2036]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "ALDEA DEL FRESNO"
+  notes: |
+    WordPress TownPress (aldeadelfresno.es): normativa municipal, ordenanzas y documentos.
+    Sede espublico gestiona (aldeadelfresno.sedelectronica.es): tablón /board, trámites /dossier.
+    Geometría partial vía WFS SITCM (21 ámbitos NNSS: UE-*, AR-* SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
