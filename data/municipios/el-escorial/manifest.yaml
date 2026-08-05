@@ -1,0 +1,35 @@
+slug: el-escorial
+nombre: "El Escorial"
+provincia: El Escorial
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://elescorial.es"
+  adapter: municipio.adapters.el_escorial:ElEscorialAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-escorial/1.0"
+    sede_base: "https://elescorial.sedelectronica.es"
+    board_url: "https://elescorial.sedelectronica.es/board"
+    dossier_url: "https://elescorial.sedelectronica.es/dossier"
+    transparency_url: "https://elescorial.sedelectronica.es/transparency"
+    urbanismo_url: "https://elescorial.es/urbanismo-y-vivienda/"
+    formularios_url: "https://elescorial.es/formularios/"
+    insecure_ssl: true
+    centroid: [40.5820, -4.1280]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "EL ESCORIAL"
+  notes: |
+    WordPress Elementor (elescorial.es): planeamiento en pt-urbanismo-y-medio-ambiente,
+    formularios licencia en urbanismo-y-vivienda y formularios/.
+    Sede espublico gestiona (elescorial.sedelectronica.es): tablón /board, catálogo /dossier.
+    Geometría partial vía WFS SITCM Comunidad de Madrid (ámbitos planeamiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
