@@ -1,0 +1,33 @@
+slug: valdemaqueda
+nombre: "Valdemaqueda"
+provincia: "Valdemaqueda, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytovaldemaqueda.es"
+  adapter: municipio.adapters.valdemaqueda:ValdemaquedaAyuntamientoAdapter
+  config:
+    sede_base: "https://aytovaldemaqueda.sedelectronica.es"
+    board_url: "https://aytovaldemaqueda.sedelectronica.es/board/"
+    urbanismo_url: "https://aytovaldemaqueda.es/tu-ayuntamiento/concejalias/urbanismo"
+    nnss_url: "https://aytovaldemaqueda.es/tu-ayuntamiento/normativa-municipal/ordenanzas-y-reglamentos-municipales/100-normas-subsidiarias-de-planeamiento-municipal"
+    transparency_url: "https://aytovaldemaqueda.sedelectronica.es/transparency/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdemaqueda/1.0"
+    centroid: [40.5156, -4.2856]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VALDEMAQUEDA"
+  notes: |
+    Joomla aytovaldemaqueda.es (urbanismo RSS, NNSS texto, tablón municipal) +
+    sede espublico gestiona (tablón /board, transparencia).
+    Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO (12 ámbitos UE/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

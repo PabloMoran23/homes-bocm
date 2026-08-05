@@ -1,0 +1,26 @@
+slug: villadangos-del-paramo
+nombre: "Villadangos del Páramo"
+provincia: "Villadangos del Páramo (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytovilladangosdelparamo.es"
+  adapter: municipio.adapters.villadangos_del_paramo:VilladangosDelParamoAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytovilladangosdelparamo.es"
+    sede_base: "https://villadangosdelparamo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-villadangos-del-paramo/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Villadangos del Páramo"
+    centroid: [42.5198, -5.766]
+  notes: |
+    OpenCms (Diputación León) + sede espublico tablón + SIUCyL WFS sectores/planes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,32 @@
+slug: talamanca-de-jarama
+nombre: "Talamanca de Jarama"
+provincia: "Talamanca de Jarama"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.talamancadejarama.org"
+  adapter: municipio.adapters.talamanca_de_jarama:TalamancaDeJaramaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.talamancadejarama.org"
+    sede_base: "https://talamancadejrama.sedelectronica.es"
+    board_url: "https://talamancadejrama.sedelectronica.es/board"
+    normas_url: "https://www.talamancadejarama.org/administracion/normas-subsidiarias/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-talamanca-de-jarama/1.0"
+    centroid: [40.7427, -3.4972]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "TALAMANCA DE JARAMA"
+  notes: |
+    WordPress talamancadejarama.org (normas subsidiarias + impresos CPT) + sede espublico gestiona
+    (tablón /board). Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO (~24 ámbitos únicos).
+    Dominio sede: talamancadejrama.sedelectronica.es (sin «a» en Jarama).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

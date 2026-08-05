@@ -1,0 +1,30 @@
+slug: villarejo-de-salvanes
+nombre: "Villarejo de Salvanés"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villarejodesalvanes.es"
+  adapter: municipio.adapters.villarejo_de_salvanes:VillarejoDeSalvanesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villarejo-de-salvanes/1.0"
+    centroid: [40.1683582, -3.2738764]
+    urbanismo_url: "https://www.villarejodesalvanes.es/areas-municipales/urbanismo-y-vivienda/"
+    tramites_url: "https://www.villarejodesalvanes.es/tramites-administrativos/tramites-sin-certificado-digital/"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAREJO DE SALVANÉS"
+  notes: |
+    WordPress: PDFs de NNSS/planeamiento en área urbanismo + formularios de licencia.
+    Sede espublico sin tablón HTTP accesible.
+    Geometría partial: WFS SITCM (ámbitos UE/SAU) cuando el título contiene código.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
