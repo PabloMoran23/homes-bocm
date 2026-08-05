@@ -1,0 +1,34 @@
+slug: bustarviejo
+nombre: "Bustarviejo"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayuntamientodebustarviejo.org"
+  adapter: municipio.adapters.bustarviejo:BustarviejoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bustarviejo/1.0"
+    centroid: [40.8639, -3.7156]
+    wp_base: "https://www.ayuntamientodebustarviejo.org"
+    sede_base: "https://bustarviejo.eadministracion.es"
+    transparencia_base: "https://transparenciabustarviejo.eadministracion.es"
+    tributos_base: "https://tributosbustarviejo.eadministracion.es"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "BUSTARVIEJO"
+  notes: |
+    WordPress ayuntamientodebustarviejo.org (noticias/plenos; poca documentación urbanística).
+    Sede eAdmin Maggioli (bustarviejo.eadministracion.es) — SPA sin listado público scrapeable.
+    Portal transparencia eAdmin (transparenciabustarviejo.eadministracion.es) — PGOU 2022 y tablón;
+    intermitente (503 en cron). Carpeta tributaria: tasa servicios urbanísticos.
+    Ámbitos PGOU en WFS SITCM sitcm:VPLA_V_AMBITO (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
