@@ -1171,12 +1171,12 @@ municipios:
 - slug: san-martin-de-valdeiglesias
   nombre: San Martín de Valdeiglesias
   bocm_count: 13
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T16:49:57.066557+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/201
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 31027082961
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: San Martín de Valdeiglesias
@@ -1423,12 +1423,12 @@ municipios:
 - slug: venturada
   nombre: Venturada
   bocm_count: 11
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-05T00:13:31.785120+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/219
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Venturada
@@ -1563,11 +1563,11 @@ municipios:
 - slug: cabanillas-de-la-sierra
   nombre: Cabanillas de la Sierra
   bocm_count: 9
-  status: done
-  attempts: 1
-  last_run: '2026-08-04T04:08:26.969512+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/229
+  pr_url: null
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-04T04:08:26.970394+00:00'
+updated_at: '2026-08-05T16:49:57.068460+00:00'

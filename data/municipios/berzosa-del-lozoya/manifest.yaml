@@ -1,0 +1,30 @@
+slug: berzosa-del-lozoya
+nombre: "Berzosa del Lozoya"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.berzosadelozoya.com"
+  adapter: municipio.adapters.berzosa_del_lozoya:BerzosaDelLozoyaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.berzosadelozoya.com"
+    sede_eadmin: "https://sedeberzosadellozoya.eadministracion.es"
+    tablon_url: "https://sedeberzosadellozoya.eadministracion.es/PortalCiudadano/Tablon/wfrTablon.aspx"
+    transparencia_url: "https://transparenciaberzosadellozoya.eadministracion.es/portal"
+    descargas_page: "https://www.berzosadelozoya.com/ayuntamiento/descarga-de-documentos/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-berzosa-del-lozoya/1.0"
+    centroid: [40.9757802, -3.5236736]
+  notes: |
+    WordPress (Astra) gestionado por comarcadelajara: formularios urbanísticos en
+    /ayuntamiento/descarga-de-documentos/ y ordenanzas en biblioteca de medios.
+    Sede eAdmin Maggioli (SPA Angular): trámites y tablón sin HTML scrapeable.
+    Sin visor GIS ni ámbitos en SITCM WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

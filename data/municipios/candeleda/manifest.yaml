@@ -1,0 +1,28 @@
+slug: candeleda
+nombre: "Candeleda"
+provincia: "Candeleda (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ayuntamientocandeleda.es"
+  adapter: municipio.adapters.candeleda:CandeledaAyuntamientoAdapter
+  config:
+    wp_base: "https://ayuntamientocandeleda.es"
+    sede_base: "https://ayuntamientocandeleda.sedelectronica.es"
+    board_url: "https://ayuntamientocandeleda.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-candeleda/1.0"
+    centroid: [40.1528, -5.2417]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Candeleda
+  notes: |
+    Web WordPress (urbanismo, normas, información pública, PGOU PDFs).
+    Sede espublico gestiona: tablón /board (anuncios urbanismo recientes).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
