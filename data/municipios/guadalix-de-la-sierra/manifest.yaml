@@ -1,0 +1,31 @@
+slug: guadalix-de-la-sierra
+nombre: "Guadalix de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.guadalixdelasierra.com"
+  adapter: municipio.adapters.guadalix_de_la_sierra:GuadalixDeLaSierraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-guadalix-de-la-sierra/1.0"
+    centroid: [40.7833, -3.6889]
+    nnss_url: "https://www.guadalixdelasierra.com/index.php/portal-de-transparencia/normas-subsidiarias"
+    ordenacion_url: "https://www.guadalixdelasierra.com/index.php/portal-de-transparencia/informacion-trasparencia/informacion-ordenacion-del-territorio"
+    bocm_url: "https://www.guadalixdelasierra.com/index.php/portal-de-transparencia/publicaciones-en-boletines-oficiales"
+    modelos_url: "https://www.guadalixdelasierra.com/index.php/modelos-de-solicitud"
+    sede_base: "https://guadalixdelasierra.eadministracion.es"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "GUADALIX DE LA SIERRA"
+  notes: |
+    Joomla + Phoca Download (BOCM, modelos solicitud). Sede eAdmin SPA sin tablón scrapeable.
+    Geometría partial vía WFS SITCM (50 ámbitos UE/SAU/SG/PERI).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
