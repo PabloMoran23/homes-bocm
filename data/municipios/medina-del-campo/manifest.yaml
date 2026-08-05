@@ -1,0 +1,29 @@
+slug: medina-del-campo
+nombre: "Medina del Campo"
+provincia: "Medina del Campo (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://sede.medinadelcampo.es"
+  adapter: municipio.adapters.medina_del_campo:MedinaDelCampoAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.medinadelcampo.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-medina-del-campo/1.0"
+    centroid: [41.3083, -4.9147]
+    geometry:
+      kind: wfs
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+      layer: "urbanismo:plau_cyl_sectores"
+      municipio_filter: "Medina del Campo"
+  notes: |
+    Sede STA (T-Systems/TAO): tablón dataset_PTS2_TABLON + catálogo CATSERV urbanismo (PTS_PC_012).
+    Portal web ayto-medinadelcampo.es inaccesible desde red del agente; sede operativa.
+    Geometría parcial vía SIUCyL WFS sectores PGOU.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,27 @@
+slug: garganta-de-los-montes
+nombre: "Garganta de los Montes"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.gargantadelosmontes.org"
+  adapter: municipio.adapters.garganta_de_los_montes:GargantaDeLosMontesAyuntamientoAdapter
+  config:
+    sede_base: "https://gargantadelosmontes.sedelectronica.es"
+    centroid: [40.9228, -3.8689]
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-garganta-de-los-montes/1.0"
+    wfs_municipio: "GARGANTA DE LOS MONTES"
+  notes: |
+    WordPress (gargantadelosmontes.org): ordenanzas, impresos licencias, noticias planeamiento.
+    Sede espublico gestiona (gargantadelosmontes.sedelectronica.es): tablón /board, trámites /dossier.
+    Plan Parcial Los Gargantales publicado en tablón (exp. 282/2026).
+    Sin ámbitos en SITCM WFS para este municipio (geometry_status: unavailable).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

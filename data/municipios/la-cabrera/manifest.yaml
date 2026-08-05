@@ -1,0 +1,32 @@
+slug: la-cabrera
+nombre: "La Cabrera"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.lacabrera.es"
+  adapter: municipio.adapters.la_cabrera:LaCabreraAyuntamientoAdapter
+  config:
+    wp_base: "https://www.lacabrera.es"
+    sede_base: "https://lacabrera.sedelectronica.es"
+    board_url: "https://lacabrera.sedelectronica.es/board"
+    transparency_url: "https://lacabrera.sedelectronica.es/transparency"
+    wfs_municipio: "LA CABRERA"
+    centroid: [40.863889, -3.612222]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-cabrera/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "LA CABRERA"
+  notes: |
+    WordPress corporativa (noticias urbanismo, bandos) + sede espublico gestiona (503 intermitente).
+    Ámbitos de planeamiento en WFS SITCM Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
