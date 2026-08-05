@@ -1,0 +1,40 @@
+slug: los-santos-de-la-humosa
+nombre: "Los Santos de la Humosa"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://lossantosdelahumosa.eu"
+  adapter: municipio.adapters.los_santos_de_la_humosa:LosSantosDeLaHumosaAyuntamientoAdapter
+  config:
+    wp_base: "https://lossantosdelahumosa.eu"
+    sede_base: "https://lossantosdelahumosa.sedelectronica.es"
+    board_url: "https://lossantosdelahumosa.sedelectronica.es/board"
+    transparency_url: "https://lossantosdelahumosa.sedelectronica.es/transparency"
+    wp_category_ids: [31, 117]
+    wp_search_terms:
+      - planeamiento
+      - nnss
+      - normas subsidiarias
+      - sector
+      - bocm
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-los-santos-de-la-humosa/1.0"
+    centroid: [40.5012957, -3.2566803]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "LOS SANTOS DE LA HUMOSA"
+  notes: |
+    Web corporativa WordPress Avada (lossantosdelahumosa.eu): bandos y notas informativas.
+    Sede espublico gestiona: tablón /board (requiere insecure_ssl).
+    Geometría: WFS SIT Comunidad de Madrid (sitcm:VPLA_V_AMBITO), 19 ámbitos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
