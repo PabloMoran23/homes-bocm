@@ -1,0 +1,33 @@
+slug: san-martin-de-valdeiglesias
+nombre: "San Martín de Valdeiglesias"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.sanmartindevaldeiglesias.es"
+  adapter: municipio.adapters.san_martin_de_valdeiglesias:SanMartinDeValdeiglesiasAyuntamientoAdapter
+  config:
+    wp_base: "https://www.sanmartindevaldeiglesias.es"
+    sede_base: "https://sanmartindevaldeiglesias.sedelectronica.es"
+    board_url: "https://sanmartindevaldeiglesias.sedelectronica.es/board"
+    urbanismo_url: "https://www.sanmartindevaldeiglesias.es/areas/obras-urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-san-martin-de-valdeiglesias/1.0"
+    centroid: [40.3578, -4.4017]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "SAN MARTÍN DE VALDEIGLESIAS"
+  notes: |
+    WordPress sanmartindevaldeiglesias.es (área Obras y Urbanismo + normativa municipal PDF).
+    Sede espublico gestiona: tablón /board y transparencia /transparency.
+    Ámbitos UE/SAU en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

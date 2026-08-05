@@ -1,0 +1,31 @@
+slug: mejorada-del-campo
+nombre: "Mejorada del Campo"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://mejoradadelcampo.sedelectronica.es"
+  adapter: municipio.adapters.mejorada_del_campo:MejoradaDelCampoAyuntamientoAdapter
+  config:
+    sede_base: "https://mejoradadelcampo.sedelectronica.es"
+    board_url: "https://mejoradadelcampo.sedelectronica.es/board"
+    dossier_url: "https://mejoradadelcampo.sedelectronica.es/dossier"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mejorada-del-campo/1.0"
+    centroid: [40.3971902, -3.4896253]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "MEJORADA DEL CAMPO"
+  notes: |
+    Sede electrónica espublico gestiona (tablón + catálogo de trámites).
+    Ámbitos de planeamiento en WFS SIT Comunidad de Madrid (geometría partial).
+    Web municipal Liferay (mejoradadelcampo.es) inaccesible desde entornos cloud (SSL reset).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

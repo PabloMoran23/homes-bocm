@@ -1,0 +1,35 @@
+slug: malaga
+nombre: "Málaga"
+provincia: "Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.malaga.eu"
+  adapter: municipio.adapters.malaga:MalagaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-malaga/1.0"
+    centroid: [36.7213, -4.4214]
+    tablon_url: "https://www.malaga.eu/el-ayuntamiento/tablon-de-edictos/"
+    tablon_procedencia: "245"
+    sede_base: "https://sede.malaga.eu"
+    urbanismo_base: "https://urbanismo.malaga.eu"
+    seed_pages:
+      - "https://urbanismo.malaga.eu/normativa-y-planeamiento/informacion-pgom/"
+      - "https://urbanismo.malaga.eu/aprobacion-proyecto-nueva-omlu/"
+      - "https://urbanismo.malaga.eu/participacion-publica-peri-sierra-de-churriana/"
+      - "https://urbanismo.malaga.eu/normativa-y-planeamiento/pepri-centro/"
+      - "https://urbanismo.malaga.eu/normativa-y-planeamiento/planeamiento-de-desarrollo/"
+      - "https://urbanismo.malaga.eu/normativa-y-planeamiento/pgou-2011/"
+  notes: |
+    Tablón edictos malaga.eu (procedencia 245 Vivienda y Urbanismo) + semillas urbanismo.malaga.eu
+  + trámites informativos sede.malaga.eu. Sede correcta: sede.malaga.eu (no malaga.sedelectronica.es).
+    Visor GIS GMU cerrado; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
