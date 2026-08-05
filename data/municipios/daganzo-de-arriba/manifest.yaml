@@ -1,0 +1,26 @@
+slug: daganzo-de-arriba
+nombre: "Daganzo de Arriba"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-daganzo.org"
+  adapter: municipio.adapters.daganzo_de_arriba:DaganzoDeArribaAyuntamientoAdapter
+  config:
+    sede_base: "https://daganzo.sedelectronica.es"
+    board_url: "https://daganzo.sedelectronica.es/board"
+    transparency_url: "https://daganzo.sedelectronica.es/transparency"
+    centroid: [40.5451953, -3.4578500]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-daganzo-de-arriba/1.0"
+  notes: |
+    Web Fontventa (NNSS y ordenanzas en /avisos/) y tablón eHome espublico (/board).
+    Sede trámites urbanismo en /dossier; consulta expedientes requiere Cl@ve.
+    Geometría parcial vía WFS SITCM (ámbitos planeamiento CM).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

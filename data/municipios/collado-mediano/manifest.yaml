@@ -1,0 +1,29 @@
+slug: collado-mediano
+nombre: "Collado Mediano"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aytocolladomediano.es"
+  adapter: municipio.adapters.collado_mediano:ColladoMedianoAyuntamientoAdapter
+  config:
+    sede_base: "https://aytocolladomediano.sedelectronica.es"
+    board_url: "https://aytocolladomediano.sedelectronica.es/board"
+    urbanismo_urls:
+      - "https://www.aytocolladomediano.es/areas-municipales/urbanismo-obras-y-vivienda/pgou"
+    licencia_urls:
+      - "https://www.aytocolladomediano.es/areas-municipales/urbanismo-obras-y-vivienda/licencias/licencias-de-obra"
+      - "https://www.aytocolladomediano.es/areas-municipales/urbanismo-obras-y-vivienda/licencias/licencias-de-actividad"
+    centroid: [40.6943707, -4.0247212]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-collado-mediano/1.0"
+  notes: |
+    Joomla (aytocolladomediano.es) con documentación PGOU en PDF y tablón eHome
+    espublico (/board). Geometría parcial vía WFS SITCM (13 ámbitos SAU del municipio).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
