@@ -1185,12 +1185,12 @@ municipios:
 - slug: soto-del-real
   nombre: Soto del Real
   bocm_count: 13
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:15.345783+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Soto del Real
@@ -1199,12 +1199,12 @@ municipios:
 - slug: torres-de-la-alameda
   nombre: Torres de la Alameda
   bocm_count: 13
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:18.309240+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Torres de la Alameda, Madrid
@@ -1213,12 +1213,12 @@ municipios:
 - slug: valdeolmos-alalpardo
   nombre: Valdeolmos-Alalpardo
   bocm_count: 13
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:20.142366+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Valdeolmos-Alalpardo, Madrid
@@ -1227,12 +1227,12 @@ municipios:
 - slug: bustarviejo
   nombre: Bustarviejo
   bocm_count: 12
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:50.030845+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Bustarviejo
@@ -1241,12 +1241,12 @@ municipios:
 - slug: candeleda
   nombre: Candeleda
   bocm_count: 12
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:52.824947+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Candeleda (Ávila)
@@ -1255,12 +1255,12 @@ municipios:
 - slug: colmenarejo
   nombre: Colmenarejo
   bocm_count: 12
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:55.708334+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Colmenarejo
@@ -1269,12 +1269,12 @@ municipios:
 - slug: moralzarzal
   nombre: Moralzarzal
   bocm_count: 12
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:10.421487+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Moralzarzal
@@ -1283,12 +1283,12 @@ municipios:
 - slug: torremocha-de-jarama
   nombre: Torremocha de Jarama
   bocm_count: 12
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:17.369841+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Torremocha de Jarama
@@ -1297,12 +1297,12 @@ municipios:
 - slug: avila
   nombre: Ávila
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:46.118575+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Ávila
@@ -1311,12 +1311,12 @@ municipios:
 - slug: berzosa-del-lozoya
   nombre: Berzosa del Lozoya
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:48.174321+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Berzosa del Lozoya
@@ -1325,12 +1325,12 @@ municipios:
 - slug: buitrago-del-lozoya
   nombre: Buitrago del Lozoya
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:49.110791+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Buitrago del Lozoya
@@ -1339,12 +1339,12 @@ municipios:
 - slug: cercedilla
   nombre: Cercedilla
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:53.807620+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cercedilla
@@ -1353,12 +1353,12 @@ municipios:
 - slug: el-alamo
   nombre: El Álamo
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:58.422015+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Álamo, Madrid
@@ -1367,12 +1367,12 @@ municipios:
 - slug: el-escorial
   nombre: El Escorial
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:59.325934+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Escorial
@@ -1381,12 +1381,12 @@ municipios:
 - slug: la-hiruela
   nombre: La Hiruela
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:04.028913+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: La Hiruela
@@ -1395,12 +1395,12 @@ municipios:
 - slug: los-santos-de-la-humosa
   nombre: Los Santos de la Humosa
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:05.825701+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Los Santos de la Humosa
@@ -1409,12 +1409,12 @@ municipios:
 - slug: san-miguel-de-abona
   nombre: San Miguel de Abona
   bocm_count: 11
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:13.392268+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: San Miguel de Abona
@@ -1437,12 +1437,12 @@ municipios:
 - slug: arona
   nombre: Arona
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:44.314334+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Arona
@@ -1451,12 +1451,12 @@ municipios:
 - slug: cadalso-de-los-vidrios
   nombre: Cadalso de los Vidrios
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:51.902747+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cadalso de los Vidrios, Madrid
@@ -1465,12 +1465,12 @@ municipios:
 - slug: daganzo-de-arriba
   nombre: Daganzo de Arriba
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:57.527612+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Daganzo de Arriba
@@ -1479,12 +1479,12 @@ municipios:
 - slug: lozoya
   nombre: Lozoya
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:06.750499+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Lozoya
@@ -1493,12 +1493,12 @@ municipios:
 - slug: mejorada-del-campo
   nombre: Mejorada del Campo
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:09.492555+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Mejorada del Campo
@@ -1507,12 +1507,12 @@ municipios:
 - slug: perales-de-tajuna
   nombre: Perales de Tajuña
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:12.436908+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Perales de Tajuña, Madrid
@@ -1521,12 +1521,12 @@ municipios:
 - slug: santorcaz
   nombre: Santorcaz
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:14.378792+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Santorcaz, Madrid
@@ -1535,12 +1535,12 @@ municipios:
 - slug: villarejo-de-salvanes
   nombre: Villarejo de Salvanés
   bocm_count: 10
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:22.123091+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Villarejo de Salvanés
@@ -1549,12 +1549,12 @@ municipios:
 - slug: becerril-de-la-sierra
   nombre: Becerril de la Sierra
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:47.245419+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Becerril de la Sierra
@@ -1563,12 +1563,12 @@ municipios:
 - slug: cabanillas-de-la-sierra
   nombre: Cabanillas de la Sierra
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:50.979375+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cabanillas de la Sierra
@@ -1591,12 +1591,12 @@ municipios:
 - slug: colmenar-de-oreja
   nombre: Colmenar de Oreja
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:54.772557+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Colmenar de Oreja
@@ -1605,12 +1605,12 @@ municipios:
 - slug: competa
   nombre: Cómpeta
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:56.631331+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Cómpeta/Málaga
@@ -1619,12 +1619,12 @@ municipios:
 - slug: garganta-de-los-montes
   nombre: Garganta de los Montes
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:00.218002+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Garganta de los Montes
@@ -1633,12 +1633,12 @@ municipios:
 - slug: granada
   nombre: Granada
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:01.139292+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Granada
@@ -1647,12 +1647,12 @@ municipios:
 - slug: guadalix-de-la-sierra
   nombre: Guadalix de la Sierra
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:02.099227+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Guadalix de la Sierra
@@ -1661,12 +1661,12 @@ municipios:
 - slug: la-cabrera
   nombre: La Cabrera
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:03.054656+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: La Cabrera
@@ -1675,12 +1675,12 @@ municipios:
 - slug: laguna-de-duero
   nombre: Laguna de Duero
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:04.931891+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Laguna de Duero, Valladolid
@@ -1689,12 +1689,12 @@ municipios:
 - slug: malaga
   nombre: Málaga
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:07.661487+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Málaga
@@ -1703,12 +1703,12 @@ municipios:
 - slug: medina-del-campo
   nombre: Medina del Campo
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:08.575914+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Medina del Campo (Valladolid)
@@ -1717,12 +1717,12 @@ municipios:
 - slug: pedrezuela
   nombre: Pedrezuela
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:11.444750+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Pedrezuela, Madrid
@@ -1731,12 +1731,12 @@ municipios:
 - slug: talamanca-de-jarama
   nombre: Talamanca de Jarama
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:16.382708+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Talamanca de Jarama
@@ -1745,12 +1745,12 @@ municipios:
 - slug: valdemaqueda
   nombre: Valdemaqueda
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:19.205950+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Valdemaqueda, Madrid
@@ -1759,12 +1759,12 @@ municipios:
 - slug: villadangos-del-paramo
   nombre: Villadangos del Páramo
   bocm_count: 9
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:02:21.136116+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Villadangos del Páramo (León)
@@ -1773,12 +1773,12 @@ municipios:
 - slug: aldea-del-fresno
   nombre: Aldea del Fresno
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:40.666514+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Aldea del Fresno
@@ -1787,12 +1787,12 @@ municipios:
 - slug: alhaurin-de-la-torre
   nombre: Alhaurín de la Torre
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-05T17:01:42.477957+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-05
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Alhaurín de la Torre/Málaga
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-05T16:58:09.095458+00:00'
+updated_at: '2026-08-05T17:02:22.124966+00:00'
