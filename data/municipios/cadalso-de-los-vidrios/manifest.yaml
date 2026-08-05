@@ -1,0 +1,33 @@
+slug: cadalso-de-los-vidrios
+nombre: "Cadalso de los Vidrios"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://cadalsodelosvidrios.sedelectronica.es"
+  adapter: municipio.adapters.cadalso_de_los_vidrios:CadalsoDeLosVidriosAyuntamientoAdapter
+  config:
+    sede_base: "https://cadalsodelosvidrios.sedelectronica.es"
+    board_url: "https://cadalsodelosvidrios.sedelectronica.es/board"
+    web_base: "http://www.cadalsodelosvidrios.es"
+    urbanismo_url: "http://www.cadalsodelosvidrios.es/áreas-de-gobierno/ordenacion-territorial"
+    transparency_url: "https://cadalsodelosvidrios.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cadalso-de-los-vidrios/1.0"
+    centroid: [40.2983, -4.4472]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CADALSO DE LOS VIDRIOS"
+  notes: |
+    Web BaseKit (cadalsodelosvidrios.es) + sede espublico gestiona (tablón /board).
+    Normas Subsidiarias vigentes; 12 ámbitos SITCM (S-1…S-4, UA-A…UA-H).
+    Dominio eAdmin sedecadalso.eadministracion.es obsoleto (NXDOMAIN).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
