@@ -1,0 +1,28 @@
+slug: santorcaz
+nombre: "Santorcaz"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayuntamientosantorcaz.com"
+  adapter: municipio.adapters.santorcaz:SantorcazAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santorcaz/1.0"
+    centroid: [40.4833, -3.4833]
+    sede_base: "https://santorcaz.sedelectronica.es"
+    board_url: "https://santorcaz.sedelectronica.es/board"
+    pgou_url: "https://www.ayuntamientosantorcaz.com/pgou-plan-general-de-ordenacion-urbana"
+    normativa_url: "https://www.ayuntamientosantorcaz.com/normativa-municipal"
+    insecure_ssl: true
+  notes: |
+    Web Neosoft (ayuntamientosantorcaz.com): PGOU informativo y normativa municipal (PDF BOCM).
+    Sede espublico gestiona (santorcaz.sedelectronica.es): tablón /board y transparencia (urbanismo 74 docs).
+    Geometría partial vía WFS SITCM sitcm:VPLA_V_AMBITO (15 ámbitos PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
