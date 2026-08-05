@@ -1,0 +1,28 @@
+slug: la-hiruela
+nombre: "La Hiruela"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayuntamientolahiruela.es"
+  adapter: municipio.adapters.la_hiruela:LaHiruelaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-hiruela/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    wp_base: "https://ayuntamientolahiruela.es"
+    sede_base: "https://lahiruela.sedelectronica.es"
+    ayuntamiento_url: "https://ayuntamientolahiruela.es/ayuntamiento/"
+    dus5000_url: "https://ayuntamientolahiruela.es/dus5000/"
+    centroid: [41.0779223, -3.4552928]
+  notes: |
+    WordPress (OceanWP) con ordenanzas urbanísticas en /ayuntamiento/ +
+    proyecto DUS5000 en /dus5000/ + tablón sede espublico (/board).
+    Sin visor GIS municipal ni ámbitos SITCM.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

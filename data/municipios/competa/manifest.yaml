@@ -1,0 +1,28 @@
+slug: competa
+nombre: "Cómpeta"
+provincia: "Cómpeta/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://competa.sedelectronica.es"
+  adapter: municipio.adapters.competa:CompetaAyuntamientoAdapter
+  config:
+    sede_base: "https://competa.sedelectronica.es"
+    board_url: "https://competa.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-competa/1.0"
+    centroid: [36.8975, -3.9747]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web www.competa.es (Diputación Málaga) accesible con UA navegador; algunas rutas 403 en CI.
+    Trámites urbanismo en web municipal (formularios PDF).
+    Visor PGOU PRP Málaga sin API REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
