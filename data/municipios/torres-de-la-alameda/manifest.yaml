@@ -1,0 +1,37 @@
+slug: torres-de-la-alameda
+nombre: "Torres de la Alameda"
+provincia: "Torres de la Alameda, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.torresdelaalameda.org"
+  adapter: municipio.adapters.torres_de_la_alameda:TorresDeLaAlamedaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.torresdelaalameda.org"
+    sede_base: "https://torresdelaalameda.sedelectronica.es"
+    board_url: "https://torresdelaalameda.sedelectronica.es/board"
+    urbanismo_url: "https://www.torresdelaalameda.org/concejalias/concejalia-de-urbanismo-vias-y-obras/tramites-urbanismo/"
+    licencias_url: "https://www.torresdelaalameda.org/concejalias/concejalia-de-urbanismo-vias-y-obras/licencias/"
+    pgou_url: "https://www.torresdelaalameda.org/pgou-torres-de-la-alameda/"
+    catalog_url: "https://torresdelaalameda.sedelectronica.es/catalog/t/e5deabcc-f0c5-455a-9bec-47304aa7f36c"
+    wp_category_ids: [40]
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-torres-de-la-alameda/1.0"
+    centroid: [40.4017, -3.3609]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "TORRES DE LA ALAMEDA"
+  notes: |
+    Web corporativa WordPress (torresdelaalameda.org; .es bloquea bots con 403).
+    Sede espublico: tablón /board (requiere insecure_ssl), catálogo trámites urbanismo.
+    Ámbitos UA/SAU en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
