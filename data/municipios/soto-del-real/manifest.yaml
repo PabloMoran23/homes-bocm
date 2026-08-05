@@ -1,0 +1,35 @@
+slug: soto-del-real
+nombre: "Soto del Real"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayto-sotodelreal.es"
+  adapter: municipio.adapters.soto_del_real:SotoDelRealAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-soto-del-real/1.0"
+    wp_base: "https://www.ayto-sotodelreal.es"
+    sede_base: "https://sedesotodelreal.eadministracion.es/eAdmin"
+    wp_seed_pages:
+      - "https://www.ayto-sotodelreal.es/planeamiento-urbanistico/"
+      - "https://www.ayto-sotodelreal.es/planos-de-ordenacion/"
+      - "https://www.ayto-sotodelreal.es/plan-sostenible-de-ordenacion-urbana/"
+      - "https://www.ayto-sotodelreal.es/urbanismo-y-licencias/"
+      - "https://www.ayto-sotodelreal.es/urbanismo-y-obras-publicas/"
+      - "https://www.ayto-sotodelreal.es/recepcion-de-urbanizaciones-2/"
+      - "https://www.ayto-sotodelreal.es/licencias-y-declaraciones-responsables/"
+      - "https://www.ayto-sotodelreal.es/urbanismo-y-licencias/solicitud-actividades/"
+    centroid: [40.7534, -3.7868]
+    geometry:
+      municipio_filter: "SOTO DEL REAL"
+  notes: |
+    WordPress Divi (planeamiento, PSOU, planos PDF) + sede eAdmin (tablón vacío en HTML estático).
+    Geometría parcial vía WFS SITCM Comunidad de Madrid (ámbitos UA/IA del PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
