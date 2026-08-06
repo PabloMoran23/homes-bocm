@@ -1983,11 +1983,11 @@ municipios:
 - slug: la-acebeda
   nombre: La Acebeda
   bocm_count: 7
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-06T20:01:02.619318+00:00'
+  last_run: '2026-08-06T20:08:15.109333+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/259
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-06T20:01:02.620281+00:00'
+updated_at: '2026-08-06T20:08:15.110195+00:00'
