@@ -14,6 +14,8 @@ portal:
     board_url: "https://altea.sedelectronica.es/board"
     tramites_article_id: "68133cb60c2bd4518f7f5af8"
     insecure_ssl: true
+    centroid_lat: 38.5997
+    centroid_lon: -0.0517
   notes: |
     Web municipal Digital Value (Mithril SPA) con API REST pública.
     Urbanismo: /areas/urbanismo (sectores, PGE/PGOU, información pública).
