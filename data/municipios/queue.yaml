@@ -1913,11 +1913,11 @@ municipios:
 - slug: chinchon
   nombre: Chinchón
   bocm_count: 7
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-06T10:07:06.316347+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/254
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-05T17:02:22.124966+00:00'
+updated_at: '2026-08-06T10:07:06.317239+00:00'
