@@ -1,0 +1,27 @@
+slug: altea
+nombre: "Altea"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://altea.es"
+  adapter: municipio.adapters.altea:AlteaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-altea/1.0"
+    api_base: "https://api.digitalvalue.es/contents/altea/collections"
+    sede_base: "https://altea.sedelectronica.es"
+    board_url: "https://altea.sedelectronica.es/board"
+    tramites_article_id: "68133cb60c2bd4518f7f5af8"
+    insecure_ssl: true
+  notes: |
+    Web municipal Digital Value (Mithril SPA) con API REST pública.
+    Urbanismo: /areas/urbanismo (sectores, PGE/PGOU, información pública).
+    Licencias: tablas de trámites en API + tablón sede espublico gestiona.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
