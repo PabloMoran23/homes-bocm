@@ -2011,11 +2011,11 @@ municipios:
 - slug: medina-de-rioseco
   nombre: Medina de Rioseco
   bocm_count: 7
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-07T00:02:38.397580+00:00'
+  last_run: '2026-08-07T00:09:28.881967+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/261
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-07T00:02:38.398484+00:00'
+updated_at: '2026-08-07T00:09:28.882856+00:00'
