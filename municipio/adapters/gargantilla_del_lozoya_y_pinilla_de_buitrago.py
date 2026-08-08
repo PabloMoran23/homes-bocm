@@ -56,6 +56,7 @@ RE_EXCLUDE = re.compile(
 RE_AMBIT_CODE = re.compile(
     r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-[\w\d-]+)\b",
 )
+RE_POLIGONO = re.compile(r"(?i)pol[ií]gono\s+(\d+)")
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_FECHA_YM = re.compile(r"/(?:uploads|wp-content/uploads)/(\d{4})/(\d{2})/")
 RE_PDF_HREF = re.compile(r'href="([^"]+\.(?:pdf|PDF)[^"]*)"', re.I)
@@ -127,6 +128,8 @@ def _proyecto_tipo(title: str) -> str:
         return "normas subsidiarias"
     if "plan general" in n or "pgou" in n or "avance" in n:
         return "planeamiento"
+    if "pol[ií]gono" in n or re.search(r"pol[ií]gono", n):
+        return "polígono PGOU"
     if "informaci" in n:
         return "información pública"
     if "modificaci" in n:
@@ -476,6 +479,12 @@ class GargantillaDelLozoyaYPinillaDeBuitragoAyuntamientoAdapter(AyuntamientoAdap
             feat = cache.get(code)
             if feat:
                 candidates.append((100.0, code, feat))
+
+        for m in RE_POLIGONO.finditer(title):
+            pol = f"POLÍGONO {m.group(1)}"
+            feat = cache.get(pol)
+            if feat:
+                candidates.append((95.0, pol, feat))
 
         title_upper = title.upper()
         for name, feat in cache.items():
