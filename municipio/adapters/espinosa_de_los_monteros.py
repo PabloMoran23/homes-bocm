@@ -62,7 +62,13 @@ RE_WP_EXCLUDE = re.compile(
     r"(?i)(fiestas|cine|empleo|concurso|deporte|violencia de g[eé]nero|"
     r"subvenci[oó]n deportiv|empadron|tribut|matrimonio|carnaval|turismo activo|"
     r"senderos|miel de brezo|coches cl[aá]sicos|pucheras|pinchos|agua de consumo|"
-    r"incendios forestales|meteorol[oó]gic)",
+    r"incendios forestales|meteorol[oó]gic|convocatoria.*pleno|sesi[oó]n.*pleno|"
+    r"juez de paz|transporte|abono [uú]nico|admisi[oó]n de alumnos|tiempo libre|"
+    r"bar casino|aprovechamiento forestal|cobranza de varios impuestos)",
+)
+RE_URBAN_STRONG = re.compile(
+    r"(?i)(normas urban|planeam|pgou|urban[ií]stic|uso excepcional|estudio de detalle|"
+    r"modificaci[oó]n.*urban|licencia urban|reparcel|sector ua-|sector aa-|num\b|bocyl)",
 )
 RE_EXCLUDE = re.compile(
     r"(?i)(padr[oó]n|presupuest|funcionario|empleado|proceso selectivo|pleno|"
@@ -425,6 +431,8 @@ class EspinosaDeLosMonterosAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         content = str((item.get("content") or {}).get("rendered") or "")
         blob = f"{title} {_strip_html(content)}"
+        if RE_EXCLUDE.search(blob) and not RE_URBAN_STRONG.search(blob):
+            return None
         if not RE_PROYECTO.search(blob):
             return None
         url = str(item.get("link") or "").strip()
