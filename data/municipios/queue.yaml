@@ -2165,11 +2165,11 @@ municipios:
 - slug: cuellar
   nombre: Cuéllar
   bocm_count: 6
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-08T04:04:34.820367+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/272
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-05T17:02:22.124966+00:00'
+updated_at: '2026-08-08T04:04:34.821259+00:00'
