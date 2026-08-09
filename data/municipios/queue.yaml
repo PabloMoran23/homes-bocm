@@ -1801,11 +1801,11 @@ municipios:
 - slug: oviedo
   nombre: Oviedo
   bocm_count: 8
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-05T18:21:23.686510+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/246
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-05T17:02:22.124966+00:00'
+updated_at: '2026-08-05T18:21:23.687418+00:00'
