@@ -2431,11 +2431,11 @@ municipios:
 - slug: denia
   nombre: Dénia
   bocm_count: 5
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-09T20:10:23.297260+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/291
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-09T00:04:51.858187+00:00'
+updated_at: '2026-08-09T20:10:23.298212+00:00'
