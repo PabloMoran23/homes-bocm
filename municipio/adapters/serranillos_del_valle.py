@@ -142,7 +142,6 @@ class SerranillosDelValleAyuntamientoAdapter(AyuntamientoAdapter):
         self.wfs_type = str(geom_cfg.get("type_name") or WFS_TYPE)
         self.wfs_municipio = str(geom_cfg.get("municipio_filter") or WFS_MUNICIPIO)
         self._wfs_municipio_resolved: str | None = None
-        self._wfs_cache: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str, data: bytes | None = None) -> str:
         time.sleep(self.delay_s)
