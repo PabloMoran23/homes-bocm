@@ -309,7 +309,7 @@ class DeniaAyuntamientoAdapter(AyuntamientoAdapter):
                     gtag = gchild.tag.split("}", 1)[-1]
                     if gtag == "posList" and gchild.text:
                         geom = _gml_poslist_to_polygon(gchild.text)
-            elif child.text and tag not {"boundedBy", "msGeometry"}:
+            elif child.text and tag not in {"boundedBy", "msGeometry"}:
                 props[tag] = child.text.strip()
         if props.get("cod_ine_mun") != self.ine_mun:
             return None
