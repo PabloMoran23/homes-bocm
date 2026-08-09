@@ -205,15 +205,34 @@ def _utm28n_to_wgs84(easting: float, northing: float) -> tuple[float, float] | N
 
 def _reproject_coords(node: Any) -> Any:
     if isinstance(node, (list, tuple)):
-        if len(node) >= 2 and isinstance(node[0], (int, float)) and isinstance(node[1], (int, float)):
-            if len(node) >= 3 and isinstance(node[2], (int, float)) and not isinstance(node[0], list):
-                out = _utm28n_to_wgs84(float(node[0]), float(node[1]))
-                if out:
-                    return [out[0], out[1]]
-                return list(node[:2])
-            return [_reproject_coords(node[0]), _reproject_coords(node[1]), *[_reproject_coords(x) for x in node[2:]]]
+        if (
+            len(node) >= 2
+            and isinstance(node[0], (int, float))
+            and isinstance(node[1], (int, float))
+            and not isinstance(node[0], bool)
+        ):
+            out = _utm28n_to_wgs84(float(node[0]), float(node[1]))
+            if out:
+                return [out[0], out[1]]
+            return [float(node[0]), float(node[1])]
         return [_reproject_coords(x) for x in node]
     return node
+
+
+def _first_coord_pair(node: Any) -> tuple[float, float] | None:
+    if isinstance(node, (list, tuple)):
+        if (
+            len(node) >= 2
+            and isinstance(node[0], (int, float))
+            and isinstance(node[1], (int, float))
+            and not isinstance(node[0], bool)
+        ):
+            return float(node[0]), float(node[1])
+        for item in node:
+            pair = _first_coord_pair(item)
+            if pair:
+                return pair
+    return None
 
 
 def _reproject_geometry(geom: dict[str, Any]) -> dict[str, Any] | None:
@@ -222,19 +241,9 @@ def _reproject_geometry(geom: dict[str, Any]) -> dict[str, Any] | None:
     if not gtype or coords is None:
         return None
     out = {"type": gtype, "coordinates": _reproject_coords(coords)}
-    sample = out["coordinates"]
-    if isinstance(sample, list) and sample:
-        try:
-            if isinstance(sample[0], (int, float)):
-                lng, lat = float(sample[0]), float(sample[1])
-            elif isinstance(sample[0], list) and isinstance(sample[0][0], (int, float)):
-                lng, lat = float(sample[0][0]), float(sample[0][1])
-            else:
-                lng, lat = float(sample[0][0][0]), float(sample[0][0][1])
-            if not _is_valid_canarias(lng, lat):
-                return None
-        except (TypeError, ValueError, IndexError):
-            return None
+    pair = _first_coord_pair(out["coordinates"])
+    if not pair or not _is_valid_canarias(pair[0], pair[1]):
+        return None
     return out
 
 
@@ -249,7 +258,7 @@ class GranadillaDeAbonaAyuntamientoAdapter(AyuntamientoAdapter):
         self.sitcan_package = str(self.config.get("sitcan_package") or SITCAN_PACKAGE)
         self.geobdp_municipio = str(self.config.get("geobdp_municipio") or GEOBDP_MUNICIPIO)
         self.seed_pages = [str(u) for u in (self.config.get("seed_pages") or DEFAULT_SEED_PAGES)]
-        self._geobdp_index: dict[str, str] | None = None
+        self._geobdp_doc_index: dict[str, str] | None = None
         self._geometry_cache: dict[str, dict[str, Any] | None] = {}
 
     def _fetch(self, url: str) -> str:
@@ -267,14 +276,14 @@ class GranadillaDeAbonaAyuntamientoAdapter(AyuntamientoAdapter):
     def _abs_url(self, href: str, base: str | None = None) -> str:
         return unescape(urllib.parse.urljoin(base or self.wp_base, href))
 
-    def _geobdp_index(self) -> dict[str, str]:
-        if self._geobdp_index is not None:
-            return self._geobdp_index
+    def _load_geobdp_index(self) -> dict[str, str]:
+        if self._geobdp_doc_index is not None:
+            return self._geobdp_doc_index
         index: dict[str, str] = {}
         try:
             html = self._fetch(self.geobdp_municipio)
         except urllib.error.URLError:
-            self._geobdp_index = index
+            self._geobdp_doc_index = index
             return index
         for m in RE_GEOBDP_DOC.finditer(html):
             doc_id, title = m.group(1), _strip_html(m.group(2))
@@ -282,7 +291,7 @@ class GranadillaDeAbonaAyuntamientoAdapter(AyuntamientoAdapter):
             short = _norm_title(re.sub(r"\(.*\)$", "", title))
             if short:
                 index.setdefault(short, doc_id)
-        self._geobdp_index = index
+        self._geobdp_doc_index = index
         return index
 
     def _match_geobdp_doc(self, title: str, urls: list[str]) -> str | None:
@@ -291,7 +300,7 @@ class GranadillaDeAbonaAyuntamientoAdapter(AyuntamientoAdapter):
             if m:
                 return m.group(1)
         norm = _norm_title(title)
-        idx = self._geobdp_index()
+        idx = self._load_geobdp_index()
         if norm in idx:
             return idx[norm]
         for key, doc_id in idx.items():
