@@ -2333,11 +2333,11 @@ municipios:
 - slug: torremolinos
   nombre: Torremolinos
   bocm_count: 6
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-09T04:03:16.128915+00:00'
+  last_run: '2026-08-09T04:06:15.366376+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/284
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-09T04:03:16.129850+00:00'
+updated_at: '2026-08-09T04:06:15.367395+00:00'
