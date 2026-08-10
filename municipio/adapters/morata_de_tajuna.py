@@ -65,7 +65,7 @@ RE_LICENCIA = re.compile(
 RE_PROYECTO = re.compile(
     r"(?i)(urban|planeam|plan (?:parcial|especial|general)|pgou|nnss|normas subsidiarias|"
     r"informaci[oó]n p[uú]blica|expediente|proyecto|modificaci[oó]n|aprobaci[oó]n|"
-    r"reparcel|convenio|urbanizaci[oó]n|bocm|edicto|bando|ordenanza|vallado|suelo|"
+    r"reparcel|convenio|urbanizaci[oó]n|bocm|edicto|ordenanza|vallado|suelo|"
     r"parcela|sector|actuaci[oó]n|"
     r"\b(?:UA|UE|API|S)-[\w\d-]+\b|sector (?:industrial|residencial))",
 )
@@ -87,6 +87,10 @@ RE_PDF_LINK = re.compile(
     re.I | re.S,
 )
 RE_BANDO_LINK = re.compile(r'href="(/bandos/[^"]+)"', re.I)
+RE_BANDO_URBAN = re.compile(
+    r"(?i)(urban|planeam|vallado|suelo|parcela|ordenanza|licencia|sector|pgou|"
+    r"limpieza de parcelas|edific|obra(?:s)? (?:en |de ))",
+)
 RE_NEWS_LINK = re.compile(r'href="(/noticias/[^"]+)"', re.I)
 
 
@@ -349,7 +353,7 @@ class MorataDeTajunaAyuntamientoAdapter(AyuntamientoAdapter):
                 slug = path.rsplit("/", 1)[-1]
                 titulo = slug.replace("-", " ").title()
                 blob = f"{titulo} {slug}"
-                if not RE_PROYECTO.search(blob):
+                if not RE_BANDO_URBAN.search(blob):
                     continue
                 rows.append(
                     {
