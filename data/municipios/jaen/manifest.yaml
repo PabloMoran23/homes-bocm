@@ -14,6 +14,7 @@ portal:
     web_base: "https://www.aytojaen.es"
     sede_base: "https://sede.aytojaen.es"
     planes_base: "https://planesdeordenacion.aytojaen.es"
+    centroid: [37.7796, -3.7849]
   notes: |
     Sede STA (tablón PTS2_TABLON + catálogo CATSERV) + portal planesdeordenacion (avance PGOM/POU PDFs, vigentes ZIP).
     Sin visor GIS público consultable; geometría unavailable.
