@@ -104,9 +104,11 @@ class LaCarlotaAyuntamientoAdapter(AyuntamientoAdapter):
         except urllib.error.URLError:
             return []
 
-        text = _strip_html(re.sub(r"<script[^>]*>.*?</script>", " ", html, flags=re.S | re.I))
+        text = re.sub(r"<script[^>]*>.*?</script>", " ", html, flags=re.S | re.I)
         text = re.sub(r"<style[^>]*>.*?</style>", " ", text, flags=re.S | re.I)
+        text = re.sub(r"<br\s*/?>", "\n", text, flags=re.I)
         text = re.sub(r"<[^>]+>", "\n", text)
+        text = unescape(text)
         lines: list[str] = []
         seen: set[str] = set()
         for raw in text.split("\n"):
