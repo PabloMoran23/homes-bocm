@@ -1,0 +1,26 @@
+slug: jaen
+nombre: "Jaén"
+provincia: Jaén
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.aytojaen.es"
+  adapter: municipio.adapters.jaen:JaenAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-jaen/1.0"
+    sede_insecure_ssl: true
+    planes_insecure_ssl: true
+    web_base: "https://www.aytojaen.es"
+    sede_base: "https://sede.aytojaen.es"
+    planes_base: "https://planesdeordenacion.aytojaen.es"
+  notes: |
+    Sede STA (tablón PTS2_TABLON + catálogo CATSERV) + portal planesdeordenacion (avance PGOM/POU PDFs, vigentes ZIP).
+    Sin visor GIS público consultable; geometría unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
