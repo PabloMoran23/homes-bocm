@@ -1,0 +1,28 @@
+slug: lepe
+nombre: "Lepe"
+provincia: "Lepe, Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ayuntamiento.lepe.es"
+  adapter: municipio.adapters.lepe:LepeAyuntamientoAdapter
+  config:
+    drupal_base: "https://ayuntamiento.lepe.es"
+    sede_base: "https://lepe.sedelectronica.es"
+    board_url: "https://lepe.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lepe/1.0"
+    centroid: [37.2552, -7.2016]
+  notes: |
+    Fuentes: Drupal ayuntamiento.lepe.es (PDFs planeamiento/sectores/PGOU) y tablón sede espublico.
+    Certificado SSL del portal municipal inválido (insecure_ssl).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
