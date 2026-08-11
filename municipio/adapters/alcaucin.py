@@ -265,12 +265,13 @@ class AlcaucinAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _board_is_urban(self, row: dict[str, Any]) -> bool:
         blob = row.get("blob") or ""
-        if RE_BOARD_NON_URBAN.search(blob) and not RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
-            return False
         proc = (row.get("procedimiento") or "").lower()
+        if RE_BOARD_NON_URBAN.search(blob):
+            return False
         if any(k in proc for k in ("planeamiento", "licencia", "urban", "actividad", "obra")):
             return True
-        return bool(RE_LICENCIA.search(blob) or RE_PROYECTO.search(blob))
+        urban_blob = re.sub(r"(?i)\bexpediente\b", "", blob)
+        return bool(RE_LICENCIA.search(blob) or RE_PROYECTO.search(urban_blob))
 
     def _board_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
         if not self._board_is_urban(row):
@@ -308,7 +309,8 @@ class AlcaucinAyuntamientoAdapter(AyuntamientoAdapter):
         if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
             return None
         proc = (row.get("procedimiento") or "").lower()
-        if not RE_PROYECTO.search(blob) and "planeamiento" not in proc:
+        urban_blob = re.sub(r"(?i)\bexpediente\b", "", blob)
+        if not RE_PROYECTO.search(urban_blob) and "planeamiento" not in proc:
             return None
 
         tipo = "urbanismo"
