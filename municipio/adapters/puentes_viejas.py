@@ -60,7 +60,9 @@ RE_PROYECTO = re.compile(
 RE_WP_EXCLUDE = re.compile(
     r"(?i)(campamento urbano|cine|empleo|concurso|deporte|fiestas|"
     r"cobranza de impuestos|recordatorio fechas|centro de salud|"
-    r"implantaci[oó]n de servicios 4g|gastrobot[aá]nica|contacto|corporaci[oó]n)",
+    r"implantaci[oó]n de servicios 4g|gastrobot[aá]nica|contacto|corporaci[oó]n|"
+    r"exposici[oó]n voces|cicloturist|ecoturismo|olkano|campanas hablaban|"
+    r"periodo voluntario|marcha ciclo|artes esc[eé]nicas|encuesta)",
 )
 RE_EXCLUDE = re.compile(
     r"(?i)(padr[oó]n|presupuest|funcionario|empleado|proceso selectivo|"
@@ -365,9 +367,7 @@ class PuentesViejasAyuntamientoAdapter(AyuntamientoAdapter):
         if not title or RE_WP_EXCLUDE.search(title):
             return None
         if not RE_PROYECTO.search(title):
-            content = str((item.get("content") or {}).get("rendered") or "")
-            if not RE_PROYECTO.search(content):
-                return None
+            return None
         url = str(item.get("link") or "").strip()
         if not url:
             return None
