@@ -165,10 +165,18 @@ class SantaMartaDeTormesAyuntamientoAdapter(AyuntamientoAdapter):
         self.wfs_municipio = str(geom_cfg.get("municipio_filter") or MUNICIPIO)
         self._sector_cache: dict[str, dict[str, Any] | None] = {}
 
+    def _safe_url(self, url: str) -> str:
+        parsed = urllib.parse.urlsplit(url)
+        path = urllib.parse.quote(parsed.path, safe="/:%")
+        return urllib.parse.urlunsplit(
+            (parsed.scheme, parsed.netloc, path, parsed.query, parsed.fragment)
+        )
+
     def _fetch(self, url: str) -> str:
         time.sleep(self.delay_s)
+        safe = self._safe_url(url)
         req = urllib.request.Request(
-            url,
+            safe,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-santa-marta-de-tormes/1.0")},
         )
         with urllib.request.urlopen(req, timeout=60) as resp:
@@ -176,8 +184,8 @@ class SantaMartaDeTormesAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _abs_url(self, href: str) -> str:
         if href.startswith("http"):
-            return href
-        return f"{BASE}{href if href.startswith('/') else '/' + href}"
+            return self._safe_url(href)
+        return self._safe_url(f"{BASE}{href if href.startswith('/') else '/' + href}")
 
     def _page_title(self, html: str, fallback: str) -> str:
         m = RE_H1.search(html)
@@ -295,6 +303,8 @@ class SantaMartaDeTormesAyuntamientoAdapter(AyuntamientoAdapter):
             if len(visited) < self.max_crawl_pages:
                 for m in RE_INTERNAL_LINK.finditer(html):
                     link = m.group(1).rstrip("/")
+                    if link.lower().endswith(".pdf"):
+                        continue
                     if link in visited or link in queue:
                         continue
                     low = link.lower()

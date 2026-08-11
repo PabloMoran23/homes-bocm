@@ -19,7 +19,7 @@ portal:
     Web municipal (CMS propio): sección Urbanismo con páginas de PGOU, modificaciones
     puntuales, planes parciales y estudios de detalle por sector (UZ-7, UNC-6, etc.).
     Sede electrónica (santamartadetormes.sedelectronica.es) inaccesible desde red del agente.
-  Geometría parcial vía IDECyL WFS sectores PGOU (SIUCyL).
+    Geometría parcial vía IDECyL WFS sectores PGOU (SIUCyL).
 
 licencias:
   enabled: true
