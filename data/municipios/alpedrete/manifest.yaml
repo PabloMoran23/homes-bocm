@@ -1,0 +1,31 @@
+slug: alpedrete
+nombre: "Alpedrete"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.alpedrete.es"
+  adapter: municipio.adapters.alpedrete:AlpedreteAyuntamientoAdapter
+  config:
+    wp_base: "https://www.alpedrete.es"
+    sede_base: "https://carpeta.alpedrete.es/eAdmin"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alpedrete/1.0"
+    insecure_ssl: true
+    centroid: [40.4114, -4.0289]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "ALPEDRETE"
+  notes: |
+    WordPress www.alpedrete.es (urbanismo RSS + impresos trámites).
+    Sede eAdmin en carpeta.alpedrete.es/eAdmin (tablón Tablon.do, iso-8859-1, insecure_ssl).
+    Ámbitos UA/SR en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
