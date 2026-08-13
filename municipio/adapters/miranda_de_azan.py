@@ -181,10 +181,16 @@ class MirandaDeAzanAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_cache: list[dict[str, Any]] | None = None
         self._wfs_by_token: dict[str, dict[str, Any]] | None = None
 
+    @staticmethod
+    def _encode_url(url: str) -> str:
+        parts = urllib.parse.urlsplit(url)
+        path = urllib.parse.quote(parts.path, safe="/%:@&=+$,;~*'()!-")
+        return urllib.parse.urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
     def _fetch(self, url: str, *, sede: bool = False, timeout: int = 60) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
-            url,
+            self._encode_url(url),
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-miranda-de-azan/1.0")},
         )
         opener = self._opener if sede else urllib.request.build_opener()
