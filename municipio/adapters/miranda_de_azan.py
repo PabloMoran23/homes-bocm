@@ -53,7 +53,11 @@ RE_LICENCIA = re.compile(
     r"declaraci[oó]n responsable|autorizaci[oó]n (?:previa|urban|de uso)|"
     r"autorizaci[oó]n de uso|uso excepcional|primera ocupaci[oó]n|"
     r"final de obra|ampliaci[oó]n vivienda|proyecto (?:cobertizo|instalaci[oó]n)|"
-    r"obra (?:mayor|menor)|visado|cte)",
+    r"obra (?:mayor|menor)|visado)",
+)
+RE_LICENCIA_EXCLUDE = re.compile(
+    r"(?i)(memoria (?:descriptiva|constructiva)|cumplimiento cte|plan de control|"
+    r"estudio de seguridad|gesti[oó]n residuos|clwin|cert energ|normativa aplicable)",
 )
 RE_PROYECTO = re.compile(
     r"(?i)(urban|planeam|plan (?:parcial|especial|general|especial)|pgou|nnss|normas urban|"
@@ -435,6 +439,10 @@ class MirandaDeAzanAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _pdf_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = f"{row.get('titulo')} {row.get('pdf_url')} {row.get('page_hint')}"
+        if RE_LICENCIA_EXCLUDE.search(blob) and not re.search(
+            r"(?i)licencia|ocupaci|autorizaci|final de obra", blob
+        ):
+            return None
         if not RE_LICENCIA.search(blob):
             return None
         if RE_PROYECTO.search(blob) and not RE_LICENCIA.search(str(row.get("titulo") or "")):
