@@ -2950,11 +2950,11 @@ municipios:
 - slug: la-adrada
   nombre: La Adrada
   bocm_count: 4
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-13T04:09:57.112945+00:00'
+  last_run: '2026-08-13T04:14:14.751002+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/328
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-13T04:09:57.114831+00:00'
+updated_at: '2026-08-13T04:14:14.751946+00:00'
