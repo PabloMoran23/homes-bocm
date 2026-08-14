@@ -44,8 +44,8 @@ RE_EXCLUDE = re.compile(
     r"proceso selectivo|calendario fiscal|iae 20\d\d|padr[oó]n fiscal)",
 )
 RE_AMBIT_CODE = re.compile(
-    r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*)\b|"
-    r"\bSECTOR[-\s]+(?:XXIII|XXII|XXI|XX|XIX|XVIII|XVII|XVI|XV|XIV|XIII|XII|XI|X|IX|VIII|VII|VI|V|IV|III|II|I)\b",
+    r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*|"
+    r"SECTOR[-\s]+(?:XXIII|XXII|XXI|XX|XIX|XVIII|XVII|XVI|XV|XIV|XIII|XII|XI|X|IX|VIII|VII|VI|V|IV|III|II|I))\b",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_FECHA_YM = re.compile(r"/(\d{4})[./-](\d{2})[./-]")
@@ -340,7 +340,7 @@ class VelillaDeSanAntonioAyuntamientoAdapter(AyuntamientoAdapter):
                 continue
             cache.setdefault(name.upper(), f)
             code_m = RE_AMBIT_CODE.search(name)
-            if code_m:
+            if code_m and code_m.group(1):
                 cache.setdefault(code_m.group(1).upper(), f)
         self._wfs_cache = cache
         return cache
@@ -354,8 +354,10 @@ class VelillaDeSanAntonioAyuntamientoAdapter(AyuntamientoAdapter):
         candidates: list[tuple[float, str, dict[str, Any]]] = []
 
         for m in RE_AMBIT_CODE.finditer(title):
-            code = m.group(1).upper()
-            feat = cache.get(code)
+            code = re.sub(r"\s+", "-", (m.group(1) or "").upper())
+            if not code:
+                continue
+            feat = cache.get(code) or cache.get(code.replace("-", " "))
             if feat:
                 candidates.append((100.0, code, feat))
 
