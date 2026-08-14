@@ -3076,9 +3076,9 @@ municipios:
 - slug: sant-joan-d-alacant
   nombre: Sant Joan d'Alacant
   bocm_count: 4
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-08-14T02:13:47.648209+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-13T00:03:39.290368+00:00'
+updated_at: '2026-08-14T02:13:47.649842+00:00'

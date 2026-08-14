@@ -8,7 +8,7 @@ portal:
   adapter: municipio.adapters.sant_joan_d_alacant:SantJoanDAlacantAyuntamientoAdapter
   config:
     request_delay_s: 0.35
-    user_agent: "poc-bocm-sant-joan-d-alacant/1.0"
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-sant-joan-d-alacant/1.0)"
     web_base: "https://www.santjoandalacant.es"
     sede_base: "https://santjoandalacant.sedelectronica.es"
     board_url: "https://santjoandalacant.sedelectronica.es/board"

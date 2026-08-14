@@ -155,7 +155,12 @@ class SantJoanDAlacantAyuntamientoAdapter(AyuntamientoAdapter):
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-sant-joan-d-alacant/1.0")},
+            headers={
+                "User-Agent": self.config.get(
+                    "user_agent",
+                    "Mozilla/5.0 (compatible; poc-bocm-sant-joan-d-alacant/1.0)",
+                )
+            },
         )
         with self._opener.open(req, timeout=60) as resp:
             charset = resp.headers.get_content_charset() or "utf-8"
