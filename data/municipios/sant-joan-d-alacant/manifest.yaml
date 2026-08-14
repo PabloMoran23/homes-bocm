@@ -14,6 +14,8 @@ portal:
     board_url: "https://santjoandalacant.sedelectronica.es/board"
     dossier_url: "https://santjoandalacant.sedelectronica.es/dossier"
     urbanismo_area_id: 505
+    centroid_lat: 38.4014
+    centroid_lon: -0.4367
   notes: |
     WordPress Elementor (www.santjoandalacant.es) — área Urbanismo, PGOU 2013 y modificaciones
     con PDFs adjuntos vía REST API (taxonomía areas=505, páginas hijas de area-urbanismo).
