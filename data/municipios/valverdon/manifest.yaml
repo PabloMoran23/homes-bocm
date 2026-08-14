@@ -1,0 +1,31 @@
+slug: valverdon
+nombre: "Valverdón"
+provincia: "Valverdón (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://valverdon.sedelectronica.es"
+  adapter: null  # pendiente — ver RESEARCH.md
+  config:
+    sede_base: "https://valverdon.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 342
+    ine_code: "37342"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Valverdón"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37342"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=342"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=342"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valverdon/1.0 (+urbanismo research)"
+    centroid: [41.0475, -5.7703]
+  notes: |
+    Sin web corporativa. Sede espublico gestiona (Wicket) + PlanPublica/SiuCyL (NUM vigente).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
