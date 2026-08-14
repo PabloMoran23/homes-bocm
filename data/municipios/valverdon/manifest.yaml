@@ -5,7 +5,7 @@ comunidad_autonoma: castilla-y-leon
 
 portal:
   base_url: "https://valverdon.sedelectronica.es"
-  adapter: null  # pendiente — ver RESEARCH.md
+  adapter: municipio.adapters.valverdon:ValverdonAyuntamientoAdapter
   config:
     sede_base: "https://valverdon.sedelectronica.es"
     planpublica_provincia: 37
