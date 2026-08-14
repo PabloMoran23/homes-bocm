@@ -1,0 +1,31 @@
+slug: sant-joan-d-alacant
+nombre: "Sant Joan d'Alacant"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.santjoandalacant.es"
+  adapter: municipio.adapters.sant_joan_d_alacant:SantJoanDAlacantAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-joan-d-alacant/1.0"
+    web_base: "https://www.santjoandalacant.es"
+    sede_base: "https://santjoandalacant.sedelectronica.es"
+    board_url: "https://santjoandalacant.sedelectronica.es/board"
+    dossier_url: "https://santjoandalacant.sedelectronica.es/dossier"
+    urbanismo_area_id: 505
+  notes: |
+    WordPress Elementor (www.santjoandalacant.es) — área Urbanismo, PGOU 2013 y modificaciones
+    con PDFs adjuntos vía REST API (taxonomía areas=505, páginas hijas de area-urbanismo).
+    Sede espublico gestiona (santjoandalacant.sedelectronica.es): tablón /board y catálogo
+    /dossier con trámites de licencias urbanísticas (ART. 19–49).
+    Sin visor GIS municipal ni polígonos en ICV InventarioSuSuz (INE 03119).
+
+licencias:
+  enabled: true
+  notes: Tablón sede + catálogo trámites urbanismo (páginas informativas si no hay concesiones)
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: WP área urbanismo/PGOU + noticias taxonomía Urbanismo + tablón sede
