@@ -3230,11 +3230,11 @@ municipios:
 - slug: boecillo
   nombre: Boecillo
   bocm_count: 3
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-15T14:01:13.757373+00:00'
+  last_run: '2026-08-15T14:04:51.823546+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/349
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-15T14:01:13.759187+00:00'
+updated_at: '2026-08-15T14:04:51.824411+00:00'
