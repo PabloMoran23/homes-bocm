@@ -1,0 +1,30 @@
+slug: almensilla
+nombre: "Almensilla"
+provincia: "Almensilla (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.almensilla.es"
+  adapter: municipio.adapters.almensilla:AlmensillaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.almensilla.es"
+    sede_base: "https://sedealmensilla.dipusevilla.es"
+    tablon_url: "https://sedealmensilla.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41010"
+    pgou_url: "https://www.almensilla.es/es/ayuntamiento/pgou/"
+    normativa_url: "https://www.almensilla.es/es/ayuntamiento/normativa-municipal/"
+    transparencia_pgou_url: "https://transparencia.almensilla.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00040/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almensilla/1.0"
+    centroid: [37.4083, -6.1106]
+  notes: |
+    Web OpenCMS INPRO (almensilla.es) + sede GSede Diputación Sevilla.
+    Tablón INPRO tablon-1.0 (INE 41010) + PGOU PDFs multimedia.dipusevilla.es.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
