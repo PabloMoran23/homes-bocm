@@ -46,7 +46,24 @@ RE_PROYECTO = re.compile(
 RE_TABLON_NON_URBAN = re.compile(
     r"(?i)(selecci[oó]n de personal|aspirantes|proceso selectivo|bolsa de empleo|"
     r"subvenci[oó]n|convocatoria.*empleo|modificaci[oó]n de cr[eé]ditos|"
-    r"activat joven|limpiador|auxiliar administrativo|pef construyendo)",
+    r"activat joven|limpiador|auxiliar administrativo|pef construyendo|"
+    r"cr[eé]dito extraordinario|moad)",
+)
+RE_TABLON_URBAN = re.compile(
+    r"(?i)(urban|planeam|plan (?:parcial|especial|general)|pgou|potaus|"
+    r"informaci[oó]n p[uú]blica|licencia|sector|ordenanza|consulta p[uú]blica|"
+    r"avance del plan|nnss|catalogo|catálogo|regularizaci[oó]n)",
+)
+NON_URBAN_ASUNTOS = frozenset(
+    {
+        "RRHH",
+        "SUBVENCIONES",
+        "MODIFICACIÓN PRESUPUESTARIA",
+        "CONVOCATORIA DE PLENO",
+        "PRESUPUESTO MUNICIPAL",
+        "ELECCIONES",
+        "ORGANIZACIÓN MUNICIPAL",
+    }
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
@@ -250,14 +267,12 @@ class AlmensillaAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _tablon_is_urban(self, row: dict[str, Any]) -> bool:
         blob = row.get("blob") or ""
-        asunto = (row.get("asunto") or "").lower()
-        if RE_TABLON_NON_URBAN.search(blob) and not RE_PROYECTO.search(blob):
+        asunto = (row.get("asunto") or "").strip().upper()
+        if asunto in NON_URBAN_ASUNTOS or RE_TABLON_NON_URBAN.search(blob):
             return False
-        if asunto in ("planeamiento urbanístico", "planeamiento urbanistico", "ordenanzas"):
+        if asunto in ("PLANEAMIENTO URBANÍSTICO", "PLANEAMIENTO URBANISTICO", "ORDENANZAS"):
             return True
-        if asunto == "otros" and RE_PROYECTO.search(blob):
-            return True
-        return bool(RE_LICENCIA.search(blob) or RE_PROYECTO.search(blob))
+        return bool(RE_TABLON_URBAN.search(blob) or RE_LICENCIA.search(blob))
 
     def _tablon_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
         if not self._tablon_is_urban(row):
@@ -284,7 +299,11 @@ class AlmensillaAyuntamientoAdapter(AyuntamientoAdapter):
         blob = row.get("blob") or ""
         if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
             return None
-        if not RE_PROYECTO.search(blob):
+        if not RE_TABLON_URBAN.search(blob) and asunto not in (
+            "PLANEAMIENTO URBANÍSTICO",
+            "PLANEAMIENTO URBANISTICO",
+            "ORDENANZAS",
+        ):
             return None
         key = row.get("referencia") or row["url"]
         return {
