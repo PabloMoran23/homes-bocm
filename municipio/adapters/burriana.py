@@ -174,6 +174,7 @@ class BurrianaAyuntamientoAdapter(AyuntamientoAdapter):
             urllib.request.HTTPSHandler(context=self._ssl_ctx),
         )
         self._geom_cache: list[dict[str, Any]] | None = None
+        self._gva_cache: list[dict[str, Any]] | None = None
 
     def _fetch(self, url: str, *, timeout: int = 60) -> str:
         time.sleep(self.delay_s)
@@ -382,6 +383,8 @@ class BurrianaAyuntamientoAdapter(AyuntamientoAdapter):
         return cache
 
     def _load_gva_features(self) -> list[dict[str, Any]]:
+        if self._gva_cache is not None:
+            return self._gva_cache
         params = urllib.parse.urlencode(
             {
                 "service": "WFS",
@@ -399,6 +402,7 @@ class BurrianaAyuntamientoAdapter(AyuntamientoAdapter):
             raw = self._fetch(url, timeout=120)
             root = ET.fromstring(raw)
         except (urllib.error.URLError, ET.ParseError):
+            self._gva_cache = feats
             return feats
         ns = {
             "wfs": "http://www.opengis.net/wfs/2.0",
@@ -432,6 +436,7 @@ class BurrianaAyuntamientoAdapter(AyuntamientoAdapter):
                     ),
                 }
             )
+        self._gva_cache = feats
         return feats
 
     def _match_keywords(self, title: str) -> list[str]:
