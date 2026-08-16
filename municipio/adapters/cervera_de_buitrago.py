@@ -252,9 +252,9 @@ class CerveraDeBuitragoAyuntamientoAdapter(AyuntamientoAdapter):
             html = self._fetch(url)
         except urllib.error.URLError:
             return url
-        m = re.search(r"Visualización del documento\s+([^<]+)", html, re.I)
+        m = re.search(r"Visualización del documento\s+([^<\"]+)", html, re.I)
         if m:
-            return _strip_html(m.group(1))
+            return _strip_html(m.group(1)).strip(" \"'")
         title_m = re.search(r"<title>([^<]+)</title>", html, re.I)
         if title_m:
             t = _strip_html(title_m.group(1))
