@@ -182,16 +182,25 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
             urllib.request.HTTPCookieProcessor(self._jar),
             urllib.request.HTTPSHandler(context=self._ssl_ctx),
         )
+        self._dossier_opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=self._ssl_ctx),
+        )
         self._wfs_cache: list[dict[str, Any]] | None = None
+        self._catalog_cache: list[dict[str, Any]] | None = None
         self._sector_geom_cache: dict[str, dict[str, Any] | None] = {}
 
-    def _fetch(self, url: str, *, sede: bool = False) -> str:
+    def _fetch(self, url: str, *, sede: bool = False, dossier: bool = False) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-duenas/1.0")},
         )
-        opener = self._opener if sede else urllib.request.build_opener()
+        if dossier:
+            opener = self._dossier_opener
+        elif sede:
+            opener = self._opener
+        else:
+            opener = urllib.request.build_opener()
         with opener.open(req, timeout=60) as resp:
             return resp.read().decode("utf-8", errors="replace")
 
@@ -292,8 +301,10 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
         return list(by_url.values())
 
     def _collect_tramites_catalog(self) -> list[dict[str, Any]]:
+        if self._catalog_cache is not None:
+            return list(self._catalog_cache)
         try:
-            html = self._fetch(self.dossier_url, sede=True)
+            html = self._fetch(self.dossier_url, dossier=True)
         except (urllib.error.URLError, OSError, ConnectionError):
             return []
         rows: list[dict[str, Any]] = []
@@ -312,7 +323,8 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
                     "origen": "catalogo_tramites",
                 }
             )
-        return rows
+        self._catalog_cache = rows
+        return list(rows)
 
     def _collect_wp_proyectos(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
@@ -650,13 +662,13 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
-        for item in self._collect_board():
-            rec = self._board_to_licencia(item)
+        for item in self._collect_tramites_catalog():
+            rec = self._tramite_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for item in self._collect_tramites_catalog():
-            rec = self._tramite_to_licencia(item)
+        for item in self._collect_board():
+            rec = self._board_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
