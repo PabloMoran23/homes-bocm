@@ -183,6 +183,7 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
             urllib.request.HTTPSHandler(context=self._ssl_ctx),
         )
         self._dossier_opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
             urllib.request.HTTPSHandler(context=self._ssl_ctx),
         )
         self._wfs_cache: list[dict[str, Any]] | None = None
@@ -197,12 +198,27 @@ class DuenasAyuntamientoAdapter(AyuntamientoAdapter):
         )
         if dossier:
             opener = self._dossier_opener
+            retries = int(self.config.get("dossier_retries", 3))
         elif sede:
             opener = self._opener
+            retries = 1
         else:
             opener = urllib.request.build_opener()
-        with opener.open(req, timeout=60) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+            retries = 1
+        last_err: Exception | None = None
+        for attempt in range(retries):
+            try:
+                with opener.open(req, timeout=60) as resp:
+                    return resp.read().decode("utf-8", errors="replace")
+            except (urllib.error.URLError, OSError, ConnectionError) as exc:
+                last_err = exc
+                if dossier and attempt + 1 < retries:
+                    time.sleep(self.delay_s * (attempt + 2))
+                    continue
+                raise
+        if last_err:
+            raise last_err
+        raise RuntimeError(f"fetch failed: {url}")
 
     def _fetch_json(self, url: str) -> Any:
         time.sleep(self.delay_s)
