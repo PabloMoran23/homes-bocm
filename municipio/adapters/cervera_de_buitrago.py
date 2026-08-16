@@ -51,7 +51,9 @@ RE_EXCLUDE = re.compile(
     r"(?i)(padr[oó]n|presupuest|funcionario|empleado|plusval[ií]a|basura|"
     r"residuos|veh[ií]culos|notificaci[oó]n expediente|igualdad|cineg[eé]t|"
     r"calendario fiscal|cobranza iae|horario de verano|convivencia c[ií]vica|"
-    r"secretar[ií]a|adhesi[oó]n.*agrupaci[oó]n|pleno ordinario|acta pleno)",
+    r"secretar[ií]a|adhesi[oó]n.*agrupaci[oó]n|pleno ordinario|acta pleno|"
+    r"registro de animales|domiciliaci[oó]n.*tribut|compensaci[oó]n de deudas|"
+    r"servicios p[uú]blicos.*modificaci[oó]n|informaci[oó]n p[uú]blica por los ciudad)",
 )
 RE_AMBIT_CODE = re.compile(
     r"(?i)\b((?:UE|AD|AN|AI|PAU|S)-\d+[A-Z0-9-]*)\b",
@@ -245,6 +247,22 @@ class CerveraDeBuitragoAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
+    def _preview_title(self, url: str) -> str:
+        try:
+            html = self._fetch(url)
+        except urllib.error.URLError:
+            return url
+        m = re.search(r"Visualización del documento\s+([^<]+)", html, re.I)
+        if m:
+            return _strip_html(m.group(1))
+        title_m = re.search(r"<title>([^<]+)</title>", html, re.I)
+        if title_m:
+            t = _strip_html(title_m.group(1))
+            if " - " in t:
+                return t.split(" - ", 1)[0].strip()
+            return t
+        return url
+
     def _collect_transparency(self) -> list[dict[str, Any]]:
         try:
             html = self._fetch(self.transparency_url)
@@ -256,13 +274,7 @@ class CerveraDeBuitragoAyuntamientoAdapter(AyuntamientoAdapter):
             url = m.group(1)
             if url in seen:
                 continue
-            local = html[max(0, m.start() - 500) : m.end() + 200]
-            anchor_m = re.search(
-                rf'href="{re.escape(url)}"[^>]*>([^<]+)',
-                local,
-                re.I,
-            )
-            titulo = _strip_html(anchor_m.group(1)) if anchor_m else url
+            titulo = self._preview_title(url)
             if not RE_PROYECTO.search(titulo):
                 continue
             seen.add(url)
@@ -473,10 +485,17 @@ class CerveraDeBuitragoAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _tramite_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        if RE_EXCLUDE.search(row["titulo"]):
+            return None
         if not RE_PROYECTO.search(row["titulo"]):
             return None
         if RE_LICENCIA.search(row["titulo"]) and not re.search(
             r"(?i)planeam|actuaci[oó]n urban|modificaci[oó]n del planeamiento|urban",
+            row["titulo"],
+        ):
+            return None
+        if not re.search(
+            r"(?i)planeam|urban|compensaci[oó]n|bienes proteg|actuaci[oó]n|recepci[oó]n de obras",
             row["titulo"],
         ):
             return None

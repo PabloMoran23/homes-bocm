@@ -15,6 +15,7 @@ portal:
     request_delay_s: 0.35
     insecure_ssl: true
     user_agent: "poc-bocm-cervera-de-buitrago/1.0"
+    centroid: [40.9211319, -3.5293404]
     geometry:
       kind: wfs
       wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
