@@ -3300,11 +3300,11 @@ municipios:
 - slug: castellon-de-la-plana
   nombre: Castellón de la Plana
   bocm_count: 3
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-16T06:15:40.039343+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/354
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-13T00:03:39.290368+00:00'
+updated_at: '2026-08-16T06:15:40.040251+00:00'
