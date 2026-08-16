@@ -3356,11 +3356,11 @@ municipios:
 - slug: duenas
   nombre: Dueñas
   bocm_count: 3
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-16T22:18:05.335904+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/358
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-13T00:03:39.290368+00:00'
+updated_at: '2026-08-16T22:18:05.336785+00:00'
