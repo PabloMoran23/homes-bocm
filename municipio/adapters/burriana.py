@@ -240,8 +240,14 @@ class BurrianaAyuntamientoAdapter(AyuntamientoAdapter):
             (PGOU_URL, "pgou"),
             (URBANISMO_URL, "urbanismo"),
             (TABLON_ORDENACION, "tablon_ordenacion"),
-            f"{BASE}/servicios-municipales/urbanismo/plan-de-recuperacion-del-casco-historico-de-burriana/",
-            f"{BASE}/servicios-municipales/urbanismo/concurso-ideas-pla/",
+            (
+                f"{BASE}/servicios-municipales/urbanismo/plan-de-recuperacion-del-casco-historico-de-burriana/",
+                "casco_historico",
+            ),
+            (
+                f"{BASE}/servicios-municipales/urbanismo/concurso-ideas-pla/",
+                "concurso_ideas",
+            ),
         ]
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
