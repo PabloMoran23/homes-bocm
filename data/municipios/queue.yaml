@@ -2924,10 +2924,10 @@ municipios:
   bocm_count: 4
   status: done
   attempts: 1
-  last_run: '2026-08-13T00:24:27.777402+00:00'
+  last_run: '2026-08-17T00:06:02.738681+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/326
-  notes: ''
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Fuentidueña de Tajo
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-13T00:24:27.778301+00:00'
+updated_at: '2026-08-17T00:06:02.739555+00:00'
