@@ -75,7 +75,8 @@ RE_PROYECTO = re.compile(
 RE_BOARD_NON_URBAN = re.compile(
     r"(?i)(selecci[oó]n de personal|nombramiento|convocatoria.*empleo|"
     r"cobranza iae|padrones|auxiliar administrativo|modificaci[oó]n de cr[eé]ditos|"
-    r"subvenci[oó]n|empleo p[uú]blico|matrimonio|delegaci[oó]n de funciones)",
+    r"cr[eé]ditos n|suplemento de cr[eé]dito|presupuest|subvenci[oó]n|empleo p[uú]blico|"
+    r"matrimonio|delegaci[oó]n de funciones|bolsa de t[eé]cnico)",
 )
 RE_BOARD_ROW = re.compile(r"<tr[^>]*>\s*<td class=\"class_name\".*?</tr>", re.I | re.S)
 RE_BOARD_CELL = re.compile(r'class="(class_[^"]+)"[^>]*>(.*?)</td>', re.I | re.S)
@@ -299,16 +300,33 @@ class EngueraAyuntamientoAdapter(AyuntamientoAdapter):
             if den and den in norm:
                 score = 100.0
             else:
-                tokens = [t for t in re.split(r"[^A-Z0-9]+", den) if len(t) >= 5]
-                score = sum(8 for t in tokens if t in norm)
+                tokens = [t for t in re.split(r"[^A-Z0-9]+", den) if len(t) >= 6]
+                hits = sum(1 for t in tokens if t in norm)
+                score = hits * 12.0
             if score > 0 and (best is None or score > best[0]):
                 best = (score, zone)
-        if best and best[0] >= 8:
+        if best and best[0] >= 24:
             return best[1]
         return None
 
-    def _enrich_geometry(self, rec: dict[str, Any]) -> None:
+    def _should_enrich_board_geometry(self, rec: dict[str, Any], *, licencia: bool) -> bool:
+        titulo = rec.get("titulo") or ""
+        blob = titulo.lower()
+        if licencia:
+            return bool(re.search(r"(?i)pol[ií]gono|parcela|diseminad", titulo))
+        if rec.get("tipo") in {"planeamiento", "información pública"}:
+            return bool(
+                re.search(
+                    r"(?i)planeamiento|normas subsidiarias|homologaci[oó]n|plan especial|e[oó]lic|nnss",
+                    titulo,
+                )
+            )
+        return False
+
+    def _enrich_geometry(self, rec: dict[str, Any], *, licencia: bool = False) -> None:
         if record_geometry(rec):
+            return
+        if rec.get("origen") == "tablon" and not self._should_enrich_board_geometry(rec, licencia=licencia):
             return
         zone = self._match_icv_zone(rec.get("titulo") or "")
         if not zone:
@@ -468,7 +486,7 @@ class EngueraAyuntamientoAdapter(AyuntamientoAdapter):
             "source": "ayuntamiento",
             "origen": "tablon",
         }
-        self._enrich_geometry(rec)
+        self._enrich_geometry(rec, licencia=True)
         return rec
 
     def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
@@ -502,7 +520,7 @@ class EngueraAyuntamientoAdapter(AyuntamientoAdapter):
             "expte": row.get("expediente") or None,
             "origen": "tablon",
         }
-        self._enrich_geometry(rec)
+        self._enrich_geometry(rec, licencia=False)
         return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:

@@ -15,6 +15,7 @@ portal:
     request_delay_s: 0.35
     insecure_ssl: true
     user_agent: "poc-bocm-enguera/1.0"
+    centroid: [39.017, -0.687]
     cod_ine_mun: "46118"
     geometry:
       kind: icv_wfs
