@@ -1,0 +1,34 @@
+slug: enguera
+nombre: "Enguera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://enguera.sedelectronica.es"
+  adapter: municipio.adapters.enguera:EngueraAyuntamientoAdapter
+  config:
+    sede_base: "https://enguera.sedelectronica.es"
+    board_url: "https://enguera.sedelectronica.es/board"
+    web_base: "https://www.enguera.es"
+    transparency_urbanismo_url: "https://enguera.sedelectronica.es/transparency/34419a96-975a-48da-bb49-2ec342517cf4/"
+    tramites_url: "https://www.enguera.es/es/pagina/tramites"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-enguera/1.0"
+    cod_ine_mun: "46118"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+  notes: |
+    Sede espublico gestiona: tablón /board (licencias LMIT, edictos).
+    Web enguera.es: formularios DR.2, LMIT, LO suelo no urbanizable.
+    Transparencia sede: instrumentos planeamiento + enlace ICV/GVA.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46118).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
