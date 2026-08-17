@@ -1,0 +1,25 @@
+slug: estremera
+nombre: "Estremera"
+provincia: Estremera
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://estremera.es"
+  adapter: municipio.adapters.estremera:EstremeraAyuntamientoAdapter
+  config:
+    sede_eadmin: "https://sedeestremera.eadministracion.es"
+    sede_legacy: "https://estremera.sedelectronica.es"
+    wfs_municipio: "ESTREMERA"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-estremera/1.0"
+  notes: |
+    WordPress (bandos, concentración parcelaria, obras en ámbitos SITCM) +
+    sede eAdmin Maggioli + SITCM WFS Comunidad de Madrid.
+    Sede espublico legacy con tablón deshabilitado.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
