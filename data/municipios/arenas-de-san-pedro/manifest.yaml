@@ -1,0 +1,32 @@
+slug: arenas-de-san-pedro
+nombre: "Arenas de San Pedro"
+provincia: "Arenas de San Pedro (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://arenasdesanpedro.es"
+  adapter: municipio.adapters.arenas_de_san_pedro:ArenasDeSanPedroAyuntamientoAdapter
+  config:
+    wp_base: "https://arenasdesanpedro.es"
+    sede_base: "https://arenasdesanpedro.sedelectronica.es"
+    board_url: "https://arenasdesanpedro.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arenas-de-san-pedro/1.0"
+    insecure_ssl: true
+    centroid: [40.2103, -4.7042]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Arenas de San Pedro
+    plai_provincia: 05
+    plai_municipio: 14
+  notes: |
+    Web WordPress Avada (concejalía urbanismo, formularios PDF).
+    Sede espublico gestiona: tablón /board (anuncios recientes).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, sectores, planes parciales).
+    PLAI JCYL (prov 05, mun 014) sin documentos indexados en búsqueda pública.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

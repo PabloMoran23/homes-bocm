@@ -1,0 +1,33 @@
+slug: calp
+nombre: "Calp"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.calp.es"
+  adapter: municipio.adapters.calp:CalpAyuntamientoAdapter
+  config:
+    sede_base: "https://calp.sedelectronica.es"
+    board_url: "https://calp.sedelectronica.es/board"
+    transparency_planeamiento_url: "https://calp.sedelectronica.es/transparency/a24a7907-f637-483f-9b3c-a736b5027b3e/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-calp/1.0"
+    centroid: [38.6447, 0.0453]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      ine_cod_mun: "03047"
+  notes: |
+    Fuentes: sede espublico (tablón /board + transparencia planeamiento UUID) +
+    geoportal.calp.es (visor Geonet, sin API expediente) +
+    ICV GVA WFS zonificación (cod_ine_mun 03047).
+    Drupal 7 calp.es transparencia sin PDFs directos en HTML.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
