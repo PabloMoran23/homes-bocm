@@ -1,0 +1,29 @@
+slug: espinosa-de-los-monteros
+nombre: "Espinosa de los Monteros"
+provincia: "Espinosa de los Monteros (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://espinosadelosmonteros.es"
+  adapter: municipio.adapters.espinosa_de_los_monteros:EspinosaDeLosMonterosAyuntamientoAdapter
+  config:
+    wp_base: "https://espinosadelosmonteros.es"
+    sede_base: "https://espinosadelosmonteros.sedelectronica.es"
+    board_url: "https://espinosadelosmonteros.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-espinosa-de-los-monteros/1.0"
+    centroid: [43.0775, -3.5483]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Espinosa de los Monteros"
+  notes: |
+    Web WordPress TownPress (noticias NUM, modificaciones puntuales, información pública).
+    Sede espublico gestiona: tablón /board (sin urbanismo reciente; empleo/fiestas).
+    PLAU CyL: documentación oficial NUM (provincia 09, municipio 124).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 13 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
