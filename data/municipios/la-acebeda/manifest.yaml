@@ -1,0 +1,29 @@
+slug: la-acebeda
+nombre: "La Acebeda"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://laacebeda.org"
+  adapter: municipio.adapters.la_acebeda:LaAcebedaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-acebeda/1.0"
+    wp_base: "https://laacebeda.org"
+    sede_base: "https://laacebeda.sedelectronica.es"
+    wfs_municipio: "LA ACEBEDA"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "LA ACEBEDA"
+  notes: |
+    WordPress (The7) con sección /urbanismo/ y tres cronogramas (Casa de la Maestra,
+    Manga Ganadera, Acondicionamiento Camino) con PDFs de planos.
+    Sede espublico gestiona (tablón vacío). SITCM WFS: 4 UE con geometría.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
