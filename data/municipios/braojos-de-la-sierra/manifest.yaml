@@ -1,0 +1,36 @@
+slug: braojos-de-la-sierra
+nombre: "Braojos de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://braojos.org"
+  adapter: municipio.adapters.braojos_de_la_sierra:BraojosDeLaSierraAyuntamientoAdapter
+  config:
+    sede_base: "https://braojos.sedelectronica.es"
+    board_url: "https://braojos.sedelectronica.es/board/"
+    planeamiento_url: "https://braojos.org/tu-ayuntamiento/normativa-municipal/planeamiento-urbanistico"
+    avance_pgou_url: "https://braojos.org/tu-ayuntamiento/normativa-municipal/avance-plan-general"
+    ordenanzas_url: "https://braojos.org/tu-ayuntamiento/normativa-municipal/ordenanzas-municipales"
+    licencias_url: "https://braojos.org/ciudadanos/tramites-personales/instancias-licencias-y-solicitudes"
+    transparencia_url: "http://transparencia.braojos.org/"
+    transparency_sede_url: "https://braojos.sedelectronica.es/transparency/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-braojos-de-la-sierra/1.0"
+    centroid: [40.9097, -3.6444]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "BRAOJOS"
+  notes: |
+    Joomla Helix braojos.org (avance PGOU, ordenanzas, tablón icagenda, bandos) +
+    sede espublico gestiona (tablón /board vacío en CI).
+    Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO (2 ámbitos UE-1/UE-2).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
