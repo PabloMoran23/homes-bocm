@@ -1,0 +1,34 @@
+slug: torrelaguna
+nombre: "Torrelaguna"
+provincia: Torrelaguna
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://torrelaguna.es"
+  adapter: municipio.adapters.torrelaguna:TorrelagunaAyuntamientoAdapter
+  config:
+    wp_base: "https://torrelaguna.es"
+    sede_base: "https://torrelaguna.sedelectronica.es"
+    board_url: "https://torrelaguna.sedelectronica.es/board"
+    ordenanzas_url: "https://torrelaguna.es/ordenanzas-urbanismo/"
+    impresos_url: "https://torrelaguna.es/impresos-y-tramites/"
+    bandos_url: "https://torrelaguna.es/category/bandos/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torrelaguna/1.0"
+    centroid: [40.8769, -3.5364]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "TORRELAGUNA"
+  notes: |
+    WordPress Extra (torrelaguna.es) con ordenanzas urbanismo + impresos/trámites + sede
+    espublico gestiona (tablón /board). Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO
+    (~36 ámbitos únicos UE/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
