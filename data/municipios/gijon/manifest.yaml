@@ -1,0 +1,29 @@
+slug: gijon
+nombre: "Gijón"
+provincia: Gijón
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://sedeelectronica.gijon.es"
+  adapter: municipio.adapters.gijon:GijonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gijon/1.0"
+    centroid: [43.5322, -5.6611]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "24"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_municipio_id: "33024"
+  notes: |
+    Sede electrónica TAO (sedeelectronica.gijon.es) — tablas embebidas info pública y trámites licencias.
+    Registro regional RPGUR (www54.asturias.es) — ~300 instrumentos vigentes concejo GIJON (idConcejo=24).
+    Geometría parcial vía WFS visorrpgur (44 polígonos, id_municipio=33024).
+    Web municipal www.gijon.es es SPA Angular; no scrapeada.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
