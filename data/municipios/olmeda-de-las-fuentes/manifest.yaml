@@ -1,0 +1,31 @@
+slug: olmeda-de-las-fuentes
+nombre: "Olmeda de las Fuentes"
+provincia: Olmeda de las Fuentes, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://olmedadelasfuentes.es"
+  adapter: municipio.adapters.olmeda_de_las_fuentes:OlmedaDeLasFuentesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olmeda-de-las-fuentes/1.0"
+    sede_base: "https://olmedadelasfuentes.sedelectronica.es"
+    board_url: "https://olmedadelasfuentes.sedelectronica.es/board"
+    transparency_url: "https://olmedadelasfuentes.sedelectronica.es/transparency"
+    insecure_ssl: true
+    centroid: [40.4119, -3.2056]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "OLMEDA DE LAS FUENTES"
+  notes: |
+    CMS municipal (olmedadelasfuentes.es) con PGOU/normativa PDF y noticias urbanismo.
+    Sede espublico gestiona: tablón, transparencia (102 docs urbanismo), dossier.
+    Geometría partial vía WFS SITCM Comunidad de Madrid (12 ámbitos PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
