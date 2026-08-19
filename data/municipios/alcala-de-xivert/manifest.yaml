@@ -1,0 +1,35 @@
+slug: alcala-de-xivert
+nombre: "Alcalà de Xivert"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.alcaladexivert.es"
+  adapter: municipio.adapters.alcala_de_xivert:AlcalaDeXivertAyuntamientoAdapter
+  config:
+    sede_base: "https://alcaladexivert.sedelectronica.es"
+    board_url: "https://alcaladexivert.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alcala-de-xivert/1.0"
+    centroid: [40.3025, 0.2258]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "12004"
+    seed_pages:
+      - "https://www.alcaladexivert.es/es/pgou"
+      - "https://www.alcaladexivert.es/es/mapa-interactivo-pgou"
+      - "https://www.alcaladexivert.es/es/cartas-de-servicios/urbanismo"
+  notes: |
+    Fuentes: Drupal 9 (PGOU PDFs) + sede espublico gestiona (tablón/transparencia)
+    + ICV WFS InventarioSuSuz (sectores SU/SUZ con polígonos EPSG:4326).
+    Mapa interactivo PGOU es marcador OpenLayers sin capas de planeamiento.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
