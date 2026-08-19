@@ -1,0 +1,27 @@
+slug: melgar-de-fernamental
+nombre: "Melgar de Fernamental"
+provincia: Burgos
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://melgardefernamental.es"
+  adapter: municipio.adapters.melgar_de_fernamental:MelgarDeFernamentalAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-melgar-de-fernamental/1.0"
+    drupal_base: "https://melgardefernamental.es"
+    sede_base: "https://melgardefernamental.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 211
+    wfs_municipio: "Melgar de Fernamental"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools) + sede espublico gestiona + archivo PLAI JCyL (prov. 09, mun. 211)
+    e IDECyL WFS urbanismo (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
