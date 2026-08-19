@@ -1,0 +1,32 @@
+slug: moraleja-de-enmedio
+nombre: "Moraleja de Enmedio"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayto-moraleja.sedelectronica.es"
+  adapter: municipio.adapters.moraleja_de_enmedio:MoralejaDeEnmedioAyuntamientoAdapter
+  config:
+    sede_base: "https://ayto-moraleja.sedelectronica.es"
+    board_url: "https://ayto-moraleja.sedelectronica.es/board"
+    wp_base: "https://ayto-moraleja.es"
+    transparency_url: "https://ayto-moraleja.sedelectronica.es/transparency/"
+    urbanismo_url: "https://ayto-moraleja.sedelectronica.es/citizen-service/2c9b5472-33f1-48d9-af01-ae5ae82bd19d"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-moraleja-de-enmedio/1.0"
+    centroid: [40.2616, -3.8612]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "MORALEJA DE ENMEDIO"
+  notes: |
+    Sede espublico gestiona (tablón /board) + web WordPress Avada (ayto-moraleja.es).
+    Ámbitos PGOU en WFS SIT Comunidad de Madrid (23 polígonos UA-*, S-*).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
