@@ -1,0 +1,28 @@
+slug: cuellar
+nombre: "Cuéllar"
+provincia: "Cuéllar-Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytocuellar.es"
+  adapter: municipio.adapters.cuellar:CuellarAyuntamientoAdapter
+  config:
+    wp_base: "https://www.aytocuellar.es"
+    sede_base: "https://cuellar.sedelectronica.es"
+    board_url: "https://cuellar.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cuellar/1.0"
+    centroid: [41.4014, -4.3136]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Cuéllar
+  notes: |
+    Web WordPress (urbanismo, NUM, convenios urbanísticos, categoría informacion-urbanismo).
+    Sede espublico: tablón /board (anuncios y ordenanzas).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 2 planes parciales + 5 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
