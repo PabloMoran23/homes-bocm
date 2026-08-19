@@ -1,0 +1,30 @@
+slug: gargantilla-del-lozoya-y-pinilla-de-buitrago
+nombre: "Gargantilla del Lozoya y Pinilla de Buitrago"
+provincia: Gargantilla del Lozoya y Pinilla de Buitrago
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://gargantillaypinilla.madrid"
+  adapter: municipio.adapters.gargantilla_del_lozoya_y_pinilla_de_buitrago:GargantillaDelLozoyaYPinillaDeBuitragoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gargantilla-del-lozoya-y-pinilla-de-buitrago/1.0"
+    wp_base: "https://gargantillaypinilla.madrid"
+    sede_base: "https://gargantillaypinilla.sedelectronica.es"
+    board_url: "https://gargantillaypinilla.sedelectronica.es/board/"
+    transparency_url: "https://gargantillaypinilla.sedelectronica.es/transparency/"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "GARGANTILLA DEL LOZOYA Y PINILLA DE BUITRAGO"
+  notes: |
+    WordPress Elementor (gargantillaypinilla.madrid): PGOU, ordenanzas, documentos municipales.
+    Sede espublico gestiona (gargantillaypinilla.sedelectronica.es): tablón /board (vacío ago 2026).
+    Geometría partial vía WFS SITCM (8 polígonos PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
