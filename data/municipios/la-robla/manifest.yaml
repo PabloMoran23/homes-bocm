@@ -1,0 +1,27 @@
+slug: la-robla
+nombre: "La Robla"
+provincia: "La Robla (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytolarobla.es"
+  adapter: municipio.adapters.la_robla:LaRoblaAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytolarobla.es"
+    sede_base: "https://aytolarobla.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-robla/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "La Robla"
+    centroid: [42.8034, -5.6284]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (tablón, transparencia urbanismo) + IDECyL WFS sectores/planes (provincia 24, muni 142).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
