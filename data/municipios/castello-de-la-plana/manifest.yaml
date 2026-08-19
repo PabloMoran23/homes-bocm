@@ -1,0 +1,33 @@
+slug: castello-de-la-plana
+nombre: "Castelló de la Plana"
+provincia: "Castelló de la Plana"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.castello.es"
+  adapter: municipio.adapters.castello_de_la_plana:CastelloDeLaPlanaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.castello.es"
+    board_url: "https://sede.castello.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-castello-de-la-plana/1.0"
+    centroid: [39.9864, -0.0513]
+    geoportal_url: "https://castelloplana.maps.arcgis.com/apps/webappviewer/index.html?id=64f1eda0cc0640e68e920ccf94c58cfc"
+    geometry:
+      kind: arcgis_featureserver
+      base_url: "https://services-eu1.arcgis.com/BkKDpc83GzZpJjXP/arcgis/rest/services/Geoportal_Urban%C3%ADstico_WFL1/FeatureServer"
+      layer_id: 15
+      name_field: NOMBRE
+  notes: |
+    Liferay castello.es (urbanismo, tablón edictos) bloqueado en CI (connection reset).
+    Sede espublico gestiona: tablón /board/ + trámites /dossier.
+    Geoportal Urbanístico ArcGIS (Nexus/Esri): ámbitos planeamiento capa F (layer 15).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

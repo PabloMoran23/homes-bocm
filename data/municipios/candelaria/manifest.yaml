@@ -1,0 +1,28 @@
+slug: candelaria
+nombre: "Candelaria"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.candelaria.es"
+  adapter: municipio.adapters.candelaria:CandelariaAyuntamientoAdapter
+  config:
+    sede_base: "https://sedeelectronica.candelaria.es"
+    edictos_rss: "https://sedeelectronica.candelaria.es/publico/sindicacion/edictos/RSS"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-candelaria/1.0"
+    insecure_ssl: true
+    centroid: [28.3547, -16.3725]
+  notes: |
+    Fuentes: WordPress (área planificación urbanística, descarga de solicitudes)
+    + sede Galileo GIYS (edictos RSS, tablón, procedimientos, transparencia).
+    Sin listado público de licencias concedidas; formularios y trámites informativos.
+    Planeamiento vectorial en SITCAN/GRAFCAN sin enlace a expedientes del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
