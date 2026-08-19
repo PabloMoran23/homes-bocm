@@ -1,0 +1,32 @@
+slug: castellon-de-la-plana
+nombre: "Castellón de la Plana"
+provincia: Castellón de la Plana
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://castello.sedelectronica.es"
+  adapter: municipio.adapters.castellon_de_la_plana:CastellonDeLaPlanaAyuntamientoAdapter
+  config:
+    sede_base: "https://castello.sedelectronica.es"
+    board_url: "https://castello.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-castellon-de-la-plana/1.0"
+    ine_code: "12040"
+    centroid: [39.986, -0.051]
+    gva_indexes:
+      - "https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/3%20CASTELL%D3N/12040%20CASTELL%D3%20DE%20LA%20PLANA/1%20P.%20GENERAL/"
+      - "https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/3%20CASTELL%D3N/12040%20CASTELL%D3%20DE%20LA%20PLANA/2%20P.%20DIFERIDO/"
+    icv_wfs_base: "https://terramapas.icv.gva.es/0702_Planeamiento"
+  notes: |
+    Fuentes: tablón sede espublico gestiona, registro planeamiento GVA (mediambient.gva.es)
+    y zonificación ICV WFS (terramapas 0702_Planeamiento).
+    Web www.castello.es bloqueada (TLS reset) en CI; geoportal plageneralcastello.es secuestrado.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

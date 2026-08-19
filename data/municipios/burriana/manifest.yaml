@@ -1,0 +1,31 @@
+slug: burriana
+nombre: "Burriana"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://burriana.es"
+  adapter: municipio.adapters.burriana:BurrianaAyuntamientoAdapter
+  config:
+    sede_base: "https://burriana.sedelectronica.es"
+    board_url: "https://burriana.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-burriana/1.0"
+    centroid: [39.8894, -0.0849]
+    geometry:
+      dipcas_api: "https://dipcas.opendatasoft.com/api/explore/v2.1/catalog/datasets/planeamiento-urbanistico/records"
+      gva_wfs: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      cod_ine_mun: "12039"
+  notes: |
+    WordPress burriana.es (urbanismo, PGOU PDFs, noticias PAI/UE) +
+    tablón espublico sede (/board) + DipCAS planeamiento (33 polígonos) +
+    ICV GVA WFS zonificación (2 sectores Burriana).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
