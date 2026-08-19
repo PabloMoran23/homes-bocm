@@ -1,0 +1,35 @@
+slug: villamantilla
+nombre: "Villamantilla"
+provincia: "Villamantilla, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villamantilla.org"
+  adapter: municipio.adapters.villamantilla:VillamantillaAyuntamientoAdapter
+  config:
+    sede_base: "https://villamantilla.sedelectronica.es"
+    board_url: "https://villamantilla.sedelectronica.es/board/"
+    urbanismo_url: "https://www.villamantilla.org/normativa/urbanismo"
+    tablon_url: "https://www.villamantilla.org/inicio/tablon-municipal"
+    tablon_rss: "https://www.villamantilla.org/inicio/tablon-municipal?format=feed&type=rss"
+    tramites_url: "https://www.villamantilla.org/tramites"
+    transparency_url: "https://villamantilla.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villamantilla/1.0"
+    centroid: [40.3411, -4.1399]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAMANTILLA"
+  notes: |
+    Joomla Helix Ultimate (villamantilla.org) + icagenda tablón municipal +
+    sede espublico gestiona (tablón /board, transparencia).
+    Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO (15 ámbitos UE/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
