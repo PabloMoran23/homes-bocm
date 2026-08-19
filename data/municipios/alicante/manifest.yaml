@@ -1,0 +1,28 @@
+slug: alicante
+nombre: "Alicante"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.alicante.es"
+  adapter: municipio.adapters.alicante:AlicanteAyuntamientoAdapter
+  config:
+    web_base: "https://www.alicante.es"
+    sede_base: "https://sedeelectronica.alicante.es"
+    pgmoa_base: "https://w3.alicante.es/urbanismo/pgmoa-1987"
+    guiaurbana_wms: "https://guiaurbana.alicante.es/geoserver/publico/wms"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alicante/1.0"
+    centroid: [38.3452, -0.4810]
+    max_edicto_pages: 8
+  notes: |
+    PGMOA w3 (331 expedientes) + tablón edictos sede + Drupal MP activas.
+    Guía Urbana WMS pgou87 (raster, sin enlace expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

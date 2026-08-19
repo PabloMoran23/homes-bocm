@@ -1,0 +1,28 @@
+slug: bornos
+nombre: "Bornos"
+provincia: "Bornos, Cádiz"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sede.bornos.es"
+  adapter: municipio.adapters.bornos:BornosAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.bornos.es"
+    web_base: "https://www.bornos.es"
+    edictos_url: "https://sede.bornos.es/edictos/publico?idOrgan=11"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-bornos/1.0"
+    centroid: [36.8167, -5.7419]
+  notes: |
+    Fuentes: sede Liferay ecadiz (tablón EPICSA idOrgan=11) + PBOM Phoca Download
+    en www.bornos.es + SituaDIFusión planeamiento general aprobado.
+    Sin visor urbanístico municipal ni WFS enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

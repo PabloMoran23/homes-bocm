@@ -1,0 +1,30 @@
+slug: conil-de-la-frontera
+nombre: "Conil de la Frontera"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://conil.sedelectronica.es"
+  adapter: municipio.adapters.conil_de_la_frontera:ConilDeLaFronteraAyuntamientoAdapter
+  config:
+    sede_base: "https://conil.sedelectronica.es"
+    board_url: "https://conil.sedelectronica.es/board/"
+    web_base: "https://www.conildelafrontera.es"
+    urbanismo_url: "https://www.conildelafrontera.es/areas-y-servicios-municipales/urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-conil-de-la-frontera/1.0"
+    centroid: [36.2772, -6.0889]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + web Joomla Phoca Download (urbanismo).
+    Transparencia sede (169 docs urbanismo) requiere navegación Wicket AJAX — no scrapeable sin sesión.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

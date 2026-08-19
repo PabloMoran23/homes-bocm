@@ -1,0 +1,32 @@
+slug: arcos-de-la-frontera
+nombre: "Arcos de la Frontera"
+provincia: "Arcos de la Frontera (Cádiz)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://arcosdelafrontera.es"
+  adapter: municipio.adapters.arcos_de_la_frontera:ArcosDeLaFronteraAyuntamientoAdapter
+  config:
+    wp_base: "https://arcosdelafrontera.es"
+    pgou_base: "https://pgouarcos.es"
+    sede_base: "https://sedelectronicaarcos.blcloud.es"
+    sede_catalog_url: "https://sedelectronicaarcos.blcloud.es/sede/catalogoTramites.do?opcion=detalle&idApl=3&ent_id=1&idioma=1"
+    pgou_page_ids: [77, 100, 169]
+    wedocs_roots: [8311, 6593]
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-arcos-de-la-frontera/1.0"
+    centroid: [36.7506, -5.8101]
+  notes: |
+    WordPress Avada + weDocs (planeamiento en tramitación, urbanismo).
+    Portal PGOU histórico: pgouarcos.es (108+ PDFs vía REST).
+    Sede blcloud (sedelectronicaarcos.blcloud.es): trámites urbanismo; consulta expedientes requiere login.
+    Sin tablón público tipo espublico /board/.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
