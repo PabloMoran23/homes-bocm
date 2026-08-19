@@ -336,10 +336,14 @@ class GalendeAyuntamientoAdapter(AyuntamientoAdapter):
                     "origen": "jdownloads_urbanismo",
                 }
                 found += 1
-            next_m = re.search(rf'href="{re.escape(self.urbanismo_url)}\?start={start + 8}"', html)
+            next_start = start + 8
+            next_m = re.search(
+                rf'category/3-urbanismo\?start={next_start}',
+                html,
+            )
             if not next_m or found == 0:
                 break
-            start += 8
+            start = next_start
         return list(by_url.values())
 
     def _collect_seed_pages(self) -> list[dict[str, Any]]:
