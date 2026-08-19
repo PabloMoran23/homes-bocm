@@ -1,0 +1,30 @@
+slug: arrecife
+nombre: "Arrecife"
+provincia: Arrecife
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.arrecife.es"
+  adapter: municipio.adapters.arrecife:ArrecifeAyuntamientoAdapter
+  config:
+    web_base: "https://www.arrecife.es"
+    sede_base: "https://arrecife.sedelectronica.es"
+    board_url: "https://arrecife.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-arrecife
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35004/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arrecife/1.0"
+    centroid: [28.9630, -13.5477]
+  notes: |
+    Portal corporativo Drupal (transparencia /node/199) + sede espublico gestiona (/board)
+    + SITCAN CKAN planeamiento-urbanistico-de-arrecife + GEOBDP Grafcan (INE 35004).
+    Certificado SSL de www.arrecife.es inválido en CI — insecure_ssl.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
