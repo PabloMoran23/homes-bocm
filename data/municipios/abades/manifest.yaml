@@ -1,0 +1,27 @@
+slug: abades
+nombre: "Abades"
+provincia: "Abades (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.abades.es"
+  adapter: municipio.adapters.abades:AbadesAyuntamientoAdapter
+  config:
+    web_base: "https://www.abades.es"
+    sede_base: "https://abades.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-abades/1.0"
+    centroid: [40.9153, -4.2867]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: Abades
+  notes: |
+    Web Liferay (Diputación Segovia) con biblioteca documental en /urbanismo.
+    Sede transparencia (sin tablón espublico).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores + planes parciales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
