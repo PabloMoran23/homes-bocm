@@ -1,0 +1,31 @@
+slug: torremolinos
+nombre: "Torremolinos"
+provincia: "Torremolinos/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.torremolinos.es"
+  adapter: municipio.adapters.torremolinos:TorremolinosAyuntamientoAdapter
+  config:
+    sede_base: "https://torremolinos.sedelectronica.es"
+    board_url: "https://torremolinos.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-torremolinos/1.0"
+    centroid: [36.6244, -4.4997]
+    seed_pages:
+      - "https://www.torremolinos.es/ayuntamiento/urbanismo-infraestructuras/"
+      - "https://transparencia.torremolinos.es/obras-publicas/"
+      - "https://planea.torremolinos.es/documentacion/"
+  notes: |
+    Fuentes: WordPress Arthemia (urbanismo/PGOU), portal transparencia (expedientes IP),
+    Planea Torremolinos (PGOM/POU), tablón espublico gestiona.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
