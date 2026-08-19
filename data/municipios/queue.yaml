@@ -1871,12 +1871,12 @@ municipios:
 - slug: aguilar-de-campoo
   nombre: Aguilar de Campoo
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T16:54:18.222561+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/251
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32278504454
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Aguilar de Campoo (Palencia)
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-17T00:06:02.739555+00:00'
+updated_at: '2026-08-19T16:54:18.223935+00:00'
