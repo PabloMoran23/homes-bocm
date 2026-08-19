@@ -1,0 +1,25 @@
+slug: monfarracinos
+nombre: "Monfarracinos"
+provincia: "Monfarracinos (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://monfarracinos.sedelectronica.es"
+  adapter: municipio.adapters.monfarracinos:MonfarracinosAyuntamientoAdapter
+  config:
+    sede_base: "https://monfarracinos.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-monfarracinos/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Monfarracinos"
+    centroid: [41.571, -5.682]
+  notes: |
+    Sede espublico tablón + IDECyL WFS (sectores/planes Zamora Norte).
+    Web corporativa WordPress sin contenido urbanístico publicado.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

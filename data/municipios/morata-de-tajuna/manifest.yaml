@@ -1,0 +1,32 @@
+slug: morata-de-tajuna
+nombre: "Morata de Tajuña"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayuntamientodemorata.es"
+  adapter: municipio.adapters.morata_de_tajuna:MorataDeTajunaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ayuntamientodemorata.es"
+    sede_base: "https://ayuntamientodemorata.sedelectronica.es"
+    board_url: "https://ayuntamientodemorata.sedelectronica.es/board"
+    urbanismo_url: "https://www.ayuntamientodemorata.es/concejalias/urbanismo"
+    bandos_url: "https://www.ayuntamientodemorata.es/bandos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-morata-de-tajuna/1.0"
+    centroid: [40.2562, -3.4427]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "MORATA DE TAJUÑA"
+  notes: |
+    Web Joomla Purity III (concejalía urbanismo + bandos) + sede espublico gestiona (tablón).
+    Geometría partial vía WFS SIT Comunidad de Madrid (23 ámbitos UA-* y sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
