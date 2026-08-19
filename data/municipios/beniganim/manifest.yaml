@@ -1,0 +1,28 @@
+slug: beniganim
+nombre: "Benigànim"
+provincia: "Benigànim, Valencia"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.beniganim.es"
+  adapter: municipio.adapters.beniganim:BeniganimAyuntamientoAdapter
+  config:
+    web_base: "https://www.beniganim.es"
+    sede_base: "https://beniganim.sedelectronica.es"
+    board_url: "https://beniganim.sedelectronica.es/board/"
+    request_delay_s: 0.5
+    insecure_ssl: true
+    user_agent: "poc-bocm-beniganim/1.0"
+    centroid: [38.9483, -0.3674]
+  notes: |
+    Fuentes: Drupal 10 Portales (pagina-aviso PGOU/planes especiales) +
+    tablón sede espublico gestiona. Plànol municipal estático (PDF).
+    Sin visor GIS enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

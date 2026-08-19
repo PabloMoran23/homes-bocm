@@ -1,0 +1,29 @@
+slug: velilla-de-san-antonio
+nombre: "Velilla de San Antonio"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayto-velilla.es"
+  adapter: municipio.adapters.velilla_de_san_antonio:VelillaDeSanAntonioAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-velilla-de-san-antonio/1.0 (+urbanismo research)"
+    sede_base: "https://velilladesanantonio.sedelectronica.es"
+    board_url: "https://velilladesanantonio.sedelectronica.es/board"
+    wp_category_ids: [483]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VELILLA DE SAN ANTONIO"
+  notes: |
+    WordPress REST categoría Urbanismo y Vivienda (483) + CPT tramite + tablón espublico sede.
+    Geometría: SITCM WFS Comunidad de Madrid (28 ámbitos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
