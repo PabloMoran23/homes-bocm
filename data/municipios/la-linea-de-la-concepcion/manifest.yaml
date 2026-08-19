@@ -1,0 +1,29 @@
+slug: la-linea-de-la-concepcion
+nombre: "La Línea de la Concepción"
+provincia: "La Línea de la Concepción (Cádiz)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lalinea.es"
+  adapter: municipio.adapters.la_linea_de_la_concepcion:LaLineaDeLaConcepcionAyuntamientoAdapter
+  config:
+    web_base: "https://lalinea.es"
+    sede_base: "https://www.sedeelectronica.lalinea.es"
+    edictos_url: "https://www.sedeelectronica.lalinea.es/edictos/publico?idOrgan=23"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-linea-de-la-concepcion/1.0"
+    centroid: [36.1611, -5.3486]
+  notes: |
+    Fuentes: web WordPress Elementor (PGOU PDFs/ZIPs en /recursos/Urbanismo web/)
+    + tablón edictos sede Diputación Cádiz (Struts, idOrgan=23).
+    Sede Liferay EPICSA; certificado SSL intermedio inválido (insecure_ssl).
+    GIS municipal Fisotec (lalinea.fisotec.es) no accesible desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: cadiz
+nombre: "Cádiz"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://institucional.cadiz.es"
+  adapter: municipio.adapters.cadiz:CadizAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cadiz/1.0"
+    tablon_list_url: "https://institucional.cadiz.es/area/Tabl%C3%B3n-de-anuncios-Ayto.-C%C3%A1diz/646"
+    max_tablon_scan: 400
+    tablon_stop_misses: 20
+    centroid: [36.5297, -6.2924]
+  notes: |
+    Fuentes: Drupal institucional.cadiz.es — tablón virtual (alias urbanismo-N),
+    PGOU/modificaciones, convenios urbanísticos y trámites informativos.
+    Sede: portaldelcontribuyente.cadiz.es (sin listado histórico de concesiones).
+    GeoCádiz (Diputación) sin enlace a expedientes municipales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
