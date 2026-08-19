@@ -1,0 +1,25 @@
+slug: alba-de-tormes
+nombre: "Alba de Tormes"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://albadetormes.sedelectronica.es"
+  adapter: municipio.adapters.alba_de_tormes:AlbaDeTormesAyuntamientoAdapter
+  config:
+    sede_base: "https://albadetormes.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alba-de-tormes/1.0"
+    wfs_municipio: "Alba de Tormes"
+  notes: |
+    Fuentes: tablón sede (/board), inicio (/info.0), catálogo trámites (/dossier.0),
+    archivo PLAI Junta CYL (provincia 37, municipio 008) e IDECyL WFS sectores/planes.
+    Web www.albadetormes.es inaccesible desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

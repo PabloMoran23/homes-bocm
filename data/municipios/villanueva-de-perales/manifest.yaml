@@ -1,0 +1,41 @@
+slug: villanueva-de-perales
+nombre: "Villanueva de Perales"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villanuevadeperales.es"
+  adapter: municipio.adapters.villanueva_de_perales:VillanuevaDePeralesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villanueva-de-perales/1.0"
+    wp_base: "https://www.villanuevadeperales.es"
+    sede_base: "https://villanuevadeperales.sedelectronica.es"
+    board_url: "https://villanuevadeperales.sedelectronica.es/board"
+    transparency_url: "https://villanuevadeperales.sedelectronica.es/transparency/"
+    wp_category_ids: [165]
+    wp_search_terms:
+      - planeamiento
+      - pgou
+      - bocm
+      - sau-
+      - ue-
+    seed_pages:
+      - "https://www.villanuevadeperales.es/areas/urbanismo/"
+      - "https://www.villanuevadeperales.es/tramites/urbanismo/"
+    centroid: [40.2119, -4.0644]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLANUEVA DE PERALES"
+  notes: |
+    WordPress Avada (villanuevadeperales.es): área urbanismo, trámites con formularios PDF.
+    Sede espublico gestiona: tablón /board, transparencia (urbanismo vacío).
+    Geometría partial vía WFS SITCM (15 ámbitos SAU/UE).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,31 @@
+slug: boecillo
+nombre: "Boecillo"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://boecillo.sedelectronica.es"
+  adapter: municipio.adapters.boecillo:BoecilloAyuntamientoAdapter
+  config:
+    sede_base: "https://boecillo.sedelectronica.es"
+    board_url: "https://boecillo.sedelectronica.es/board"
+    dossier_url: "https://boecillo.sedelectronica.es/dossier"
+    plai_municipio: 23
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Boecillo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-boecillo/1.0 (+urbanismo research)"
+    centroid: [41.5405, -4.7012]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board, trámites /dossier),
+    web WordPress www.boecillo.es (noticias IP licencias ambientales y planeamiento),
+    PLAI JCYL (municipio 023, Valladolid INE 47023) y capas IDECyL WFS (sectores/PP).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

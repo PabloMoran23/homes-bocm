@@ -1,0 +1,27 @@
+slug: el-paso
+nombre: "El Paso"
+provincia: "El Paso, La Palma"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://elpaso.es"
+  adapter: municipio.adapters.el_paso:ElPasoAyuntamientoAdapter
+  config:
+    wp_base: "https://elpaso.es"
+    sede_base: "https://sede.elpaso.es"
+    sitcan_package: planeamiento-urbanistico-de-el-paso
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38027/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-paso/1.0"
+    centroid: [28.6508, -17.8822]
+  notes: |
+    WordPress Elementor (anuncios, bandos, noticias) + sede Maggioli ATM (sede.elpaso.es)
+    + SITCAN CKAN (5 instrumentos planeamiento) + GEOBDP Grafcan (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
