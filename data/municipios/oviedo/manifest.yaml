@@ -1,0 +1,30 @@
+slug: oviedo
+nombre: "Oviedo"
+provincia: Oviedo
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.oviedo.es"
+  adapter: municipio.adapters.oviedo:OviedoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-oviedo/1.0"
+    centroid: [43.3614, -5.8493]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "44"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    max_rpgur_pages: 30
+    fetch_rpgur_details: false
+  notes: |
+    Liferay www.oviedo.es + transparencia.oviedo.es (PGO, planes parciales, convenios).
+    Registro regional RPGUR (www54.asturias.es) — 407 instrumentos vigentes concejo OVIEDO.
+    Geometría parcial vía WFS visorrpgur (1 polígono municipal PGO).
+    Sede sede.oviedo.es con trámites licencias; sin tablón público de concesiones.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
