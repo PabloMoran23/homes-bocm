@@ -1,0 +1,27 @@
+slug: duenas
+nombre: "Dueñas"
+provincia: "Dueñas (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://duenas.es"
+  adapter: municipio.adapters.duenas:DuenasAyuntamientoAdapter
+  config:
+    web_base: "https://duenas.es"
+    sede_base: "https://duenas.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-duenas/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Dueñas"
+    centroid: [41.8768, -4.3759]
+  notes: |
+    WordPress (Diputación Palencia) noticias urbanismo + sede espublico tablón/catálogo
+    + SIUCyL WFS sectores/planes (n_mun='Dueñas').
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
