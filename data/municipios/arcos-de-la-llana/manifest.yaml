@@ -1,0 +1,27 @@
+slug: arcos-de-la-llana
+nombre: "Arcos de la Llana"
+provincia: "Arcos de la Llana (Burgos)"
+comunidad_autonoma: castilla-y-leon
+boletin_source_id: bocyl
+
+portal:
+  base_url: "https://www.arcosdelallana.es"
+  adapter: municipio.adapters.arcos_de_la_llana:ArcosDeLaLlanaAyuntamientoAdapter
+  config:
+    sede_base: "https://arcosdelallana.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-arcos-de-la-llana/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "09023"
+  notes: |
+    Fuentes: tablón sede (/board), transparencia urbanismo (carpetas UUID),
+    noticias Drupal (/noticias), IDECyL WFS (c_mun 09023).
+    Catálogo /dossier inaccesible (timeout >60s).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
