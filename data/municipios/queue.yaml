@@ -1801,12 +1801,12 @@ municipios:
 - slug: oviedo
   nombre: Oviedo
   bocm_count: 8
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-09T00:04:51.857331+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/246
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bopa
   comunidad_autonoma: asturias
   provincia: Oviedo
@@ -1885,11 +1885,11 @@ municipios:
 - slug: altea
   nombre: Altea
   bocm_count: 7
-  status: done
-  attempts: 1
-  last_run: '2026-08-06T06:09:54.910553+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/252
+  pr_url: null
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -2445,12 +2445,12 @@ municipios:
 - slug: granadilla-de-abona
   nombre: Granadilla de Abona
   bocm_count: 5
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-13T00:03:39.289425+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/292
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Granadilla de Abona
@@ -2922,12 +2922,12 @@ municipios:
 - slug: fuentiduena-de-tajo
   nombre: Fuentidueña de Tajo
   bocm_count: 4
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-17T00:06:02.738681+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/326
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Fuentidueña de Tajo
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-06T06:09:54.911508+00:00'
+updated_at: '2026-08-17T00:06:02.739555+00:00'
