@@ -1,0 +1,29 @@
+slug: aviles
+nombre: "Avilés"
+provincia: Avilés
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://aviles.es"
+  adapter: municipio.adapters.aviles:AvilesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aviles/1.0"
+    centroid: [43.5565, -5.9248]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "4"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_filter: "Instrumento LIKE '%AVILES%'"
+  notes: |
+    Liferay aviles.es (urbanismo, licencias) + legado html_IIS/planes_urban (PGOU, info pública).
+    Registro regional RPGUR (www54.asturias.es) — 158 instrumentos vigentes concejo AVILÉS (idConcejo=4).
+    Geometría parcial vía WFS visorrpgur (PGO AVILES + CAU AVILES).
+    Sede sedeelectronica.aviles.es — tablón de anuncios (Tablon.aspx); sin listado de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

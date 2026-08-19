@@ -1,0 +1,31 @@
+slug: medina-de-rioseco
+nombre: "Medina de Rioseco"
+provincia: "Medina de Rioseco (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://medinaderioseco.org"
+  adapter: municipio.adapters.medina_de_rioseco:MedinaDeRiosecoAyuntamientoAdapter
+  config:
+    sede_base: "https://medinaderioseco.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-medina-de-rioseco/1.0"
+    insecure_ssl: true
+    plai_municipio: 86
+    plai_provincia: 47
+    wfs_municipio: "Medina de Rioseco"
+    geometry:
+      kind: wfs
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+      municipio_filter: "Medina de Rioseco"
+  notes: |
+    WordPress Elementor (medinaderioseco.org) con sección Urbanismo y Vivienda (PGOU, PECH, ARU, sectores).
+    Sede espublico (medinaderioseco.sedelectronica.es/board) — tablón licencias/urbanismo.
+    PLAI JCYL municipio 086 + SIUCyL WFS (26 sectores PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
