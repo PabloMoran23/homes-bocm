@@ -2571,12 +2571,12 @@ municipios:
 - slug: morata-de-tajuna
   nombre: Morata de Tajuña
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:10:29.169377+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/301
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280013198
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Morata de Tajuña
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T16:54:18.223935+00:00'
+updated_at: '2026-08-19T17:10:29.170812+00:00'
