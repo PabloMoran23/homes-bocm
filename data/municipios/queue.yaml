@@ -1871,12 +1871,12 @@ municipios:
 - slug: aguilar-de-campoo
   nombre: Aguilar de Campoo
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T16:54:18.222561+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/251
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32278504454
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Aguilar de Campoo (Palencia)
@@ -2445,12 +2445,12 @@ municipios:
 - slug: granadilla-de-abona
   nombre: Granadilla de Abona
   bocm_count: 5
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-13T00:03:39.289425+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/292
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Granadilla de Abona
@@ -2599,11 +2599,11 @@ municipios:
 - slug: ontinyent
   nombre: Ontinyent
   bocm_count: 5
-  status: done
-  attempts: 1
-  last_run: '2026-08-10T22:12:52.697509+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/303
+  pr_url: null
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -2922,12 +2922,12 @@ municipios:
 - slug: fuentiduena-de-tajo
   nombre: Fuentidueña de Tajo
   bocm_count: 4
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-17T00:06:02.738681+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/326
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Fuentidueña de Tajo
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-10T22:12:52.698432+00:00'
+updated_at: '2026-08-19T16:54:18.223935+00:00'
