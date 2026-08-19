@@ -966,14 +966,24 @@ def save_documentos(rows: list[dict[str, Any]], *, conn=None) -> int:
 # ---------------------------------------------------------------------------
 
 def start_ingest_run(scraper: str, municipio_slug: str | None = None, *, conn=None) -> int:
+    slug = _blank(municipio_slug)
     with _owned_conn(conn) as c, c.cursor() as cur:
+        if slug:
+            cur.execute(
+                f"""
+                INSERT INTO {SCHEMA}.municipio (slug, nombre)
+                VALUES (%s, %s)
+                ON CONFLICT (slug) DO NOTHING
+                """,
+                (slug, slug),
+            )
         cur.execute(
             f"""
             INSERT INTO {SCHEMA}.ingest_run (scraper, municipio_slug, status)
             VALUES (%s, %s, 'running')
             RETURNING id
             """,
-            (scraper, _blank(municipio_slug)),
+            (scraper, slug),
         )
         return int(cur.fetchone()[0])
 
