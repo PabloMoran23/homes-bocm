@@ -1,0 +1,26 @@
+slug: aldeatejada
+nombre: "Aldeatejada"
+provincia: "Aldeatejada (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aldeatejada.es"
+  adapter: municipio.adapters.aldeatejada:AldeatejadaAyuntamientoAdapter
+  config:
+    wp_base: "https://aldeatejada.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aldeatejada/1.0"
+    centroid: [40.921, -5.697]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Aldeatejada
+  notes: |
+    Web WordPress Divi (urbanismo en /ayuntamiento/#urbanismo, fichas reparcelación).
+    Tablón/edictos/bandos como posts WP. Sin sede espublico propia.
+    Geometría: IDECyL WFS PLAU CyL (sectores + instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,32 @@
+slug: navacerrada
+nombre: "Navacerrada"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.aytonavacerrada.org"
+  adapter: municipio.adapters.navacerrada:NavacerradaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.aytonavacerrada.org"
+    sede_base: "https://aytonavacerrada.sedelectronica.es"
+    board_url: "https://aytonavacerrada.sedelectronica.es/board"
+    transparency_url: "https://aytonavacerrada.sedelectronica.es/transparency"
+    wfs_municipio: "NAVACERRADA"
+    centroid: [40.728889, -4.001389]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navacerrada/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "NAVACERRADA"
+  notes: |
+    WordPress (urbanismo, ordenanzas, bandos) + sede espublico gestiona (tablón/transparencia).
+    Ámbitos de planeamiento en WFS SITCM Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

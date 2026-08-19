@@ -1,0 +1,24 @@
+slug: pinuecar-gandullas
+nombre: "Piñuécar-Gandullas"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://pinuecargandullas.sedelectronica.es"
+  adapter: municipio.adapters.pinuecar_gandullas:PinuecarGandullasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pinuecar-gandullas/1.0 (+urbanismo research)"
+    sede_base: "https://pinuecargandullas.sedelectronica.es"
+    centroid: [41.0355464, -3.5994756]
+  notes: |
+    Sede espublico gestiona (tablón + catálogo trámites /dossier).
+    Web municipal oficial (xn--ayuntamientopiuecargandullas-byc.es) inaccesible HTTP 500.
+    Sin visor GIS municipal ni ámbitos SITCM.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
