@@ -1,0 +1,33 @@
+slug: el-campello
+nombre: "El Campello"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.elcampello.es"
+  adapter: municipio.adapters.el_campello:ElCampelloAyuntamientoAdapter
+  config:
+    sede_base: "https://elcampello.sedelectronica.es"
+    board_url: "https://elcampello.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-el-campello/1.0"
+    centroid: [38.4289, -0.3977]
+    news_area_ids: [18, 35, 37, 58]
+    geometry:
+      kind: arcgis_mapserver
+      base_url: "https://gis.elcampello.es/arcgis/rest/services"
+      notes: "Visor parcela catastral; REST bloqueado en CI (SSL hostname mismatch)"
+  notes: |
+    CMS Tres Tristes Tigres (elcampello.es) + sede espublico gestiona (/board/).
+    Proyectos desde noticias de áreas urbanismo y tablón sede.
+    Fondos urbanismo (fondos.elcampello.es) bloqueado en CI.
+    Visor GIS gis.elcampello.es — geometry_status partial.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
