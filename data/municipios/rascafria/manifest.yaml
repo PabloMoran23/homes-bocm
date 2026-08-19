@@ -1,0 +1,30 @@
+slug: rascafria
+nombre: "Rascafría"
+provincia: "Rascafría, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.rascafria.org"
+  adapter: municipio.adapters.rascafria:RascafriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rascafria/1.0"
+    wp_base: "https://www.rascafria.org"
+    sede_base: "https://rascafria.sedelectronica.es"
+    board_url: "https://rascafria.sedelectronica.es/board/"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "RASCAFRÍA"
+  notes: |
+    WordPress TownPress (rascafria.org) + sede espublico gestiona.
+    Urbanismo: /tu-ayuntamiento/urbanismo/ (formularios PDF licencias).
+    Planeamiento: modificación NNSS 1985 (post WP), ámbitos SITCM Comunidad de Madrid.
+    Tablón sede vacío en scraping; anuncios en categoría entradas-anuncios.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

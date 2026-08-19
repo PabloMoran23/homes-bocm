@@ -1,0 +1,34 @@
+slug: chinchon
+nombre: "Chinchón"
+provincia: "Chinchón"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ciudad-chinchon.com"
+  adapter: municipio.adapters.chinchon:ChinchonAyuntamientoAdapter
+  config:
+    web_base: "https://www.ciudad-chinchon.com"
+    sede_base: "https://chinchon.sedelectronica.es"
+    board_url: "https://chinchon.sedelectronica.es/board/"
+    urbanismo_url: "https://www.ciudad-chinchon.com/ayuntamiento/concejalias/servicios-urbanisticos/presentacion.php"
+    impresos_url: "https://www.ciudad-chinchon.com/ayuntamiento/ayto/descarga-impresos.php"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-chinchon/1.0"
+    insecure_ssl: true
+    centroid: [40.1405, -3.4229]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CHINCHÓN"
+  notes: |
+    Web corporativa ciudad-chinchon.com (PHP) + sede espublico gestiona (tablón /board).
+    Formularios de licencia en descarga-impresos. Geometría partial vía WFS SITCM
+    (3 ámbitos UA: Vaguada, Cooperativa San Roque, Las Cruces).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
