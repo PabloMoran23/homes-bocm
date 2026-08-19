@@ -2978,12 +2978,12 @@ municipios:
 - slug: madarcos
   nombre: Madarcos
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:19:48.065251+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/330
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280909605
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Madarcos
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T17:14:51.945812+00:00'
+updated_at: '2026-08-19T17:19:48.066860+00:00'
