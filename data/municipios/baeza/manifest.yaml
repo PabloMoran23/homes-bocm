@@ -1,0 +1,29 @@
+slug: baeza
+nombre: "Baeza"
+provincia: "Baeza/Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.baeza.net"
+  adapter: municipio.adapters.baeza:BaezaAyuntamientoAdapter
+  config:
+    transparencia_base: "https://transparencia.baeza.net"
+    sede_base: "https://baeza.sedelectronica.es"
+    board_url: "https://baeza.sedelectronica.es/board/"
+    wp_base: "https://www.baeza.net"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-baeza/1.0"
+    centroid: [37.9938, -3.4710]
+  notes: |
+    Fuentes: transparencia.baeza.net (registro IOU ATM2 + PDFs Temporal),
+    SITUADIFUSION embebido para PGOU, sede espublico gestiona (tablón),
+    web WordPress (urbanismo + PEPRI/plan especial PDFs).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

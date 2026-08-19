@@ -1,0 +1,37 @@
+slug: nuevo-baztan
+nombre: "Nuevo Baztán"
+provincia: Nuevo Baztán
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://ayto-nuevobaztan.es"
+  adapter: municipio.adapters.nuevo_baztan:NuevoBaztanAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-nuevo-baztan/1.0"
+    sede_base: "https://nuevobaztan.sedelectronica.es"
+    board_url: "https://nuevobaztan.sedelectronica.es/board/"
+    dossier_url: "https://nuevobaztan.sedelectronica.es/dossier"
+    transparency_url: "https://nuevobaztan.sedelectronica.es/citizen-service/ef8a54f8-49a6-43c3-af0a-d9b64b4142d4"
+    transparencia_portal_url: "https://transparenciaayto-nuevobaztan.eadministracion.es/transparencia/funcionamiento/urbanismo/planes-urbanisticos-y-estudios-de-impacto-ambiental"
+    documentacion_url: "https://ayto-nuevobaztan.es/documentacion-y-tramites/"
+    planeamiento_url: "https://ayto-nuevobaztan.es/urbanismo/"
+    insecure_ssl: true
+    centroid: [40.3673, -3.2415]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "NUEVO BAZTÁN"
+  notes: |
+    WordPress Divi (ayto-nuevobaztan.es) con documentación urbanismo y noticias.
+    REST API bloqueada (Kadence Security); scrape vía sitemaps post/wpfd.
+    Sede espublico gestiona (nuevobaztan.sedelectronica.es): tablón, trámites.
+    Portal transparencia eadministracion para planes urbanísticos.
+    Geometría partial vía WFS SITCM Comunidad de Madrid (6 ámbitos UA/UE).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
