@@ -1,0 +1,24 @@
+slug: almeria
+nombre: "Almería"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.almeriaciudad.es"
+  adapter: municipio.adapters.almeria:AlmeriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almeria/1.0"
+    insecure_ssl: true
+    max_tablon_pages: 12
+  notes: |
+    Drupal almeriaciudad.es: tablón área 4 (Urbanismo) + PDFs PGOU en obras-publicas-y-urbanismo.
+    Sede sede.aytoalmeria.es (STA) bloqueada desde el entorno del agente (connection reset).
+    Geometría parcial: WFS Diputación Almería v_siu_ambitos_o_sectores (cod_ine 04013).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

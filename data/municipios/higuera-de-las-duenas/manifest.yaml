@@ -1,0 +1,29 @@
+slug: higuera-de-las-duenas
+nombre: "Higuera de las Dueñas"
+provincia: "Higuera de las Dueñas (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.higueradelasduenas.es"
+  adapter: municipio.adapters.higuera_de_las_duenas:HigueraDeLasDuenasAyuntamientoAdapter
+  config:
+    web_base: "https://www.higueradelasduenas.es"
+    sede_base: "https://higueradelasduenas.sedelectronica.es"
+    board_url: "https://higueradelasduenas.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&pager.sortname=fPublicacion&pager.sortindex=-3&provincia=05&municipio=095"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-higuera-de-las-duenas/1.0"
+    centroid: [40.2395, -4.6032]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Higuera de las Dueñas"
+  notes: |
+    Web plantilla Diputación de Ávila (normas urbanísticas + PDFs).
+    Sede espublico gestiona: tablón /board (vacío en prueba).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
