@@ -1,0 +1,34 @@
+slug: priego-de-cordoba
+nombre: "Priego de Córdoba"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://priegodecordoba.es"
+  adapter: municipio.adapters.priego_de_cordoba:PriegoDeCordobaAyuntamientoAdapter
+  config:
+    wp_base: "https://priegodecordoba.es"
+    sede_base: "https://sede.eprinsa.es/priego"
+    wp_categories: [71]
+    wp_max_pages: 5
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-priego-de-cordoba/1.0"
+    centroid: [37.4389, -4.1958]
+    seed_pages:
+      - "https://priegodecordoba.es/temas/urbanismo-suelo-y-vivienda/normativa-municipal-de-urbanismo/"
+      - "https://priegodecordoba.es/temas/urbanismo-suelo-y-vivienda/documentacion-y-modelos-de-solicitud-del-area-de-urbanismo/"
+    licencia_pages:
+      - "https://priegodecordoba.es/temas/urbanismo-suelo-y-vivienda/documentacion-y-modelos-de-solicitud-del-area-de-urbanismo/"
+  notes: |
+    WordPress Divi: noticias urbanismo (categoría WP 71) + PDFs normativa PGOU/PE.
+    Sede eprinsa (Diputación Córdoba): tablón Ember SPA sin API pública scrapeable.
+    Sin visor GIS municipal accesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

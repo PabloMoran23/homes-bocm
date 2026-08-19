@@ -1,0 +1,27 @@
+slug: la-victoria-de-acentejo
+nombre: "La Victoria de Acentejo"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.lavictoriadeacentejo.es"
+  adapter: municipio.adapters.la_victoria_de_acentejo:LaVictoriaDeAcentejoAyuntamientoAdapter
+  config:
+    sede_base: "http://sede.lavictoriadeacentejo.es"
+    participacion_parent_id: 5500
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-victoria-de-acentejo/1.0"
+    centroid: [28.4186, -16.5236]
+  notes: |
+    Fuentes: WordPress Divi (echeide) — participación ciudadana (14 expedientes NNSS/ordenanzas),
+    normativa (PDFs NNSS legacy), secciones urbanismo + sede ATM-Maggioli (trámites).
+    Sin listado público de licencias concedidas; trámites informativos.
+    Visor Grafcan (catastro) sin enlace a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
