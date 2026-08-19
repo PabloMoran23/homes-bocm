@@ -1,0 +1,27 @@
+slug: granadilla-de-abona
+nombre: "Granadilla de Abona"
+provincia: "Granadilla de Abona"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.granadilladeabona.org"
+  adapter: municipio.adapters.granadilla_de_abona:GranadillaDeAbonaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.granadilladeabona.org"
+    sede_base: "http://sede.granadilladeabona.es"
+    sitcan_package: planeamiento-urbanistico-de-granadilla-de-abona
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38017/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-granadilla-de-abona/1.0"
+    centroid: [28.1189, -16.5760]
+  notes: |
+    WordPress Kadence (noticias urbanismo, anuncios) + SITCAN CKAN (22 instrumentos)
+    + GEOBDP Grafcan (20 polígonos UTM28N). Sede granadilladeabona.es inaccesible en CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
