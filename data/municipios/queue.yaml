@@ -2754,12 +2754,12 @@ municipios:
 - slug: almeria
   nombre: Almería
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:14:51.944372+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/314
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280426945
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Almería
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T17:13:11.839386+00:00'
+updated_at: '2026-08-19T17:14:51.945812+00:00'
