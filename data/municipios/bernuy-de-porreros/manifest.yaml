@@ -1,0 +1,30 @@
+slug: bernuy-de-porreros
+nombre: "Bernuy de Porreros"
+provincia: "Bernuy de Porreros (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.dipsegovia.es/web/ayuntamiento-de-bernuy-de-porreros"
+  adapter: municipio.adapters.bernuy_de_porreros:BernuyDePorrerosAyuntamientoAdapter
+  config:
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-bernuy-de-porreros"
+    sede_base: "https://bernuydeporreros.sedelectronica.es"
+    board_url: "https://bernuydeporreros.sedelectronica.es/board"
+    plai_municipio: 31
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Bernuy de Porreros"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bernuy-de-porreros/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 031).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
