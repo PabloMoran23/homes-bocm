@@ -1,0 +1,23 @@
+slug: cubillos-del-sil
+nombre: "Cubillos del Sil"
+provincia: Cubillos del Sil (León)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytocubillosdelsil.com"
+  adapter: municipio.adapters.cubillos_del_sil:CubillosDelSilAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cubillos-del-sil/1.0"
+    sede_base: "https://cubillosdelsil.sedelectronica.es"
+    wfs_municipio: "Cubillos del Sil"
+  notes: |
+    WordPress (urbanismo, clasificación suelo, formularios licencia) +
+    sede espublico tablón + IDECyL WFS (geometría partial, 18 features).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
