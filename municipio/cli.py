@@ -99,6 +99,39 @@ def main(argv: list[str] | None = None) -> int:
     qfail.add_argument("--municipio", "-m", required=True)
     qfail.add_argument("--error", required=True)
 
+    sched = sub.add_parser("schedule", help="Cadencia de refresh de scrapers municipales")
+    ssub = sched.add_subparsers(dest="schedule_command", required=True)
+    due_p = ssub.add_parser("due", help="Listar municipios que toca refrescar")
+    run_p = ssub.add_parser("run", help="Refrescar un lote (los más viejos / nunca ingestados)")
+    for sp in (due_p, run_p):
+        sp.add_argument(
+            "--interval-days",
+            type=int,
+            default=15,
+            help="Días sin ingest para considerarlo due (default 15)",
+        )
+        sp.add_argument(
+            "--limit",
+            type=int,
+            default=16,
+            help="Máximo de municipios por corrida (default 16)",
+        )
+        sp.add_argument("--include-madrid", action="store_true", help="Incluir Madrid capital")
+        sp.add_argument(
+            "--municipio",
+            "-m",
+            action="append",
+            dest="municipios",
+            help="Restringir a estos slugs (repetible)",
+        )
+    run_p.add_argument("--step", default="update", help="Paso del orquestador (default: update)")
+    run_p.add_argument("--dry-run", action="store_true", help="Solo mostrar el lote, no scrapear")
+    run_p.add_argument(
+        "--force",
+        action="store_true",
+        help="Ignorar last_ingest_at (útil con --municipio)",
+    )
+
     audit = sub.add_parser("audit-geometry", help="Auditar fuentes GIS de municipios en cola")
     audit.add_argument(
         "--all-done",
@@ -117,6 +150,34 @@ def main(argv: list[str] | None = None) -> int:
         for slug in list_manifest_slugs():
             print(slug)
         return 0
+
+    if args.command == "schedule":
+        from municipio import schedule as smod
+
+        slugs = args.municipios or None
+        if args.schedule_command == "due":
+            plan = smod.due_plan(
+                interval_days=args.interval_days,
+                limit=args.limit,
+                include_madrid=args.include_madrid,
+                slugs=slugs,
+            )
+            print(json.dumps(plan, indent=2, ensure_ascii=False, default=str))
+            return 0
+        if args.schedule_command == "run":
+            payload = smod.run_due(
+                interval_days=args.interval_days,
+                limit=args.limit,
+                step=args.step,
+                include_madrid=args.include_madrid,
+                slugs=slugs,
+                dry_run=args.dry_run,
+                force=args.force,
+            )
+            print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
+            if payload.get("failed"):
+                return 1
+            return 0
 
     if args.command == "audit-geometry":
         from municipio.geometry_audit import audit_slugs, load_queue_done_slugs, write_audit

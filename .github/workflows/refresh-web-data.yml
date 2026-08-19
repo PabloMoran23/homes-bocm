@@ -107,38 +107,6 @@ jobs:
             echo "SUPABASE_DB_URL is required for direct public data sync." >&2
             exit 1
           fi
-          python3 -m sector_geometry.madrid_ayto_sync
-          VISOR_SINCE=$(( $(date -u +%Y) - 2 ))
-          echo "Visor: expedientes nuevos en índice SIGMA..."
-          python3 -m sector_geometry.madrid_viso_fetch \
-            --fetch-missing-index \
-            --merge-existing \
-            --skip-nti \
-            --delay 0.35
-          echo "Visor: re-scrape HTML recientes (>= ${VISOR_SINCE})..."
-          python3 -m sector_geometry.madrid_viso_fetch \
-            --refresh-since-year "${VISOR_SINCE}" \
-            --merge-existing \
-            --skip-nti \
-            --delay 0.35
-          echo "Visor: enriquecer ficha parseada (promotor, m², ámbito)..."
-          python3 -m sector_geometry.madrid_viso_fetch \
-            --enrich-ficha \
-            --fetch-missing-html \
-            --since-year "${VISOR_SINCE}" \
-            --delay 0.35
-          python3 -c "
-          import json
-          from pathlib import Path
-          p = Path('output/madrid_viso_expedientes.json')
-          if not p.is_file():
-              raise SystemExit('Missing output/madrid_viso_expedientes.json')
-          d = json.loads(p.read_text())
-          n = len(d.get('byGrupoExpediente') or {})
-          cf = d.get('conVisorFicha') or 0
-          ct = sum(1 for v in (d.get('byGrupoExpediente') or {}).values() if v.get('tramitacion'))
-          print(f'Visor OK — fichas: {cf}/{n} | tramitación: {ct}/{n}')
-          "
           YEAR=$(date -u +%Y)
           PREV=$((YEAR - 1))
           REFRESH_LIC=0
@@ -147,14 +115,28 @@ jobs:
           elif [ "$(date -u +%d)" = "17" ]; then
             REFRESH_LIC=1
           fi
-          python3 db/sync_dominio_to_supabase.py --skip-licencias
+          python3 -m municipio run --municipio madrid --step proyectos_update
+          python3 -m municipio run --municipio madrid --step enrich_geometry
+          python3 -m municipio run --municipio madrid --step geocode
           if [ "$REFRESH_LIC" = "1" ]; then
-            echo "Licencias: descarga ${PREV},${YEAR} y sync incremental (tras proyectos)."
-            python3 -m sector_geometry.madrid_licencias_download --years "${PREV},${YEAR}" --merge-jsonl
-            python3 db/sync_dominio_to_supabase.py --skip-proyectos --licencias-years "${PREV},${YEAR}"
+            echo "Licencias: descarga ${PREV},${YEAR} y upsert (tras proyectos)."
+            MADRID_LICENCIAS=1 python3 -m municipio run --municipio madrid --step licencias_update
           else
-            echo "Licencias: sin actualizar en Supabase (solo SIGMA/proyectos)."
+            echo "Licencias: se reexporta el JSONL cacheado si existe (sin descarga)."
+            python3 -m municipio run --municipio madrid --step licencias_update
           fi
+          python3 -m municipio run --municipio madrid --step sync_supabase
+          python3 -c "
+          from pathlib import Path
+          p = Path('output/municipios/madrid/proyectos.jsonl')
+          if not p.is_file():
+              raise SystemExit('Missing output/municipios/madrid/proyectos.jsonl')
+          n = sum(1 for line in p.open() if line.strip())
+          print(f'Madrid JSONL OK — proyectos: {n}')
+          if n < 1:
+              raise SystemExit('proyectos.jsonl vacío')
+          "
+
 
       - name: Build public data files
         working-directory: web

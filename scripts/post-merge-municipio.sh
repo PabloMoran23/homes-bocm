@@ -13,6 +13,12 @@ fi
 
 echo "==> Post-merge: $SLUG"
 
+if [ "$SLUG" = "madrid" ]; then
+  echo "Madrid capital se refresca en el workflow refresh-web-data (SIGMA/visor/NTI)."
+  echo "Omitiendo pipeline genérico --step all."
+  exit 0
+fi
+
 if [ -n "$PR_URL" ]; then
   PYTHONPATH=. python3 -m municipio queue done --municipio "$SLUG" --pr-url "$PR_URL" --notes "$NOTES"
 else

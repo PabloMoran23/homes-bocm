@@ -50,6 +50,11 @@ from project_fingerprint import backfill_csv, compute_proyecto_fingerprint
 
 BASE_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = BASE_DIR / "output"
+DB_DIR = BASE_DIR / "db"
+if str(DB_DIR) not in sys.path:
+    sys.path.insert(0, str(DB_DIR))
+
+from ingest import optional_ingest_session, persist_boletin_row  # noqa: E402
 
 HISTORY_INDEX = Path(os.getenv("HISTORY_INDEX", str(OUTPUT_DIR / "history_index.jsonl")))
 HISTORY_CSV = Path(os.getenv("HISTORY_CSV", str(OUTPUT_DIR / "history_parsed_incremental.csv")))
@@ -268,91 +273,92 @@ def main() -> None:
     print(f"Entradas índice: {len(entries)} | PDFs válidos: {len(valid)} | ya en CSV: {len(processed)}\n", flush=True)
 
     new_file = not HISTORY_CSV.exists() or HISTORY_CSV.stat().st_size == 0
+    with optional_ingest_session("bocm") as ingest_session:
+        with HISTORY_CSV.open("a", newline="", encoding="utf-8", buffering=1) as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            if new_file:
+                writer.writeheader()
+                f.flush()
+                os.fsync(f.fileno())
 
-    with HISTORY_CSV.open("a", newline="", encoding="utf-8", buffering=1) as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        if new_file:
-            writer.writeheader()
-            f.flush()
-            os.fsync(f.fileno())
+            n = 0
+            for e in valid:
+                d_str = e.get("date", "")
+                a_str = str(e.get("art_num", ""))
+                if (d_str, a_str) in processed:
+                    continue
 
-        n = 0
-        for e in valid:
-            d_str = e.get("date", "")
-            a_str = str(e.get("art_num", ""))
-            if (d_str, a_str) in processed:
-                continue
+                pdf_path: Path = e["_abs_pdf"]
+                pdf_name = pdf_path.name
+                n += 1
+                t0 = time.time()
+                err = ""
+                print(f"[{n}] {d_str} #{a_str} {pdf_name}", flush=True)
 
-            pdf_path: Path = e["_abs_pdf"]
-            pdf_name = pdf_path.name
-            n += 1
-            t0 = time.time()
-            err = ""
-            print(f"[{n}] {d_str} #{a_str} {pdf_name}", flush=True)
-
-            try:
-                text = pdf_to_text(pdf_path)
-            except Exception as ex:
-                err = f"pdftotext:{ex}"
-                text = ""
-
-            txt_chars = len(text)
-            parsed: dict = {}
-            row: dict = {
-                "bocm_date": d_str,
-                "art_num": a_str,
-                "title": (e.get("title") or "")[:500],
-                "pdf_path": e.get("pdf_path", ""),
-                "pdf_url": e.get("pdf_url", ""),
-                "txt_chars": txt_chars,
-                "latency_s": "",
-                "error": err,
-            }
-
-            if txt_chars < 80:
-                row["error"] = (row["error"] + ";texto_corto").strip(";")
-                for fld in llm_mod.FIELDS:
-                    row[fld] = None
-            else:
                 try:
-                    parsed = llm_mod.parse_with_llm(
-                        client,
-                        text,
-                        pdf_name,
-                        ctx=boletin_ctx,
-                        model=LLM_MODEL,
-                        max_context_chars=LLM_MAX_CONTEXT_CHARS,
-                    )
+                    text = pdf_to_text(pdf_path)
                 except Exception as ex:
-                    err = f"llm:{ex}"
-                    parsed = {"es_relevante": None}
-                    row["error"] = err
+                    err = f"pdftotext:{ex}"
+                    text = ""
 
-                for fld in llm_mod.FIELDS:
-                    row[fld] = parsed.get(fld)
+                txt_chars = len(text)
+                parsed: dict = {}
+                row: dict = {
+                    "bocm_date": d_str,
+                    "art_num": a_str,
+                    "title": (e.get("title") or "")[:500],
+                    "pdf_path": e.get("pdf_path", ""),
+                    "pdf_url": e.get("pdf_url", ""),
+                    "txt_chars": txt_chars,
+                    "latency_s": "",
+                    "error": err,
+                }
 
-            if txt_chars > 0:
-                merge_context_into_flat(
-                    row,
-                    context_meta_for_fulltext(text, max_context_chars=LLM_MAX_CONTEXT_CHARS),
+                if txt_chars < 80:
+                    row["error"] = (row["error"] + ";texto_corto").strip(";")
+                    for fld in llm_mod.FIELDS:
+                        row[fld] = None
+                else:
+                    try:
+                        parsed = llm_mod.parse_with_llm(
+                            client,
+                            text,
+                            pdf_name,
+                            ctx=boletin_ctx,
+                            model=LLM_MODEL,
+                            max_context_chars=LLM_MAX_CONTEXT_CHARS,
+                        )
+                    except Exception as ex:
+                        err = f"llm:{ex}"
+                        parsed = {"es_relevante": None}
+                        row["error"] = err
+
+                    for fld in llm_mod.FIELDS:
+                        row[fld] = parsed.get(fld)
+
+                if txt_chars > 0:
+                    merge_context_into_flat(
+                        row,
+                        context_meta_for_fulltext(text, max_context_chars=LLM_MAX_CONTEXT_CHARS),
+                    )
+
+                row["latency_s"] = round(time.time() - t0, 2)
+                row["proyecto_fingerprint"] = compute_proyecto_fingerprint(row)
+
+                writer.writerow(row)
+                f.flush()
+                os.fsync(f.fileno())
+                persist_boletin_row(ingest_session, row, boletin=boletin_ctx.source_id)
+
+                rel_flag = parsed.get("es_relevante") if txt_chars >= 80 else None
+                seg2 = row.get("requiere_segunda_pasada")
+                seg_mark = " | 2ªpasada" if seg2 else ""
+                print(
+                    f"  → {row['latency_s']}s | relevante={rel_flag} | {row.get('municipio')} | {row.get('tipo_instrumento')}{seg_mark}",
+                    flush=True,
                 )
 
-            row["latency_s"] = round(time.time() - t0, 2)
-            row["proyecto_fingerprint"] = compute_proyecto_fingerprint(row)
-
-            writer.writerow(row)
-            f.flush()
-            os.fsync(f.fileno())
-
-            rel_flag = parsed.get("es_relevante") if txt_chars >= 80 else None
-            seg2 = row.get("requiere_segunda_pasada")
-            seg_mark = " | 2ªpasada" if seg2 else ""
-            print(
-                f"  → {row['latency_s']}s | relevante={rel_flag} | {row.get('municipio')} | {row.get('tipo_instrumento')}{seg_mark}",
-                flush=True,
-            )
-
-            time.sleep(0.15)
+                time.sleep(0.15)
 
     print(f"\n=== Hecho. CSV: {HISTORY_CSV} ===", flush=True)
 

@@ -72,11 +72,23 @@ def _municipio_centroid(manifest: MunicipioManifest, cache: dict[str, list[float
     return None
 
 
+def _load_geocode_config(manifest: MunicipioManifest) -> dict[str, Any]:
+    try:
+        from municipio.manifest import load_yaml
+
+        data = load_yaml(manifest.path)
+    except Exception:
+        return {}
+    raw = data.get("geocode") or {}
+    return dict(raw) if isinstance(raw, dict) else {}
+
+
 def _geocode_records(
     records: list[dict[str, Any]],
     *,
     manifest: MunicipioManifest,
     cache: dict[str, list[float]],
+    jitter_missing: bool = True,
 ) -> dict[str, int]:
     centroid = _municipio_centroid(manifest, cache)
     stats = {
@@ -129,6 +141,10 @@ def _geocode_records(
             stats["missing_centroid"] += 1
             continue
 
+        if not jitter_missing:
+            stats["skipped"] += 1
+            continue
+
         base_lat, base_lng = centroid
         if rec_id:
             lat, lng = _jitter(base_lat, base_lng, rec_id)
@@ -167,14 +183,19 @@ def geocode_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     manifest.ensure_output_dir()
     cache = _load_coords_cache()
     centroid = _municipio_centroid(manifest, cache)
+    jitter_missing = bool(_load_geocode_config(manifest).get("jitter_missing", True))
 
     proyectos_path = manifest.output_dir / "proyectos.jsonl"
     licencias_path = manifest.output_dir / "licencias.jsonl"
     proyectos = _read_jsonl(proyectos_path)
     licencias = _read_jsonl(licencias_path)
 
-    proy_stats = _geocode_records(proyectos, manifest=manifest, cache=cache)
-    lic_stats = _geocode_records(licencias, manifest=manifest, cache=cache)
+    proy_stats = _geocode_records(
+        proyectos, manifest=manifest, cache=cache, jitter_missing=jitter_missing
+    )
+    lic_stats = _geocode_records(
+        licencias, manifest=manifest, cache=cache, jitter_missing=jitter_missing
+    )
 
     if proyectos:
         _write_jsonl(proyectos_path, proyectos)

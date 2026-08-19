@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import importlib.util
 import os
 import sys
 from pathlib import Path
@@ -9,17 +8,11 @@ from typing import Any
 from municipio.manifest import MunicipioManifest
 
 POC_ROOT = Path(__file__).resolve().parents[1]
+DB_DIR = POC_ROOT / "db"
+if str(DB_DIR) not in sys.path:
+    sys.path.insert(0, str(DB_DIR))
 
-
-def _load_sync_fn():
-    path = POC_ROOT / "db" / "sync_municipio_to_supabase.py"
-    spec = importlib.util.spec_from_file_location("sync_municipio_to_supabase", path)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"No se pudo cargar {path}")
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = mod
-    spec.loader.exec_module(mod)
-    return mod.sync_municipio
+from ingest import sync_municipio_output  # noqa: E402
 
 
 def sync_manifest(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict[str, Any]:
@@ -29,5 +22,4 @@ def sync_manifest(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict
             "reason": "sin SUPABASE_DB_URL",
             "slug": manifest.slug,
         }
-    sync_fn = _load_sync_fn()
-    return sync_fn(manifest.slug, dry_run=dry_run)
+    return sync_municipio_output(manifest.slug, dry_run=dry_run)

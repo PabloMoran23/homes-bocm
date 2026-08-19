@@ -51,6 +51,7 @@ from sync_madrid_public_to_supabase import (  # noqa: E402
     load_sigma_visor,
     pg_url,
 )
+from ingest import ingest_madrid_after_proyectos  # noqa: E402
 
 BOCM_CSV = POC_ROOT / "output/history_parsed_incremental.csv"
 LINKS_JSONL = POC_ROOT / "output/madrid_ayto_bocm_links.jsonl"
@@ -744,6 +745,11 @@ def sync_proyectos(cur) -> dict[str, int]:
         stats["proyecto_pdf_metric"] = len(pdfs)
         log(f"  pdf metrics ({time.perf_counter() - t2:.1f}s)")
 
+    ingest_stats = ingest_madrid_after_proyectos(cur, docs=docs, bocm_pub=bocm_pub)
+    if ingest_stats:
+        stats.update({f"ingest_{k}": v for k, v in ingest_stats.items()})
+        log(f"  ingesta homes.publicacion/documento: {ingest_stats}")
+
     log(f"Sync proyectos total: {time.perf_counter() - t0:.1f}s")
     return stats
 
@@ -1059,6 +1065,11 @@ def parse_years(raw: str) -> set[int]:
 
 
 def main() -> None:
+    log(
+        "aviso: db/sync_dominio_to_supabase.py es legado. "
+        "Usa python3 -m municipio run --municipio madrid --step update "
+        "(JSONL + db/ingest.py)."
+    )
     ap = argparse.ArgumentParser(description="Sync dominio (proyecto, licencia) a Supabase.")
     ap.add_argument("--skip-proyectos", action="store_true")
     ap.add_argument("--skip-licencias", action="store_true")

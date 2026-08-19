@@ -14,7 +14,7 @@ municipios:
   last_run: null
   last_error: null
   pr_url: null
-  notes: Pipeline propio (Madrid capital / SIGMA)
+  notes: Pipeline propio (Madrid capital / SIGMA). No onboard genérico; usa municipio/adapters/madrid.py
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Madrid

@@ -1,0 +1,33 @@
+slug: madrid
+nombre: Madrid
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://geoportal.madrid.es/IDEAM_WBGEOPORTAL/visor_planeamiento.iam"
+  adapter: municipio.adapters.madrid:MadridAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-madrid/1.0 (+urbanismo research)"
+  notes: |
+    Madrid capital no usa tablón municipal genérico. Fuentes: SIGMA (ArcGIS),
+    visor/NTI y licencias de datos.madrid.es. El adapter llama a sector_geometry
+    y exporta al JSONL común (output/municipios/madrid/).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  enrichers: []
+
+geocode:
+  jitter_missing: false
+
+schedule:
+  enabled: false
+  interval_days: 7
+  notes: Cadencia propia en refresh-web-data.yml (SIGMA/visor)

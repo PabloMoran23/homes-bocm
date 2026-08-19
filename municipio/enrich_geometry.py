@@ -50,7 +50,7 @@ def _record_title(rec: dict[str, Any]) -> str:
 
 def _enrichers_for(manifest: MunicipioManifest, cfg: dict[str, Any]) -> list[dict[str, Any]]:
     explicit = cfg.get("enrichers")
-    if isinstance(explicit, list) and explicit:
+    if isinstance(explicit, list):
         return [e for e in explicit if isinstance(e, dict)]
 
     if manifest.provincia.lower() == "madrid":
