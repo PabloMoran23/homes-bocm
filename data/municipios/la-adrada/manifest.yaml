@@ -1,0 +1,29 @@
+slug: la-adrada
+nombre: "La Adrada"
+provincia: "La Adrada (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.laadrada.es"
+  adapter: municipio.adapters.la_adrada:LaAdradaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.laadrada.es"
+    sede_base: "https://adrada.sedelectronica.es"
+    board_url: "https://adrada.sedelectronica.es/board"
+    plau_provincia: 5
+    plau_municipio: 2
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-adrada/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "La Adrada"
+  notes: |
+    Web WordPress Elementor (urbanismo enlaza a SIUR y PlanPublica JCyL).
+    Sede espublico gestiona: tablón /board (pocas filas, sin urbanismo reciente).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 66 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: el-arenal
+nombre: "El Arenal"
+provincia: "El Arenal (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://elarenal.es"
+  adapter: municipio.adapters.el_arenal:ElArenalAyuntamientoAdapter
+  config:
+    wp_base: "https://elarenal.es"
+    sede_base: "https://elarenal.sedelectronica.es"
+    board_url: "https://elarenal.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-arenal/1.0"
+    centroid: [40.2508, -5.0899]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: El Arenal
+  notes: |
+    Web WordPress Kadence (urbanismo con PDFs de licencias y planeamiento).
+    Sede espublico gestiona: tablón /board (vacío en agosto 2026).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento NNSS + 1 sector SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,29 @@
+slug: miranda-de-ebro
+nombre: "Miranda de Ebro"
+provincia: "Miranda de Ebro (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.mirandadeebro.es"
+  adapter: municipio.adapters.miranda_de_ebro:MirandaDeEbroAyuntamientoAdapter
+  config:
+    web_base: "https://www.mirandadeebro.es"
+    sede_base: "https://sede.mirandadeebro.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-miranda-de-ebro/1.0"
+    sede_insecure_ssl: true
+    centroid: [42.6865, -2.9466]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Miranda de Ebro
+  notes: |
+    Web WordPress (área urbanismo, transparencia, documentación/trámites).
+    Sede STA: tablón PTS2_TABLON + catálogo urbanismo (acceso puede fallar fuera de España).
+    Geometría: IDECyL WFS PLAU CyL (sectores + planes parciales + instrumentos).
+    Junta CYL PlanPublica: provincia=09, municipio=219.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
