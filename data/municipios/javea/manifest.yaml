@@ -1,0 +1,42 @@
+slug: javea
+nombre: "Jávea"
+provincia: "Jávea"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.ajxabia.com"
+  adapter: municipio.adapters.javea:JaveaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ajxabia.com"
+    sede_base: "https://xabia.sedelectronica.es"
+    board_url: "https://xabia.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-javea/1.0"
+    centroid: [38.7896, 0.1660]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "03094"
+    transparency_folders:
+      - url: "https://xabia.sedelectronica.es/transparency/fcfa421c-24d4-4865-8f58-3ea515cd827e/"
+        titulo: "7.1. Planeamiento Urbanístico"
+        nota: "2741 documentos en portal transparencia (carga AJAX)"
+      - url: "https://xabia.sedelectronica.es/transparency/fcfa421c-24d4-4865-8f58-3ea515cd827e/"
+        titulo: "7.3. Normativa Urbanística y Planes Sectoriales"
+        nota: "30 documentos en portal transparencia"
+      - url: "https://xabia.sedelectronica.es/transparency/fcfa421c-24d4-4865-8f58-3ea515cd827e/"
+        titulo: "7.4. Obras Públicas e Infraestructuras"
+        nota: "24 documentos en portal transparencia"
+  notes: |
+    Web municipal VG Agencia Digital (ajxabia.com) + sede espublico gestiona.
+    Urbanismo redirige a portal transparencia sede (sección 7).
+    Geometría: ICV WFS InventarioSuSuz (cod_ine_mun=03094).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: alcaucin
+nombre: "Alcaucín"
+provincia: "Alcaucín-Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://alcaucin.sedelectronica.es"
+  adapter: municipio.adapters.alcaucin:AlcaucinAyuntamientoAdapter
+  config:
+    sede_base: "https://alcaucin.sedelectronica.es"
+    board_url: "https://alcaucin.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alcaucin/1.0"
+    centroid: [36.9047, -4.1156]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web www.alcaucin.es (plataforma Diputación Málaga); 403 CloudFront sin UA navegador.
+    PGOU y normativa en web municipal; planeamiento Diputación Málaga (mun=29002).
+    VITUA/SITUA Junta Andalucía sin enlace por expediente del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

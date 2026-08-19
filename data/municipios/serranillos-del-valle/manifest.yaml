@@ -1,0 +1,30 @@
+slug: serranillos-del-valle
+nombre: "Serranillos del Valle"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.serranillosdelvalle.es"
+  adapter: municipio.adapters.serranillos_del_valle:SerranillosDelValleAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-serranillos-del-valle/1.0"
+    wp_base: "https://www.serranillosdelvalle.es"
+    sede_base: "https://sede.serranillosdelvalle.es/eAdmin"
+    tablon_url: "https://sede.serranillosdelvalle.es/eAdmin/Tablon.do?action=verAnuncios&tipoTablon=1"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "SERRANILLOS DEL VALLE"
+  notes: |
+    WordPress TownPress (lsvr_document): normativa / PGOU en /normativa/ y /documents/.
+    Sede eAdmin Maggioli (sede.serranillosdelvalle.es/eAdmin): tablón Tablon.do.
+    Ámbitos de planeamiento en SITCM WFS (Comunidad de Madrid).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

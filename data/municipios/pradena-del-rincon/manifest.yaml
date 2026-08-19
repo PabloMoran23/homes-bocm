@@ -1,0 +1,32 @@
+slug: pradena-del-rincon
+nombre: "Prádena del Rincón"
+provincia: Prádena del Rincón
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://pradenadelrincon.net"
+  adapter: municipio.adapters.pradena_del_rincon:PradenaDelRinconAyuntamientoAdapter
+  config:
+    wp_base: "https://pradenadelrincon.net"
+    sede_base: "https://pradenadelrincon.sedelectronica.es"
+    board_url: "https://pradenadelrincon.sedelectronica.es/board/"
+    transparency_url: "https://pradenadelrincon.sedelectronica.es/transparency/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-pradena-del-rincon/1.0"
+    centroid: [41.0436, -3.5397]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PRÁDENA DEL RINCÓN"
+  notes: |
+    WordPress Divi (normativa, trámites, bandos) + sede espublico gestiona.
+    SITCM WFS: 3 unidades de ejecución (UE-1, UE-2, UE-3).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
