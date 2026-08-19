@@ -1,0 +1,30 @@
+slug: el-vellon
+nombre: "El Vellón"
+provincia: El Vellón, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "http://elvellon.es"
+  adapter: municipio.adapters.el_vellon:ElVellonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-vellon/1.0"
+    portal_base: "http://elvellon.es"
+    sede_base: "https://sedeelvellon.eadministracion.es"
+    tramites_url: "http://elvellon.es/Ciudadanos/Tr%C3%A1mites-Personales"
+    centroid: [40.7714, -3.5791]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "EL VELLÓN"
+  notes: |
+    Portal corporativo DNN (elvellon.es): trámites con formularios PDF de licencias,
+    noticias y actas de pleno. Sede Maggioli eAdmin (sedeelvellon.eadministracion.es).
+    Geometría partial vía WFS SITCM (3 reservas urbanas P-5/P-6/P-9).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

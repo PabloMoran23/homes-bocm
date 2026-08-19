@@ -1,0 +1,35 @@
+slug: montejo-de-la-sierra
+nombre: "Montejo de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.montejodelasierra.net"
+  adapter: municipio.adapters.montejo_de_la_sierra:MontejoDeLaSierraAyuntamientoAdapter
+  config:
+    wp_base: "https://www.montejodelasierra.net"
+    sede_base: "https://montejodelasierra.sedelectronica.es"
+    board_url: "https://montejodelasierra.sedelectronica.es/board/"
+    normativa_url: "https://www.montejodelasierra.net/normativa/"
+    licencias_url: "https://montejodelasierra.sedelectronica.es/citizen-service/89b9a1a7-18ab-4a39-97b4-0760fd5f5330"
+    licencias_pdf_url: "https://montejodelasierra.sedelectronica.es/preview-document/cb12b067-5d92-4d1c-ab7e-04c813a9d4ef/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-montejo-de-la-sierra/1.0"
+    centroid: [41.0595, -3.5297]
+    wfs_municipio: "MONTEJO DE LA SIERRA"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "MONTEJO DE LA SIERRA"
+  notes: |
+    WordPress Divi (normativa, ordenanzas) + sede espublico gestiona (tablón, licencias).
+    Ámbitos UA-1..UA-13 en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
