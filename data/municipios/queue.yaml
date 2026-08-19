@@ -1815,12 +1815,12 @@ municipios:
 - slug: pinilla-del-valle
   nombre: Pinilla del Valle
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:44.606950+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Pinilla del Valle
@@ -1829,12 +1829,12 @@ municipios:
 - slug: santa-maria-de-la-alameda
   nombre: Santa María de la Alameda
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:52.136790+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Santa María de la Alameda, Madrid
@@ -1843,12 +1843,12 @@ municipios:
 - slug: valdetorres-de-jarama
   nombre: Valdetorres de Jarama
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:00.850657+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Valdetorres de Jarama
@@ -1857,12 +1857,12 @@ municipios:
 - slug: villamantilla
   nombre: Villamantilla
   bocm_count: 8
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:04.795009+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Villamantilla, Madrid
@@ -1885,12 +1885,12 @@ municipios:
 - slug: altea
   nombre: Altea
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:33.539653+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Altea
@@ -1899,12 +1899,12 @@ municipios:
 - slug: canencia
   nombre: Canencia
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:52.493545+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Canencia
@@ -1913,12 +1913,12 @@ municipios:
 - slug: chinchon
   nombre: Chinchón
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:58.037730+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Chinchón
@@ -1927,12 +1927,12 @@ municipios:
 - slug: el-arenal
   nombre: El Arenal
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:05.771634+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: El Arenal (Ávila)
@@ -1941,12 +1941,12 @@ municipios:
 - slug: gascones
   nombre: Gascones
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:15.418765+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Gascones, Madrid
@@ -1955,12 +1955,12 @@ municipios:
 - slug: gijon
   nombre: Gijón
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:16.384860+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bopa
   comunidad_autonoma: asturias
   provincia: Gijón
@@ -1969,12 +1969,12 @@ municipios:
 - slug: ingenio
   nombre: Ingenio
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:19.297485+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Ingenio, Gran Canaria
@@ -1983,12 +1983,12 @@ municipios:
 - slug: la-acebeda
   nombre: La Acebeda
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:22.208833+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: La Acebeda
@@ -1997,12 +1997,12 @@ municipios:
 - slug: los-realejos
   nombre: Los Realejos
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:29.991534+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Los Realejos
@@ -2011,12 +2011,12 @@ municipios:
 - slug: medina-de-rioseco
   nombre: Medina de Rioseco
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:30.990023+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Medina de Rioseco (Valladolid)
@@ -2025,12 +2025,12 @@ municipios:
 - slug: nuevo-baztan
   nombre: Nuevo Baztán
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:40.733133+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Nuevo Baztán
@@ -2039,12 +2039,12 @@ municipios:
 - slug: rascafria
   nombre: Rascafría
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:49.387206+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Rascafría, Madrid
@@ -2053,12 +2053,12 @@ municipios:
 - slug: torrelaguna
   nombre: Torrelaguna
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:56.944088+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Torrelaguna
@@ -2067,12 +2067,12 @@ municipios:
 - slug: villanueva-de-perales
   nombre: Villanueva de Perales
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:05.792077+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Villanueva de Perales
@@ -2081,12 +2081,12 @@ municipios:
 - slug: alcala-de-xivert
   nombre: Alcalà de Xivert
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:27.659940+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Alcalà de Xivert
@@ -2095,12 +2095,12 @@ municipios:
 - slug: arcos-de-la-frontera
   nombre: Arcos de la Frontera
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:35.352911+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Arcos de la Frontera (Cádiz)
@@ -2109,12 +2109,12 @@ municipios:
 - slug: aviles
   nombre: Avilés
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:38.952269+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bopa
   comunidad_autonoma: asturias
   provincia: Avilés
@@ -2123,12 +2123,12 @@ municipios:
 - slug: baeza
   nombre: Baeza
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:40.737270+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Baeza/Jaén
@@ -2137,12 +2137,12 @@ municipios:
 - slug: campo-real
   nombre: Campo Real
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:48.864138+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Campo Real
@@ -2151,12 +2151,12 @@ municipios:
 - slug: candelario
   nombre: Candelario
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:51.562645+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Candelario-Salamanca
@@ -2165,12 +2165,12 @@ municipios:
 - slug: cuellar
   nombre: Cuéllar
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:02.846110+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Cuéllar-Segovia
@@ -2179,12 +2179,12 @@ municipios:
 - slug: espinosa-de-los-monteros
   nombre: Espinosa de los Monteros
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:11.526463+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Espinosa de los Monteros (Burgos)
@@ -2193,12 +2193,12 @@ municipios:
 - slug: gargantilla-del-lozoya-y-pinilla-de-buitrago
   nombre: Gargantilla del Lozoya y Pinilla de Buitrago
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:14.478148+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Gargantilla del Lozoya y Pinilla de Buitrago
@@ -2207,12 +2207,12 @@ municipios:
 - slug: higuera-de-las-duenas
   nombre: Higuera de las Dueñas
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:17.358104+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Higuera de las Dueñas (Ávila)
@@ -2221,12 +2221,12 @@ municipios:
 - slug: icod-de-los-vinos
   nombre: Icod de los Vinos
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:18.304156+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Icod de los Vinos
@@ -2235,12 +2235,12 @@ municipios:
 - slug: melgar-de-fernamental
   nombre: Melgar de Fernamental
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:31.991063+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Melgar de Fernamental (Burgos)
@@ -2249,12 +2249,12 @@ municipios:
 - slug: miraflores-de-la-sierra
   nombre: Miraflores de la Sierra
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:32.989920+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Miraflores de la Sierra, Madrid
@@ -2263,12 +2263,12 @@ municipios:
 - slug: monfarracinos
   nombre: Monfarracinos
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:35.942647+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Monfarracinos (Zamora)
@@ -2277,12 +2277,12 @@ municipios:
 - slug: moraleja-de-enmedio
   nombre: Moraleja de Enmedio
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:37.892582+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Moraleja de Enmedio, Madrid
@@ -2291,12 +2291,12 @@ municipios:
 - slug: navas-del-rey
   nombre: Navas del Rey
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:39.789354+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Navas del Rey
@@ -2305,12 +2305,12 @@ municipios:
 - slug: olmeda-de-las-fuentes
   nombre: Olmeda de las Fuentes
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:41.687387+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Olmeda de las Fuentes, Madrid
@@ -2319,12 +2319,12 @@ municipios:
 - slug: serranillos-del-valle
   nombre: Serranillos del Valle
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:54.001402+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Serranillos del Valle
@@ -2333,12 +2333,12 @@ municipios:
 - slug: torremolinos
   nombre: Torremolinos
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:57.914136+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Torremolinos/Málaga
@@ -2347,12 +2347,12 @@ municipios:
 - slug: villaquilambre
   nombre: Villaquilambre
   bocm_count: 6
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:06.810508+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Villaquilambre-León
@@ -2361,12 +2361,12 @@ municipios:
 - slug: abades
   nombre: Abades
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:22.271299+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Abades (Segovia)
@@ -2375,12 +2375,12 @@ municipios:
 - slug: alba-de-tormes
   nombre: Alba de Tormes
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:25.846386+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Alba de Tormes (Salamanca)
@@ -2389,12 +2389,12 @@ municipios:
 - slug: aldeatejada
   nombre: Aldeatejada
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:29.931081+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Aldeatejada (Salamanca)
@@ -2403,12 +2403,12 @@ municipios:
 - slug: bernuy-de-porreros
   nombre: Bernuy de Porreros
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:42.537922+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Bernuy de Porreros (Segovia)
@@ -2417,12 +2417,12 @@ municipios:
 - slug: cubillos-del-sil
   nombre: Cubillos del Sil
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:01.859434+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Cubillos del Sil (León)
@@ -2431,12 +2431,12 @@ municipios:
 - slug: denia
   nombre: Dénia
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:03.816104+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Dénia
@@ -2459,12 +2459,12 @@ municipios:
 - slug: jaen
   nombre: Jaén
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:20.259753+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Jaén
@@ -2473,12 +2473,12 @@ municipios:
 - slug: javea
   nombre: Jávea
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:21.225250+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Jávea
@@ -2487,12 +2487,12 @@ municipios:
 - slug: la-carlota
   nombre: La Carlota
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:24.158507+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: La Carlota, Córdoba
@@ -2501,12 +2501,12 @@ municipios:
 - slug: la-linea-de-la-concepcion
   nombre: La Línea de la Concepción
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:25.128100+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: La Línea de la Concepción (Cádiz)
@@ -2515,12 +2515,12 @@ municipios:
 - slug: la-victoria-de-acentejo
   nombre: La Victoria de Acentejo
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:27.081676+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: La Victoria de Acentejo
@@ -2529,12 +2529,12 @@ municipios:
 - slug: langa-de-duero
   nombre: Langa de Duero
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:28.057671+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Langa de Duero (Soria)
@@ -2543,12 +2543,12 @@ municipios:
 - slug: lepe
   nombre: Lepe
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:29.000283+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Lepe, Huelva
@@ -2557,12 +2557,12 @@ municipios:
 - slug: montejo-de-la-sierra
   nombre: Montejo de la Sierra
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:36.910304+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Montejo de la Sierra
@@ -2585,12 +2585,12 @@ municipios:
 - slug: navacerrada
   nombre: Navacerrada
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:38.839903+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Navacerrada, Madrid
@@ -2599,12 +2599,12 @@ municipios:
 - slug: ontinyent
   nombre: Ontinyent
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:42.643066+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Ontinyent
@@ -2613,12 +2613,12 @@ municipios:
 - slug: pradena-del-rincon
   nombre: Prádena del Rincón
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:46.592116+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Prádena del Rincón
@@ -2627,12 +2627,12 @@ municipios:
 - slug: puentes-viejas
   nombre: Puentes Viejas
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:48.475176+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Puentes Viejas
@@ -2641,12 +2641,12 @@ municipios:
 - slug: santa-marta-de-tormes
   nombre: Santa Marta de Tormes
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:53.042761+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Santa Marta de Tormes, Salamanca
@@ -2655,12 +2655,12 @@ municipios:
 - slug: torrejon-de-la-calzada
   nombre: Torrejón de la Calzada
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:55.971124+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Torrejón de la Calzada, Madrid
@@ -2669,12 +2669,12 @@ municipios:
 - slug: valdepielagos
   nombre: Valdepiélagos
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:59.901290+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Valdepiélagos, Madrid
@@ -2697,12 +2697,12 @@ municipios:
 - slug: villamanrique-de-tajo
   nombre: Villamanrique de Tajo
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:03.809557+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Villamanrique de Tajo
@@ -2711,12 +2711,12 @@ municipios:
 - slug: agullent
   nombre: Agullent
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:24.061214+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Agullent
@@ -2725,12 +2725,12 @@ municipios:
 - slug: alcaucin
   nombre: Alcaucín
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:29.023519+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Alcaucín-Málaga
@@ -2739,12 +2739,12 @@ municipios:
 - slug: alicante
   nombre: Alicante
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:30.829438+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Alicante
@@ -2768,12 +2768,12 @@ municipios:
 - slug: alpedrete
   nombre: Alpedrete
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:32.641505+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Alpedrete
@@ -2782,12 +2782,12 @@ municipios:
 - slug: arenas-de-san-pedro
   nombre: Arenas de San Pedro
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:37.142788+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Arenas de San Pedro (Ávila)
@@ -2796,12 +2796,12 @@ municipios:
 - slug: bornos
   nombre: Bornos
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:44.340017+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Bornos, Cádiz
@@ -2810,12 +2810,12 @@ municipios:
 - slug: cadiz
   nombre: Cádiz
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:47.047197+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Cádiz
@@ -2824,12 +2824,12 @@ municipios:
 - slug: candelaria
   nombre: Candelaria
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:50.671044+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Candelaria
@@ -2838,12 +2838,12 @@ municipios:
 - slug: casarrubuelos
   nombre: Casarrubuelos
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:53.414272+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Casarrubuelos, Madrid
@@ -2852,12 +2852,12 @@ municipios:
 - slug: castello-de-la-plana
   nombre: Castelló de la Plana
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:54.313205+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Castelló de la Plana
@@ -2866,12 +2866,12 @@ municipios:
 - slug: colmenar-del-arroyo
   nombre: Colmenar del Arroyo
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:59.004225+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Colmenar del Arroyo
@@ -2880,12 +2880,12 @@ municipios:
 - slug: conil-de-la-frontera
   nombre: Conil de la Frontera
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:59.949377+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Conil de la Frontera
@@ -2894,12 +2894,12 @@ municipios:
 - slug: el-campello
   nombre: El Campello
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:07.647991+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: El Campello
@@ -2908,12 +2908,12 @@ municipios:
 - slug: el-vellon
   nombre: El Vellón
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:09.592380+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Vellón, Madrid
@@ -2936,12 +2936,12 @@ municipios:
 - slug: gargantilla-del-lozoya
   nombre: Gargantilla del Lozoya
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:13.502867+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Pinilla de Buitrago
@@ -2950,12 +2950,12 @@ municipios:
 - slug: la-adrada
   nombre: La Adrada
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:23.175965+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: La Adrada (Ávila)
@@ -2964,12 +2964,12 @@ municipios:
 - slug: la-robla
   nombre: La Robla
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:26.092278+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: La Robla (León)
@@ -2992,12 +2992,12 @@ municipios:
 - slug: miranda-de-azan
   nombre: Miranda de Azán
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:33.972235+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Miranda de Azán (Salamanca)
@@ -3006,12 +3006,12 @@ municipios:
 - slug: miranda-de-ebro
   nombre: Miranda de Ebro
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:34.975269+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Miranda de Ebro (Burgos)
@@ -3020,12 +3020,12 @@ municipios:
 - slug: penafiel
   nombre: Peñafiel
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:43.633778+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Peñafiel-Valladolid
@@ -3034,12 +3034,12 @@ municipios:
 - slug: pinuecar-gandullas
   nombre: Piñuécar-Gandullas
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:45.610507+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Piñuécar-Gandullas
@@ -3048,12 +3048,12 @@ municipios:
 - slug: priego-de-cordoba
   nombre: Priego de Córdoba
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:47.538245+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Priego de Córdoba
@@ -3062,12 +3062,12 @@ municipios:
 - slug: rozas-de-puerto-real
   nombre: Rozas de Puerto Real
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:50.290446+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Rozas de Puerto Real
@@ -3076,12 +3076,12 @@ municipios:
 - slug: sant-joan-d-alacant
   nombre: Sant Joan d'Alacant
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:51.221102+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Sant Joan d'Alacant
@@ -3090,12 +3090,12 @@ municipios:
 - slug: tomares
   nombre: Tomares
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:54.969333+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Tomares (Sevilla)
@@ -3104,12 +3104,12 @@ municipios:
 - slug: valdemanco
   nombre: Valdemanco
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:58.909087+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Valdemanco, Madrid
@@ -3118,12 +3118,12 @@ municipios:
 - slug: valverdon
   nombre: Valverdón
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:01.848733+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Valverdón (Salamanca)
@@ -3132,12 +3132,12 @@ municipios:
 - slug: velilla-de-san-antonio
   nombre: Velilla de San Antonio
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:31:02.829892+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Velilla de San Antonio
@@ -3146,12 +3146,12 @@ municipios:
 - slug: almensilla
   nombre: Almensilla
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:31.721534+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Almensilla (Sevilla)
@@ -3160,12 +3160,12 @@ municipios:
 - slug: ambite
   nombre: Ambite
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:34.425734+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Ambite
@@ -3174,12 +3174,12 @@ municipios:
 - slug: arcos-de-la-llana
   nombre: Arcos de la Llana
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:36.251523+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Arcos de la Llana (Burgos)
@@ -3188,12 +3188,12 @@ municipios:
 - slug: arrecife
   nombre: Arrecife
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:38.057572+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Arrecife
@@ -3202,12 +3202,12 @@ municipios:
 - slug: babilafuente
   nombre: Babilafuente
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:39.844116+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Babilafuente-Salamanca
@@ -3216,12 +3216,12 @@ municipios:
 - slug: beniganim
   nombre: Benigànim
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:41.625764+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Benigànim
@@ -3230,12 +3230,12 @@ municipios:
 - slug: boecillo
   nombre: Boecillo
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:43.442142+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Boecillo (Valladolid)
@@ -3244,12 +3244,12 @@ municipios:
 - slug: braojos-de-la-sierra
   nombre: Braojos de la Sierra
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:45.253505+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Braojos de la Sierra
@@ -3258,12 +3258,12 @@ municipios:
 - slug: burriana
   nombre: Burriana
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:46.161812+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Burriana
@@ -3272,12 +3272,12 @@ municipios:
 - slug: calp
   nombre: Calp
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:47.960111+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Calp
@@ -3286,12 +3286,12 @@ municipios:
 - slug: canals
   nombre: Canals
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:49.768834+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Canals
@@ -3300,12 +3300,12 @@ municipios:
 - slug: castellon-de-la-plana
   nombre: Castellón de la Plana
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:55.224028+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Castellón de la Plana
@@ -3314,12 +3314,12 @@ municipios:
 - slug: cenicientos
   nombre: Cenicientos
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:56.136163+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cenicientos, Madrid
@@ -3328,12 +3328,12 @@ municipios:
 - slug: cervera-de-buitrago
   nombre: Cervera de Buitrago
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:29:57.042494+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Cervera de Buitrago
@@ -3342,12 +3342,12 @@ municipios:
 - slug: corpa
   nombre: Corpa
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:00.926305+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Corpa
@@ -3356,12 +3356,12 @@ municipios:
 - slug: duenas
   nombre: Dueñas
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:04.774105+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Dueñas (Palencia)
@@ -3370,12 +3370,12 @@ municipios:
 - slug: el-boalo-cerceda-mataelpino
   nombre: El Boalo-Cerceda-Mataelpino
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:06.736309+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: El Boalo-Cerceda-Mataelpino
@@ -3384,12 +3384,12 @@ municipios:
 - slug: el-paso
   nombre: El Paso
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:08.605751+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: El Paso, La Palma
@@ -3398,12 +3398,12 @@ municipios:
 - slug: enguera
   nombre: Enguera
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:10.540345+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Enguera
@@ -3412,12 +3412,12 @@ municipios:
 - slug: estremera
   nombre: Estremera
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:30:12.518784+00:00'
   last_error: null
   pr_url: null
-  notes: ''
+  notes: Mergeado batch cleanup 2026-08-19
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Estremera
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T17:19:48.066860+00:00'
+updated_at: '2026-08-19T17:31:06.812304+00:00'
