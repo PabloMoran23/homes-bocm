@@ -1,0 +1,30 @@
+slug: agullent
+nombre: "Agullent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.agullent.es"
+  adapter: municipio.adapters.agullent:AgullentAyuntamientoAdapter
+  config:
+    web_base: "https://www.agullent.es"
+    sede_base: "https://agullent.sedelectronica.es"
+    board_url: "https://agullent.sedelectronica.es/board/"
+    shape_zip_url: "https://www.agullent.es/sites/www.agullent.es/files/SHAPE%20AGULLENT.zip"
+    shape_local_path: "data/municipios/agullent/geometry/SHAPE_AGULLENT.zip"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-agullent/1.0"
+    centroid: [38.8236, -0.5489]
+  notes: |
+    Web Drupal portalesmunicipales (transparencia/urbanismo, avisos, PUAM).
+    Sede espublico gestiona: tablón /board/.
+    Shapefile SHAPE AGULLENT.zip con polígonos por código expediente (EPSG:25830).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

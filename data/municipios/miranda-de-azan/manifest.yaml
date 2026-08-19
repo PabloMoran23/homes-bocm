@@ -1,0 +1,28 @@
+slug: miranda-de-azan
+nombre: "Miranda de Azán"
+provincia: "Miranda de Azán (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.mirandadeazan.com"
+  adapter: municipio.adapters.miranda_de_azan:MirandaDeAzanAyuntamientoAdapter
+  config:
+    jimdo_base: "https://www.mirandadeazan.com"
+    sede_base: "https://mirandadeazan.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-miranda-de-azan/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Miranda de Azán"
+  notes: |
+    Web Jimdo Creator (/areas/urbanismo/* con PDFs /app/download/).
+    Sede espublico gestiona: tablón /board (vacío), catálogo /dossier.
+    Planeamiento: NS municipales + modificación puntual + PEOD Las Liebres.
+    Geometría: IDECyL WFS PLAU CyL (instrumento NUM + 4 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
