@@ -1,0 +1,29 @@
+slug: garrafe-de-torio
+nombre: "Garrafe de Torío"
+provincia: "Garrafe de Torío (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytogarrafedetorio.es"
+  adapter: municipio.adapters.garrafe_de_torio:GarrafeDeTorioAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytogarrafedetorio.es"
+    web_wp: "https://www.ayuntamientogarrafedetorio.com"
+    sede_base: "https://garrafedetorio.sedelectronica.es"
+    dossier_url: "https://garrafedetorio.sedelectronica.es/dossier.0"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-garrafe-de-torio/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Garrafe de Torío"
+    centroid: [42.877, -5.577]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + WordPress normativa PDFs
+    + sede espublico gestiona (tablón) + IDECyL WFS sectores (c_mun 24076, PlanPublica 076).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
