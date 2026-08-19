@@ -1,0 +1,29 @@
+slug: candelario
+nombre: "Candelario"
+provincia: "Candelario-Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.candelario.es"
+  adapter: municipio.adapters.candelario:CandelarioAyuntamientoAdapter
+  config:
+    wp_base: "https://www.candelario.es"
+    sede_base: "https://candelario.sedelectronica.es"
+    board_url: "https://candelario.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-candelario/1.0"
+    centroid: [40.3667, -5.7333]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Candelario
+    urbanismo_category_id: 59
+  notes: |
+    Web WordPress Enfold (sección urbanismo con noticias de obras y planeamiento).
+    Sede espublico gestiona: tablón /board (bandos y anuncios recientes).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 10 sectores SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
