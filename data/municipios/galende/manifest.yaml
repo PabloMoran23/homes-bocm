@@ -1,0 +1,30 @@
+slug: galende
+nombre: "Galende"
+provincia: Zamora
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytogalende.net"
+  adapter: municipio.adapters.galende:GalendeAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytogalende.net"
+    sede_base: "https://galende.sedelectronica.es"
+    urbanismo_url: "https://www.aytogalende.net/index.php/tablon-de-anuncios/category/3-urbanismo"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "49085"
+    plan_provincia: "49"
+    plan_municipio: "85"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-galende/1.0 (+urbanismo research)"
+    centroid: [42.1986, -6.6722]
+  notes: |
+    Joomla Helix + jDownloads (tablón urbanismo PDFs) + sede espublico gestiona
+    + PlanPublica JCyL + IDECyL WFS sectores (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
