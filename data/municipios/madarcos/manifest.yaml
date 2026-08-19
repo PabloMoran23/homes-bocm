@@ -1,0 +1,33 @@
+slug: madarcos
+nombre: "Madarcos"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://madarcos.madrid"
+  adapter: municipio.adapters.madarcos:MadarcosAyuntamientoAdapter
+  config:
+    web_base: "https://madarcos.madrid"
+    sede_eadmin: "https://sedemadarcos.eadministracion.es"
+    tablon_url: "https://sedemadarcos.eadministracion.es/PortalCiudadano/Tablon/wfrTablon.aspx"
+    transparencia_url: "https://transparenciamadarcos.eadministracion.es/portal"
+    pgou_url: "https://madarcos.madrid/tu-ayuntamiento/normativa-municipal/plan-general-de-urbanismo"
+    ordenanzas_url: "https://madarcos.madrid/tu-ayuntamiento/normativa-municipal/ordenanzas-municipales"
+    tablon_muni_url: "https://madarcos.madrid/ciudadanos/tablon-municipal"
+    licencias_url: "https://madarcos.madrid/ciudadanos/tramites-personales/instancias-licencias-y-solicitudes"
+    urbanismo_url: "https://madarcos.madrid/ciudadanos/tramites-personales/169-urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-madarcos/1.0"
+    centroid: [41.0477311, -3.5821549]
+  notes: |
+    Joomla (Helix/SP Page Builder) madarcos.madrid: PGOU/NNSS, ordenanzas PDF y tablón municipal.
+    Sede eAdmin Maggioli (SPA): tablón sin HTML scrapeable (sesión caducada).
+    SITCM WFS sin ámbitos para MADARCOS pese a mención en web del PGOU 2015.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,27 @@
+slug: penafiel
+nombre: "Peñafiel"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.penafiel.es"
+  adapter: municipio.adapters.penafiel:PenafielAyuntamientoAdapter
+  config:
+    web_base: "https://www.penafiel.es"
+    sede_base: "https://penafiel.sedelectronica.es"
+    urbanismo_page: "https://www.penafiel.es/urbanismo.php"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-penafiel/1.0"
+    centroid: [41.5983, -4.1189]
+  notes: |
+    Web PHP penafiel.es (PGOU/PECH PDFs) + sede espublico gestiona (tablón /board,
+    catálogo /dossier) + archivo PlanPublica Junta CYL (provincia 47, municipio 147).
+    IDECyL WFS sin polígonos para Peñafiel (geometry_status: unavailable).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
