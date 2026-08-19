@@ -1,0 +1,34 @@
+slug: corpa
+nombre: "Corpa"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ayuntamientocorpa.es"
+  adapter: municipio.adapters.corpa:CorpaAyuntamientoAdapter
+  config:
+    urbanismo_url: "https://www.ayuntamientocorpa.es/urbanismo"
+    normativa_url: "https://www.ayuntamientocorpa.es/normativa"
+    sede_base: "https://corpa.sedelectronica.es"
+    board_url: "https://corpa.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-corpa/1.0"
+    centroid: [40.4236, -3.2645]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CORPA"
+  notes: |
+    Web Neosoft (NNSS/PGOU PDFs en /urbanismo).
+    Sede espublico gestiona: tablón /board.
+    Sede Maggioli eAdmin (sedecorpa.eadministracion.es) para trámites.
+    Ámbitos UE/SAU en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
