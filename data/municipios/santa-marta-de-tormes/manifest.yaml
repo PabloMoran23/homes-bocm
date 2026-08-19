@@ -1,0 +1,29 @@
+slug: santa-marta-de-tormes
+nombre: "Santa Marta de Tormes"
+provincia: "Santa Marta de Tormes, Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.santamartadetormes.es"
+  adapter: municipio.adapters.santa_marta_de_tormes:SantaMartaDeTormesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-marta-de-tormes/1.0"
+    centroid: [40.9487, -5.6464]
+    geometry:
+      kind: wfs
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+      layer: "urbanismo:plau_cyl_sectores"
+      municipio_filter: "Santa Marta de Tormes"
+  notes: |
+    Web municipal (CMS propio): sección Urbanismo con páginas de PGOU, modificaciones
+    puntuales, planes parciales y estudios de detalle por sector (UZ-7, UNC-6, etc.).
+    Sede electrónica (santamartadetormes.sedelectronica.es) inaccesible desde red del agente.
+    Geometría parcial vía IDECyL WFS sectores PGOU (SIUCyL).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

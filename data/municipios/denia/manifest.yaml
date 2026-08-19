@@ -1,0 +1,27 @@
+slug: denia
+nombre: "Dénia"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.denia.es"
+  adapter: municipio.adapters.denia:DeniaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-denia/1.0"
+    web_base: "https://www.denia.es"
+    sede_base: "https://sede.denia.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      cod_ine_mun: "03063"
+  notes: |
+    Web ASP.NET (urbanisme/*) + sede STA TAO (tablón KEY=all, catálogo trámites).
+    Geometría parcial vía ICV InventarioSuSuz WFS (9 sectores SU/SUZ).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
