@@ -1,0 +1,32 @@
+slug: gascones
+nombre: "Gascones"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.gascones.com"
+  adapter: municipio.adapters.gascones:GasconesAyuntamientoAdapter
+  config:
+    sede_base: "https://gascones.sedelectronica.es"
+    transparencia_base: "https://transparencia.gascones.com"
+    board_url: "https://gascones.sedelectronica.es/board/"
+    licencias_url: "https://www.gascones.com/ciudadanos/tramites-personales/instancias-licencias-y-solicitudes"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gascones/1.0"
+    centroid: [41.0167, -3.7167]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "GASCONES"
+  notes: |
+    Web Joomla LT Company + icagenda tablón + sede espublico gestiona.
+    Normas subsidiarias y modificación puntual en concejalía urbanismo.
+    Ámbitos E-* y SAU-1 en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
