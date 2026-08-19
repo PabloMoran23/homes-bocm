@@ -1,0 +1,27 @@
+slug: ingenio
+nombre: "Ingenio"
+provincia: "Ingenio, Gran Canaria"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://ingenio.es"
+  adapter: municipio.adapters.ingenio:IngenioAyuntamientoAdapter
+  config:
+    sede_base: "https://ingenio.sedelectronica.es"
+    board_url: "https://ingenio.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ingenio/1.0"
+    centroid: [27.9198, -15.4425]
+  notes: |
+    Fuentes: WordPress Divi (PGOU PDFs, noticias PGO/agenda urbana) + sede espublico gestiona (/board).
+    Archivo planeamiento Gobierno de Canarias (13 instrumentos PG) sin geometría vectorial enlazable.
+    Sin visor GIS municipal público con API.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
