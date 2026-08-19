@@ -1,0 +1,28 @@
+slug: tomares
+nombre: "Tomares"
+provincia: "Tomares (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://tomares.sedelectronica.es"
+  adapter: municipio.adapters.tomares:TomaresAyuntamientoAdapter
+  config:
+    sede_base: "https://tomares.sedelectronica.es"
+    board_url: "https://tomares.sedelectronica.es/board"
+    transparency_url: "https://tomares.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-tomares/1.0"
+    centroid: [37.3762, -6.0459]
+  notes: |
+    Fuentes: Drupal 7 www.tomares.es (urbanismo/PGOU/innovaciones) + sede espublico gestiona
+    (tablón /board + transparencia urbanismo 204 docs). Licencias: portal Diputación Sevilla
+    LicytalPub (enlace oficial). Sin visor GIS municipal; SITUA/VITUA Junta sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
