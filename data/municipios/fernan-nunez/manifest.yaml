@@ -1,0 +1,27 @@
+slug: fernan-nunez
+nombre: "Fernán Núñez"
+provincia: "Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://fernannunez.es"
+  adapter: municipio.adapters.fernan_nunez:FernanNunezAyuntamientoAdapter
+  config:
+    urbanismo_url: "https://fernannunez.es/ayuntamiento/urbanismo/"
+    sede_base: "https://sede.eprinsa.es/fnunez"
+    tablon_url: "https://sede.eprinsa.es/fnunez/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fernan-nunez/1.0"
+    centroid: [37.6722, -4.7256]
+  notes: |
+    Fuentes: página Urbanismo (WordPress Divi, 118+ PDFs PGOU/planes/convenios)
+    + sede eprinsa/Diputación Córdoba (tablón SPA) + noticias WP (PGOU).
+    Sin visor GIS municipal enlazable; geometría unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
