@@ -1,0 +1,29 @@
+slug: babilafuente
+nombre: "Babilafuente"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://babilafuente.es"
+  adapter: municipio.adapters.babilafuente:BabilafuenteAyuntamientoAdapter
+  config:
+    web_base: "https://babilafuente.es"
+    sede_base: "https://babilafuente.sedelectronica.es"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "37038"
+    plan_provincia: "37"
+    plan_municipio: "38"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-babilafuente/1.0 (+urbanismo research)"
+    centroid: [40.9789, -5.5228]
+  notes: |
+    WordPress noticias (babilafuente.es) + sede espublico gestiona (tablón + catálogo)
+    + PlanPublica JCyL + IDECyL WFS sectores/planes (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
