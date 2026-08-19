@@ -1,0 +1,30 @@
+slug: cenicientos
+nombre: "Cenicientos"
+provincia: "Cenicientos, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://cenicientos.sedelectronica.es"
+  adapter: municipio.adapters.cenicientos:CenicientosAyuntamientoAdapter
+  config:
+    sede_base: "https://cenicientos.sedelectronica.es"
+    board_url: "https://cenicientos.sedelectronica.es/board"
+    transparency_url: "https://cenicientos.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cenicientos/1.0"
+    centroid: [40.2632, -4.4670]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CENICIENTOS"
+  notes: |
+    Sede espublico gestiona (tablón /board). Web corporativa www.cenicientos.es en construcción.
+    Geometría partial vía WFS SIT Comunidad de Madrid (16 ámbitos UA/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
