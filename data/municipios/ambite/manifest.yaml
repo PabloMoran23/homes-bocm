@@ -1,0 +1,33 @@
+slug: ambite
+nombre: "Ambite"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.ambite.es"
+  adapter: municipio.adapters.ambite:AmbiteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ambite/1.0"
+    insecure_ssl: true
+    centroid: [40.3342, -3.1715]
+    urbanismo_url: "https://www.ambite.es/servicios-urbanisticos"
+    tramites_url: "https://www.ambite.es/instancias-y-tramites"
+    sede_base: "https://ambite.sedelectronica.es"
+    board_url: "https://ambite.sedelectronica.es/board"
+    cms_base: "https://cms.ambite.es"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "AMBITE"
+  notes: |
+    Web Neosoft (ambite.es): NNSS y planos en /servicios-urbanisticos; formularios en /instancias-y-tramites.
+    Sede espublico (ambite.sedelectronica.es/board) tablón HTML con preview-document.
+    Geometría partial vía WFS SITCM (12 ámbitos UE/S).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
