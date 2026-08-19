@@ -1,0 +1,27 @@
+slug: icod-de-los-vinos
+nombre: "Icod de los Vinos"
+provincia: "Icod de los Vinos"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://icoddelosvinos.es"
+  adapter: municipio.adapters.icod_de_los_vinos:IcodDeLosVinosAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.icoddelosvinos.es"
+    geobdp_municipio: 38022
+    sitcan_package: planeamiento-urbanistico-de-icod-de-los-vinos
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-icod-de-los-vinos/1.0"
+    centroid: [28.3669, -16.7174]
+  notes: |
+    WordPress (trámites urbanismo) + sede STA (tablón PTS2_TABLON JSON embebido)
+    + SITCAN CKAN (planeamiento sistematizado) + GEOBDP Grafcan (15 polígonos UTM28N).
+    Sin listado público de licencias concedidas; trámites informativos WP/sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

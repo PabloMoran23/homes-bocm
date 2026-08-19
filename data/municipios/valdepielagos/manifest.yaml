@@ -1,0 +1,30 @@
+slug: valdepielagos
+nombre: "Valdepiélagos"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.valdepielagos.es"
+  adapter: municipio.adapters.valdepielagos:ValdepielagosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdepielagos/1.0"
+    wp_base: "https://www.valdepielagos.es"
+    sede_base: "https://valdepielagos.sedelectronica.es"
+    planeamiento_url: "https://www.valdepielagos.es/planeamiento/"
+    tecnico_url: "https://www.valdepielagos.es/tecnico-municipal/"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VALDEPIÉLAGOS"
+  notes: |
+    WordPress Enfold (planeamiento NNSS + SAU, impresos técnicos) +
+    sede espublico gestiona (tablón/transparencia) +
+    ámbitos SITCM WFS (5 SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
