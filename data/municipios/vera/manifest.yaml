@@ -1,0 +1,28 @@
+slug: vera
+nombre: "Vera"
+provincia: "Vera (Almería)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://vera.sedelectronica.es"
+  adapter: municipio.adapters.vera:VeraAyuntamientoAdapter
+  config:
+    sede_base: "https://vera.sedelectronica.es"
+    board_url: "https://vera.sedelectronica.es/board/"
+    ordenanzas_url: "https://www.vera.es/ayuntamiento/index.php?page=ordenanzas"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-vera/1.0"
+    centroid: [37.2469, -1.8690]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) y ordenanzas urbanísticas en www.vera.es.
+    Portal transparencia sede (carpeta Urbanismo, 24 docs) requiere identificación electrónica.
+    Geoportal qgis.vera.es: inventario municipal (GNOIDE), sin enlace a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

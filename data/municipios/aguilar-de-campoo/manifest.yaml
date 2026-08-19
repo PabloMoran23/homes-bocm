@@ -1,0 +1,25 @@
+slug: aguilar-de-campoo
+nombre: "Aguilar de Campoo"
+provincia: "Aguilar de Campoo (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aguilardecampoo.es"
+  adapter: municipio.adapters.aguilar_de_campoo:AguilarDeCampooAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aguilar-de-campoo/1.0"
+    sede_base: "https://aguilardecampoo.sedelectronica.es"
+    wfs_municipio: "Aguilar de Campoo"
+    geometry:
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+  notes: |
+    WordPress Diputación Palencia + sede espublico gestiona + SIUCyL WFS (12 sectores).
+    PLAI JCYL provincia=34 municipio=4.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
