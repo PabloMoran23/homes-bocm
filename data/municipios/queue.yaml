@@ -1871,12 +1871,12 @@ municipios:
 - slug: aguilar-de-campoo
   nombre: Aguilar de Campoo
   bocm_count: 7
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T16:54:18.222561+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/251
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32278504454
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Aguilar de Campoo (Palencia)
@@ -2571,12 +2571,12 @@ municipios:
 - slug: morata-de-tajuna
   nombre: Morata de Tajuña
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:10:29.169377+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/301
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280013198
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Morata de Tajuña
@@ -2683,12 +2683,12 @@ municipios:
 - slug: vera
   nombre: Vera
   bocm_count: 5
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:13:11.837871+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/309
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280271483
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Vera (Almería)
@@ -2754,12 +2754,12 @@ municipios:
 - slug: almeria
   nombre: Almería
   bocm_count: 4
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-08-19T17:14:51.944372+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/314
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 32280426945
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Almería
@@ -2922,12 +2922,12 @@ municipios:
 - slug: fuentiduena-de-tajo
   nombre: Fuentidueña de Tajo
   bocm_count: 4
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-17T00:06:02.738681+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/326
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Fuentidueña de Tajo
@@ -3258,11 +3258,11 @@ municipios:
 - slug: burriana
   nombre: Burriana
   bocm_count: 3
-  status: done
-  attempts: 1
-  last_run: '2026-08-16T00:23:43.206320+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/351
+  pr_url: null
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-16T00:23:43.207236+00:00'
+updated_at: '2026-08-19T17:14:51.945812+00:00'

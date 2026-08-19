@@ -1,0 +1,27 @@
+slug: ontinyent
+nombre: "Ontinyent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.ontinyent.es"
+  adapter: municipio.adapters.ontinyent:OntinyentAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ontinyent/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      ine_municipio: "46184"
+  notes: |
+    Web corporativa Drupal 10 (Digital Value / portalesmunicipales.es).
+    Sede electrónica sedipualba (tablón RSS + catálogo trámites URBANISME).
+    Geometría parcial vía ICV WFS InventarioSuSuz (filtrado cod_ine_mun=46184).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

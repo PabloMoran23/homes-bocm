@@ -1,0 +1,29 @@
+slug: valdemanco
+nombre: "Valdemanco"
+provincia: Valdemanco, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.valdemanco.org"
+  adapter: municipio.adapters.valdemanco:ValdemancoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdemanco/1.0"
+    sede_base: "https://valdemanco.sedelectronica.es"
+    board_url: "https://valdemanco.sedelectronica.es/board"
+    impresos_url: "https://www.valdemanco.org/impresos/"
+    ordenanzas_url: "https://valdemanco.sedelectronica.es/transparency/04c03607-6da4-46cd-8d65-b743eb02a665/"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VALDEMANCO"
+  notes: |
+    WordPress valdemanco.org (impresos licencias) + sede espublico gestiona.
+    Tablón /board, ordenanzas en transparencia. Geometría partial vía WFS SITCM (21 ámbitos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
