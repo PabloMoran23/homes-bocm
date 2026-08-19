@@ -1,0 +1,27 @@
+slug: la-carlota
+nombre: "La Carlota"
+provincia: "La Carlota, Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lacarlota.es"
+  adapter: municipio.adapters.la_carlota:LaCarlotaAyuntamientoAdapter
+  config:
+    pgou_url: "https://lacarlota.es/pgou-de-la-carlota/"
+    sede_base: "https://sede.eprinsa.es/carlota"
+    tablon_url: "https://sede.eprinsa.es/carlota/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-carlota/1.0"
+    centroid: [37.6736, -4.9292]
+  notes: |
+    Fuentes: página PGOU (WordPress Divi) + sede eprinsa/Diputación Córdoba.
+    Tablón de edictos en SPA Ember (wec-bulletins) sin API pública sin token.
+    VITUA/SITUA (Junta) para cartografía regional; sin enlace expediente↔polígono.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

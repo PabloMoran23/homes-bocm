@@ -1,0 +1,25 @@
+slug: los-realejos
+nombre: "Los Realejos"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://losrealejos.es"
+  adapter: municipio.adapters.los_realejos:LosRealejosAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.losrealejos.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-realejos/1.0"
+    centroid: [28.384, -16.588]
+  notes: |
+    WordPress municipal (urbanismo, PGO 2025, transparencia GMU) + sede eMiServicio (ABSIS).
+    Planeamiento sistematizado SITCAN/IDE Canarias (92 recursos) con geometría GEOBDP (EPSG:32628→4326).
+    Sin listado público de licencias concedidas; trámites informativos licencias de actividades.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
