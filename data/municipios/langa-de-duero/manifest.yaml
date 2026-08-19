@@ -1,0 +1,32 @@
+slug: langa-de-duero
+nombre: "Langa de Duero"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.langadeduero.es"
+  adapter: municipio.adapters.langa_de_duero:LangaDeDueroAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.langadeduero.es"
+    sede_base: "https://langadeduero.sedelectronica.es"
+    board_url: "https://langadeduero.sedelectronica.es/board"
+    dossier_url: "https://langadeduero.sedelectronica.es/dossier"
+    plai_municipio: 103
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Langa de Duero"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-langa-de-duero/1.0"
+    centroid: [41.614, -3.445]
+  notes: |
+    Fuentes: Drupal 7 (noticias urbanismo/PDFs), sede espublico gestiona
+    (tablón /board, trámites /dossier), PLAI JCYL (municipio 103, Soria 42)
+    y capas IDECyL WFS (sectores/PP/instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
