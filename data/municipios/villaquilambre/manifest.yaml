@@ -1,0 +1,25 @@
+slug: villaquilambre
+nombre: "Villaquilambre"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.villaquilambre.es"
+  adapter: municipio.adapters.villaquilambre:VillaquilambreAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villaquilambre/1.0"
+    sede_base: "https://villaquilambre.sedelectronica.es"
+    wfs_municipio: "Villaquilambre"
+    plai_provincia: "24"
+    plai_municipio: "241"
+  notes: |
+    WordPress (urbanismo/edictos/PGOU/estudio SUR-01) + sede espublico gestiona tablón
+    + planeamiento JCyL PLAI (prov. 24, mun. 241) + IDECyL WFS sectores/instrumentos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
