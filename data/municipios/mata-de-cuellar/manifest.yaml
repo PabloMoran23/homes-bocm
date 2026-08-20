@@ -1,0 +1,30 @@
+slug: mata-de-cuellar
+nombre: "Mata de Cuéllar"
+provincia: "Mata de Cuéllar, Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.matadecuellar.es"
+  adapter: municipio.adapters.mata_de_cuellar:MataDeCuellarAyuntamientoAdapter
+  config:
+    web_base: "https://www.matadecuellar.es"
+    sede_base: "https://matadecuellar.sedelectronica.es"
+    board_url: "https://matadecuellar.sedelectronica.es/board"
+    plai_municipio: 124
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Mata de Cuéllar"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mata-de-cuellar/1.0"
+    insecure_ssl: true
+  notes: |
+    Web Liferay (tema DipSegovia) en matadecuellar.es + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 124, INE 40124).
+    Geometría: IDECyL WFS PLAU CyL (instrumento SPG municipal; sin sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
