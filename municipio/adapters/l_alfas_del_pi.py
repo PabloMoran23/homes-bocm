@@ -479,20 +479,46 @@ class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
         if not candidates:
             return None
         candidates.sort(key=lambda x: -x[0])
-        top = candidates[0][0]
-        geoms = [g for s, g, _ in candidates if s >= top - 5]
-        merged = _merge_geometries(geoms)
-        if not merged:
+        score, geom, source_url = candidates[0]
+        if score < 25:
             return None
         return {
-            "geom_geojson": merged,
+            "geom_geojson": geom,
             "geometry_source": "portal_wfs",
-            "geometry_source_url": candidates[0][2],
+            "geometry_source_url": source_url,
             "coord_source": "portal_geometry_centroid",
         }
 
+    def _should_enrich_geometry(self, rec: dict[str, Any]) -> bool:
+        origen = rec.get("origen") or ""
+        titulo = (rec.get("titulo") or "").lower()
+        if origen in ("pgou", "urbanismo", "aiu", "nou_albir") and not rec.get("pdf_url"):
+            return False
+        if origen in ("pgou", "urbanismo", "aiu", "nou_albir") and "pgou" not in titulo:
+            return False
+        if any(
+            k in titulo
+            for k in (
+                "finca roca",
+                "sector",
+                "pai",
+                "plan parcial",
+                "plan general",
+                "pgou",
+                "normas subsidiarias",
+                "nou albir",
+                "sau",
+            )
+        ):
+            return True
+        if rec.get("expte"):
+            return True
+        return origen in ("tablon", "wp_search")
+
     def _enrich_geometry(self, rec: dict[str, Any]) -> None:
         if record_geometry(rec):
+            return
+        if not self._should_enrich_geometry(rec):
             return
         geom = self._fetch_geometry(rec.get("titulo") or "")
         if not geom:
