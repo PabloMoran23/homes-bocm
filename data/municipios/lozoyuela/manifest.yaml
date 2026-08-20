@@ -10,6 +10,7 @@ portal:
     sede_base: "https://lozoyuela.sedelectronica.es"
     board_url: "https://lozoyuela.sedelectronica.es/board"
     tramites_url: "https://www.lozoyuela.com/tramites-personales/"
+    centroid: [40.9263383, -3.6176377]
     request_delay_s: 0.35
     user_agent: "poc-bocm-lozoyuela/1.0"
     wfs_municipio: "LOZOYUELA-NAVAS-SIETEIGLESIAS"
