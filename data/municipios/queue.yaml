@@ -3468,11 +3468,11 @@ municipios:
 - slug: l-alfas-del-pi
   nombre: L'Alfàs del Pi
   bocm_count: 3
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-20T00:26:47.846057+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/366
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T17:31:06.812304+00:00'
+updated_at: '2026-08-20T00:26:47.847115+00:00'
