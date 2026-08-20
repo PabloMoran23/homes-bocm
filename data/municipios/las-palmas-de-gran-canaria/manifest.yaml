@@ -1,0 +1,30 @@
+slug: las-palmas-de-gran-canaria
+nombre: "Las Palmas de Gran Canaria"
+provincia: "Las Palmas de Gran Canaria"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.laspalmasgc.es"
+  adapter: municipio.adapters.las_palmas_de_gran_canaria:LasPalmasDeGranCanariaAyuntamientoAdapter
+  config:
+    web_base: "https://www.laspalmasgc.es"
+    sede_base: "http://sedeelectronica.laspalmasgc.es"
+    tablon_url: "http://sedeelectronica.laspalmasgc.es/tablonedictos/bulletinBoard/bulletins"
+    sitcan_package: planeamiento-urbanistico-de-las-palmas-de-gran-canaria
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35016/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-las-palmas-de-gran-canaria/1.0"
+    centroid: [28.1235, -15.4363]
+  notes: |
+    SagaSuite CMS (planificación, información pública) + sede e-civilis tablón de edictos
+    + SITCAN CKAN planeamiento-urbanistico-de-las-palmas-de-gran-canaria + GEOBDP Grafcan (INE 35016).
+    Visor urbanístico municipal en actualización; geometría vía GEOBDP.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
