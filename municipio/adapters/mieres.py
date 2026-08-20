@@ -181,6 +181,19 @@ class MieresAyuntamientoAdapter(AyuntamientoAdapter):
         self.fetch_rpgur_details = bool(self.config.get("fetch_rpgur_details", False))
         self._geom_index: dict[str, dict[str, Any]] | None = None
 
+    @staticmethod
+    def _encode_url(url: str) -> str:
+        parts = urllib.parse.urlsplit(url)
+        return urllib.parse.urlunsplit(
+            (
+                parts.scheme,
+                parts.netloc,
+                urllib.parse.quote(parts.path, safe="/:%"),
+                urllib.parse.quote(parts.query, safe="=&%?:,+@"),
+                parts.fragment,
+            )
+        )
+
     def _fetch(self, url: str, *, data: bytes | None = None, encoding: str = "utf-8") -> str:
         time.sleep(self.delay_s)
         headers = {
@@ -188,7 +201,7 @@ class MieresAyuntamientoAdapter(AyuntamientoAdapter):
         }
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
-        req = urllib.request.Request(url, data=data, headers=headers)
+        req = urllib.request.Request(self._encode_url(url), data=data, headers=headers)
         with urllib.request.urlopen(req, timeout=60) as resp:
             raw = resp.read()
         if encoding == "iso-8859-1":
