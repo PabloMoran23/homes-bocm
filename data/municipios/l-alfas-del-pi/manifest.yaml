@@ -1,0 +1,33 @@
+slug: l-alfas-del-pi
+nombre: "L'Alfàs del Pi"
+provincia: "L'Alfàs del Pi"
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.lalfas.es"
+  adapter: municipio.adapters.l_alfas_del_pi:LAlfasDelPiAyuntamientoAdapter
+  config:
+    web_base: "https://www.lalfas.es"
+    sede_url: "https://ciudadano.lalfas.es/PortalCiudadania/"
+    tablon_url: "https://www.lalfas.es/list-transparencia/tablon-de-anuncios/"
+    pgou_url: "https://www.lalfas.es/servicios/urbanismo/pgou-vsp/"
+    urbanismo_url: "https://www.lalfas.es/servicios/urbanismo/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-l-alfas-del-pi/1.0"
+    cod_ine_mun: "03009"
+    centroid: [38.5806, -0.1031]
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+  notes: |
+    WordPress Divi lalfas.es: tablón de anuncios paginado, PGOU PDFs, noticias urbanismo.
+    Sede Maggioli ciudadano.lalfas.es (SPA; sin tablón scrapeable).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 03009).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
