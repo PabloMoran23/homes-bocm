@@ -1,0 +1,28 @@
+slug: la-palma
+nombre: "La Palma"
+provincia: "La Palma"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.cabildodelapalma.es"
+  adapter: municipio.adapters.la_palma:LaPalmaAyuntamientoAdapter
+  config:
+    piolp_base: "https://www.piolp.es"
+    sede_base: "https://sedeelectronica.cabildodelapalma.es"
+    transparencia_base: "https://transparencia.cabildodelapalma.es"
+    tablon_url: "https://sedeelectronica.cabildodelapalma.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-palma/1.0"
+    centroid: [28.66, -17.86]
+  notes: |
+    Cabildo Insular de La Palma (no ayuntamiento): WordPress piolp.es (planeamiento insular)
+    + portal transparencia (PDFs PIO/PTE) + sede STA tablón (dataset PTS2_TABLON embebido).
+    BOC Canarias etiqueta avisos insulares como municipio "La Palma".
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
