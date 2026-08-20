@@ -1,0 +1,29 @@
+slug: lozoyuela
+nombre: "Lozoyuela"
+provincia: Lozoyuela
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.lozoyuela.com"
+  adapter: municipio.adapters.lozoyuela:LozoyuelaAyuntamientoAdapter
+  config:
+    sede_base: "https://lozoyuela.sedelectronica.es"
+    board_url: "https://lozoyuela.sedelectronica.es/board"
+    tramites_url: "https://www.lozoyuela.com/tramites-personales/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lozoyuela/1.0"
+    wfs_municipio: "LOZOYUELA-NAVAS-SIETEIGLESIAS"
+    municipio_name: "Lozoyuela"
+    insecure_ssl: true
+  notes: |
+    Municipio histórico fusionado en Lozoyuela-Navas-Sieteiglesias (2013); portal único lozoyuela.com.
+    WordPress: normas subsidiarias, PONP Mazacorta, bandos PGOU, trámites personales.
+    Sede espublico gestiona (lozoyuela.sedelectronica.es): tablón /board, trámites /dossier.
+    Geometría partial vía SITCM WFS (DS_MUNICIPIO del municipio fusionado).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
