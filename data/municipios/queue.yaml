@@ -3428,10 +3428,10 @@ municipios:
   bocm_count: 3
   status: done
   attempts: 1
-  last_run: '2026-08-19T18:07:37.711583+00:00'
+  last_run: '2026-08-21T00:03:35.299416+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/363
-  notes: ''
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Fernán Núñez
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-19T18:07:37.712482+00:00'
+updated_at: '2026-08-21T00:03:35.300302+00:00'
