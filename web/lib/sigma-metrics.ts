@@ -1,5 +1,6 @@
 /** Métricas agregadas por expediente (PDF pipeline). */
 
+import { fetchDominioOrStatic } from "./dominio-fetch";
 import { sanitizeSigmaMetric } from "./vivienda-plausible";
 
 export type SigmaMetricHecho = {
@@ -84,8 +85,11 @@ export async function loadSigmaMetricsBundle(): Promise<MadridSigmaMetricsFile |
   if (!metricsPromise) {
     metricsPromise = (async () => {
       try {
-        const res = await fetch("/data/madrid-sigma-metrics.json");
-        if (!res.ok) return null;
+        const res = await fetchDominioOrStatic(
+          "/api/dominio/madrid-sigma-metrics",
+          "/data/madrid-sigma-metrics.json",
+        );
+        if (!res?.ok) return null;
         metricsCache = (await res.json()) as MadridSigmaMetricsFile;
         return metricsCache;
       } catch {

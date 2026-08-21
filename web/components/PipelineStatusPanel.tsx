@@ -83,7 +83,7 @@ export function PipelineStatusPanel() {
     (visorJson.expedientesEnJson as number) + 400 < (sqlite.sigmaCatalogExpedientes as number);
 
   return (
-    <section className="mb-10 rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50/80 via-white to-white p-6 shadow-sm ring-1 ring-indigo-100">
+    <section className="mb-10 rounded-xl border border-[var(--portal-paper-deep)] bg-gradient-to-br from-[var(--portal-paper)] via-[var(--surface)] to-[var(--portal-paper)] p-6 shadow-sm ring-1 ring-[var(--portal-ink)]/5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Pipeline SIGMA / NTI</h2>
@@ -135,7 +135,7 @@ export function PipelineStatusPanel() {
           </p>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-200">
             <div
-              className="h-2 rounded-full bg-indigo-600 transition-all duration-500"
+              className="h-2 rounded-full bg-[var(--portal-accent)] transition-all duration-500"
               style={{
                 width:
                   fetchCur != null && fetchTot != null && fetchTot > 0

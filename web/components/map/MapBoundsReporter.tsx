@@ -14,17 +14,17 @@ export function MapBoundsReporter({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const emit = () => {
-    onBoundsChange(boundsFromLeaflet(map.getBounds()));
+    onBoundsChange({ ...boundsFromLeaflet(map.getBounds()), zoom: map.getZoom() });
   };
 
   useMapEvents({
     moveend: () => {
       if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(emit, 80);
+      timerRef.current = setTimeout(emit, 180);
     },
     zoomend: () => {
       if (timerRef.current) clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(emit, 80);
+      timerRef.current = setTimeout(emit, 180);
     },
   });
 

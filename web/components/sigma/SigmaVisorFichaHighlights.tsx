@@ -5,7 +5,7 @@ import type { SigmaVisorFicha } from "@/lib/types";
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex max-w-full items-center rounded-full bg-white/90 px-2.5 py-0.5 text-xs font-medium text-teal-950 ring-1 ring-teal-200/80">
+    <span className="inline-flex max-w-full items-center rounded-full bg-[var(--portal-paper)]/90 px-2.5 py-0.5 text-xs font-medium text-[var(--portal-ink)] ring-1 ring-[var(--portal-accent)]/20">
       <span className="truncate">{children}</span>
     </span>
   );

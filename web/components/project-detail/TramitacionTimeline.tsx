@@ -24,7 +24,7 @@ export function TramitacionTimeline({
     >
       <div className="relative min-w-min px-1 pt-1">
         <div
-          className="pointer-events-none absolute top-[0.65rem] right-6 left-6 h-0.5 bg-teal-200/90"
+          className="pointer-events-none absolute top-[0.65rem] right-6 left-6 h-0.5 bg-[var(--portal-paper-deep)]"
           aria-hidden
         />
         <ol className="relative flex snap-x snap-mandatory gap-0">

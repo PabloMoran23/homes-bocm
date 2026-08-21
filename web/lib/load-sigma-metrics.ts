@@ -1,3 +1,4 @@
+import { rpcDominio } from "@/lib/dominio-cache";
 import { fetchStaticJson } from "@/lib/fetch-static-json";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import { sanitizeSigmaMetric } from "@/lib/vivienda-plausible";
@@ -12,7 +13,11 @@ let metricsPromise: Promise<MadridSigmaMetricsFile | null> | null = null;
 
 async function loadMetricsFile(): Promise<MadridSigmaMetricsFile | null> {
   if (!metricsPromise) {
-    metricsPromise = fetchStaticJson<MadridSigmaMetricsFile>("/data/madrid-sigma-metrics.json");
+    metricsPromise = (async () => {
+      const { data } = await rpcDominio<MadridSigmaMetricsFile>("list_sigma_metrics");
+      if (data?.byExpediente) return data;
+      return fetchStaticJson<MadridSigmaMetricsFile>("/data/madrid-sigma-metrics.json");
+    })();
   }
   return metricsPromise;
 }

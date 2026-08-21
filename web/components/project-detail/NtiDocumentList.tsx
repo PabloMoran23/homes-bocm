@@ -98,7 +98,7 @@ export function NtiDocumentList({
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Buscar por título, carpeta o tipo…"
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:border-[var(--portal-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--portal-accent)]/20"
           />
         </label>
       ) : null}
@@ -121,7 +121,7 @@ export function NtiDocumentList({
                 href={listadoUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-teal-700 underline"
+                className="font-medium text-[var(--portal-accent)] underline"
               >
                 Ver listado completo en el Ayuntamiento
               </a>
@@ -161,7 +161,7 @@ function StatPill({
   const cls = warn
     ? "bg-red-50 text-red-900 ring-red-200"
     : accent
-      ? "bg-teal-50 text-teal-950 ring-teal-200"
+      ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)] ring-[var(--portal-accent)]/25"
       : "bg-white text-slate-800 ring-slate-200";
   return (
     <div className={`rounded-lg px-3 py-2 ring-1 ${cls}`}>
@@ -177,13 +177,13 @@ function NtiRow({ doc }: { doc: DocRow }) {
   const isLocal = Boolean(local);
 
   return (
-    <li className="group bg-white px-4 py-3 transition hover:bg-teal-50/30">
+    <li className="group bg-[var(--portal-paper)] px-4 py-3 transition hover:bg-[var(--portal-accent-soft)]/40">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm font-medium text-teal-900 hover:underline"
+          className="text-sm font-medium text-[var(--portal-ink)] hover:underline"
         >
           {doc.titulo}
         </a>

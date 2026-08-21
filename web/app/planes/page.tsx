@@ -35,8 +35,8 @@ export default function PlanesPage() {
             key={id}
             className={`flex flex-col rounded-2xl border p-6 shadow-sm ${
               id === "particular"
-                ? "border-teal-200 bg-gradient-to-b from-[var(--portal-accent-soft)]/90 to-white ring-2 ring-teal-600/20"
-                : "border-slate-200 bg-white"
+                ? "border-[var(--portal-accent)]/25 bg-gradient-to-b from-[var(--portal-accent-soft)] to-[var(--portal-paper)] ring-2 ring-[var(--portal-accent)]/20"
+                : "border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]"
             }`}
           >
             <p className="text-xs font-semibold uppercase tracking-wide text-[var(--portal-accent)]">

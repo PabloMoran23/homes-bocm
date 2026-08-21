@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { Circle, MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet";
+import { Circle, MapContainer, Marker, Popup, ZoomControl, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
@@ -18,7 +18,8 @@ import {
   capZoomForContainer,
   scaledWeight,
 } from "@/lib/map-visual-scale";
-import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
+import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
 import { licenciaTituloDesdeTipo } from "@/lib/ubicacion-resumen";
 
 /** Leaflet necesita invalidateSize cuando el contenedor obtiene altura real (grid, sticky, dynamic import). */
@@ -74,8 +75,8 @@ function BoletinSearchCircle({
       center={[lat, lng]}
       radius={radiusM}
       pathOptions={{
-        color: "#0f766e",
-        fillColor: "#14b8a6",
+        color: "#1f4f53",
+        fillColor: "#7a9a96",
         fillOpacity: 0.14,
         weight: scaledWeight(2.5, visual),
         dashArray: "8 5",
@@ -225,8 +226,8 @@ export function BoletinMiniMap({
   const isPanel = variant === "panel";
   const markerSize = isPanel ? "md" : "sm";
   const shellClass = isPanel
-    ? "relative h-[min(42vh,340px)] min-h-[220px] w-full overflow-hidden rounded-2xl border border-teal-100/80 bg-teal-50/50 shadow-lg ring-1 ring-teal-900/5 lg:min-h-[420px] lg:h-[min(72vh,680px)]"
-    : "relative h-52 w-full overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/50 sm:h-60";
+    ? "relative h-[min(42vh,340px)] min-h-[220px] w-full overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-lg ring-1 ring-[var(--portal-ink)]/5 lg:min-h-[420px] lg:h-[min(72vh,680px)]"
+    : "relative h-52 w-full overflow-hidden rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] sm:h-60";
 
   return (
     <div className={`homes-map-shell w-full ${className}`}>
@@ -235,13 +236,15 @@ export function BoletinMiniMap({
           key={`${lat.toFixed(5)}-${lng.toFixed(5)}-${radiusM}`}
           center={[lat, lng]}
           zoom={16}
+          minZoom={HOMES_MAP_MIN_ZOOM}
+          maxZoom={HOMES_MAP_MAX_ZOOM}
           className="z-0 h-full w-full"
           style={{ height: "100%", minHeight: isPanel ? 220 : 208 }}
           zoomControl={false}
           attributionControl={false}
           scrollWheelZoom={isPanel}
         >
-          <TileLayer url={HOMES_MAP_TILE_URL} />
+          <HomesBasemapLayer />
           <MapSizeFix />
           <FitCircleView lat={lat} lng={lng} radiusM={radiusM} />
           <BoletinSearchCircle lat={lat} lng={lng} radiusM={radiusM} />
@@ -261,10 +264,10 @@ export function BoletinMiniMap({
           <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Leyenda</p>
           <LicenciaMapLegend layout="grid" />
           <p className="mt-2 border-t border-slate-100 pt-2 text-slate-500">
-            <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-[#0f766e] ring-1 ring-white" />
+            <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-[var(--portal-accent)] ring-1 ring-white" />
             Tu dirección ·{" "}
             <span className="inline-flex items-center gap-0.5">
-              <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-sky-500 text-[8px] font-bold text-white">
+            <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[var(--portal-accent)] text-[8px] font-bold text-white">
                 Σ
               </span>
               Planeamiento

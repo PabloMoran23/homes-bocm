@@ -149,7 +149,7 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
               onClick={() => setTab("licencias")}
               className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
                 tab === "licencias"
-                  ? "bg-[var(--portal-accent)] text-white shadow-md shadow-teal-900/15"
+                  ? "bg-[var(--portal-accent)] text-white shadow-md shadow-[var(--portal-accent)]/20"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >
@@ -160,7 +160,7 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
               onClick={() => setTab("sigma")}
               className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${
                 tab === "sigma"
-                  ? "bg-[var(--portal-accent)] text-white shadow-md shadow-teal-900/15"
+                  ? "bg-[var(--portal-accent)] text-white shadow-md shadow-[var(--portal-accent)]/20"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`}
             >

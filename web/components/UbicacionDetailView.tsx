@@ -85,7 +85,7 @@ function ExpedienteCard({
         <span
           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
             exp.fase?.toLowerCase().includes("definitiva")
-              ? "bg-teal-50 text-teal-800 ring-1 ring-teal-200"
+              ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/25"
               : "bg-slate-100 text-slate-600 ring-1 ring-slate-200"
           }`}
         >
@@ -96,7 +96,7 @@ function ExpedienteCard({
         ) : null}
       </div>
       {metric?.num_viviendas_max != null ? (
-        <p className="mt-1 text-sm text-teal-800">
+        <p className="mt-1 text-sm text-[var(--portal-accent)]">
           Hasta {metric.num_viviendas_max.toLocaleString("es-ES")} viviendas en el ámbito
         </p>
       ) : null}
@@ -108,7 +108,7 @@ function ExpedienteCard({
       <div className="mt-3 flex flex-wrap gap-2">
         <Link
           href={sigmaFichaPath(exp.expediente_grupo)}
-          className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700"
+          className="rounded-lg bg-[var(--portal-accent)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--portal-accent-hover)]"
         >
           Ficha del proyecto
         </Link>
@@ -132,7 +132,7 @@ function SignalCard({ text, index }: { text: string; index: number }) {
     index % 3 === 0
       ? "border-amber-100 bg-amber-50/65"
       : index % 3 === 1
-        ? "border-teal-100 bg-teal-50/60"
+        ? "border-[var(--portal-accent-soft)] bg-[var(--portal-accent-soft)]/60"
         : "border-sky-100 bg-sky-50/60";
   return (
     <li className={`rounded-xl border px-4 py-3 text-sm leading-relaxed text-slate-700 ${tone}`}>
@@ -266,8 +266,8 @@ export function UbicacionDetailView({
             <p className="text-xs text-slate-500">que aplican a la zona</p>
           </div>
           <div className="bg-white/80 px-5 py-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-teal-800/70">Lectura</p>
-            <p className="mt-1 text-xl font-bold text-teal-950">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--portal-accent)]/70">Lectura</p>
+            <p className="mt-1 text-xl font-bold text-[var(--portal-ink)]">
               {resumen.hayNormativaPgoum ? "Mixta" : proyectosEntorno > 0 ? "Zona" : "Local"}
             </p>
             <p className="text-xs text-slate-500">
@@ -310,7 +310,7 @@ export function UbicacionDetailView({
 
           <Link
             href={boletinPath(ndp)}
-            className="block rounded-xl border border-[var(--portal-accent)]/30 bg-teal-50 px-4 py-3 text-center text-sm font-semibold text-[var(--portal-accent)] hover:bg-teal-100/80"
+            className="block rounded-xl border border-[var(--portal-accent)]/30 bg-[var(--portal-accent-soft)] px-4 py-3 text-center text-sm font-semibold text-[var(--portal-accent)] hover:bg-[var(--portal-accent-soft)]"
           >
             Explorar los alrededores
           </Link>

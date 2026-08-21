@@ -46,15 +46,23 @@ import {
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
 import {
-  CM_PORTAL_META_URL,
-  CM_PORTAL_PROYECTOS_POLIGONOS_URL,
-  CM_PORTAL_PROYECTOS_URL,
   type CmPortalGeoJson,
   type CmPortalMapMeta,
   type CmPortalProyectoProps,
 } from "@/lib/cm-portal-geo";
 import { isCmMapScope } from "@/lib/map-scope";
-import { fetchDominioJson } from "@/lib/dominio-fetch";
+import { fetchDominioJson, fetchDominioOrStatic } from "@/lib/dominio-fetch";
+import {
+  bboxFetchKey,
+  MAP_CM_PORTAL_API,
+  mapSigmaQuery,
+  mapUbicacionesQuery,
+  SEARCH_UBICACIONES_API,
+  shouldLoadSigmaPolygons,
+  SIGMA_LAYER_STATIC,
+  SIGMA_MAP_CARDS_API,
+  sigmaPolygonLimit,
+} from "@/lib/map-live-urls";
 import { MapProjectSpotlightCard } from "@/components/MapProjectSpotlightCard";
 import { buildMapProjectSpotlightItem } from "@/lib/map-project-spotlight";
 import type { SigmaMapCardSlice } from "@/lib/map-project-spotlight";
@@ -75,12 +83,6 @@ const MadridUnifiedMap = dynamic(
 );
 
 type SigmaMapMode = "ambitos" | "ip" | "ad" | "gestion" | "urbanizacion";
-
-const SIGMA_LAYER_URL: Record<Exclude<SigmaMapMode, "ambitos" | "ip">, string> = {
-  ad: "/data/madrid-sigma-ad.geojson",
-  gestion: "/data/madrid-sigma-gestion.geojson",
-  urbanizacion: "/data/madrid-sigma-urbanizacion.geojson",
-};
 
 const SIGMA_MAP_MODES: { id: SigmaMapMode; label: string }[] = [
   { id: "ambitos", label: "Todos en mapa" },
@@ -208,7 +210,9 @@ export function ExploreMadridApp() {
   const [showUbicaciones, setShowUbicaciones] = useState(false);
   const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
-  const [dataReady, setDataReady] = useState({ ubic: false, search: false, portal: !cmMapScope });
+  const liveBounds = useDebouncedValue(mapBounds, 450);
+  const [dataReady, setDataReady] = useState({ ubic: true, search: true, portal: !cmMapScope });
+  const [ubicLoading, setUbicLoading] = useState(false);
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
   const [layerLoading, setLayerLoading] = useState(false);
   const [showHugeSigmaPolygons, setShowHugeSigmaPolygons] = useState(false);
@@ -260,58 +264,82 @@ export function ExploreMadridApp() {
   }, []);
 
   useEffect(() => {
+    if (!showUbicaciones || !liveBounds) return;
     let cancelled = false;
+    setUbicLoading(true);
     (async () => {
       try {
-        const [mapRes, searchRes] = await Promise.all([
-          fetch("/data/ubicaciones-map.geojson"),
-          fetch("/data/ubicaciones-search.json"),
-        ]);
-        if (!mapRes.ok) throw new Error("ubicaciones-map");
+        let res = await fetch(mapUbicacionesQuery(liveBounds));
+        if (!res.ok) {
+          res = await fetch("/data/ubicaciones-map.geojson");
+        }
+        if (!res.ok) throw new Error("ubicaciones");
+        const fc = (await res.json()) as UbicacionesMapGeoJson;
         if (!cancelled) {
-          setUbicGeo((await mapRes.json()) as UbicacionesMapGeoJson);
-          if (searchRes.ok) {
-            setSearchIndex((await searchRes.json()) as UbicacionSearchItem[]);
-            setDataReady((prev) => ({ ...prev, ubic: true, search: true }));
-          } else {
-            setSearchIndex([]);
-            setDataReady((prev) => ({ ...prev, ubic: true, search: false }));
-          }
+          setUbicGeo(fc);
+          setDataReady((prev) => ({ ...prev, ubic: true }));
         }
       } catch {
         if (!cancelled) {
-          setErr("No hemos podido cargar el mapa de edificios. Prueba a recargar la página.");
+          setErr("No hemos podido cargar las licencias de esta zona. Prueba a recargar.");
         }
+      } finally {
+        if (!cancelled) setUbicLoading(false);
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [showUbicaciones, liveBounds]);
+
+  useEffect(() => {
+    const nq = q.trim();
+    if (nq.length < 2) {
+      setSearchIndex([]);
+      return;
+    }
+    let cancelled = false;
+    const t = window.setTimeout(() => {
+      (async () => {
+        try {
+          const res = await fetch(`${SEARCH_UBICACIONES_API}?q=${encodeURIComponent(nq)}`);
+          if (!res.ok) return;
+          const rows = (await res.json()) as UbicacionSearchItem[];
+          if (!cancelled && Array.isArray(rows)) setSearchIndex(rows);
+        } catch {
+          /* búsqueda opcional */
+        }
+      })();
+    }, 220);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(t);
+    };
+  }, [q]);
 
   useEffect(() => {
     if (!cmMapScope) return;
     let cancelled = false;
     (async () => {
       try {
-        const [ptsRes, polysRes, metaRes] = await Promise.all([
-          fetch(CM_PORTAL_PROYECTOS_URL),
-          fetch(CM_PORTAL_PROYECTOS_POLIGONOS_URL),
-          fetch(CM_PORTAL_META_URL),
-        ]);
-        if (!ptsRes.ok) throw new Error("cm-portal-proyectos");
-        if (!cancelled) {
-          setPortalGeo((await ptsRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+        const payload = await fetchDominioJson<{
+          points?: CmPortalGeoJson<CmPortalProyectoProps>;
+          polygons?: CmPortalGeoJson<CmPortalProyectoProps>;
+          meta?: CmPortalMapMeta;
+        }>(MAP_CM_PORTAL_API, "/data/cm-portal-meta.json");
+        if (cancelled) return;
+        if (payload?.points) setPortalGeo(payload.points);
+        if (payload?.polygons) setPortalPolygonGeo(payload.polygons);
+        if (payload?.meta) setPortalMapMeta(payload.meta);
+        if (!payload?.points) {
+          const ptsRes = await fetch("/data/cm-portal-proyectos.geojson");
+          if (ptsRes.ok) setPortalGeo((await ptsRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
+          const polysRes = await fetch("/data/cm-portal-proyectos-poligonos.geojson");
           if (polysRes.ok) {
             setPortalPolygonGeo((await polysRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
-          } else {
-            setPortalPolygonGeo(null);
           }
-          if (metaRes.ok) {
-            setPortalMapMeta((await metaRes.json()) as CmPortalMapMeta);
-          }
-          setDataReady((prev) => ({ ...prev, portal: true }));
         }
+        setDataReady((prev) => ({ ...prev, portal: true }));
       } catch {
         if (!cancelled) {
           setErr("No hemos podido cargar los portales municipales de la Comunidad de Madrid.");
@@ -323,26 +351,49 @@ export function ExploreMadridApp() {
     };
   }, [cmMapScope]);
 
-  /** Carga SIGMA bajo demanda (evita ~25 MB + miles de polígonos al abrir). */
+  const sigmaFetchKey = bboxFetchKey(liveBounds, liveBounds?.zoom, mapMode);
+
+  /** Catálogo SIGMA (listado) una vez; geometría en vivo por zoom/bbox. */
   useEffect(() => {
-    if (!showSigma || ambitosGeo) return;
+    if (!showSigma || sigmaData) return;
+    let cancelled = false;
+    (async () => {
+      const data = await fetchDominioJson<MadridSigmaDataset>(
+        "/api/dominio/madrid-sigma",
+        "/data/madrid-sigma.json",
+      );
+      if (data && !cancelled) setSigmaData(data);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showSigma, sigmaData]);
+
+  useEffect(() => {
+    if (!showSigma) return;
+    if (!shouldLoadSigmaPolygons(liveBounds?.zoom, liveBounds)) return;
     let cancelled = false;
     setLayerLoading(true);
     (async () => {
       try {
-        const [sigmaData, ambitosRes] = await Promise.all([
-          fetchDominioJson<MadridSigmaDataset>(
-            "/api/dominio/madrid-sigma",
-            "/data/madrid-sigma.json",
-          ),
-          fetch("/data/madrid-sigma-ambitos.geojson"),
-        ]);
-        if (sigmaData && !cancelled) setSigmaData(sigmaData);
-        if (ambitosRes.ok && !cancelled) {
-          const fc = (await ambitosRes.json()) as SectorFeatureCollection;
-          setAmbitosGeo(fc);
-          setGeoCache((p) => ({ ...p, ambitos: fc }));
-        }
+        const staticFallback = SIGMA_LAYER_STATIC[mapMode] || SIGMA_LAYER_STATIC.ambitos;
+        const res = await fetchDominioOrStatic(
+          mapSigmaQuery({
+            layer: mapMode,
+            zoom: liveBounds?.zoom,
+            bounds: liveBounds,
+            limit: sigmaPolygonLimit(liveBounds?.zoom),
+          }),
+          staticFallback,
+        );
+        if (!res?.ok) throw new Error("map-sigma");
+        const fc = (await res.json()) as SectorFeatureCollection;
+        if (cancelled) return;
+        if (mapMode === "ambitos") setAmbitosGeo(fc);
+        if (mapMode === "ip") setIpGeo(fc);
+        setGeoCache((p) => ({ ...p, [mapMode]: fc }));
+      } catch {
+        /* capa opcional */
       } finally {
         if (!cancelled) setLayerLoading(false);
       }
@@ -350,7 +401,7 @@ export function ExploreMadridApp() {
     return () => {
       cancelled = true;
     };
-  }, [showSigma, ambitosGeo]);
+  }, [showSigma, mapMode, sigmaFetchKey]);
 
   /** Popups SIGMA: BOCM + métricas + clasificación + tarjetas de mapa. */
   useEffect(() => {
@@ -374,9 +425,10 @@ export function ExploreMadridApp() {
             ),
         mapCardsByExp
           ? Promise.resolve(null)
-          : fetch("/data/madrid-sigma-map-cards.json")
-              .then((r) => (r.ok ? r.json() : null))
-              .catch(() => null),
+          : fetchDominioJson<{ byExpediente?: Record<string, SigmaMapCardSlice> }>(
+              SIGMA_MAP_CARDS_API,
+              "/data/madrid-sigma-map-cards.json",
+            ),
       ]);
       if (!cancelled) {
         if (bocmJson?.byExpediente) setBocmByExp(bocmJson.byExpediente);
@@ -395,40 +447,13 @@ export function ExploreMadridApp() {
     };
   }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex, mapCardsByExp]);
 
-  useEffect(() => {
-    if (mapMode === "ambitos" || mapMode === "ip" || geoCache[mapMode]) return;
-    const ac = new AbortController();
-    setLayerLoading(true);
-    (async () => {
-      try {
-        const res = await fetch(SIGMA_LAYER_URL[mapMode], { signal: ac.signal });
-        if (!res.ok) throw new Error(String(res.status));
-        const fc = (await res.json()) as SectorFeatureCollection;
-        if (!ac.signal.aborted) setGeoCache((p) => ({ ...p, [mapMode]: fc }));
-      } catch {
-        /* capa opcional */
-      } finally {
-        if (!ac.signal.aborted) setLayerLoading(false);
-      }
-    })();
-    return () => ac.abort();
-  }, [mapMode, geoCache]);
-
-  const suggestions = useMemo(() => {
-    const nq = norm(q.trim());
-    if (nq.length < 2) return [];
-    return searchIndex
-      .filter((item) =>
-        norm([item.label, item.direccion, item.distrito, item.barrio, item.ndp].join(" ")).includes(nq),
-      )
-      .slice(0, 10);
-  }, [q, searchIndex]);
+  const suggestions = useMemo(() => searchIndex.slice(0, 10), [searchIndex]);
 
   const filteredUbicGeo = useMemo(() => {
     if (!ubicGeo) return null;
     let feats = filterUbicacionesMadridCapital(ubicGeo).features;
     const nq = norm(debouncedQ.trim());
-    if (nq.length >= 2) {
+    if (nq.length >= 2 && searchIndex.length > 0) {
       const ndpSet = new Set(
         searchIndex
           .filter((item) =>
@@ -528,7 +553,8 @@ export function ExploreMadridApp() {
       });
     }
     if (!feats.length) return { type: "FeatureCollection" as const, features: [] };
-    if (!showHugeSigmaPolygons) {
+    const closeZoom = (mapBounds?.zoom ?? 11) >= 13;
+    if (closeZoom && !showHugeSigmaPolygons) {
       const { visible } = filterSigmaMapFeaturesByBBox(
         { type: "FeatureCollection", features: feats },
         SIGMA_MAP_DEFAULT_MAX_BBOX_KM2,
@@ -565,8 +591,8 @@ export function ExploreMadridApp() {
         );
       }
     }
-    if (!mapBounds && !dataReady.ubic) return "Cargando mapa…";
     if (!mapBounds) return "Acercando datos a la zona visible…";
+    if (showUbicaciones && ubicLoading) parts.push("cargando licencias");
     if (dateFilterActive) parts.push("filtro de fecha activo");
     if (showUbicaciones && actuacionQueFilterActive) parts.push("filtro por actuación");
     if (showSigma && clasificacionFilterActive) parts.push("filtro por clasificación");
@@ -579,7 +605,7 @@ export function ExploreMadridApp() {
     showSigma,
     sigmaGeoFiltered,
     mapBounds,
-    dataReady.ubic,
+    ubicLoading,
     dateFilterActive,
     actuacionQueFilterActive,
     clasificacionFilterActive,
@@ -648,6 +674,29 @@ export function ExploreMadridApp() {
     setQ(item.label);
     setHighlightNdp(item.ndp);
     setOpenSuggest(false);
+    setShowUbicaciones(true);
+    if (item.lat != null && item.lng != null) {
+      const lng = item.lng;
+      const lat = item.lat;
+      setUbicGeo((prev): UbicacionesMapGeoJson => {
+        const feature: UbicacionesMapGeoJson["features"][number] = {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [lng, lat] },
+          properties: {
+            ndp: item.ndp,
+            direccion: item.direccion,
+            distrito: item.distrito,
+            barrio: item.barrio,
+            licencias: 0,
+            sigma: 0,
+          },
+        };
+        const features = prev?.features.some((f) => f.properties.ndp === item.ndp)
+          ? prev.features
+          : [...(prev?.features ?? []), feature];
+        return { type: "FeatureCollection", features };
+      });
+    }
   }, []);
 
   if (err) {
@@ -677,10 +726,8 @@ export function ExploreMadridApp() {
           mapScope={cmMapScope ? "cm" : "madrid"}
           onBoundsChange={onBoundsChange}
           statsHint={
-            !dataReady.ubic
-              ? cmMapScope && !dataReady.portal
-                ? "Cargando portales CM…"
-                : "Cargando edificios…"
+            cmMapScope && !dataReady.portal
+              ? "Cargando portales CM…"
               : mapStatsHint
           }
           className="h-full w-full"
@@ -698,10 +745,10 @@ export function ExploreMadridApp() {
             onClose={() => setSelectedSigmaGrupo(null)}
           />
         ) : null}
-        {!dataReady.ubic || (cmMapScope && !dataReady.portal) ? (
+        {cmMapScope && !dataReady.portal ? (
           <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/80 md:bg-slate-100/60">
             <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
-              {cmMapScope && !dataReady.portal ? "Cargando portales CM…" : "Cargando edificios…"}
+              Cargando portales CM…
             </p>
           </Div>
         ) : null}

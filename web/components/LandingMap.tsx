@@ -16,7 +16,7 @@ const MadridUnifiedMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex min-h-[320px] h-[min(42vh,480px)] items-center justify-center rounded-2xl border border-dashed border-slate-200/90 bg-white/60 text-sm text-slate-500 shadow-inner lg:h-[min(52vh,560px)]">
+      <div className="flex min-h-[320px] h-[min(42vh,480px)] items-center justify-center rounded-2xl border border-dashed border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/70 text-sm text-[var(--portal-ink)]/50 shadow-inner lg:h-[min(52vh,560px)]">
         Cargando mapa…
       </div>
     ),
@@ -29,7 +29,7 @@ const MAP_HEIGHT =
 function LandingMapPlaceholder({ hint }: { hint?: string }) {
   return (
     <div
-      className={`flex items-center justify-center rounded-2xl border border-dashed border-slate-200/90 bg-gradient-to-br from-teal-50/80 to-white/90 text-sm text-slate-500 shadow-inner ${MAP_HEIGHT}`}
+      className={`flex items-center justify-center rounded-2xl border border-dashed border-[var(--portal-paper-deep)] bg-gradient-to-br from-[var(--portal-accent-soft)]/50 to-[var(--portal-paper)] text-sm text-[var(--portal-ink)]/50 shadow-inner ${MAP_HEIGHT}`}
       aria-hidden
     >
       {hint ?? "Cargando mapa…"}
@@ -80,7 +80,7 @@ export function LandingMap({ sigmaGeojson, spotlight, tourGeojson }: LandingMapP
   return (
     <div ref={ref} className="flex flex-col gap-2">
       <div
-        className={`landing-map-live group relative overflow-hidden rounded-2xl ring-1 ring-slate-200/90 transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
+        className={`landing-map-live group relative overflow-hidden rounded-2xl ring-1 ring-[var(--portal-paper-deep)] transition hover:ring-[var(--portal-accent)]/40 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[var(--portal-accent)] ${MAP_HEIGHT}`}
       >
         {!visible || !ready || (!hasTour && !geo?.features?.length) ? (
           <LandingMapPlaceholder hint={loading ? "Cargando mapa…" : undefined} />
@@ -127,7 +127,7 @@ export function LandingMap({ sigmaGeojson, spotlight, tourGeojson }: LandingMapP
           className="absolute inset-0 z-[2000] block cursor-pointer rounded-2xl"
           aria-label="Abrir mapa de Madrid"
         />
-        <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-white/90 bg-white/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
+        <span className="pointer-events-none absolute bottom-3 right-3 z-[2001] rounded-full border border-[var(--portal-paper)]/90 bg-[var(--portal-paper)]/92 px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] shadow-md opacity-0 transition group-hover:opacity-100">
           Abrir mapa →
         </span>
       </div>

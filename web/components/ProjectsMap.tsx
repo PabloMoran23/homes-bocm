@@ -7,7 +7,6 @@ import {
   Marker,
   Popup,
   ScaleControl,
-  TileLayer,
   Tooltip,
   ZoomControl,
   useMap,
@@ -18,7 +17,10 @@ import "leaflet/dist/leaflet.css";
 import { collectMapBounds } from "@/lib/map-bounds";
 import { SectorFeaturesGeoLayer } from "@/components/map/SectorFeaturesGeoLayer";
 import type { FeaturePopupOptions, SectorFeatureCollection } from "@/lib/sector-geo";
-import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
+import { ProjectFocusMaskLayer } from "@/components/map/ProjectFocusMaskLayer";
+import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
+import { polygonFeaturesOf } from "@/lib/map-focus-mask";
 
 export type MapPoint = {
   municipio: string;
@@ -32,7 +34,7 @@ const DEFAULT_ZOOM = 9;
 
 const detailPinIcon = L.divIcon({
   className: "",
-  html: `<span style="display:block;width:28px;height:28px;margin:-28px 0 0 -14px;background:#0f766e;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(15,118,110,0.45)"></span>`,
+  html: `<span style="display:block;width:28px;height:28px;margin:-28px 0 0 -14px;background:#1f4f53;border:3px solid #fffcf7;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 8px rgba(31,79,83,0.4)"></span>`,
   iconSize: [28, 28],
   iconAnchor: [14, 28],
 });
@@ -183,6 +185,11 @@ export function ProjectsMap({
   const isFullDataset = dataScope === "full";
   const isDetail = variant === "detail";
   const hasMapContent = nMunicipios > 0 || nSectors > 0;
+  const focusPolygons = useMemo(
+    () => polygonFeaturesOf(sectorGeoJson?.features as never),
+    [sectorGeoJson],
+  );
+  const useFocusMask = isDetail && focusPolygons.length > 0 && focusPolygons.length <= 8;
 
   const sectorLayerKey = `sectors-${nSectors}-${dataScope}-${variant}`;
 
@@ -197,7 +204,7 @@ export function ProjectsMap({
         aria-hidden
       />
 
-      <div className="relative overflow-hidden rounded-2xl border border-teal-100/80 bg-gradient-to-b from-white to-teal-50/45 shadow-[0_1px_0_rgba(255,255,255,0.95)_inset,0_24px_60px_-26px_rgba(15,118,110,0.35)]">
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-[0_1px_0_rgba(255,252,247,0.9)_inset,0_24px_60px_-26px_rgba(31,79,83,0.28)]">
         {!isDetail ? (
           <div className="pointer-events-none absolute left-0 right-0 top-0 z-[1000] flex items-start justify-between gap-3 p-3 sm:p-4">
             <div className="pointer-events-auto flex max-w-[min(100%,20rem)] flex-col gap-1 rounded-xl border border-white/80 bg-white/90 px-3 py-2 shadow-md shadow-slate-900/5 backdrop-blur-md sm:max-w-none sm:flex-row sm:items-center sm:gap-3 sm:px-4 sm:py-2.5">
@@ -277,17 +284,23 @@ export function ProjectsMap({
               <MapContainer
                 center={MADRID_CENTER}
                 zoom={DEFAULT_ZOOM}
+                minZoom={HOMES_MAP_MIN_ZOOM}
+                maxZoom={HOMES_MAP_MAX_ZOOM}
                 attributionControl={false}
                 className="z-0 h-full w-full"
                 scrollWheelZoom
                 zoomControl={false}
               >
-                <TileLayer attribution="" url={HOMES_MAP_TILE_URL} />
+                <HomesBasemapLayer />
+                {useFocusMask ? (
+                  <ProjectFocusMaskLayer features={focusPolygons} active fadeMs={280} />
+                ) : null}
                 {sectorGeoJson?.features?.length ? (
                   <SectorFeaturesGeoLayer
                     geojson={sectorGeoJson}
                     popupOptions={sigmaPopupOptions ?? undefined}
                     layerKey={sectorLayerKey}
+                    appearance={useFocusMask ? "focus" : "default"}
                   />
                 ) : null}
                 <FitBounds points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
@@ -319,7 +332,7 @@ export function ProjectsMap({
                             radius={r + 7}
                             pathOptions={{
                               stroke: false,
-                              fillColor: "#14b8a6",
+                              fillColor: "#c07f6c",
                               fillOpacity: 0.12,
                             }}
                           />
@@ -329,7 +342,7 @@ export function ProjectsMap({
                             pathOptions={{
                               color: "#ffffff",
                               weight: 2.5,
-                              fillColor: "#0f766e",
+                              fillColor: "#1f4f53",
                               fillOpacity: 0.88,
                               lineCap: "round",
                               lineJoin: "round",
@@ -390,12 +403,12 @@ export function ProjectsMap({
                   </a>
                   {" · "}
                   <a
-                    href="https://carto.com/attributions"
+                    href="https://openfreemap.org"
                     className="underline decoration-slate-300/80 underline-offset-2 hover:text-slate-600"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    CARTO
+                    OpenFreeMap
                   </a>
                 </span>
               </div>

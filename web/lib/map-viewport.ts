@@ -7,11 +7,12 @@ export type MapBounds = {
   west: number;
   north: number;
   east: number;
+  zoom?: number;
 };
 
 export const VIEWPORT_PAD = 0.08;
-export const MAX_POINTS_IN_VIEW = 2500;
-export const MAX_POLYGONS_IN_VIEW = 400;
+export const MAX_POINTS_IN_VIEW = 2000;
+export const MAX_POLYGONS_IN_VIEW = 220;
 
 export function boundsFromLeaflet(b: LatLngBounds, padRatio = VIEWPORT_PAD): MapBounds {
   const padded = b.pad(padRatio);

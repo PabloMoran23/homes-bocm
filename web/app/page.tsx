@@ -34,9 +34,10 @@ export default async function Home() {
   const summary = await loadSummary();
   const news = loadLandingNews();
   const dashboardStats = await loadMadridDashboardStats();
-  const landingSigmaGeo = await loadSigmaAmbitosLandingGeo();
   const landingSpotlight = await loadLandingMapSpotlight();
   const landingTourGeo = await loadLandingMapSpotlightGeo();
+  const hasLandingTour = Boolean(landingSpotlight?.items?.length && landingTourGeo?.features?.length);
+  const landingSigmaGeo = hasLandingTour ? null : await loadSigmaAmbitosLandingGeo();
   const isPublic = isPublicEdition();
 
   const planesCount = dashboardStats?.sigma?.total;
@@ -47,7 +48,7 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      <section className="portal-hero-bg border-b border-slate-200/80 px-4 py-14 sm:px-6 sm:py-20">
+      <section className="portal-hero-bg border-b border-[var(--portal-paper-deep)] px-4 py-14 sm:px-6 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:items-start lg:gap-12 xl:gap-14">
             <div className="min-w-0">
@@ -153,7 +154,7 @@ export default async function Home() {
       />
 
       <section className="mx-auto max-w-6xl px-4 pb-10 sm:px-6 sm:pb-12">
-        <div className="grid gap-8 border-t border-slate-200 pt-14 sm:grid-cols-3">
+        <div className="grid gap-8 border-t border-[var(--portal-paper-deep)] pt-14 sm:grid-cols-3">
           <div>
             <h3 className="font-semibold text-slate-900">Vives o estás mirando un piso</h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">

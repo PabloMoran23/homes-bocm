@@ -37,14 +37,14 @@ export function SiteFooter() {
 
   if (compact) {
     return (
-      <footer className="shrink-0 border-t border-slate-200/90 bg-white/95 px-4 py-2.5 backdrop-blur-sm">
+      <footer className="shrink-0 border-t border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/95 px-4 py-2.5 backdrop-blur-sm">
         <ContactLine compact />
       </footer>
     );
   }
 
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-slate-50/90 py-8 text-sm text-slate-600">
+    <footer className="mt-auto border-t border-[var(--portal-paper-deep)] bg-[var(--portal-paper-deep)]/70 py-8 text-sm text-[var(--portal-ink)]/70">
       <div className="mx-auto max-w-6xl space-y-4 px-4 sm:px-6">
         <p className="leading-relaxed">
           <span className="mb-2 inline-flex items-center gap-2">

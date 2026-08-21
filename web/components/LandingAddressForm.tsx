@@ -41,8 +41,8 @@ export function LandingAddressForm({
           autoComplete="street-address"
           className={
             isHero
-              ? "w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/25"
-              : "w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/25"
+              ? "w-full rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-4 py-3 text-sm text-[var(--portal-ink)] shadow-sm outline-none transition placeholder:text-[var(--portal-ink)]/40 focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/25"
+              : "w-full rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-4 py-3.5 text-sm text-[var(--portal-ink)] shadow-sm outline-none transition placeholder:text-[var(--portal-ink)]/40 focus:border-[var(--portal-accent)] focus:ring-2 focus:ring-[var(--portal-accent)]/25"
           }
         />
       </label>
@@ -51,8 +51,8 @@ export function LandingAddressForm({
           type="submit"
           className={
             isHero
-              ? "inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--portal-accent)] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-teal-900/10 transition hover:bg-[var(--portal-accent-hover)] sm:flex-none sm:px-6"
-              : "inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--portal-accent)] px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-teal-900/10 transition hover:bg-[var(--portal-accent-hover)] sm:flex-none sm:px-8"
+              ? "inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--portal-accent)] px-5 py-3 text-sm font-semibold text-white shadow-md shadow-[var(--portal-accent)]/15 transition hover:bg-[var(--portal-accent-hover)] sm:flex-none sm:px-6"
+              : "inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--portal-accent)] px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-[var(--portal-accent)]/15 transition hover:bg-[var(--portal-accent-hover)] sm:flex-none sm:px-8"
           }
         >
           {submitLabel}
@@ -60,7 +60,7 @@ export function LandingAddressForm({
         {showSecondaryLink ? (
           <Link
             href="/boletin"
-            className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+            className="inline-flex items-center justify-center rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-5 py-3 text-sm font-semibold text-[var(--portal-ink)]/80 shadow-sm transition hover:bg-[var(--portal-paper-deep)]"
           >
             Abrir sin dirección
           </Link>

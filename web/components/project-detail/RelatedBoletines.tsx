@@ -23,7 +23,7 @@ export function RelatedBoletines({ rows }: { rows: SigmaBoletinMencion[] }) {
           {rows.map((m) => (
             <tr
               key={m.projectId}
-              className={m.mismoAnuncioQueEstaVista ? "bg-teal-50/60" : "bg-white"}
+              className={m.mismoAnuncioQueEstaVista ? "bg-[var(--portal-accent-soft)]/60" : "bg-[var(--portal-paper)]"}
             >
               <td className="whitespace-nowrap px-3 py-2 text-xs text-slate-700">
                 {m.bocmDate || "—"}
@@ -33,7 +33,7 @@ export function RelatedBoletines({ rows }: { rows: SigmaBoletinMencion[] }) {
                 {m.title?.slice(0, 140) || "—"}
                 {m.title && m.title.length > 140 ? "…" : ""}
                 {m.mismoAnuncioQueEstaVista ? (
-                  <span className="ml-2 inline-block rounded bg-teal-200/90 px-1.5 py-0 text-[10px] font-bold uppercase text-teal-950">
+                  <span className="ml-2 inline-block rounded bg-[var(--portal-accent-soft)] px-1.5 py-0 text-[10px] font-bold uppercase text-[var(--portal-accent)]">
                     Este anuncio
                   </span>
                 ) : null}
@@ -48,7 +48,7 @@ export function RelatedBoletines({ rows }: { rows: SigmaBoletinMencion[] }) {
                     href={m.pdfUrl!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-semibold text-teal-700 hover:underline"
+                    className="text-xs font-semibold text-[var(--portal-accent)] hover:underline"
                   >
                     PDF
                   </a>

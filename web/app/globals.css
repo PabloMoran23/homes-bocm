@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f6f8;
-  --foreground: #0f172a;
-  --surface: #f4f6f8;
-  /* Portal: acento principal (teal, como la primera versión) */
-  --portal-accent: #0f766e;
-  --portal-accent-hover: #115e59;
-  --portal-accent-soft: #ccfbf1;
-  --portal-ink: #0f172a;
-  --portal-warm: #0f766e;
-  --portal-hero-edge: rgba(15, 118, 110, 0.1);
+  --background: #f4efe6;
+  --foreground: #2a2622;
+  --surface: #f4efe6;
+  --portal-paper: #f7f3eb;
+  --portal-paper-deep: #ebe4d6;
+  --portal-accent: #1f4f53;
+  --portal-accent-hover: #173d40;
+  --portal-accent-soft: #e2ebe8;
+  --portal-ink: #2a2622;
+  --portal-warm: #9a5c48;
+  --portal-ochre: #d4923a;
+  --portal-hero-edge: rgba(31, 79, 83, 0.09);
   --site-footer-compact: 2.75rem;
 }
 
@@ -26,30 +28,59 @@ body {
   color: var(--foreground);
 }
 
-/* Fondo muy suave en héroes */
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.07;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0 0.3  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fondo de héroes: papel + agua */
 .portal-hero-bg {
   background:
     radial-gradient(1200px 400px at 10% -10%, var(--portal-hero-edge), transparent 55%),
-    radial-gradient(900px 360px at 90% 0%, rgba(20, 184, 166, 0.08), transparent 50%),
-    linear-gradient(to bottom, #ffffff, var(--surface));
+    radial-gradient(900px 360px at 90% 0%, rgba(196, 133, 58, 0.08), transparent 50%),
+    linear-gradient(to bottom, var(--portal-paper), var(--surface));
 }
 
-/* Leaflet: mapa de marca (ProjectsMap) */
+/* Leaflet: mapa de marca (plano arquitectónico) */
 .homes-map-shell .leaflet-container {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  background: #f8faf9;
+  background: #f3eee4;
   height: 100%;
   width: 100%;
 }
 
-.homes-map-shell .leaflet-tile-pane img {
-  /* filter en cada tile penaliza mucho Safari móvil al hacer pan */
+.homes-map-shell .leaflet-gl-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0 0.3  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-@media (min-width: 768px) {
-  .homes-map-shell .leaflet-tile-pane img {
-    filter: saturate(1.08) contrast(1.02) brightness(1.01);
-  }
+.homes-map-shell .maplibregl-map,
+.homes-map-shell .maplibregl-canvas,
+.homes-map-shell .leaflet-gl-layer {
+  background: #f3eee4;
+}
+
+.homes-map-shell .maplibregl-ctrl-bottom-left,
+.homes-map-shell .maplibregl-ctrl-bottom-right,
+.homes-map-shell .maplibregl-ctrl-top-left,
+.homes-map-shell .maplibregl-ctrl-top-right {
+  display: none;
 }
 
 .homes-map-shell .leaflet-control-zoom {
@@ -64,9 +95,9 @@ body {
   height: 34px !important;
   line-height: 34px !important;
   font-size: 18px !important;
-  color: #475569 !important;
+  color: #2a2622 !important;
   border: none !important;
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(247, 243, 235, 0.96) !important;
 }
 
 .homes-map-shell .leaflet-control-zoom a:hover {
@@ -77,16 +108,16 @@ body {
 .homes-map-shell .leaflet-control-scale-line {
   border: 1px solid rgba(15, 23, 42, 0.12) !important;
   border-radius: 6px !important;
-  background: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(247, 243, 235, 0.94) !important;
   padding: 2px 8px !important;
   font-size: 10px !important;
-  color: #64748b !important;
+  color: #6a6158 !important;
 }
 
 .homes-map-shell .leaflet-popup-content-wrapper {
   border-radius: 14px !important;
   box-shadow: 0 16px 48px rgba(15, 23, 42, 0.12) !important;
-  border: 1px solid rgba(15, 118, 110, 0.12) !important;
+  border: 1px solid rgba(31, 79, 83, 0.12) !important;
   overflow: hidden;
 }
 
@@ -119,15 +150,15 @@ body {
   align-items: center;
   gap: 0.4rem;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(247, 243, 235, 0.92);
+  background: rgba(247, 243, 235, 0.88);
   padding: 0.3rem 0.65rem;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #0f766e;
-  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.12);
+  color: var(--portal-accent);
+  box-shadow: 0 4px 14px rgba(31, 79, 83, 0.12);
   backdrop-filter: blur(6px);
 }
 
@@ -144,7 +175,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: #14b8a6;
+  background: var(--portal-accent);
 }
 
 .landing-map-live-dot::before {
@@ -178,7 +209,6 @@ body {
   }
 }
 
-.landing-map-spotlight-card,
-.map-project-spotlight-card {
-  will-change: transform, opacity;
+.homes-focus-mask-canvas {
+  pointer-events: none;
 }

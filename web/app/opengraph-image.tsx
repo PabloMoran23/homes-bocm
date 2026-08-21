@@ -15,7 +15,7 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px 72px",
-          background: "linear-gradient(145deg, #f0fdfa 0%, #ffffff 45%, #f8fafc 100%)",
+          background: "linear-gradient(145deg, #f7f3eb 0%, #f4efe6 48%, #ebe4d6 100%)",
           fontFamily: "system-ui, sans-serif",
         }}
       >
@@ -25,7 +25,7 @@ export default function OpenGraphImage() {
               width: 56,
               height: 56,
               borderRadius: 14,
-              background: "#0f766e",
+              background: "#1f4f53",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -37,8 +37,8 @@ export default function OpenGraphImage() {
             H
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={{ fontSize: 28, fontWeight: 700, color: "#0f172a" }}>Homes</span>
-            <span style={{ fontSize: 22, color: "#0f766e", fontWeight: 600 }}>Urbanismo Madrid</span>
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#2a2622" }}>Homes</span>
+            <span style={{ fontSize: 22, color: "#1f4f53", fontWeight: 600 }}>Urbanismo Madrid</span>
           </div>
         </div>
 
@@ -47,21 +47,21 @@ export default function OpenGraphImage() {
             style={{
               fontSize: 52,
               fontWeight: 700,
-              color: "#0f172a",
+              color: "#2a2622",
               lineHeight: 1.15,
               letterSpacing: "-0.02em",
             }}
           >
             Qué se está moviendo cerca de ti
           </div>
-          <div style={{ fontSize: 26, color: "#475569", lineHeight: 1.4 }}>
+          <div style={{ fontSize: 26, color: "#6a6158", lineHeight: 1.4 }}>
             Obras, planes y actividad urbanística en Madrid capital — mapa, tu calle y dashboard.
           </div>
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <span style={{ fontSize: 22, color: "#0f766e", fontWeight: 600 }}>homes-urbanismo.es</span>
-          <span style={{ fontSize: 18, color: "#94a3b8" }}>Mapa · Tu zona · Dashboard</span>
+          <span style={{ fontSize: 22, color: "#1f4f53", fontWeight: 600 }}>homes-urbanismo.es</span>
+          <span style={{ fontSize: 18, color: "#8a8278" }}>Mapa · Tu zona · Dashboard</span>
         </div>
       </div>
     ),

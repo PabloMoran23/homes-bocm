@@ -56,9 +56,9 @@ export function ProgramasEnZona({
         return (
           <article
             key={prog.programaId}
-            className="overflow-hidden rounded-2xl border border-indigo-200/70 bg-indigo-50/35 shadow-sm"
+            className="overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-sm"
           >
-            <header className="border-b border-indigo-100/80 px-4 py-4 sm:px-5">
+            <header className="border-b border-[var(--portal-paper-deep)] px-4 py-4 sm:px-5">
               <h3 className="text-base font-semibold leading-snug text-slate-900 sm:text-lg">
                 {prog.titulo}
               </h3>
@@ -66,13 +66,13 @@ export function ProgramasEnZona({
 
             <div className="px-4 py-4 sm:px-5">
               <div
-                className="overflow-x-auto overscroll-x-contain pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-indigo-300/80"
+                className="overflow-x-auto overscroll-x-contain pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--portal-paper-deep)]"
                 role="region"
                 aria-label={`Cronología de ${prog.titulo}`}
               >
                 <div className="relative min-w-min px-1 pt-1">
                   <div
-                    className="pointer-events-none absolute top-4 right-8 left-8 h-0.5 bg-indigo-200/90"
+                    className="pointer-events-none absolute top-4 right-8 left-8 h-0.5 bg-[var(--portal-paper-deep)]"
                     aria-hidden
                   />
                   <ol className="relative flex snap-x snap-mandatory gap-0">
@@ -92,7 +92,7 @@ export function ProgramasEnZona({
                                 />
                               </div>
                             </div>
-                            <div className="flex flex-1 flex-col rounded-xl border border-indigo-100/90 bg-white/90 p-3 shadow-sm">
+                            <div className="flex flex-1 flex-col rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/90 p-3 shadow-sm">
                               {m.anio ? (
                                 <time
                                   dateTime={`${m.anio}-01-01`}
@@ -112,7 +112,7 @@ export function ProgramasEnZona({
                               </div>
                               <Link
                                 href={fichaHref}
-                                className="mt-3 inline-flex text-xs font-semibold text-indigo-700 hover:underline"
+                                className="mt-3 inline-flex text-xs font-semibold text-[var(--portal-accent)] hover:underline"
                               >
                                 Ver ficha del proyecto →
                               </Link>

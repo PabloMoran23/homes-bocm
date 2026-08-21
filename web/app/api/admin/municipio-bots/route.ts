@@ -36,6 +36,7 @@ export async function GET() {
     const fallback: MunicipioBotsPayload = {
       generatedAt: new Date().toISOString(),
       queueUpdatedAt: null,
+      dbAvailable: false,
       summary: {
         total: 0,
         byStatus: {},
@@ -46,6 +47,24 @@ export async function GET() {
         parityOk: 0,
         withPortalGeometry: 0,
         openPrs: 0,
+        live: {
+          fresh: 0,
+          due: 0,
+          never: 0,
+          error: 0,
+          withLastIngest: 0,
+          totalProyectos: 0,
+          totalLicencias: 0,
+        },
+        completeness: {
+          avgScore: 0,
+          byBand: { rico: 0, medio: 0, basico: 0, fino: 0, sin_datos: 0 },
+          withPdf: 0,
+          withGeometry: 0,
+          withCoords: 0,
+          withExpediente: 0,
+          scoredAdapters: 0,
+        },
       },
       next: null,
       openPrsBySlug: {},

@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { ChartCard } from "@/components/madrid/dashboard/ChartCard";
 import { DistritosGeoLayer } from "@/components/madrid/dashboard/DistritosGeoLayer";
 import { FitDistritosBounds } from "@/components/madrid/dashboard/FitDistritosBounds";
 import { fmtChart } from "@/lib/dashboard-chart-theme";
 import { distritoLegendGradient, distritoQuantileBreaks } from "@/lib/distrito-choropleth";
-import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
+import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
 import { normDistritoKey } from "@/lib/madrid-distrito";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import type {
@@ -116,16 +117,18 @@ export function DistritosCountMap({
         <div className="flex h-full items-center justify-center text-sm text-slate-400">Cargando distritos…</div>
       ) : (
         <div className="flex h-full flex-col gap-2">
-          <div className="homes-map-shell min-h-0 flex-1 overflow-hidden rounded-lg border border-teal-100/70 bg-teal-50/40">
+          <div className="homes-map-shell min-h-0 flex-1 overflow-hidden rounded-lg border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]">
             <MapContainer
               key={`${mapKey}-${quantileBreaks.join(",")}`}
               center={MADRID_CENTER}
               zoom={10}
+              minZoom={HOMES_MAP_MIN_ZOOM}
+              maxZoom={HOMES_MAP_MAX_ZOOM}
               className="h-full w-full min-h-[280px]"
               scrollWheelZoom={false}
               attributionControl={false}
             >
-              <TileLayer url={HOMES_MAP_TILE_URL} />
+              <HomesBasemapLayer />
               <MapSizeFix />
               <FitDistritosBounds geojson={geo} />
               <DistritosGeoLayer

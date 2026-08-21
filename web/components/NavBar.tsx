@@ -39,7 +39,7 @@ function linkClass(active: boolean, mobile = false) {
     : "rounded-md px-3 py-2 text-sm font-medium transition";
   return active
     ? `${base} bg-[var(--portal-accent-soft)] font-semibold text-[var(--portal-accent)]`
-    : `${base} text-slate-700 hover:bg-slate-100 hover:text-slate-900`;
+    : `${base} text-[var(--portal-ink)]/75 hover:bg-[var(--portal-paper-deep)] hover:text-[var(--portal-ink)]`;
 }
 
 function MenuIcon({ open }: { open: boolean }) {
@@ -49,7 +49,7 @@ function MenuIcon({ open }: { open: boolean }) {
       height="22"
       viewBox="0 0 22 22"
       fill="none"
-      className="text-slate-800"
+      className="text-[var(--portal-ink)]"
       aria-hidden
     >
       {open ? (
@@ -95,7 +95,7 @@ export function NavBar() {
   }, [open, close]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white/95 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/90 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
@@ -103,13 +103,13 @@ export function NavBar() {
           className={`flex min-w-0 shrink-0 items-center gap-2 rounded-md px-2 py-1.5 text-sm font-semibold tracking-tight transition sm:text-base ${
             pathname === "/"
               ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)]"
-              : "text-slate-900 hover:bg-slate-100"
+              : "text-[var(--portal-ink)] hover:bg-[var(--portal-paper-deep)]"
           }`}
         >
           <SiteLogo height={22} className="opacity-90" />
           <span className="min-w-0 truncate">
             <span className="text-[var(--portal-accent)]">Homes</span>
-            <span className="text-slate-400"> · </span>
+            <span className="text-[var(--portal-ink)]/35"> · </span>
             <span className="hidden sm:inline">Urbanismo Madrid</span>
             <span className="sm:hidden">Madrid</span>
           </span>
@@ -139,7 +139,7 @@ export function NavBar() {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200/90 bg-white text-slate-800 shadow-sm transition hover:bg-slate-50 md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] text-[var(--portal-ink)] shadow-sm transition hover:bg-[var(--portal-paper-deep)] md:hidden"
             aria-expanded={open}
             aria-controls={menuId}
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
@@ -160,7 +160,7 @@ export function NavBar() {
           />
           <nav
             id={menuId}
-            className="relative z-50 border-t border-slate-100 bg-white px-4 py-3 shadow-lg md:hidden"
+            className="relative z-50 border-t border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-4 py-3 shadow-lg md:hidden"
             aria-label="Principal móvil"
           >
             <ul className="space-y-1">

@@ -23,7 +23,7 @@ export function createLicenciaDivIcon(
   const cfg = LICENCIA_MAPA_CONFIG[categoria];
   const sizePx =
     size === "sm" ? (highlighted ? 24 : 20) : highlighted ? 32 : 26;
-  const border = highlighted ? "3px solid #0f766e" : `2px solid ${cfg.ring}`;
+  const border = highlighted ? "3px solid #1f4f53" : `2px solid ${cfg.ring}`;
   const svg =
     size === "sm"
       ? cfg.svg.replace(/width="14"/g, 'width="11"').replace(/width="10"/g, 'width="8"')
@@ -43,7 +43,7 @@ export function createCentroBusquedaDivIcon(): L.DivIcon {
   const sizePx = 28;
   return L.divIcon({
     className: "homes-licencia-marker",
-    html: `<div style="width:${sizePx}px;height:${sizePx}px;background:#0f766e;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 8px rgba(15,118,110,0.45);display:flex;align-items:center;justify-content:center">${CENTRO_SVG}</div>`,
+    html: `<div style="width:${sizePx}px;height:${sizePx}px;background:#1f4f53;border:3px solid #fffcf7;border-radius:50%;box-shadow:0 2px 8px rgba(31,79,83,0.4);display:flex;align-items:center;justify-content:center">${CENTRO_SVG}</div>`,
     iconSize: [sizePx, sizePx],
     iconAnchor: [sizePx / 2, sizePx / 2],
     popupAnchor: [0, -sizePx / 2],
@@ -55,7 +55,7 @@ export function createSigmaDivIcon(size: "sm" | "md" = "md"): L.DivIcon {
   const sigma = SIGMA_MAP_POINT.default;
   return L.divIcon({
     className: "homes-licencia-marker",
-    html: `<div style="width:${sizePx}px;height:${sizePx}px;background:${sigma.fillColor};border:2px solid ${sigma.color};border-radius:50%;box-shadow:0 2px 5px rgba(79,70,229,0.35);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">Σ</div>`,
+    html: `<div style="width:${sizePx}px;height:${sizePx}px;background:${sigma.fillColor};border:2px solid ${sigma.color};border-radius:50%;box-shadow:0 2px 5px rgba(31,79,83,0.32);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff">Σ</div>`,
     iconSize: [sizePx, sizePx],
     iconAnchor: [sizePx / 2, sizePx / 2],
     popupAnchor: [0, -sizePx / 2],
