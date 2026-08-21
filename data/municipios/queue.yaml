@@ -3748,11 +3748,11 @@ municipios:
 - slug: ondara
   nombre: Ondara
   bocm_count: 3
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-21T20:02:14.755368+00:00'
+  last_run: '2026-08-21T20:14:27.284261+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/386
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-21T20:02:14.757430+00:00'
+updated_at: '2026-08-21T20:14:27.285197+00:00'
