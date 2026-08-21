@@ -1,0 +1,30 @@
+slug: mogente
+nombre: "Mogente"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.moixent.es"
+  adapter: municipio.adapters.mogente:MogenteAyuntamientoAdapter
+  config:
+    web_base: "https://www.moixent.es"
+    sede_base: "https://moixent.sedelectronica.es"
+    board_url: "https://moixent.sedelectronica.es/board"
+    transparency_urbanismo_url: "https://moixent.sedelectronica.es/transparency/991457ff-f304-40d5-8815-2b9820cb5a4c/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mogente/1.0"
+    centroid: [38.872, -0.765]
+  notes: |
+    Fuentes: Drupal 10 Portales (moixent.es, noticia-aviso PUAM/PMUS/fotovoltaica) +
+    tablón sede espublico gestiona (PUAM aprobación inicial) +
+    transparencia sede (PGOU digitalizado) + impresos urbanismo (formularios licencias).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
