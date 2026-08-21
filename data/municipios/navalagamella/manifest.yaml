@@ -1,0 +1,32 @@
+slug: navalagamella
+nombre: "Navalagamella"
+provincia: "Navalagamella, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytonavalagamella.es"
+  adapter: municipio.adapters.navalagamella:NavalagamellaAyuntamientoAdapter
+  config:
+    web_base: "https://aytonavalagamella.es"
+    sede_base: "https://aytonavalagamella.sedelectronica.es"
+    board_url: "https://aytonavalagamella.sedelectronica.es/board/"
+    transparency_url: "https://aytonavalagamella.sedelectronica.es/transparency/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-navalagamella/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "NAVALAGAMELLA"
+  notes: |
+    Web corporativa Hostinger/Astro (aytonavalagamella.es) + sede espublico gestiona.
+    Tablón /board/, notas de pleno y noticias de urbanismo en web.
+    Geometría parcial vía WFS SITCM Comunidad de Madrid (ámbitos P-XX).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
