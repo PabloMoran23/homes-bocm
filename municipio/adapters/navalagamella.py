@@ -355,6 +355,44 @@ class NavalagamellaAyuntamientoAdapter(AyuntamientoAdapter):
         )
         return list(by_key.values())
 
+    def _collect_wfs_catalog(self) -> list[dict[str, Any]]:
+        """Ámbitos de planeamiento SITCM como referencia con geometría."""
+        rows: list[dict[str, Any]] = []
+        muni = self.wfs_municipio.replace("'", "''")
+        for feat in self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120):
+            props = feat.get("properties") or {}
+            name = str(props.get("DS_NOMB_AMB") or "").strip()
+            if not name:
+                continue
+            geom = feat.get("geometry")
+            if not isinstance(geom, dict):
+                continue
+            fig = str(props.get("DS_FIG_DES") or "planeamiento").strip()
+            titulo = f"Ámbito {name} — {fig} (SITCM Navalagamella)"
+            cql = f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB='{name.replace(chr(39), chr(39)+chr(39))}'"
+            rec: dict[str, Any] = {
+                "id": _stable_id("proy", f"sitcm-{name}"),
+                "municipio": MUNICIPIO,
+                "titulo": titulo[:500],
+                "fecha": None,
+                "tipo": "ámbito planeamiento",
+                "url": f"{self.wfs_url}?service=WFS&request=GetFeature&CQL_FILTER={urllib.parse.quote(cql)}",
+                "source": "ayuntamiento",
+                "origen": "sitcm_wfs",
+                "geom_geojson": geom,
+                "geometry_source": "portal_wfs",
+                "geometry_source_url": (
+                    f"{self.wfs_url}?service=WFS&request=GetFeature&CQL_FILTER={urllib.parse.quote(cql)}"
+                ),
+                "coord_source": "portal_geometry_centroid",
+                "ambito_sit": name,
+            }
+            cen = geometry_centroid(geom)
+            if cen:
+                rec["lat"], rec["lon"] = cen
+            rows.append(rec)
+        return rows
+
     def _collect_licencia_info_pages(self) -> list[dict[str, Any]]:
         return [
             {
@@ -659,6 +697,8 @@ class NavalagamellaAyuntamientoAdapter(AyuntamientoAdapter):
             add(self._board_to_proyecto(item))
         for item in self._collect_web():
             add(self._web_to_proyecto(item))
+        for item in self._collect_wfs_catalog():
+            add(item)
 
         self._write_jsonl(out_jsonl, rows)
         return {
