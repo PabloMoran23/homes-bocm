@@ -3818,11 +3818,11 @@ municipios:
 - slug: pezuela-de-las-torres
   nombre: Pezuela de las Torres
   bocm_count: 3
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-22T06:00:48.221532+00:00'
+  last_run: '2026-08-22T06:15:13.721454+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/391
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-22T06:00:48.222552+00:00'
+updated_at: '2026-08-22T06:15:13.722346+00:00'
