@@ -1,0 +1,31 @@
+slug: san-roque
+nombre: "San Roque"
+provincia: "San Roque (Cádiz)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sanroque.sedelectronica.es"
+  adapter: municipio.adapters.san_roque:SanRoqueAyuntamientoAdapter
+  config:
+    sede_base: "https://sanroque.sedelectronica.es"
+    board_url: "https://sanroque.sedelectronica.es/board/"
+    web_base: "https://www.sanroque.es"
+    urbanismo_docs_url: "https://www.sanroque.es/documentos/urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-san-roque/1.0"
+    centroid: [36.2107, -5.3841]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + Drupal 7 web municipal
+    (/documentos/urbanismo, portal-de-transparencia) + SITUA Junta de Andalucía.
+    Web municipal requiere User-Agent tipo navegador (403 con UA genérico).
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
