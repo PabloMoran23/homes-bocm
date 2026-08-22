@@ -1,0 +1,32 @@
+slug: riofrio-de-riaza
+nombre: "Riofrío de Riaza"
+provincia: "Riofrío de Riaza (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.riofrioderiaza.es"
+  adapter: municipio.adapters.riofrio_de_riaza:RiofrioDeRiazaAyuntamientoAdapter
+  config:
+    web_base: "https://www.riofrioderiaza.es"
+    sede_base: "https://riofrioderiaza.sedelectronica.es"
+    board_url: "https://riofrioderiaza.sedelectronica.es/board"
+    plai_municipio: 172
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Riofrío de Riaza"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-riofrio-de-riaza/1.0"
+    insecure_ssl: true
+    centroid: [41.21, -3.45]
+  notes: |
+    Liferay Segovia8 (Diputación Segovia) sin sección /urbanismo dedicada.
+    Sede espublico gestiona (tablón vacío, catálogo trámites en /dossier).
+    PLAI JCYL prov. 40 mun. 172 (sin documentos publicados).
+    Geometría: IDECyL WFS PLAU CyL (ámbito municipal sin PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
