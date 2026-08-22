@@ -1,0 +1,29 @@
+slug: pradoluengo
+nombre: "Pradoluengo"
+provincia: "Pradoluengo (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.pradoluengo.es"
+  adapter: municipio.adapters.pradoluengo:PradoluengoAyuntamientoAdapter
+  config:
+    web_base: "https://www.pradoluengo.es"
+    sede_base: "https://pradoluengo.sedelectronica.es"
+    board_url: "https://pradoluengo.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pradoluengo/1.0"
+    centroid: [42.33, -3.20]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Pradoluengo"
+  notes: |
+    Web corporativa Drupal (normativa, noticias alumbrado/arquitecto técnico).
+    Sede espublico gestiona: tablón /board, transparencia (sección urbanismo vía Wicket).
+    PLAU CyL: NUM aprobada (provincia 09, municipio 274, cDocId 291831).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento NUM + 4 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
