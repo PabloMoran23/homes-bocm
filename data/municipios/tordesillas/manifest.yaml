@@ -1,0 +1,32 @@
+slug: tordesillas
+nombre: "Tordesillas"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://tordesillas.sedelectronica.es"
+  adapter: municipio.adapters.tordesillas:TordesillasAyuntamientoAdapter
+  config:
+    sede_base: "https://tordesillas.sedelectronica.es"
+    web_base: "https://tordesillas.ayuntamientosdevalladolid.es"
+    board_url: "https://tordesillas.sedelectronica.es/board"
+    transparency_url: "https://tordesillas.sedelectronica.es/transparency"
+    plai_municipio: 165
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Tordesillas"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-tordesillas/1.0 (+urbanismo research)"
+    centroid: [41.5015, -4.9870]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board, transparencia /transparency),
+    web Liferay ayuntamientosdevalladolid.es (/el-municipio/urbanismo),
+    PLAI JCYL (municipio 165, Valladolid INE 47165) y capas IDECyL WFS (sectores/PP).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
