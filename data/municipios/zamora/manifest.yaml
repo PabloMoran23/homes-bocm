@@ -1,0 +1,27 @@
+slug: zamora
+nombre: "Zamora"
+provincia: Zamora
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.zamora.es"
+  adapter: municipio.adapters.zamora:ZamoraAyuntamientoAdapter
+  config:
+    web_base: "https://www.zamora.es"
+    sede_base: "https://zamora.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-zamora/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Zamora"
+    centroid: [41.5035, -5.7446]
+  notes: |
+    Web corporativa ASP.NET (contenidos.aspx: planeamiento vigente, desarrollo, licencias)
+    + sede espublico (tablón /board, transparencia /transparency) + PlanPublica JCyL
+    (provincia=49, municipio=275) + IDECyL WFS sectores/planes parciales (c_mun 49275).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
