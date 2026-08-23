@@ -1,0 +1,24 @@
+slug: adeje
+nombre: "Adeje"
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://adeje.sedelectronica.es"
+  adapter: municipio.adapters.adeje:AdejeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-adeje/1.0"
+    sede_base: "https://adeje.sedelectronica.es"
+    sitcan_package: "planeamiento-urbanistico-de-adeje"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38001/"
+  notes: |
+    Sede espublico gestiona (tablón /board) + SITCAN CKAN planeamiento + GEOBDP Grafcan (geometría partial).
+    Web corporativa ayuntamientodeadeje.es inaccesible desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
