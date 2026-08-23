@@ -1,0 +1,33 @@
+slug: albaida
+nombre: "Albaida"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://albaida.sede.dival.es"
+  adapter: municipio.adapters.albaida:AlbaidaAyuntamientoAdapter
+  config:
+    sede_base: "https://albaida.sede.dival.es"
+    web_base: "https://www.albaida.es"
+    tablon_rss: "https://albaida.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://albaida.sede.dival.es/tablondeanuncios/"
+    catalogo_urbanismo: "https://albaida.sede.dival.es/catalogoservicios.aspx?area=1796&ambito=1"
+    cod_ine_mun: "46024"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-albaida/1.0"
+    centroid: [38.8397, -0.5172]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000]
+  notes: |
+    Sede Dival (Sedipualba): tablón RSS + catálogo trámites urbanismo (URB.001–010).
+    Web Drupal 10 portalesmunicipales: PGOU, información urbanismo, polígono industrial.
+    Geometría parcial: ICV WFS InventarioSuSuz (9 sectores SUZ) + Planeamiento.Zonificacion (PGOU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
