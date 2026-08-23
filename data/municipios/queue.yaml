@@ -3944,11 +3944,11 @@ municipios:
 - slug: tapia-de-casariego
   nombre: Tapia de Casariego
   bocm_count: 3
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-23T00:02:36.881520+00:00'
+  last_run: '2026-08-23T00:11:15.932204+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/400
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-23T00:02:36.882780+00:00'
+updated_at: '2026-08-23T00:11:15.933116+00:00'
