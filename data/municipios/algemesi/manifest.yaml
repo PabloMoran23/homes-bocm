@@ -1,0 +1,31 @@
+slug: algemesi
+nombre: "Algemesí"
+provincia: Algemesí
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.algemesi.es"
+  adapter: municipio.adapters.algemesi:AlgemesiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-algemesi/1.0"
+    sede_base: "https://sede.algemesi.es/eAdmin"
+    transparencia_base: "https://transparencia.algemesi.es"
+    ine_municipio: "46007"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      ine_municipio: "46007"
+  notes: |
+    Web corporativa Drupal (Digital Value / portalesmunicipales).
+    Sede eAdmin Maggioli (sede.algemesi.es/eAdmin) tablón Tablon.do.
+    algemesi.sedelectronica.es (espublico) devuelve sede indeterminada — no usable.
+    Geometría parcial vía ICV WFS InventarioSuSuz (cod_ine_mun=46007).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
