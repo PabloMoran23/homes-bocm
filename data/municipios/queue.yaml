@@ -4210,10 +4210,10 @@ municipios:
 - slug: alhaurin-el-grande-mijas
   nombre: Alhaurín el Grande/Mijas
   bocm_count: 2
-  status: pending
+  status: failed
   attempts: 0
-  last_run: null
-  last_error: null
+  last_run: '2026-08-24T20:06:44.227006+00:00'
+  last_error: 'Entrada combinada duplicada: ya cubierta por alhaurin-el-grande y mijas'
   pr_url: null
   notes: ''
   boletin_source_id: boja
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-21T00:03:35.300302+00:00'
+updated_at: '2026-08-24T20:06:44.227945+00:00'
