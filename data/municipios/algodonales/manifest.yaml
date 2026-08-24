@@ -1,0 +1,29 @@
+slug: algodonales
+nombre: "Algodonales"
+provincia: "Algodonales-Cádiz"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.algodonales.es"
+  adapter: municipio.adapters.algodonales:AlgodonalesAyuntamientoAdapter
+  config:
+    web_base: "https://www.algodonales.es"
+    sede_base: "https://sede.algodonales.es"
+    tablon_url: "https://www.algodonales.es/tablondeanuncios"
+    edictos_url: "https://sede.algodonales.es/edictos/publico?idOrgan=6"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-algodonales/1.0)"
+    centroid: [36.8806, -5.4053]
+  notes: |
+    Fuentes: tablón Joomla rsnoticia (~600 anuncios PDF) + sede Liferay ecadiz
+    (EPICSA idOrgan=6 vacío) + SITUA PGOU + polígono industrial + transparencia Dip. Cádiz.
+    Web requiere User-Agent Mozilla (403 sin él). Sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
