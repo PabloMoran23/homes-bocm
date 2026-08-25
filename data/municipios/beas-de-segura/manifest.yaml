@@ -1,0 +1,31 @@
+slug: beas-de-segura
+nombre: "Beas de Segura"
+provincia: "Beas de Segura, Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://beasdesegura.sedelectronica.es"
+  adapter: municipio.adapters.beas_de_segura:BeasDeSeguraAyuntamientoAdapter
+  config:
+    sede_base: "https://beasdesegura.sedelectronica.es"
+    web_base: "https://www.beasdesegura.es"
+    board_url: "https://beasdesegura.sedelectronica.es/board/"
+    urbanismo_url: "https://www.beasdesegura.es/ayuntamiento/urbanismo/"
+    areas_url: "https://www.beasdesegura.es/ayuntamiento/areas/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-beas-de-segura/1.0"
+    centroid: [38.2528, -2.8878]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web www.beasdesegura.es (WordPress Colibri, Diputación Jaén webaytos); sección urbanismo vacía.
+    Planeamiento regional vía SITUA Junta de Andalucía (INE 23015).
+    Sin visor municipal con geometría enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
