@@ -1,0 +1,26 @@
+slug: ayamonte
+nombre: "Ayamonte"
+provincia: Huelva
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://ayamontepgom.es"
+  adapter: municipio.adapters.ayamonte:AyamonteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ayamonte/1.0"
+    sede_base: "https://ayamonte.sedelectronica.es"
+    web_base: "https://ayamonte.es"
+    pgom_base: "https://ayamontepgom.es"
+    visor_url: "https://ayamontepgom.es/visor/index14.html"
+    insecure_ssl: true
+  notes: |
+    Portal dedicado PGOM/POU (ayamontepgom.es) con PDFs de avance y visor Leaflet.
+    Sede espublico gestiona (tablón licencias). Web municipal WordPress (urbanismo).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
