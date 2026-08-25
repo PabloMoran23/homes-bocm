@@ -1,0 +1,36 @@
+slug: teulada
+nombre: "Teulada"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.teuladamoraira.com.es"
+  adapter: municipio.adapters.teulada:TeuladaAyuntamientoAdapter
+  config:
+    web_base: "https://www.teuladamoraira.com.es"
+    sede_base: "https://teuladamoraira.sedelectronica.es"
+    board_url: "https://teuladamoraira.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-teulada/1.0"
+    centroid: [38.7297, 0.1012]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "03101"
+    transparency_folders:
+      - url: "https://teuladamoraira.sedelectronica.es/transparency/"
+        titulo: "7. Urbanismo, Obras Públicas y Medio Ambiente"
+        nota: "276 documentos en portal transparencia sede (carga AJAX Wicket)"
+  notes: |
+    Web municipal Woden (teuladamoraira.com.es) + sede espublico gestiona.
+    Geoportal Geonet (geoportal.teuladamoraira.org / visorteulada.geonet.es).
+    Geometría: ICV WFS InventarioSuSuz (cod_ine_mun=03101).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
