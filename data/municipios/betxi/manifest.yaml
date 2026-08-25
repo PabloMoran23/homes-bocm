@@ -1,0 +1,35 @@
+slug: betxi
+nombre: "Betxí"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://betxi.es"
+  adapter: municipio.adapters.betxi:BetxiAyuntamientoAdapter
+  config:
+    sede_base: "https://betxi.sedelectronica.es"
+    board_url: "https://betxi.sedelectronica.es/board"
+    web_base: "https://betxi.es"
+    urbanismo_url: "https://betxi.es/viure-a-betxi/urbanisme-2/"
+    tramites_urb_url: "https://betxi.es/lajuntament/administracio/tramits/tramits-obres-i-urbanisme/"
+    citizen_urb_url: "https://betxi.sedelectronica.es/citizen-service/92426f7b-213a-4925-ace5-f4145545f963"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-betxi/1.0"
+    centroid: [39.929, -0.199]
+    cod_ine_mun: "12021"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      inventario_type: "ms:InventarioSuSuz"
+      zonificacion_type: "ms:Planeamiento.Zonificacion"
+  notes: |
+    WordPress betxi.es (urbanismo PDFs NNSS/PMUS) + sede espublico gestiona (tablón/transparencia).
+    Geometría partial: ICV WFS InventarioSuSuz (26 sectores) + Zonificacion (7 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
