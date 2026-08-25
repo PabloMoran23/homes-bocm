@@ -1,0 +1,32 @@
+slug: navaluenga
+nombre: "Navaluenga"
+provincia: "Navaluenga (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytonavaluenga.es"
+  adapter: municipio.adapters.navaluenga:NavaluengaAyuntamientoAdapter
+  config:
+    wp_base: "https://aytonavaluenga.es"
+    sede_base: "https://navaluenga.sedelectronica.es"
+    board_url: "https://navaluenga.sedelectronica.es/board"
+    plau_provincia: 5
+    plau_municipio: 163
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navaluenga/1.0"
+    insecure_ssl: true
+    centroid: [40.4142, -4.7078]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Navaluenga
+  notes: |
+    Web WordPress Astra (ordenanzas, normas urbanísticas PDFs en Dropbox/BOPA).
+    Sede espublico gestiona: tablón /board (pocas filas urbanísticas).
+    PlanPublica JCyL prov05 mun163 (modificaciones NUM).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 1 plan parcial + 24 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
