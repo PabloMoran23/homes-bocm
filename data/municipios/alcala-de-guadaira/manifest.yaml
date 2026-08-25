@@ -1,0 +1,30 @@
+slug: alcala-de-guadaira
+nombre: "Alcalá de Guadaíra"
+provincia: "Alcalá de Guadaíra (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ciudadalcala.sedelectronica.es"
+  adapter: municipio.adapters.alcala_de_guadaira:AlcalaDeGuadairaAyuntamientoAdapter
+  config:
+    sede_base: "https://ciudadalcala.sedelectronica.es"
+    board_url: "https://ciudadalcala.sedelectronica.es/board"
+    web_base: "https://www.alcaladeguadaira.es"
+    plan_general_base: "https://plangeneral.alcaladeguadaira.es"
+    transparency_url: "https://ciudadalcala.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-alcala-de-guadaira/1.0"
+    centroid: [37.3329, -5.8467]
+  notes: |
+    Fuentes: web municipal custom CMS (PGOU-94, revisión, modelos trámites) + sede espublico gestiona
+    (tablón /board + transparencia urbanismo 25 docs) + portal revisión PGOU WordPress. Sin visor GIS
+    municipal; SITUA/VITUA Junta sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
