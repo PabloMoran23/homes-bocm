@@ -1,0 +1,25 @@
+slug: bejar
+nombre: "Béjar"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://bejar.sedelectronica.es"
+  adapter: municipio.adapters.bejar:BejarAyuntamientoAdapter
+  config:
+    sede_base: "https://bejar.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-bejar/1.0"
+    wfs_municipio: "Béjar"
+  notes: |
+    Fuentes: tablón sede (/board), catálogo trámites (/dossier),
+    archivo PLAI Junta CYL (provincia 37, municipio 046) e IDECyL WFS sectores/planes.
+    Web www.bejar.es inaccesible (error BD) desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
