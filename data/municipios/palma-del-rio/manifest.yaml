@@ -1,0 +1,35 @@
+slug: palma-del-rio
+nombre: "Palma del Río"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://palmadelrio.es"
+  adapter: municipio.adapters.palma_del_rio:PalmaDelRioAyuntamientoAdapter
+  config:
+    wp_base: "https://palmadelrio.es"
+    sede_base: "https://sede.eprinsa.es/palmario"
+    wp_categories: [135]
+    wp_max_pages: 2
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-palma-del-rio/1.0"
+    centroid: [37.6992, -5.2817]
+    seed_pages:
+      - "https://palmadelrio.es/urbanismo-y-vivienda/planes/"
+      - "https://palmadelrio.es/urbanismo-y-vivienda/otros-servicios-urbanisticos/"
+    licencia_pages:
+      - "https://palmadelrio.es/urbanismo-y-vivienda/licencia-para-obras-y-cocheras/"
+      - "https://palmadelrio.es/urbanismo-y-vivienda/declaracion-responsable/"
+  notes: |
+    WordPress Divi: noticias urbanismo (categoría WP 135) + PDFs PGOU/PEI en planes.
+    Sede eprinsa (Diputación Córdoba): tablón Ember SPA sin API pública scrapeable.
+    Sin visor GIS municipal accesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
