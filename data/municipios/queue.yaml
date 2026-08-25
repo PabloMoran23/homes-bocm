@@ -3790,11 +3790,11 @@ municipios:
 - slug: pelayos-de-la-presa
   nombre: Pelayos de la Presa
   bocm_count: 3
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-22T02:08:13.482757+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/389
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-21T00:03:35.300302+00:00'
+updated_at: '2026-08-22T02:08:13.483621+00:00'
