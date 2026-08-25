@@ -1,0 +1,39 @@
+slug: alberic
+nombre: "Alberic"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.alberic.es"
+  adapter: municipio.adapters.alberic:AlbericAyuntamientoAdapter
+  config:
+    web_base: "https://www.alberic.es"
+    sede_base: "https://alberic.sede.dival.es"
+    transparency_base: "https://transparencia.alberic.es"
+    api_base: "https://api.digitalvalue.es/alberic/collections"
+    tablon_rss: "https://alberic.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://alberic.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://alberic.sede.dival.es/catalogoservicios.aspx"
+    urbanismo_url: "https://www.alberic.es/es/pagina/urbanismo"
+    transparency_urbanismo_url: "https://transparencia.alberic.es/es/transparencia/planejament-urbanistic"
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (poc-bocm-alberic/1.0)"
+    max_crawl_pages: 20
+    centroid: [39.1167, -0.5167]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000]
+  notes: |
+    Web Drupal portalesmunicipales (urbanismo, PGOU PDFs).
+    Transparencia DigitalValue (planejament-urbanistic, informacion-urbanistica).
+    Sede Dival Sedipualba: tablón RSS + catálogo trámites.
+    Geometría parcial: ICV GVA WFS Planeamiento.Zonificacion (INE 46005).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
