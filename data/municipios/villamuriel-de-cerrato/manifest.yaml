@@ -1,0 +1,26 @@
+slug: villamuriel-de-cerrato
+nombre: "Villamuriel de Cerrato"
+provincia: Palencia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://villamurieldecerrato.sedelectronica.es"
+  adapter: municipio.adapters.villamuriel_de_cerrato:VillamurielDeCerratoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villamuriel-de-cerrato/1.0"
+    insecure_ssl: true
+    plai_provincia: 34
+    plai_municipio: 217
+    wfs_municipio: "Villamuriel de Cerrato"
+  notes: |
+    Sede espublico (tablón + citizen-service IP). Sin web corporativa.
+    PlanPublica JCyL prov34 mun217. IDECyL WFS sectores/PP/ámbito.
+    /dossier e /info.0 con bucle de redirección — no scrapeables.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
