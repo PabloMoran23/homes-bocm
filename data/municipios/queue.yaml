@@ -3832,11 +3832,11 @@ municipios:
 - slug: picassent
   nombre: Picassent
   bocm_count: 3
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-22T08:22:25.478841+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/392
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-21T00:03:35.300302+00:00'
+updated_at: '2026-08-22T08:22:25.479785+00:00'

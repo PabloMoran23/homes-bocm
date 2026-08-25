@@ -1,0 +1,28 @@
+slug: picassent
+nombre: "Picassent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.picassent.es"
+  adapter: municipio.adapters.picassent:PicassentAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-picassent/1.0"
+    cod_ine_mun: "46194"
+    sede_base: "https://picassent.sedipualba.es"
+    governalia_planeamiento: "https://picassent.governalia.es/es/transparencia/planes-urbanisticos-y-estudios-de-impacto-ambiental/"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal 10 (picassent.es) + sede sedipualba (tablón RSS + trámites URB) +
+    governalia transparencia (PDFs planeamiento) + registro GVA + ICV WFS InventarioSuSuz.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
