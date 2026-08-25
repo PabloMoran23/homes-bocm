@@ -1,0 +1,32 @@
+slug: piedralaves
+nombre: "Piedralaves"
+provincia: "Piedralaves (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.piedralaves.es"
+  adapter: municipio.adapters.piedralaves:PiedralavesAyuntamientoAdapter
+  config:
+    web_base: "https://www.piedralaves.es"
+    sede_base: "https://piedralaves.sedelectronica.es"
+    board_url: "https://piedralaves.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-piedralaves/1.0"
+    insecure_ssl: true
+    centroid: [40.319, -4.699]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Piedralaves
+    plai_provincia: 05
+    plai_municipio: 187
+  notes: |
+    Web Urbimedia/Drupal (normas urbanísticas PDF, trámites).
+    Sede espublico gestiona: tablón /board.
+    Geometría: IDECyL WFS PLAU CyL (instrumento NUM, 47 sectores, 1 plan parcial).
+    PLAI JCYL c_mun 05187 — documento índice vía url_doc_info WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
