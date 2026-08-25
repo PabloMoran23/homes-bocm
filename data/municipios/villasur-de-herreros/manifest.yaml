@@ -1,0 +1,34 @@
+slug: villasur-de-herreros
+nombre: "Villasur de Herreros"
+provincia: "Villasur de Herreros, Burgos"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.villasurdeherreros.es"
+  adapter: municipio.adapters.villasur_de_herreros:VillasurDeHerrerosAyuntamientoAdapter
+  config:
+    web_base: "https://www.villasurdeherreros.es"
+    sede_base: "https://villasurdeherreros.sedelectronica.es"
+    planpublica_provincia: 9
+    planpublica_municipio: 463
+    ine_code: "09463"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Villasur de Herreros"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09463"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=463"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=463"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villasur-de-herreros/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [42.2892, -3.3418]
+  notes: |
+    Drupal Toools (web corporativa sin sección urbanismo) + sede espublico gestiona +
+    PlanPublica JCyL (NUM + estudios detalle) + IDECyL WFS (8 sectores + ámbito NUM).
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
