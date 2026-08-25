@@ -1,0 +1,31 @@
+slug: sevilla
+nombre: "Sevilla"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.urbanismosevilla.org"
+  adapter: municipio.adapters.sevilla:SevillaAyuntamientoAdapter
+  config:
+    nn_dd_index: "https://www.urbanismosevilla.org/areas/planeamiento-desarrollo-urbanistico/planeamiento-en-tramite-segun-nn-dd-de-la-documentacion-electronica-de-los-instrumentos-de-ordenacion-urbanistica-de-andalucia/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-sevilla/1.0"
+    centroid: [37.3891, -5.9845]
+    geometry:
+      kind: cdau_callejero
+      callejero_search: "https://map4.urbanismosevilla.org/GIS_GIE/GIE_EXP/TR_Callejero_ORA_json.ashx"
+      portales_layer: "https://map5.urbanismosevilla.org/sci/rest/services/Callejero/Callejero_CDAU/MapServer/1"
+  notes: |
+    Gerencia de Urbanismo (Plone): planeamiento NN.DD, oficina virtual extranet.
+    Proyectos: instrumentos en trámite publicados bajo NN.DD Junta de Andalucía.
+    Licencias: consulta expedientes / modelos DR en extranet (sin listado público masivo).
+    Geometría: CDUS callejero (portales CDAU MapServer/1); capas LOUA en tiles-eu1 son raster.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
