@@ -1,0 +1,28 @@
+slug: anora
+nombre: "Añora"
+provincia: "Añora-Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://anora.es"
+  adapter: municipio.adapters.anora:AnoraAyuntamientoAdapter
+  config:
+    documentos_url: "https://anora.es/ayuntamiento/documentos/"
+    sede_base: "https://sede.eprinsa.es/anora"
+    tablon_url: "https://sede.eprinsa.es/anora/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-anora/1.0"
+    centroid: [38.4167, -4.9000]
+  notes: |
+    Fuentes: web WordPress Divi eprinsa (documentos PGOU/planos Google Drive y PDFs),
+    sede eprinsa Diputación Córdoba (tablón SPA), transparencia.anora.es,
+    CKAN anora-opendata.e-admin.es (sin datasets urbanismo).
+    SITUA Junta de Andalucía como referencia PGOU regional.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
