@@ -1,0 +1,32 @@
+slug: benissano
+nombre: "Benissanó"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://ajuntamentbenissano.es"
+  adapter: municipio.adapters.benissano:BenissanoAyuntamientoAdapter
+  config:
+    web_base: "https://ajuntamentbenissano.es"
+    wp_api: "https://ajuntamentbenissano.es/es/wp-json/wp/v2"
+    sede_base: "https://benissano.sede.dival.es"
+    tablon_rss: "https://benissano.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://benissano.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://benissano.sede.dival.es/catalogoservicios.aspx"
+    transparency_url: "https://ajuntamentbenissano.es/es/portal-de-transparencia/urbanismo-y-obras-publicas/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benissano/1.0"
+    cod_ine_mun: "46069"
+    centroid: [39.6167, -0.5778]
+  notes: |
+    WordPress Bridge (ajuntamentbenissano.es) bandos/noticias + transparencia PDFs NNSS.
+    Sede Dival (benissano.sede.dival.es): tablón vacío; catálogo sin trámites urbanísticos.
+    ICV WFS sin zonificación para INE 46069 → geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
