@@ -4252,9 +4252,9 @@ municipios:
 - slug: ayamonte
   nombre: Ayamonte
   bocm_count: 2
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-08-25T04:03:19.920383+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-25T00:05:11.731079+00:00'
+updated_at: '2026-08-25T04:03:19.921599+00:00'
