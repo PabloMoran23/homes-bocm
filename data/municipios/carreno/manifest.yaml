@@ -1,0 +1,28 @@
+slug: carreno
+nombre: "Carreño"
+provincia: Carreño
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.ayto-carreno.es"
+  adapter: municipio.adapters.carreno:CarrenoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carreno/1.0"
+    centroid: [43.5611, -5.7515]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "14"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+  notes: |
+    Liferay ayto-carreno.es (normativa, estructura PGO, planos PDF vía document_library).
+    Registro regional RPGUR (www54.asturias.es) — 43 instrumentos vigentes concejo CARREÑO (idConcejo=14).
+    Geometría parcial vía WFS visorrpgur (2 polígonos: PGO + catálogo urbanístico).
+    Sede sedeelectronica.ayto-carreno.es con timeout en CI; tablón no scrapeable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
