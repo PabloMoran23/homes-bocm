@@ -1,0 +1,30 @@
+slug: brea-de-tajo
+nombre: "Brea de Tajo"
+provincia: Brea de Tajo, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://breadetajo.es"
+  adapter: municipio.adapters.brea_de_tajo:BreaDeTajoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-brea-de-tajo/1.0"
+    sede_eadmin: "https://sedebreadetajo.eadministracion.es"
+    sede_legacy: "https://breadetajo.sedelectronica.es"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "BREA DE TAJO"
+  notes: |
+    WordPress breadetajo.es (impresos licencia/DR/instancia + ordenanzas PDF).
+    Sede eAdmin sedebreadetajo.eadministracion.es (tablón; 502 desde CI).
+    Sede legacy breadetajo.sedelectronica.es inactiva («En Construcción»).
+    Asesoramiento urbanístico vía MISECAM (misecam.org).
+    Geometría: WFS SITCM 7 UA (Normas Subsidiarias Matriz 1987).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
