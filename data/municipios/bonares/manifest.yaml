@@ -1,0 +1,29 @@
+slug: bonares
+nombre: "Bonares"
+provincia: "Bonares/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://bonares.sedelectronica.es"
+  adapter: municipio.adapters.bonares:BonaresAyuntamientoAdapter
+  config:
+    sede_base: "https://bonares.sedelectronica.es"
+    board_url: "https://bonares.sedelectronica.es/board/"
+    transparency_url: "https://bonares.sedelectronica.es/transparency"
+    web_urbanismo_url: "https://bonares.es/es/servicios/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-bonares/1.0"
+    centroid: [37.2722, -6.6833]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + transparencia (/transparency).
+    Web bonares.es (urbanismo) no responde HTTPS desde CI; sede operativa.
+    SITUA Junta de Andalucía para planeamiento regional (sin geometría por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
