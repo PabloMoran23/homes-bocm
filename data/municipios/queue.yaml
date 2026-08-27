@@ -4588,11 +4588,11 @@ municipios:
 - slug: chiva
   nombre: Chiva
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-27T04:02:16.502880+00:00'
+  last_run: '2026-08-27T04:36:54.194266+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/446
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-27T04:02:16.503958+00:00'
+updated_at: '2026-08-27T04:36:54.195169+00:00'
