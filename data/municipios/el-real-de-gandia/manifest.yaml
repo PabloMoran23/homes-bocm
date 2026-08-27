@@ -1,0 +1,38 @@
+slug: el-real-de-gandia
+nombre: "El Real de Gandia"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://realdegandia.sedelectronica.es"
+  adapter: municipio.adapters.el_real_de_gandia:ElRealDeGandiaAyuntamientoAdapter
+  config:
+    sede_base: "https://realdegandia.sedelectronica.es"
+    board_url: "https://realdegandia.sedelectronica.es/board/"
+    web_base: "https://www.realdegandia.es"
+    urbanismo_url: "https://www.realdegandia.es/es/pagina/urbanismo"
+    normas_url: "https://www.realdegandia.es/es/pagina/normas-urbanisticas"
+    transparencia_urbanistica_url: "https://www.realdegandia.es/es/transparencia/informacion-urbanistica"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    web_fetch_timeout: 8
+    user_agent: "poc-bocm-el-real-de-gandia/1.0"
+    centroid: [39.0145, -0.1788]
+    cod_ine_mun: "46205"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Adaptive Theme (www.realdegandia.es) + sede espublico gestiona (/board/).
+    Web municipal timeout SSL en CI; seeds estáticos + ICV WFS.
+    Tablón: 3 anuncios recientes (sin licencias urbanísticas agosto 2026).
+    Geometría partial: ICV WFS cod_ine_mun 46205 (Plan general).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
