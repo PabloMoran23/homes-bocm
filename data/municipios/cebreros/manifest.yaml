@@ -1,0 +1,32 @@
+slug: cebreros
+nombre: "Cebreros"
+provincia: "Cebreros-Ávila"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.cebreros.es"
+  adapter: municipio.adapters.cebreros:CebrerosAyuntamientoAdapter
+  config:
+    web_base: "https://www.cebreros.es"
+    sede_base: "https://cebreros.sedelectronica.es"
+    board_url: "https://cebreros.sedelectronica.es/board"
+    plan_provincia: "05"
+    plan_municipio: "057"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "05057"
+    wfs_municipio: Cebreros
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cebreros/1.0"
+    insecure_ssl: true
+    centroid: [40.4556, -4.4642]
+  notes: |
+    Web corporativa Ziddea (urbanismo → PlanPublica JCyl).
+    Sede espublico gestiona: tablón /board.
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores + planes parciales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
