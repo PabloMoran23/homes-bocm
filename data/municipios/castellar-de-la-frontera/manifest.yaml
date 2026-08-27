@@ -1,0 +1,31 @@
+slug: castellar-de-la-frontera
+nombre: "Castellar de la Frontera"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://castellardelafrontera.sedelectronica.es"
+  adapter: municipio.adapters.castellar_de_la_frontera:CastellarDeLaFronteraAyuntamientoAdapter
+  config:
+    sede_base: "https://castellardelafrontera.sedelectronica.es"
+    board_url: "https://castellardelafrontera.sedelectronica.es/board/"
+    web_base: "https://www.castellardelafrontera.es"
+    pbom_url: "https://www.dipucadiz.es/asistencia-a-municipios/asistencia-tecnica/planeamiento-urbanistico/ayuntamientos/castellar/pbom/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-castellar-de-la-frontera/1.0"
+    centroid: [36.3177, -5.4541]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + PBOM Diputación Cádiz (PDFs cartografía)
+    + ordenanzas web Joomla + SITU@ (planeamiento vigente NN.SS.).
+    Transparencia sede (88 docs urbanismo) requiere navegación Wicket AJAX — no scrapeable sin sesión.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
