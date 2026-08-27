@@ -1,0 +1,28 @@
+slug: el-puerto-de-santa-maria
+nombre: "El Puerto de Santa María"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://elpuertodesantamaria.sedelectronica.es"
+  adapter: municipio.adapters.el_puerto_de_santa_maria:ElPuertoDeSantaMariaAyuntamientoAdapter
+  config:
+    sede_base: "https://elpuertodesantamaria.sedelectronica.es"
+    board_url: "https://elpuertodesantamaria.sedelectronica.es/board"
+    web_base: "https://www.elpuertodesantamaria.es"
+    transparencia_base: "https://transparencia.elpuertodesantamaria.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-el-puerto-de-santa-maria/1.0"
+    centroid: [36.5939, -6.2298]
+  notes: |
+    Fuentes: tablón sede espublico ehome, portal transparencia (exposición pública),
+    web municipal (urbanismo/PGOU/PGOM PDFs). Sin visor GIS municipal enlazable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
