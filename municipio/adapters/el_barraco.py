@@ -55,7 +55,7 @@ RE_CATALOG = re.compile(
     re.I,
 )
 RE_PDF_HREF = re.compile(
-    r'href=["\']((?:https?://(?:mail\.)?elbarraco\.org)?(?:/[^"\']+)?\.pdf[^"\']*)["\']',
+    r'href=["\']([^"\']+\.pdf(?:[^"\']*)?)["\']',
     re.I,
 )
 RE_LICENCIA = re.compile(
@@ -82,6 +82,14 @@ RE_SECTOR_CODE = re.compile(
     r"UNC[- ]?\d+|"
     r"SECTOR\s+[A-Z0-9-]+"
     r")\b",
+)
+RE_CATALOG_PROYECTO = re.compile(
+    r"(?i)(urban|planeam|pgou|nnss|normas (?:urban|subsidiarias)|"
+    r"licencia.*(?:obra|urban)|obra (?:menor|mayor|s de nueva planta)|"
+    r"actuaci[oó]n urban|calificaci[oó]n urban|modificaci[oó]n del planeamiento|"
+    r"planeamiento|plan parcial|estudio de detalle|informaci[oó]n p[uú]blica|"
+    r"uso excepcional|reparcel|sector|primera ocupaci[oó]n|comunicaci[oó]n previa|"
+    r"alineaci[oó]n|agrupaci[oó]n|habitabilidad|edtu|delimitaci[oó]n)",
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_FECHA_YMD = re.compile(r"\b((?:19|20)\d{2})(\d{2})(\d{2})\b")
@@ -372,6 +380,13 @@ class ElBarracoAyuntamientoAdapter(AyuntamientoAdapter):
                 pdf = self._abs_web(unescape(m.group(1)), page_url)
                 if pdf in seen:
                     continue
+                pdf_lower = pdf.lower()
+                if "/pdf/urbanismo/" in pdf_lower or "/pdf/normativa/" in pdf_lower or "/tablon/" in pdf_lower:
+                    pass
+                elif "normativa" in page_url.lower() or "tablon" in page_url.lower():
+                    pass
+                else:
+                    continue
                 seen.add(pdf)
                 name = unescape(urllib.parse.unquote(Path(pdf).name))
                 name = re.sub(r"\.pdf$", "", name, flags=re.I).replace("-", " ").replace("_", " ")
@@ -382,11 +397,6 @@ class ElBarracoAyuntamientoAdapter(AyuntamientoAdapter):
                     link_text = _strip_html(text_m.group(1))
                 titulo = link_text or name
                 blob = f"{page_title} {titulo} {pdf}"
-                if "urbanismo" in pdf.lower() or "normativa" in pdf.lower() or "tablon" in pdf.lower():
-                    pass
-                elif not RE_PROYECTO.search(blob) and not RE_LICENCIA.search(blob):
-                    if "urban" not in page_url.lower() and "normativa" not in page_url.lower():
-                        continue
                 rows.append(
                     {
                         "titulo": titulo[:500],
@@ -691,11 +701,15 @@ class ElBarracoAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _tramite_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
-        if not RE_PROYECTO.search(row["titulo"]):
+        titulo = row["titulo"]
+        if row.get("origen") == "catalogo_tramites":
+            if not RE_CATALOG_PROYECTO.search(titulo):
+                return None
+        elif not RE_PROYECTO.search(titulo):
             return None
-        if RE_LICENCIA.search(row["titulo"]) and not re.search(
+        if RE_LICENCIA.search(titulo) and not re.search(
             r"(?i)planeam|actuaci[oó]n urban|modificaci[oó]n del planeamiento",
-            row["titulo"],
+            titulo,
         ):
             return None
         rec: dict[str, Any] = {
