@@ -1,0 +1,31 @@
+slug: el-barraco
+nombre: "El Barraco"
+provincia: "El Barraco (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://mail.elbarraco.org"
+  adapter: municipio.adapters.el_barraco:ElBarracoAyuntamientoAdapter
+  config:
+    web_base: "https://mail.elbarraco.org"
+    sede_base: "https://elbarraco.sedelectronica.es"
+    board_url: "https://elbarraco.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-barraco/1.0"
+    centroid: [40.4769, -4.6426]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "El Barraco"
+  notes: |
+    Web legacy HTML (mail.elbarraco.org): normativa NNSS + formularios urbanismo PDF.
+    Sede espublico gestiona: tablón /board (EDTU N-403, anuncios).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores + plan parcial).
+    PlanPublica JCyl: provincia 05, municipio 022 (c_mun 05022).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: bocyl
