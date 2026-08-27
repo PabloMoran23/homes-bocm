@@ -1,0 +1,29 @@
+slug: cudillero
+nombre: "Cudillero"
+provincia: Cudillero, Asturias
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.cudillero.es"
+  adapter: municipio.adapters.cudillero:CudilleroAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cudillero/1.0"
+    centroid: [43.5617, -6.1456]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "21"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    max_rpgur_pages: 5
+  notes: |
+    Liferay cudillero.es (normativa, tablón de anuncios, PDFs /documents/).
+    Registro regional RPGUR (www54.asturias.es) — 44 instrumentos vigentes concejo CUDILLERO (idConcejo=21).
+    Geometría parcial vía WFS visorrpgur (1 polígono municipal NSPM).
+    Sede cudillero.sede.e-ayuntamiento.es lenta/inaccesible; sin tablón de licencias.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
