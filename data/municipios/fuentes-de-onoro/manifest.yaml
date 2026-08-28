@@ -1,0 +1,29 @@
+slug: fuentes-de-onoro
+nombre: "Fuentes de Oñoro"
+provincia: Fuentes de Oñoro (Salamanca)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://fuentesdeonoro.es"
+  adapter: municipio.adapters.fuentes_de_onoro:FuentesDeOnoroAyuntamientoAdapter
+  config:
+    web_base: "https://fuentesdeonoro.es"
+    sede_base: "https://fuentesdeonoro.sedelectronica.es"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "37140"
+    plan_provincia: "37"
+    plan_municipio: "140"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-fuentes-de-onoro/1.0 (+urbanismo research)"
+    centroid: [40.3258, -6.8089]
+  notes: |
+    WordPress fuentesdeonoro.es (REST API noticias urbanismo) + sede espublico gestiona
+    (tablón + catálogo) + PlanPublica JCyL + IDECyL WFS sectores SUNC/SUIC (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
