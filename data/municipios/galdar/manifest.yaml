@@ -1,0 +1,29 @@
+slug: galdar
+nombre: "Gáldar"
+provincia: Gáldar
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.galdar.es"
+  adapter: municipio.adapters.galdar:GaldarAyuntamientoAdapter
+  config:
+    wp_base: "https://www.galdar.es"
+    sede_base: "https://galdar.sedelectronica.es"
+    board_url: "https://galdar.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-galdar
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38009/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-galdar/1.0"
+    centroid: [28.1470, -15.6500]
+  notes: |
+    WordPress (urbanismo/PGO) + sede espublico gestiona (/board) +
+    SITCAN CKAN planeamiento-urbanistico-de-galdar + GEOBDP Grafcan (INE 38009).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
