@@ -1,0 +1,30 @@
+slug: guadix
+nombre: "Guadix"
+provincia: Guadix
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://guadix.sedelectronica.es"
+  adapter: municipio.adapters.guadix:GuadixAyuntamientoAdapter
+  config:
+    sede_base: "https://guadix.sedelectronica.es"
+    board_url: "https://guadix.sedelectronica.es/board"
+    wp_base: "https://guadix.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-guadix/1.0"
+    centroid: [37.2993, -3.1392]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board), web WordPress guadix.es
+    (urbanismo-patrimonio, noticias plan especial casco histórico / PGOU),
+    SITUA/VITUA Junta de Andalucía (metadatos planeamiento).
+    Transparencia sede: sección 7. URBANISMO (269 docs, navegación Wicket AJAX).
+    Sin listado histórico público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
