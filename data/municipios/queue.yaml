@@ -4812,11 +4812,11 @@ municipios:
 - slug: grado
   nombre: Grado
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-28T12:12:46.584030+00:00'
+  last_run: '2026-08-28T12:21:19.264790+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/462
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-28T12:12:46.585336+00:00'
+updated_at: '2026-08-28T12:21:19.265682+00:00'
