@@ -1,0 +1,29 @@
+slug: haria
+nombre: "Haría"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.ayuntamientodeharia.com/haria"
+  adapter: municipio.adapters.haria:HariaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.ayuntamientodeharia.com/haria"
+    sede_base: "https://sede.ayuntamientodeharia.com"
+    sitcan_package: planeamiento-urbanistico-de-haria
+    edictos_rss: "https://sede.ayuntamientodeharia.com/publico/sindicacion/edictos/RSS"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-haria/1.0"
+    centroid: [29.1483, -13.4997]
+  notes: |
+    WordPress ayuntamientodeharia.com (plan general WP REST + formularios oficina técnica)
+    + sede Galileo (edictos RSS, tablón JS) + SITCAN CKAN planeamiento-urbanistico-de-haria
+    + GEOBDP Grafcan (docs 652, 1136). INE 35011.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
