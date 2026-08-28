@@ -1,0 +1,30 @@
+slug: grado
+nombre: "Grado"
+provincia: Grado
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.ayto-grado.es"
+  adapter: municipio.adapters.grado:GradoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-grado/1.0"
+    centroid: [43.3895, -6.0753]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "26"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_filter: "Instrumento LIKE '%GRADO%'"
+  notes: |
+    Liferay ayto-grado.es (urbanismo, revisión PGO, PDFs /documents/).
+    Registro regional RPGUR (www54.asturias.es) — 32 instrumentos vigentes concejo GRADO.
+    Visor Urbanismo en Red i-cast: http://urbanismo.i-cast.es/Grado
+    Geometría parcial vía WFS visorrpgur (PGO id=1801 + CAU id=3564).
+    Sede sedeelectronica.ayto-grado.es con timeout en CI; tablón no scrapeable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
