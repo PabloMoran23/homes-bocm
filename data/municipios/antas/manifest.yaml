@@ -1,0 +1,32 @@
+slug: antas
+nombre: "Antas"
+provincia: "Antas (Almería)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.antas.es"
+  adapter: municipio.adapters.antas:AntasAyuntamientoAdapter
+  config:
+    web_base: "https://www.antas.es"
+    sede_base: "https://antas.sedelectronica.es"
+    board_url: "https://antas.sedelectronica.es/board/"
+    urbanismo_url: "https://www.antas.es/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-antas/1.0"
+    centroid: [37.2453, -1.9185]
+    geometry:
+      kind: dipalme_wfs
+      wfs_url: "https://app.dipalme.org/geoserver/urbanismo/ows"
+      cod_ine: "04016"
+  notes: |
+    Fuentes: WordPress www.antas.es (noticias PBOM/PGOU/sectores + página urbanismo)
+    + tablón sede espublico gestiona + WFS Diputación Almería (3 sectores SIU INE 04016).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
