@@ -1,0 +1,36 @@
+slug: l-alcora
+nombre: "L'Alcora"
+provincia: "L'Alcora"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://lalcora.es"
+  adapter: municipio.adapters.l_alcora:LAlcoraAyuntamientoAdapter
+  config:
+    web_base: "https://lalcora.es"
+    sede_base: "https://lalcora.sedelectronica.es"
+    board_url: "https://lalcora.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-l-alcora/1.0"
+    centroid: [40.0671, -0.2144]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "12011"
+    transparency_folders:
+      - url: "https://lalcora.sedelectronica.es/transparency"
+        titulo: "7. URBANISME, OBRES PÚBLIQUES I MEDI AMBIENT"
+        nota: "216 documentos en portal transparencia (carga AJAX Wicket)"
+  notes: |
+    WordPress lalcora.es (REST API bloqueada) + sede espublico gestiona.
+    Urbanismo: /arees-i-serveis-municipals/urbanisme/ + noticias PGOU vía sitemap.
+    Geometría: ICV WFS InventarioSuSuz (cod_ine_mun=12011, 9 sectores SUZ/SUA).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
