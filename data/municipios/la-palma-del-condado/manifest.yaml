@@ -1,0 +1,28 @@
+slug: la-palma-del-condado
+nombre: "La Palma del Condado"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lapalmadelcondado.sedelectronica.es"
+  adapter: municipio.adapters.la_palma_del_condado:LaPalmaDelCondadoAyuntamientoAdapter
+  config:
+    sede_base: "https://lapalmadelcondado.sedelectronica.es"
+    board_url: "https://lapalmadelcondado.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-palma-del-condado/1.0"
+    centroid: [37.3861, -6.5547]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) — Actuaciones Urbanísticas, Planeamiento General.
+    Web www.lapalmadelcondado.es inaccesible (SSL). Transparencia sede (9 docs) requiere Wicket AJAX.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
