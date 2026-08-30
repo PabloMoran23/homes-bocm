@@ -5106,11 +5106,11 @@ municipios:
 - slug: los-barrios
   nombre: Los Barrios
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-30T08:12:45.618119+00:00'
+  last_run: '2026-08-30T08:25:46.793123+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/484
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-30T08:12:45.619233+00:00'
+updated_at: '2026-08-30T08:25:46.794013+00:00'
