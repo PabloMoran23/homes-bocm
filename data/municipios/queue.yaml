@@ -5148,11 +5148,11 @@ municipios:
 - slug: massamagrell
   nombre: Massamagrell
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-08-30T14:05:10.198988+00:00'
+  last_run: '2026-08-30T14:20:54.778113+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/487
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-30T14:05:10.200915+00:00'
+updated_at: '2026-08-30T14:20:54.779008+00:00'
