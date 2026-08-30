@@ -1,0 +1,35 @@
+slug: massanassa
+nombre: "Massanassa"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://massanassa.sedelectronica.es"
+  adapter: municipio.adapters.massanassa:MassanassaAyuntamientoAdapter
+  config:
+    sede_base: "https://massanassa.sedelectronica.es"
+    board_url: "https://massanassa.sedelectronica.es/board"
+    web_base: "https://www.massanassa.es"
+    normativa_url: "https://www.massanassa.es/es/pagina/urbanismo-medio-ambiente"
+    visor_gva_url: "https://visor.gva.es/visor/?capas=spaicv0702_plan_zonificacion"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-massanassa/1.0"
+    centroid: [39.408, -0.399]
+    cod_ine_mun: "46165"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal portalesmunicipales (www.massanassa.es) + sede espublico gestiona.
+    Tablón /board: anuncios municipales (padrón, urbanismo cuando publicados).
+    Normativa urbanística en /es/pagina/urbanismo-medio-ambiente (PDFs PGOU, modificaciones).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46165, 3 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
