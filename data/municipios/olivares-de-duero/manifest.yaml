@@ -1,0 +1,34 @@
+slug: olivares-de-duero
+nombre: "Olivares de Duero"
+provincia: "Olivares de Duero (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://olivaresdeduero.sedelectronica.es"
+  adapter: municipio.adapters.olivares_de_duero:OlivaresDeDueroAyuntamientoAdapter
+  config:
+    sede_base: "https://olivaresdeduero.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 107
+    ine_code: "47103"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Olivares de Duero"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47103"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=107"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=107"
+    transparency_url: "https://olivaresdeduero.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olivares-de-duero/1.0"
+    insecure_ssl: true
+    centroid: [41.637, -4.358]
+  notes: |
+    Sede espublico gestiona + PlanPublica JCyL (PLAU/PLAI mun 107) + IDECyL WFS.
+    Web Diputación Valladolid (olivaresdeduero.ayuntamientosdevalladolid.es) inaccesible desde el agente.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
