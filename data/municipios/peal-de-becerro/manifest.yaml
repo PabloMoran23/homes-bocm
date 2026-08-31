@@ -1,0 +1,44 @@
+slug: peal-de-becerro
+nombre: "Peal de Becerro"
+provincia: Peal de Becerro (Jaén)
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://pealdebecerro.sedelectronica.es"
+  adapter: municipio.adapters.peal_de_becerro:PealDeBecerroAyuntamientoAdapter
+  config:
+    sede_base: "https://pealdebecerro.sedelectronica.es"
+    web_base: "https://www.pealdebecerro.es"
+    board_url: "https://pealdebecerro.sedelectronica.es/board/"
+    urbanismo_url: "https://www.pealdebecerro.es/ayuntamiento/urbanismo/"
+    citizen_urbanismo_url: "https://pealdebecerro.sedelectronica.es/citizen-service/f30306de-0ffc-415f-9820-6802cd4aad98"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-peal-de-becerro/1.0"
+    centroid: [37.9097, -3.0365]
+    planeamiento_seeds:
+      - titulo: "Modificación NNSS — Delimitación S.U. polígono industrial y 6 modificaciones más (aprobación definitiva)"
+        url: "https://www.juntadeandalucia.es/boja/2024/93/58"
+        fecha: "2024-05-15"
+        tipo: "modificación planeamiento"
+        expte: "1-211/04"
+        origen: "boja_publicacion"
+      - titulo: "Normas Subsidiarias de Planeamiento Municipal (NNSS 1997) — instrumento vigente"
+        url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+        fecha: "1997-01-01"
+        tipo: "NNSS"
+        origen: "situa"
+        nota: "Consulta SITUADIFUSION Junta de Andalucía (INE 23066)"
+  notes: |
+    Fuentes: WordPress Colibri/DipuJaén (webaytos) + sede espublico gestiona
+    (tablón /board/, transparencia Obras y Urbanismo). Sección urbanismo web vacía.
+    Planeamiento vigente: NNSS 1997; modificaciones publicadas en BOJA.
+    Sin visor GIS público enlazado a expedientes; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
