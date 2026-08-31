@@ -1,0 +1,34 @@
+slug: pollenca
+nombre: "Pollença"
+provincia: Pollença
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://ajpollenca.sedelectronica.es"
+  adapter: municipio.adapters.pollenca:PollencaAyuntamientoAdapter
+  config:
+    sede_base: "https://ajpollenca.sedelectronica.es"
+    board_url: "https://ajpollenca.sedelectronica.es/board"
+    web_base: "https://www.ajpollenca.net"
+    visor_url: "https://ide.idelma.cat/visormap/Visors/ide/html/visor042.html"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-pollenca/1.0"
+    centroid: [39.876, 3.017]
+    geometry:
+      kind: idelma_wfs
+      wfs_url: "https://ide.idelma.cat/geoserver/M042_URBANISME/wfs"
+      type_name: "M042_URBANISME:exp_absis"
+      max_features: 500
+  notes: |
+    Plugcore CMS (ajpollenca.net) + sede espublico gestiona + visor IDELMA (Consell de Mallorca).
+    Tablón /board: Actuacions Urbanístiques (planeamiento, BOIB).
+    WFS exp_absis: expedientes Absis con geometría (licencias/obra).
+    Geometría partial: WFS exp_absis enlazable; capa Projectes_Municipals_d no accesible vía WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
