@@ -1,0 +1,34 @@
+slug: pinoso
+nombre: "Pinoso"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://pinoso.sedipualba.es"
+  adapter: municipio.adapters.pinoso:PinosoAyuntamientoAdapter
+  config:
+    web_base: "https://www.pinoso.es"
+    sede_base: "https://pinoso.sedipualba.es"
+    tablon_rss: "https://pinoso.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://pinoso.sedipualba.es/tablondeanuncios/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pinoso/1.0"
+    centroid: [38.4019, -1.0419]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      suz_type_name: InventarioSuSuz
+      zon_type_name: Planeamiento.Zonificacion
+      cod_ine_mun: "03095"
+      zon_offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000]
+  notes: |
+    WordPress www.pinoso.es + sede Sedipualba (pinoso.sedipualba.es) tablón RSS.
+    pinoso.sedelectronica.es (espublico) devuelve «Sede Electrónica Indeterminada».
+    Geometría: ICV WFS InventarioSuSuz + Zonificacion (cod_ine_mun=03095).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
