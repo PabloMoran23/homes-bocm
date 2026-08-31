@@ -1,0 +1,35 @@
+slug: puebla-de-la-sierra
+nombre: "Puebla de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://puebladelasierra.es"
+  adapter: municipio.adapters.puebla_de_la_sierra:PueblaDeLaSierraAyuntamientoAdapter
+  config:
+    wp_base: "https://puebladelasierra.es"
+    sede_base: "https://puebladelasierra.sedelectronica.es"
+    board_url: "https://puebladelasierra.sedelectronica.es/board"
+    descarga_url: "https://puebladelasierra.es/ayuntamiento/descarga-de-documentos/"
+    ordenanzas_url: "https://puebladelasierra.es/ayuntamiento/ordenanzas/"
+    licencia_obra_menor_pdf: "https://puebladelasierra.es/wp-content/uploads/2025/06/SOLICITUD-PARA-LICENCIA-DE-OBRA-MENOR-2.pdf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-puebla-de-la-sierra/1.0"
+    centroid: [41.0119, -3.4444]
+    wfs_municipio: "PUEBLA DE LA SIERRA"
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PUEBLA DE LA SIERRA"
+  notes: |
+    WordPress Astra (descarga documentos, ordenanzas) + sede espublico gestiona (tablón vacío).
+    Ámbitos UE-1..UE-3 en WFS SIT Comunidad de Madrid (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
