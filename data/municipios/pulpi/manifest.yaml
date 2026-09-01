@@ -1,0 +1,28 @@
+slug: pulpi
+nombre: "Pulpí"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.pulpi.es"
+  adapter: municipio.adapters.pulpi:PulpiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pulpi/1.0"
+    insecure_ssl: true
+    cod_ine: "04075"
+    tablon_url: "https://www.pulpi.es/Servicios/cmsdipro/index.nsf/tablon_view_entidad.xsp?p=Pulpi"
+    pgou_doc_url: "https://www.pulpi.es/Servicios/cmsdipro/index.nsf/tablon.xsp?p=Pulpi&documentId=6F1FD9086E6B4226C12582880033ECE5"
+  notes: |
+    IBM Domino cmsdipro (Diputación Almería): tablón entidad + PGOU PDFs + guía trámites.
+    Oficina virtual ov.dipalme.org (idEntidad 4075) para licencias telemáticas.
+    Geometría parcial: WFS DipAlmería v_siu_ambitos_o_sectores (cod_ine 04075, 64 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: boja
