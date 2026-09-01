@@ -1,0 +1,22 @@
+slug: sagunto
+nombre: "Sagunto"
+provincia: Sagunto
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://aytosagunto.es"
+  adapter: municipio.adapters.sagunto:SaguntoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sagunto/1.0"
+  notes: |
+    Web Umbraco (aytosagunto.es) sección urbanismo-y-vivienda.
+    Sede sedipualba (sagunt.sedipualba.es): tablón RSS + catálogo trámites Disciplina y Urbanismo.
+    ICV WFS InventarioSuSuz (cod_ine_mun=46220) para sectores SU/SUZ con geometría.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
