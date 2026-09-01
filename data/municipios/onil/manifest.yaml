@@ -1,0 +1,35 @@
+slug: onil
+nombre: "Onil"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://carpeta.onil.es/GDCarpetaCiudadano"
+  adapter: municipio.adapters.onil:OnilAyuntamientoAdapter
+  config:
+    sede_base: "https://carpeta.onil.es/GDCarpetaCiudadano"
+    web_base: "https://www.onil.es"
+    transparencia_base: "https://transparencia.onil.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-onil/1.0"
+    centroid: [38.625, -0.666]
+    cod_ine_mun: "03091"
+    tramite_ids: [49, 50, 59, 85, 95, 96, 103]
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Joomla K2 (www.onil.es) + sede eAdmin Maggioli (carpeta.onil.es).
+    Tablón GDCarpetaCiudadano/Tablon.do (~206 anuncios).
+    Transparencia WP (planeamiento PGOU, modificaciones).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 03091, 15 instrumentos).
+    onil.sedelectronica.es indeterminada (no usar).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
