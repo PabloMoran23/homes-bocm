@@ -4952,11 +4952,11 @@ municipios:
 - slug: la-cisterniga
   nombre: La Cistérniga
   bocm_count: 2
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-08-29T10:28:35.533482+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/473
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-08-29T00:01:30.980027+00:00'
+updated_at: '2026-08-29T10:28:35.534421+00:00'

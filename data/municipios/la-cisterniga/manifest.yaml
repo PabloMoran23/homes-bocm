@@ -1,0 +1,33 @@
+slug: la-cisterniga
+nombre: "La Cistérniga"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.lacisterniga.es"
+  adapter: municipio.adapters.la_cisterniga:LaCisternigaAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.lacisterniga.es"
+    sede_base: "https://cisterniga.sedelectronica.es"
+    board_url: "https://cisterniga.sedelectronica.es/board"
+    dossier_url: "https://cisterniga.sedelectronica.es/dossier"
+    documentacion_url: "https://www.lacisterniga.es/documentacion?field_category_target_id=75"
+    plai_municipio: 114
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Cistérniga"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-cisterniga/1.0"
+    centroid: [41.6098, -4.4685]
+  notes: |
+    Fuentes: Drupal mipueblo (documentación urbanismo, /urbanismo),
+    sede espublico gestiona (tablón /board, trámites /dossier),
+    PLAI JCYL (municipio 114, Valladolid INE 47114) y capas IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
