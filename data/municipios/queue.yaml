@@ -5484,11 +5484,11 @@ municipios:
 - slug: sagunto
   nombre: Sagunto
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-01T20:01:48.670681+00:00'
+  last_run: '2026-09-01T20:07:38.180268+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/513
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-01T20:01:48.673013+00:00'
+updated_at: '2026-09-01T20:07:38.181130+00:00'
