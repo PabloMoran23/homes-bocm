@@ -1,0 +1,29 @@
+slug: navarredonda-y-san-mames
+nombre: "Navarredonda y San Mamés"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://navarredondaysanmames.org"
+  adapter: municipio.adapters.navarredonda_y_san_mames:NavarredondaYSanMamesAyuntamientoAdapter
+  config:
+    wp_base: "https://navarredondaysanmames.org"
+    sede_eadmin: "https://sedenavarredondaysanmames.eadministracion.es"
+    tablon_url: "https://sedenavarredondaysanmames.eadministracion.es/PortalCiudadano/Tablon/wfrTablon.aspx"
+    descargas_page: "https://navarredondaysanmames.org/descarga-de-documentos/"
+    urbanismo_url: "https://navarredondaysanmames.org/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-navarredonda-y-san-mames/1.0"
+    centroid: [40.992747, -3.708756]
+  notes: |
+    WordPress (Avada): PGOU/avance en noticias, formularios en /descarga-de-documentos/.
+    Sede eAdmin Maggioli (SPA Angular): trámites y tablón sin HTML scrapeable.
+    Portal transparencia eAdmin no disponible. Sin ámbitos en SITCM WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
