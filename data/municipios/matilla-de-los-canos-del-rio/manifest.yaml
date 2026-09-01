@@ -1,0 +1,33 @@
+slug: matilla-de-los-canos-del-rio
+nombre: "Matilla de los Caños del Río"
+provincia: "Matilla de los Caños del Río (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://matilladeloscanos.sedelectronica.es"
+  adapter: municipio.adapters.matilla_de_los_canos_del_rio:MatillaDeLosCanosDelRioAyuntamientoAdapter
+  config:
+    sede_base: "https://matilladeloscanos.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 187
+    ine_code: "37187"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Matilla de los Caños del Río"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37187"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=187"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=187"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-matilla-canos-rio/1.0 (+urbanismo research)"
+    centroid: [40.8291, -5.9399]
+    insecure_ssl: true
+  notes: |
+    Sede espublico gestiona (Wicket) + PlanPublica JCyL (DSU 1977) + IDECyL WFS.
+    Web corporativa matilladeloscanos.es inestable (HTTP 500, ago 2026).
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
