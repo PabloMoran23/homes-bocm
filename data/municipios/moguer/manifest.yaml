@@ -1,0 +1,30 @@
+slug: moguer
+nombre: "Moguer"
+provincia: "Moguer/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.aytomoguer.es"
+  adapter: municipio.adapters.moguer:MoguerAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytomoguer.es"
+    sede_base: "https://moguer.sedelectronica.es"
+    board_url: "https://moguer.sedelectronica.es/board/9753e838-f59b-11de-b600-00237da12c6a/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-moguer/1.0"
+    centroid: [37.2756, -6.8386]
+  notes: |
+    Fuentes: web SAGA Diputación Huelva (galerías PDF planeamiento NNSS/Mazagón) +
+    sede espublico gestiona (tablón, página Obras y Urbanismo).
+    Certificado SSL de www.moguer.es no coincide con aytomoguer.es (insecure_ssl).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
