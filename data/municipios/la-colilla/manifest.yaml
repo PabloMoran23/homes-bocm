@@ -1,0 +1,29 @@
+slug: la-colilla
+nombre: "La Colilla"
+provincia: "La Colilla (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.lacolilla.es"
+  adapter: municipio.adapters.la_colilla:LaColillaAyuntamientoAdapter
+  config:
+    web_base: "https://www.lacolilla.es"
+    sede_base: "https://lacolilla.sedelectronica.es"
+    board_url: "https://lacolilla.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&pager.sortname=fPublicacion&pager.sortindex=-3&provincia=05&municipio=061"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-colilla/1.0"
+    centroid: [40.2667, -4.7167]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "La Colilla"
+  notes: |
+    Web plantilla Diputación de Ávila (normas urbanísticas + enlace PLAU CyL).
+    Sede espublico gestiona: tablón /board (anuncios administrativos, sin urbanismo).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 7 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
