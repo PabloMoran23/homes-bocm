@@ -1,0 +1,41 @@
+slug: rincon-de-la-victoria
+nombre: "Rincón de la Victoria"
+provincia: "Rincón de la Victoria, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.rincondelavictoria.es"
+  adapter: municipio.adapters.rincon_de_la_victoria:RinconDeLaVictoriaAyuntamientoAdapter
+  config:
+    web_base: "https://www.rincondelavictoria.es"
+    sede_base: "https://sede.rincondelavictoria.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-rincon-de-la-victoria/1.0"
+    centroid: [36.7161, -4.2856]
+    max_crawl_pages: 40
+    tablon_max_pages: 15
+    seed_pages:
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica/plan-general-de-ordenacion-urbanistica"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica/catalogo"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica/desarrollo/la-cala-del-moral"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica/desarrollo/rincon-de-la-victoria"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/ordenacion-urbanistica/modificaciones/rincon-de-la-victoria"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/nuevo-plan-general/aprobacion-inicial"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/nuevo-plan-general/avance"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/convenios-urbanisticos"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/informacion-publica"
+      - "https://www.rincondelavictoria.es/areas/urbanismo-y-vivienda/registros-urbanisticos"
+  notes: |
+    Fuentes: Drupal 10 web municipal (ordenación urbanística, PGOM aprobación inicial 2025,
+    desarrollo/modificaciones por núcleo, convenios) + tablón SWAL sede (sede.rincondelavictoria.es).
+    Visor urbanístico en construcción. Sin listado histórico de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
