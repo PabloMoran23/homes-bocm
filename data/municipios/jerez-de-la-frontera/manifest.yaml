@@ -1,0 +1,27 @@
+slug: jerez-de-la-frontera
+nombre: "Jerez de la Frontera"
+provincia: Jerez de la Frontera, Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.jerez.es"
+  adapter: municipio.adapters.jerez_de_la_frontera:JerezDeLaFronteraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-jerez-de-la-frontera/1.0"
+    centroid: [36.6866, -6.1361]
+    web_base: "https://www.jerez.es"
+    tablon_api: "https://tramites.aytojerez.es/api/tablon-anuncios"
+    sede_base: "https://www.sedeelectronica.jerez.es"
+  notes: |
+    TYPO3 jerez.es (planeamiento PDFs + H3) + API tablón tramites.aytojerez.es +
+    sede electrónica catálogo trámites urbanismo. Sin visor GIS público.
+
+licencias:
+  enabled: true
+  notes: Trámites informativos sede + edictos tablón con keyword licencia
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Tablón API + instrumentos planeamiento TYPO3 (PDFs y títulos H3)
