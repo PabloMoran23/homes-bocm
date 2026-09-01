@@ -1,0 +1,33 @@
+slug: merindad-de-cuesta-urria
+nombre: "Merindad de Cuesta Urria"
+provincia: "Merindad de Cuesta Urria (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://merindaddecuestaurrea.sedelectronica.es"
+  adapter: municipio.adapters.merindad_de_cuesta_urria:MerindadDeCuestaUrriaAyuntamientoAdapter
+  config:
+    sede_base: "https://merindaddecuestaurrea.sedelectronica.es"
+    planpublica_provincia: 9
+    planpublica_municipio: 213
+    ine_code: "09213"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Merindad de Cuesta-Urria"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09213"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=9&municipio=213"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=9&municipio=213"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-merindad-de-cuesta-urria/1.0"
+    centroid: [42.85795, -3.40275]
+    insecure_ssl: true
+  notes: |
+    Sin web corporativa accesible. Sede espublico indeterminada (no tablón ni catálogo).
+    Planeamiento en PlanPublica JCyL (prov. 09, mun. 213, INE 09213) + IDECyL WFS PLAU CyL.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
