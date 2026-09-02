@@ -1,0 +1,27 @@
+slug: tarifa
+nombre: "Tarifa"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.aytotarifa.com"
+  adapter: municipio.adapters.tarifa:TarifaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tarifa/1.0"
+    web_base: "https://www.aytotarifa.com"
+    sede_base: "https://sede.aytotarifa.com"
+    centroid: [36.0129082, -5.6050213]
+  notes: |
+    WordPress TownPress (avisos lsvr_notice) + sede Absis/eConstruye (tablón edictos).
+    Planeamiento: categoría urbanismo-informacion-publica, página PGOU, tablón sede.
+    Licencias: tablón (calificación ambiental) + páginas informativas cita previa.
+    Geometría: sin visor municipal; consulta regional SITUA/VITUA (Junta de Andalucía).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  boletin_source_id: boja
