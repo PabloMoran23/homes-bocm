@@ -1,0 +1,30 @@
+slug: san-pedro-de-gaillos
+nombre: "San Pedro de Gaíllos"
+provincia: "San Pedro de Gaíllos (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.dipsegovia.es/web/ayuntamiento-de-san-pedro-de-gaillos"
+  adapter: municipio.adapters.san_pedro_de_gaillos:SanPedroDeGaillosAyuntamientoAdapter
+  config:
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-san-pedro-de-gaillos"
+    sede_base: "https://sanpedrodegaillos.sedelectronica.es"
+    board_url: "https://sanpedrodegaillos.sedelectronica.es/board"
+    plai_municipio: 184
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "San Pedro de Gaíllos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-pedro-de-gaillos/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 184).
+    Geometría: IDECyL WFS PLAU CyL (instrumento NS municipal; sin sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
