@@ -1,0 +1,32 @@
+slug: soria
+nombre: "Soria"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://soria.sedelectronica.es"
+  adapter: municipio.adapters.soria:SoriaAyuntamientoAdapter
+  config:
+    sede_base: "https://soria.sedelectronica.es"
+    planpublica_provincia: 42
+    planpublica_municipio: 1
+    ine_code: "42173"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Soria"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=42173"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=42&municipio=1"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=42&municipio=1"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-soria/1.0 (+urbanismo research)"
+    centroid: [41.764, -2.469]
+    insecure_ssl: true
+  notes: |
+    Sede espublico gestiona + PlanPublica JCYL (PERI/NUM histórico) + WFS IDECyL.
+    Web corporativa soria.es protegida por Cloudflare; fuentes operativas en sede y JCYL.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
