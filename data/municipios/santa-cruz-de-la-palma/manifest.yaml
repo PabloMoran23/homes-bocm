@@ -1,0 +1,28 @@
+slug: santa-cruz-de-la-palma
+nombre: "Santa Cruz de La Palma"
+provincia: "Santa Cruz de La Palma"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.santacruzdelapalma.es/web/sclapalma"
+  adapter: municipio.adapters.santa_cruz_de_la_palma:SantaCruzDeLaPalmaAyuntamientoAdapter
+  config:
+    web_base: "https://www.santacruzdelapalma.es/web/sclapalma"
+    sede_base: "https://sede.santacruzdelapalma.es"
+    sitcan_package: planeamiento-urbanistico-de-santa-cruz-de-la-palma
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38037/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-cruz-de-la-palma/1.0"
+    centroid: [28.6833, -17.7642]
+  notes: |
+    Portal corporativo Bootstrap (área Planeamiento, anuncios, documentos útiles, noticias)
+    + sede Maggioli ATM (sede.santacruzdelapalma.es)
+    + SITCAN CKAN (25 instrumentos planeamiento) + GEOBDP Grafcan INE 38037 (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
