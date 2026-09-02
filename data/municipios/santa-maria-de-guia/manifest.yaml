@@ -1,0 +1,28 @@
+slug: santa-maria-de-guia
+nombre: "Santa María de Guía"
+provincia: "Santa María de Guía, Gran Canaria"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://santamariadeguia.es"
+  adapter: municipio.adapters.santa_maria_de_guia:SantaMariaDeGuiaAyuntamientoAdapter
+  config:
+    wp_base: "https://santamariadeguia.es"
+    sede_base: "https://santamariadeguia.sedelectronica.es"
+    sitcan_package: "planeamiento-urbanistico-de-santa-maria-de-guia-de-gran-canaria"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38038/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-maria-de-guia/1.0"
+    centroid: [28.1397, -15.5494]
+  notes: |
+    Fuentes: WordPress (área desarrollo urbanismo, ordenanzas PDF)
+    + sede espublico gestiona (tablón, dossier urbanismo, transparencia)
+    + SITCAN CKAN + GEOBDP Grafcan (instrumentos PGO/PEPRI con geometría parcial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
