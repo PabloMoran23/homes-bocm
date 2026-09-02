@@ -1,0 +1,28 @@
+slug: tazacorte
+nombre: "Tazacorte"
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://tazacorte.es/web"
+  adapter: municipio.adapters.tazacorte:TazacorteAyuntamientoAdapter
+  config:
+    web_base: "https://tazacorte.es/web"
+    sede_base: "https://tazacorte.sedelectronica.es"
+    board_url: "https://tazacorte.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-tazacorte
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38045/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tazacorte/1.0"
+    centroid: [28.642, -17.945]
+  notes: |
+    WordPress Divi (tazacorte.es/web) + sede espublico gestiona (/board, /transparency)
+    + SITCAN CKAN planeamiento-urbanistico-de-tazacorte + GEOBDP Grafcan (INE 38045, La Palma).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
