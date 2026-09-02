@@ -5526,11 +5526,11 @@ municipios:
 - slug: san-cristobal-de-segovia
   nombre: San Cristóbal de Segovia
   bocm_count: 2
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-02T00:07:32.207735+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/515
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-01T00:12:33.358474+00:00'
+updated_at: '2026-09-02T00:07:32.208624+00:00'

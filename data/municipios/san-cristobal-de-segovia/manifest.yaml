@@ -1,0 +1,31 @@
+slug: san-cristobal-de-segovia
+nombre: "San Cristóbal de Segovia"
+provincia: "San Cristóbal de Segovia - Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.dipsegovia.es/web/ayuntamiento-de-san-cristobal-de-segovia"
+  adapter: municipio.adapters.san_cristobal_de_segovia:SanCristobalDeSegoviaAyuntamientoAdapter
+  config:
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-san-cristobal-de-segovia"
+    sede_base: "https://sancristobaldesegovia.sedelectronica.es"
+    board_url: "https://sancristobaldesegovia.sedelectronica.es/board"
+    plai_municipio: 170
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "San Cristóbal de Segovia"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-cristobal-de-segovia/1.0"
+    insecure_ssl: true
+    centroid: [40.9528, -4.1072]
+  notes: |
+    Portal Liferay (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 170).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
