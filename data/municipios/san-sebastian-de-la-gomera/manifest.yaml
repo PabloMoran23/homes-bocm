@@ -1,0 +1,28 @@
+slug: san-sebastian-de-la-gomera
+nombre: "San Sebastián de La Gomera"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://sansebastiangomera.org"
+  adapter: municipio.adapters.san_sebastian_de_la_gomera:SanSebastianDeLaGomeraAyuntamientoAdapter
+  config:
+    sede_base: "https://eadmin.sansebastiangomera.org"
+    edictos_rss: "https://eadmin.sansebastiangomera.org/publico/sindicacion/edictos/RSS"
+    sitcan_package: "planeamiento-urbanistico-de-san-sebastian-de-la-gomera"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38036/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-sebastian-de-la-gomera/1.0"
+    centroid: [28.0919, -17.1115]
+  notes: |
+    WordPress corporativo + sede Galileo GIYS (edictos RSS, tablón, procedimientos URBANISMO).
+    Planeamiento sistematizado SITCAN/GRAFCAN (42 recursos, 15 instrumentos) con geometría GeoBDP.
+    Sin listado público de licencias concedidas; trámites informativos en sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
