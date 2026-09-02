@@ -5582,11 +5582,11 @@ municipios:
 - slug: santa-cruz-de-la-palma
   nombre: Santa Cruz de La Palma
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-02T08:03:22.248130+00:00'
+  last_run: '2026-09-02T08:14:57.358403+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/519
   notes: ''
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-02T08:03:22.249763+00:00'
+updated_at: '2026-09-02T08:14:57.359306+00:00'
