@@ -1,0 +1,30 @@
+slug: santa-cruz-de-tenerife
+nombre: "Santa Cruz de Tenerife"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.santacruzdetenerife.es"
+  adapter: municipio.adapters.santa_cruz_de_tenerife:SantaCruzDeTenerifeAyuntamientoAdapter
+  config:
+    web_base: "https://www.santacruzdetenerife.es"
+    urbanismo_base: "https://www.urbanismosantacruz.es"
+    sede_base: "https://sede.santacruzdetenerife.es"
+    sede_urbanismo: "https://sede.urbanismosantacruz.es"
+    sitcan_package: planeamiento-urbanistico-de-santa-cruz-de-tenerife
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38038/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-cruz-de-tenerife/1.0"
+    centroid: [28.4636, -16.2518]
+  notes: |
+    Typo3 ayuntamiento (urbanismo/noticias) + Drupal GMU (urbanismosantacruz.es: anuncios,
+    planeamiento, procedimientos) + SITCAN CKAN (20 instrumentos) + GEOBDP Grafcan (14 docs).
+    Sedes: sede.santacruzdetenerife.es y sede.urbanismosantacruz.es.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

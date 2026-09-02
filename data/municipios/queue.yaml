@@ -5596,9 +5596,9 @@ municipios:
 - slug: santa-cruz-de-tenerife
   nombre: Santa Cruz de Tenerife
   bocm_count: 2
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-02T10:02:24.701688+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-01T00:12:33.358474+00:00'
+updated_at: '2026-09-02T10:02:24.703635+00:00'
