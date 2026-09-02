@@ -5554,11 +5554,11 @@ municipios:
 - slug: san-pedro-de-gaillos
   nombre: San Pedro de Gaíllos
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-02T04:03:20.230247+00:00'
+  last_run: '2026-09-02T04:08:22.815432+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/517
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-02T04:03:20.232106+00:00'
+updated_at: '2026-09-02T04:08:22.816315+00:00'
