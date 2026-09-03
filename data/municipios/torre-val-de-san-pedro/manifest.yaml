@@ -1,0 +1,30 @@
+slug: torre-val-de-san-pedro
+nombre: "Torre Val de San Pedro"
+provincia: "Torre Val de San Pedro (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.dipsegovia.es/web/ayuntamiento-de-torre-val-de-san-pedro"
+  adapter: municipio.adapters.torre_val_de_san_pedro:TorreValDeSanPedroAyuntamientoAdapter
+  config:
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-torre-val-de-san-pedro"
+    sede_base: "https://torrevaldesanpedro.sedelectronica.es"
+    board_url: "https://torrevaldesanpedro.sedelectronica.es/board"
+    plai_municipio: 206
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Torre Val de San Pedro"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torre-val-de-san-pedro/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 206).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
