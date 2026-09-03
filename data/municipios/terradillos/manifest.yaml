@@ -1,0 +1,32 @@
+slug: terradillos
+nombre: "Terradillos"
+provincia: "Terradillos (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://terradillos.sedelectronica.es"
+  adapter: municipio.adapters.terradillos:TerradillosAyuntamientoAdapter
+  config:
+    sede_base: "https://terradillos.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 322
+    ine_code: "37322"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Terradillos"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37322"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=322"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=322"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-terradillos/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [40.8503, -5.5765]
+  notes: |
+    Sede espublico gestiona + PlanPublica JCyL (NUM 2006 + modificaciones) + IDECyL WFS.
+    Web corporativa ayto-terradillos.com inactiva (502). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
