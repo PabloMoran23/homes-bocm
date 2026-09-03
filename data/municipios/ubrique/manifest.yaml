@@ -1,0 +1,37 @@
+slug: ubrique
+nombre: "Ubrique"
+provincia: "Cádiz"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ubrique.sedelectronica.es"
+  adapter: municipio.adapters.ubrique:UbriqueAyuntamientoAdapter
+  config:
+    sede_base: "https://ubrique.sedelectronica.es"
+    board_url: "https://ubrique.sedelectronica.es/board/"
+    transparencia_base: "https://transparencia.ayuntamientoubrique.es"
+    docs_base: "http://transparenciaubrique.es/documentos"
+    transparency_folders:
+      - "https://ubrique.sedelectronica.es/transparency/d3a2fa91-8739-4f7d-85b9-63e798672352/"
+      - "https://ubrique.sedelectronica.es/transparency/22390146-92f7-45cc-ae9b-750cf0d2ac0c/"
+      - "https://ubrique.sedelectronica.es/transparency/684a418d-29ea-422d-86d2-8b5902915d4e/"
+    wp_seed_pages:
+      - "https://transparencia.ayuntamientoubrique.es/pgou-ubrique-documento-de-aprobacion-provisional/"
+      - "https://transparencia.ayuntamientoubrique.es/plan-general-de-ordenacion-urbanistica-pgou/"
+      - "https://transparencia.ayuntamientoubrique.es/licencias-de-obras/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ubrique/1.0"
+    centroid: [36.6778, -5.4460]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón + carpetas transparencia preview-document),
+    WordPress transparencia (PGOU PDFs/RAR, procedimientos licencias) y SITUA (planeamiento).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
