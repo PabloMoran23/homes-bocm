@@ -1,0 +1,27 @@
+slug: trespaderne
+nombre: "Trespaderne"
+provincia: "Trespaderne (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://trespaderne.burgos.es"
+  adapter: municipio.adapters.trespaderne:TrespaderneAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-trespaderne/1.0"
+    drupal_base: "https://trespaderne.burgos.es"
+    sede_base: "https://trespaderne.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 299
+    wfs_municipio: "Trespaderne"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools Diputación Burgos) + sede espublico gestiona
+    + archivo PLAI JCyL (prov. 09, mun. 299) e IDECyL WFS urbanismo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
