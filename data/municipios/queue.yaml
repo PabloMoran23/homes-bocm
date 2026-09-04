@@ -5918,11 +5918,11 @@ municipios:
 - slug: villafranca-de-cordoba
   nombre: Villafranca de Córdoba
   bocm_count: 2
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-04T08:03:58.177236+00:00'
+  last_run: '2026-09-04T08:07:13.781388+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/543
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-04T08:03:58.179268+00:00'
+updated_at: '2026-09-04T08:07:13.782258+00:00'
