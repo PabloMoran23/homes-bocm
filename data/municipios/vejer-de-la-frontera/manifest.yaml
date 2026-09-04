@@ -1,0 +1,30 @@
+slug: vejer-de-la-frontera
+nombre: "Vejer de la Frontera"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://vejerdelafrontera.sedelectronica.es"
+  adapter: municipio.adapters.vejer_de_la_frontera:VejerDeLaFronteraAyuntamientoAdapter
+  config:
+    sede_base: "https://vejerdelafrontera.sedelectronica.es"
+    board_url: "https://vejerdelafrontera.sedelectronica.es/board"
+    web_base: "https://www.vejer.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-vejer-de-la-frontera/1.0)"
+    centroid: [36.2519, -5.9631]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board) + web Joomla Phoca Download (urbanismo).
+    Transparencia sede y Diputación Cádiz sin documentos urbanismo publicados.
+    PGOU 2016 con EAE negativa (dic 2024); vigente NNSS 2000 + adaptación parcial 2009.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
