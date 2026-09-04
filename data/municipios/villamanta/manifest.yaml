@@ -1,0 +1,32 @@
+slug: villamanta
+nombre: "Villamanta"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villamanta.es"
+  adapter: municipio.adapters.villamanta:VillamantaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villamanta/1.0"
+    wp_base: "https://www.villamanta.es"
+    sede_base: "https://sede.villamanta.es"
+    tablon_url: "https://www.villamanta.es/tu-ayuntamiento/tablon-de-anuncios/"
+    nnss_url: "https://www.villamanta.es/tu-ayuntamiento/normativa-municipal/normas-subsidiarias-urbanismo/"
+    solicitudes_url: "https://www.villamanta.es/ciudadanos/solicitudes-y-modelos/"
+    centroid: [40.2503, -4.1236]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAMANTA"
+  notes: |
+    WordPress rt-theme-20 (WPBakery): tablón en tarjetas vc_col + NNSS PDF.
+    Sede Maggioli eAdmin (sede.villamanta.es); tablón ASP.NET no accesible sin sesión.
+    Visor QUERCUS SIG Alberche (HTTP). Geometría partial vía WFS SITCM si disponible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
