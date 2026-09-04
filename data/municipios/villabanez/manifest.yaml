@@ -1,0 +1,32 @@
+slug: villabanez
+nombre: "Villabáñez"
+provincia: "Villabáñez-Valladolid"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://villabanez.sedelectronica.es"
+  adapter: municipio.adapters.villabanez:VillabanezAyuntamientoAdapter
+  config:
+    sede_base: "https://villabanez.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 195
+    ine_code: "47195"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Villabáñez"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47195"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=195"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=195"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villabanez/1.0 (+urbanismo research)"
+    centroid: [41.6322, -4.5211]
+  notes: |
+    Sede espublico gestiona + PlanPublica JCyL (NUM + PERI Dehesa de Peñalba) + IDECyL WFS.
+    Web corporativa villabanez.es inestable; portal Diputación ayuntamientosdevalladolid.es.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
