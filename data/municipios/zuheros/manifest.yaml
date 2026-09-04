@@ -1,0 +1,29 @@
+slug: zuheros
+nombre: "Zuheros"
+provincia: "Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://zuheros.es"
+  adapter: municipio.adapters.zuheros:ZuherosAyuntamientoAdapter
+  config:
+    pgou_url: "https://zuheros.es/ayuntamiento/documentos/pgou/"
+    urbanismo_url: "https://zuheros.es/delegaciones/urbanismo/"
+    instancias_url: "https://zuheros.es/ayuntamiento/documentos/instancias-y-solicitudes/"
+    sede_base: "https://sede.eprinsa.es/zuheros"
+    tablon_url: "https://sede.eprinsa.es/zuheros/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-zuheros/1.0"
+    centroid: [37.5431, -4.3150]
+  notes: |
+    Fuentes: PGOU (Google Drive vía WP REST) + delegación urbanismo + SITUA Junta
+    + sede eprinsa/Diputación Córdoba (tablón SPA) + modelos instancias urbanismo.
+    Sin visor GIS municipal enlazable; geometría unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
