@@ -5932,11 +5932,11 @@ municipios:
 - slug: villamanta
   nombre: Villamanta
   bocm_count: 2
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-04T10:06:53.506695+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/544
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-01T00:12:33.358474+00:00'
+updated_at: '2026-09-04T10:06:53.507652+00:00'
