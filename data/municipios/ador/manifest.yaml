@@ -1,0 +1,36 @@
+slug: ador
+nombre: "Ador"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://ador.sedelectronica.es"
+  adapter: municipio.adapters.ador:AdorAyuntamientoAdapter
+  config:
+    sede_base: "https://ador.sedelectronica.es"
+    board_url: "https://ador.sedelectronica.es/board"
+    transparency_urbanismo_url: "https://ador.sedelectronica.es/transparency/08b9f48a-afcd-4001-a9ae-af097842652b/"
+    transparencia_base: "https://transparencia.ador.es"
+    gva_planeamiento_base: "https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/4%20VALENCIA/46002%20ADOR/"
+    cod_ine_mun: "46002"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ador/1.0"
+    centroid: [38.919, -0.224]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      wfs_start_index: 500
+      wfs_page_size: 500
+  notes: |
+    DigitalValue transparencia (transparencia.ador.es) + sede espublico gestiona (ador.sedelectronica.es).
+    Planeamiento: transparencia sede + repositorio GVA mediambient.gva.es + ICV InventarioSuSuz (11 ámbitos).
+    www.ador.es devuelve 502; sede y transparencia operativos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
