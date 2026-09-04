@@ -6016,11 +6016,11 @@ municipios:
 - slug: ador
   nombre: Ador
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-04T22:16:37.731351+00:00'
+  last_run: '2026-09-04T22:28:02.351372+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/550
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-04T22:16:37.733219+00:00'
+updated_at: '2026-09-04T22:28:02.352243+00:00'
