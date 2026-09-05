@@ -6128,9 +6128,9 @@ municipios:
 - slug: alcoy
   nombre: Alcoy
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-05T18:02:55.539199+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-05T00:07:21.046688+00:00'
+updated_at: '2026-09-05T18:02:55.541017+00:00'
