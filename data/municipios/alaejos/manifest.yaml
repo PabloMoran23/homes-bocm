@@ -1,0 +1,31 @@
+slug: alaejos
+nombre: "Alaejos"
+provincia: "Alaejos (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://alaejos.sedelectronica.es"
+  adapter: municipio.adapters.alaejos:AlaejosAyuntamientoAdapter
+  config:
+    sede_base: "https://alaejos.sedelectronica.es"
+    board_url: "https://alaejos.sedelectronica.es/board/"
+    dossier_url: "https://alaejos.sedelectronica.es/dossier/"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=004"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=004"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Alaejos"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alaejos/1.0"
+    centroid: [41.3076, -5.2182]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board/, trámites /dossier/),
+    PlanPublica JCyL (provincia 24, municipio 004, INE 47004) y capas IDECyL WFS.
+    Web corporativa www.alaejos.es inactiva (HTTP 500).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
