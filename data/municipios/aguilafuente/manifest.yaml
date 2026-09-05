@@ -1,0 +1,27 @@
+slug: aguilafuente
+nombre: "Aguilafuente"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aguilafuente.es"
+  adapter: municipio.adapters.aguilafuente:AguilafuenteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aguilafuente/1.0"
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-aguilafuente"
+    sede_base: "https://aguilafuente.sedelectronica.es"
+    plai_municipio: 4
+    plai_provincia: 40
+    wfs_municipio: "Aguilafuente"
+    insecure_ssl: true
+  notes: |
+    Liferay DipSegovia (aguilafuente.es) + sede espublico gestiona + PLAI JCYL (mun 004)
+    + geometría sectores IDECyL WFS (urbanismo:plau_cyl_sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
