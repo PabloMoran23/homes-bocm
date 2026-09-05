@@ -1,0 +1,28 @@
+slug: aguimes
+nombre: "Agüimes"
+provincia: Agüimes (Gran Canaria)
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://aguimes.es"
+  adapter: municipio.adapters.aguimes:AguimesAyuntamientoAdapter
+  config:
+    wp_base: "https://aguimes.es"
+    sede_base: "https://aguimes.sedelectronica.es"
+    sitcan_package: planeamiento-urbanistico-de-aguimes
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35002/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aguimes/1.0"
+    centroid: [27.9054, -15.4461]
+  notes: |
+    WordPress (X Theme) + sede espublico gestiona + SITCAN CKAN
+    planeamiento-urbanistico-de-aguimes + GEOBDP Grafcan (INE 35002).
+    Tablón sede /board no accesible (respuesta "Sede Electrónica Indeterminada").
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
