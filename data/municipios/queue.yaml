@@ -6086,11 +6086,11 @@ municipios:
 - slug: albal
   nombre: Albal
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-05T12:02:01.833764+00:00'
+  last_run: '2026-09-05T12:11:16.919895+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/556
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-05T12:02:01.835581+00:00'
+updated_at: '2026-09-05T12:11:16.920783+00:00'
