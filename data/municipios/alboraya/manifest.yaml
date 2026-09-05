@@ -1,0 +1,32 @@
+slug: alboraya
+nombre: "Alboraya"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://alborayasitae.sede.gva.es/sitae"
+  adapter: municipio.adapters.alboraya:AlborayaAyuntamientoAdapter
+  config:
+    sitae_base: "https://alborayasitae.sede.gva.es/sitae"
+    sede_base: "https://alboraya.sede-virtual.es"
+    web_base: "https://www.alboraya.es"
+    governalia_base: "https://alboraya.governalia.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alboraya/1.0"
+    centroid: [39.500, -0.353]
+    cod_ine_mun: "46013"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal portalesmunicipales (www.alboraya.es) + tablón SITAE GVA + sede-virtual.
+    SITAE: edictos históricos y en vigor (Gestión y control urbanístico).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46013).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
