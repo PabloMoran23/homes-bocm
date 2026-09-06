@@ -1,0 +1,37 @@
+slug: almassera
+nombre: "Almàssera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://almassera.sedelectronica.es"
+  adapter: municipio.adapters.almassera:AlmasseraAyuntamientoAdapter
+  config:
+    sede_base: "https://almassera.sedelectronica.es"
+    board_url: "https://almassera.sedelectronica.es/board"
+    web_base: "https://www.almassera.es"
+    transparencia_normativa_url: "https://www.almassera.es/es/transparencia/35-normativa-urbanistica-planes-parciales"
+    transparencia_puam_url: "https://www.almassera.es/es/transparencia/38-plan-urbano-actuacion-municipal-almassera"
+    urbanismo_tramites_url: "https://www.almassera.es/es/content/impresos-solicitudes-urbanismo"
+    bando_url: "https://www.almassera.es/es/servicios/canal-bando-municipal"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-almassera/1.0"
+    centroid: [39.5117, -0.3575]
+    cod_ine_mun: "46014"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 10 portalesmunicipales DigitalValue (www.almassera.es) + sede espublico gestiona.
+    Tablón /board: anuncios recientes (sin urbanismo en muestra sept 2026).
+    Transparencia: normativa urbanística, PUAM, formularios urbanismo.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46014, 1 instrumento SR-1).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
