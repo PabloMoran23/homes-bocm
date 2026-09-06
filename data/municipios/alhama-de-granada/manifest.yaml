@@ -1,0 +1,29 @@
+slug: alhama-de-granada
+nombre: "Alhama de Granada"
+provincia: "Alhama de Granada - Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://news.alhamadegranada.info"
+  adapter: municipio.adapters.alhama_de_granada:AlhamaDeGranadaAyuntamientoAdapter
+  config:
+    wp_base: "https://news.alhamadegranada.info"
+    sede_base: "https://alhamadegranada.sedelectronica.es"
+    board_url: "https://alhamadegranada.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alhama-de-granada/1.0"
+    centroid: [37.0242, -3.9893]
+  notes: |
+    Web WordPress news.alhamadegranada.info (PGOU, información urbanística, noticias planeamiento).
+    Sede espublico gestiona: tablón /board/, transparencia, catálogo /dossier.
+    Documentación PGOU/SNU en Dropbox y wp-content/uploads.
+    Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
