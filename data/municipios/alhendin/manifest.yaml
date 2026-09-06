@@ -1,0 +1,29 @@
+slug: alhendin
+nombre: "Alhendín"
+provincia: "Alhendín (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://alhendin.sedelectronica.es"
+  adapter: municipio.adapters.alhendin:AlhendinAyuntamientoAdapter
+  config:
+    wp_base: "https://alhendin.es"
+    sede_base: "https://alhendin.sedelectronica.es"
+    board_url: "https://alhendin.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alhendin/1.0"
+    centroid: [37.1586, -3.6572]
+  notes: |
+    Fuentes: WordPress alhendin.es (PGOU PDF, impresos urbanismo) +
+    sede espublico gestiona (/board/, /dossier).
+    PGOU consulta SITUA Junta Andalucía; asistencia planeamiento Diputación Granada.
+    geometry_status: unavailable (sin visor GIS enlazable a expedientes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
