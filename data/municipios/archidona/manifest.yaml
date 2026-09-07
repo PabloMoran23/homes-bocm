@@ -1,0 +1,28 @@
+slug: archidona
+nombre: "Archidona"
+provincia: "Archidona/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://archidona.sedelectronica.es"
+  adapter: municipio.adapters.archidona:ArchidonaAyuntamientoAdapter
+  config:
+    sede_base: "https://archidona.sedelectronica.es"
+    board_url: "https://archidona.sedelectronica.es/board/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-archidona/1.0"
+    centroid: [37.0963, -4.3890]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) y consulta PGOU SITUADIFusión.
+    Web www.archidona.es bloqueada (CloudFront 403) en CI.
+    Visor PRP Málaga / SITUA sin API REST enlazable a expedientes del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
