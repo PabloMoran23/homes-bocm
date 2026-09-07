@@ -6464,11 +6464,11 @@ municipios:
 - slug: arroyo-de-la-encomienda
   nombre: Arroyo de la Encomienda
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-07T18:02:57.495948+00:00'
+  last_run: '2026-09-07T18:06:07.669191+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/583
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-07T18:02:57.498673+00:00'
+updated_at: '2026-09-07T18:06:07.670172+00:00'
