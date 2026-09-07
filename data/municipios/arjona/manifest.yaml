@@ -1,0 +1,28 @@
+slug: arjona
+nombre: "Arjona"
+provincia: "Arjona, Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://arjona.sedelectronica.es"
+  adapter: municipio.adapters.arjona:ArjonaAyuntamientoAdapter
+  config:
+    sede_base: "https://arjona.sedelectronica.es"
+    board_url: "https://arjona.sedelectronica.es/board/"
+    transparency_url: "https://arjona.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-arjona/1.0"
+    centroid: [37.9341, -4.0548]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/), transparencia sede (sección 7 urbanismo),
+    SITUA Junta de Andalucía (PGOU digitalizado INE 23007).
+    Web www.arjona.es bloqueada por WAF anti-bot en CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
