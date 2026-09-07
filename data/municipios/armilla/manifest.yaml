@@ -1,0 +1,29 @@
+slug: armilla
+nombre: "Armilla"
+provincia: "Armilla-Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://armilla.es"
+  adapter: municipio.adapters.armilla:ArmillaAyuntamientoAdapter
+  config:
+    wp_base: "https://armilla.es"
+    sede_base: "https://sede.armilla.es"
+    edictos_url: "https://sede.armilla.es/portal/noEstatica.do?opc_id=268&ent_id=1&idioma=1"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-armilla/1.0"
+    centroid: [37.1431, -3.6183]
+  notes: |
+    Fuentes: armilla.es WordPress (registro IOU wpdm: estudios de detalle, convenios),
+    sede.armilla.es eAdmin legacy (edictos opc_id=268), SITUADIFUSION PGOU Junta de Andalucía.
+    www.armilla.es devuelve 503; usar armilla.es sin www.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
