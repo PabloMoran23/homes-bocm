@@ -1,0 +1,29 @@
+slug: arucas
+nombre: "Arucas"
+provincia: Arucas
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.arucas.org"
+  adapter: municipio.adapters.arucas:ArucasAyuntamientoAdapter
+  config:
+    web_base: "https://www.arucas.org"
+    sede_base: "https://arucas.sedelectronica.es"
+    board_url: "https://arucas.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-arucas
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35006/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arucas/1.0"
+    centroid: [28.1195, -15.5225]
+  notes: |
+    Portal municipal PHP (modules.php) + sede espublico gestiona (/board)
+    + SITCAN CKAN planeamiento-urbanistico-de-arucas + GEOBDP Grafcan (INE 35006).
+    PMUS y noticias urbanísticas en web corporativa; planeamiento vía SITCAN/GEOBDP.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
