@@ -1,0 +1,30 @@
+slug: arroyo-de-la-encomienda
+nombre: "Arroyo de la Encomienda"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytoarroyo.es"
+  adapter: municipio.adapters.arroyo_de_la_encomienda:ArroyoDeLaEncomiendaAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytoarroyo.es"
+    sede_base: "https://sede.aytoarroyo.es"
+    tablon_rss: "https://sede.aytoarroyo.es/tablondeanuncios/tablon_rss.aspx"
+    catalogo_url: "https://sede.aytoarroyo.es/catalogoservicios.aspx?area=1940&ambito="
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=008"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=008"
+    wfs_municipio: "Arroyo de la Encomienda"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arroyo-de-la-encomienda/1.0"
+    centroid: [41.6223, -4.7955]
+  notes: |
+    Drupal aytoarroyo.es + sede Sedipualba (tablón RSS, catálogo trámites urbanismo)
+    + PlanPublica JCyL (provincia 47, municipio 008, INE 47008)
+    + IDECyL WFS urbanismo (sectores SE-01…SE-08, planes parciales, instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
