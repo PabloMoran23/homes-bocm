@@ -1,0 +1,29 @@
+slug: baza
+nombre: "Baza"
+provincia: "Baza (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ayuntamientodebaza.es"
+  adapter: municipio.adapters.baza:BazaAyuntamientoAdapter
+  config:
+    wp_base: "https://ayuntamientodebaza.es"
+    sede_base: "https://sede.ayuntamientodebaza.es"
+    tablon_url: "https://ayuntamientodebaza.es/tramites/tablon-de-anuncios/"
+    urbanismo_url: "https://ayuntamientodebaza.es/c-i-urbanismo-y-patrimonio/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-baza/1.0"
+    centroid: [37.4907, -2.7725]
+  notes: |
+    Fuentes: web WordPress Soledad + WP File Download (tablón categoría 1105),
+    wpfd sitemap (planeamiento PGOU/innovaciones), sección urbanismo (PDF modificación PGOU),
+    sede Berger Levrault (sede.ayuntamientodebaza.es), SITUADIFusión regional.
+    baza.sedelectronica.es no configurado (página genérica espublico).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
