@@ -1,0 +1,31 @@
+slug: astorga
+nombre: "Astorga"
+provincia: "Astorga-León"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytoastorga.es"
+  adapter: municipio.adapters.astorga:AstorgaAyuntamientoAdapter
+  config:
+    web_base: "https://aytoastorga.es"
+    sede_base: "https://ayuntamientoastorga.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-astorga/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Astorga"
+    ine_code: "24008"
+    planpublica_provincia: 24
+    planpublica_municipio: 008
+    centroid: [42.458, -6.053]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (ayuntamientoastorga.sedelectronica.es) + PlanPublica JCyL (prov 24, muni 008)
+    + IDECyL WFS sectores/planes (INE 24008).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
