@@ -1,0 +1,28 @@
+slug: barlovento
+nombre: "Barlovento"
+provincia: "Barlovento, La Palma"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://barlovento.es"
+  adapter: municipio.adapters.barlovento:BarloventoAyuntamientoAdapter
+  config:
+    wp_base: "https://barlovento.es"
+    sede_base: "https://barlovento.sedelectronica.es"
+    board_url: "https://barlovento.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-barlovento
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38007/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-barlovento/1.0"
+    centroid: [28.827, -17.790]
+  notes: |
+    WordPress (barlovento.es) + sede espublico gestiona (tablón /board)
+    + SITCAN CKAN (3 instrumentos planeamiento) + GEOBDP Grafcan (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
