@@ -6660,9 +6660,9 @@ municipios:
 - slug: benameji
   nombre: Benamejí
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-08T22:00:48.672770+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-05T00:07:21.046688+00:00'
+updated_at: '2026-09-08T22:00:48.674545+00:00'
