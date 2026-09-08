@@ -1,0 +1,29 @@
+slug: asturianos
+nombre: "Asturianos"
+provincia: "Asturianos (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytoasturianos.es"
+  adapter: municipio.adapters.asturianos:AsturianosAyuntamientoAdapter
+  config:
+    sede_base: "https://asturianos.sedelectronica.es"
+    wp_base: "https://aytoasturianos.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-asturianos/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Asturianos"
+    plau_provincia: "49"
+    plau_municipio: "017"
+    centroid: [42.055, -6.469]
+  notes: |
+    WordPress aytoasturianos.es (consorcio Sanabria) + sede espublico gestiona +
+    PLAU JCyL (mun 017, INE 49017) + IDECyL WFS/SIUR.
+    Sin PGOU: SPG (Sin Planeamiento General) con polígono municipal en WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
