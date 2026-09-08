@@ -1,0 +1,29 @@
+slug: atarfe
+nombre: "Atarfe"
+provincia: "Atarfe (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://atarfe.sedelectronica.es"
+  adapter: municipio.adapters.atarfe:AtarfeAyuntamientoAdapter
+  config:
+    sede_base: "https://atarfe.sedelectronica.es"
+    web_base: "https://www.atarfe.es"
+    board_url: "https://atarfe.sedelectronica.es/board"
+    ordenanzas_url: "https://atarfe.sedelectronica.es/transparency/43805ba8-ae16-47ec-b379-184d3b166287/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-atarfe/1.0"
+    centroid: [37.2247, -3.6868]
+  notes: |
+    Fuentes: portal PHP Porto www.atarfe.es (urbanismo, noticias, anuncios plenos) +
+    sede espublico gestiona (tablón /board/, transparencia ordenanzas fiscales).
+    SITUA Junta de Andalucía como referencia planeamiento (sin geometría por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
