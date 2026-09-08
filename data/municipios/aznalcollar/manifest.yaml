@@ -1,0 +1,28 @@
+slug: aznalcollar
+nombre: "Aznalcóllar"
+provincia: "Aznalcóllar (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.aznalcollar.es"
+  adapter: municipio.adapters.aznalcollar:AznalcollarAyuntamientoAdapter
+  config:
+    wp_base: "https://www.aznalcollar.es"
+    sede_base: "https://sedeaznalcollar.dipusevilla.es"
+    tablon_url: "https://sedeaznalcollar.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41013"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aznalcollar/1.0"
+    centroid: [37.5231, -6.2699]
+  notes: |
+    Web OpenCMS INPRO (aznalcollar.es) + sede GSede Diputación Sevilla.
+    Tablón INPRO tablon-1.0 (INE 41013) + PDFs PGOU/PE Parque Mirador en galerías OpenCMS.
+    Sede espublico (aznalcollar.sedelectronica.es) indeterminada — no scrapeable.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
