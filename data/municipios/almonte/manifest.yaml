@@ -1,0 +1,26 @@
+slug: almonte
+nombre: "Almonte"
+provincia: "Almonte (Huelva)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.almonte.es"
+  adapter: municipio.adapters.almonte:AlmonteAyuntamientoAdapter
+  config:
+    web_base: "https://www.almonte.es"
+    sede_base: "https://almonte.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almonte/1.0"
+    centroid: [37.2626, -6.5167]
+  notes: |
+    Fuentes: SAGA Diputación Huelva (consulta pública, PGOU Google Drive, ordenanzas URB)
+    + impresos SAC urbanismo + SITUA. Portales licencias en IPs internas inaccesibles.
+    Sin visor GIS público enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
