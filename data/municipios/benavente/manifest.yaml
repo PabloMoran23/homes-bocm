@@ -1,0 +1,30 @@
+slug: benavente
+nombre: "Benavente"
+provincia: Zamora
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://benavente.es"
+  adapter: municipio.adapters.benavente:BenaventeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benavente/1.0"
+    insecure_ssl: true
+    sede_base: "https://aytobenavente.org"
+    anuncios_url: "https://benavente.es/actualidad/anuncios/"
+    anuncios_max_pages: 12
+    wfs_municipio: "Benavente"
+    geometry:
+      kind: wfs
+      base_url: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+  notes: |
+    WordPress benavente.es (Elementor) + tablón anuncios /actualidad/anuncios/.
+    Sede aytobenavente.org bloqueada (503) en CI; benavente.sedelectronica.es indeterminada.
+    PGOU y documentación en área Urbanismo; geometría sectores vía IDECyL WFS (PLAU CYL).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
