@@ -1,0 +1,28 @@
+slug: anchuelo-y-villalbilla
+nombre: "Anchuelo y Villalbilla"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://aytoanchuelo.com"
+  adapter: municipio.adapters.anchuelo_y_villalbilla:AnchueloYVillalbillaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-anchuelo-y-villalbilla/1.0 (+urbanismo research)"
+    wp_api_base: "https://aytoanchuelo.com/index.php/wp-json/wp/v2"
+    sede_eadmin: "https://sedeanchuelo.eadministracion.es"
+    transparencia_url: "https://transparenciaanchuelo.eadministracion.es"
+    avance_pgou_url: "https://aytoanchuelo.com/index.php/avance-pgou/"
+    wfs_municipio: "ANCHUELO"
+  notes: |
+    Slug cola = artefacto BOCM (Anchuelo + Villalbilla). Portal scrapeado: Anchuelo (aytoanchuelo.com).
+    WordPress REST + SITCM WFS (9 UA). Sede eAdmin 404; transparencia no disponible.
+
+licencias:
+  enabled: true
+  notes: Páginas informativas sede/trámites; sin listado público de concesiones
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: WP REST noticias + semillas PGOU/avance + IP planta fotovoltaica
