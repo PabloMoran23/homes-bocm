@@ -1,0 +1,29 @@
+slug: aljaraque
+nombre: "Aljaraque"
+provincia: "Aljaraque/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.aljaraque.es"
+  adapter: municipio.adapters.aljaraque:AljaraqueAyuntamientoAdapter
+  config:
+    web_base: "https://www.aljaraque.es"
+    sede_base: "https://aljaraque.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-aljaraque/1.0"
+    centroid: [37.2697, -7.0231]
+  notes: |
+    Fuentes: web municipal SAGA (Diputación Huelva) con galerías PDF de urbanismo
+    (planes parciales, modificaciones PGOU, estudios de detalle, adaptación LOUA).
+    Sede aljaraque.sedelectronica.es inaccesible desde el agente (timeout).
+    Tablón Diputación Huelva (GSede/EPICSA) sin listado público filtrable por municipio.
+    Sin visor urbanístico ni WFS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
