@@ -1,0 +1,31 @@
+slug: albalat-dels-sorells
+nombre: "Albalat dels Sorells"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "http://www.albalatdelssorells.net"
+  adapter: municipio.adapters.albalat_dels_sorells:AlbalatDelsSorellsAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-albalat-dels-sorells/1.0"
+    centroid: [39.5431, -0.3458]
+    api_base: "https://api.digitalvalue.es/albalatdelssorells/collections"
+    sede_base: "https://albalatdelssorells.sedelectronica.es"
+    cod_ine_mun: "46009"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    Web corporativa Digital Value (albalatdelssorells.net; intermitente 502 desde CI).
+    API articulos + sede espublico gestiona (tablón /board + catálogo /dossier).
+    Geometría parcial vía ICV WFS (cod_ine_mun=46009).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
