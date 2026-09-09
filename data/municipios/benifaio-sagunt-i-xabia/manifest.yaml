@@ -1,0 +1,30 @@
+slug: benifaio-sagunt-i-xabia
+nombre: "Benifaió, Sagunt i Xàbia"
+provincia: Benifaió, Sagunt i Xàbia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://benifaio.sedelectronica.es"
+  adapter: municipio.adapters.benifaio_sagunt_i_xabia:BenifaioSaguntIXabiaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-benifaio-sagunt-i-xabia/1.0"
+    centroid: [39.25, -0.05]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+  notes: |
+    Tres municipios CV en un adapter:
+    - Benifaió: espublico sede (web benifaio.es caída), INE 46071
+    - Sagunt: sedipualba tablón RSS + aytosagunto.es, INE 46220
+    - Xàbia: espublico sede + transparencia, INE 03094
+    Geometría ICV WFS InventarioSuSuz por cod_ine_mun.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
