@@ -6814,11 +6814,11 @@ municipios:
 - slug: bollullos-par-del-condado
   nombre: Bollullos Par del Condado
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-09T20:18:02.377733+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/608
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-09T00:03:05.083472+00:00'
+updated_at: '2026-09-09T20:18:02.378644+00:00'
