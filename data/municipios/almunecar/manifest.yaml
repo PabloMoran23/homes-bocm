@@ -1,0 +1,28 @@
+slug: almunecar
+nombre: "Almuñécar"
+provincia: "Almuñécar (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://portaltransparencia.almunecar.es"
+  adapter: municipio.adapters.almunecar:AlmunecarAyuntamientoAdapter
+  config:
+    sede_base: "https://almunecar.sedelectronica.es"
+    transparency_base: "https://portaltransparencia.almunecar.es"
+    board_url: "https://almunecar.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-almunecar/1.0"
+    centroid: [36.7337, -3.6904]
+  notes: |
+    Fuentes: portal transparencia WordPress (planeamiento/IP urbanística),
+    tablón sede espublico gestiona (/board/), enlace SITUA PGOU (cid=41236).
+    Web www.almunecar.es bloqueada por WAF en CI; news.almunecar.info inactivo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
