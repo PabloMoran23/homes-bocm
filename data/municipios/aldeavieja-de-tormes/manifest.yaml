@@ -1,0 +1,25 @@
+slug: aldeavieja-de-tormes
+nombre: "Aldeavieja de Tormes"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aldeaviejadetormes.sedelectronica.es"
+  adapter: municipio.adapters.aldeavieja_de_tormes:AldeaviejaDeTormesAyuntamientoAdapter
+  config:
+    sede_base: "https://aldeaviejadetormes.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-aldeavieja-de-tormes/1.0"
+    wfs_municipio: "Aldeavieja de Tormes"
+  notes: |
+    Fuentes: tablón sede (/board), catálogo trámites (/dossier.0), archivo PLAU Junta CYL
+    (provincia 37, municipio 024), normas urbanísticas Diputación Salamanca (codMunicipio 24)
+    e IDECyL WFS sectores/planes. Web aytoaldeaviejadetormes.es es mínima (solo contacto).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
