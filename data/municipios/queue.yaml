@@ -6058,11 +6058,11 @@ municipios:
 - slug: alaejos
   nombre: Alaejos
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-05T06:04:53.081324+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/554
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-05T00:07:21.046688+00:00'
+updated_at: '2026-09-05T06:04:53.082194+00:00'
