@@ -1,0 +1,39 @@
+slug: alfarrasi
+nombre: "Alfarrasí"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.alfarrasi.es"
+  adapter: municipio.adapters.alfarrasi:AlfarrasiAyuntamientoAdapter
+  config:
+    web_base: "https://www.alfarrasi.es"
+    sede_base: "https://alfarrasi.sede.dival.es"
+    tablon_rss: "https://alfarrasi.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://alfarrasi.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://alfarrasi.sede.dival.es/catalogoservicios.aspx"
+    urbanismo_url: "https://www.alfarrasi.es/es/transparencia/informacio-urbanistica"
+    cod_ine_mun: "46027"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alfarrasi/1.0"
+    centroid: [38.9017, -0.4894]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      offsets: [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 10500, 11000, 11500, 12000, 12500, 13000, 13500]
+    seed_pages:
+      - "https://www.alfarrasi.es/es/transparencia/informacio-urbanistica"
+      - "https://www.alfarrasi.es/es/transparencia/modificaciones-aprobadas-al-pgou"
+      - "https://www.alfarrasi.es/es/transparencia/convenis-urbanistics"
+      - "https://www.alfarrasi.es/es/transparencia/urbanismo"
+      - "https://www.alfarrasi.es/es/transparencia/modificacions-reformes-complementaries"
+  notes: |
+    Drupal 10 portalesmunicipales (transparencia/PGOU PDFs) + sede Dival (Sedipualba) tablón RSS.
+    Geometría parcial: ICV GVA WFS Planeamiento.Zonificacion + InventarioSuSuz (INE 46027).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
