@@ -1,0 +1,31 @@
+slug: arcabuey
+nombre: "Arcabuey"
+provincia: "Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sede.eprinsa.es/arcabuey"
+  adapter: municipio.adapters.arcabuey:ArcabueyAyuntamientoAdapter
+  config:
+    sede_eprinsa: "https://sede.eprinsa.es/arcabuey"
+    sede_espublico: "https://arcabuey.sedelectronica.es"
+    tablon_eprinsa: "https://sede.eprinsa.es/arcabuey/tablon-de-edictos"
+    situa_search: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    vitua_url: "https://www.juntadeandalucia.es/institutodeestadisticaycartografia/visores/VITUA/"
+    dipu_tablon: "https://sede.dipujaen.es/Tablon"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-arcabuey/1.0"
+    centroid: [38.0197, -2.7719]
+    ine_code: "23002"
+  notes: |
+    Web municipal (arcabuey.es) inaccesible. Sede eprinsa (stub SPA) y espublico (indeterminada).
+    Planeamiento vía SITUADIFUSION/VITUA (Junta). Tablón provincial Diputación Jaén.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
