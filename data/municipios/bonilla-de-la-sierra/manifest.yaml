@@ -1,0 +1,32 @@
+slug: bonilla-de-la-sierra
+nombre: "Bonilla de la Sierra"
+provincia: "Bonilla de la Sierra (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://bonilladelasierra.com"
+  adapter: municipio.adapters.bonilla_de_la_sierra:BonillaDeLaSierraAyuntamientoAdapter
+  config:
+    wp_base: "https://bonilladelasierra.com"
+    sede_base: "https://bonilladelasierra.sedelectronica.es"
+    planpublica_provincia: 05
+    planpublica_municipio: 038
+    ine_code: "05038"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Bonilla de la Sierra"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=05038"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=05&municipio=038"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=05&municipio=038"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bonilla-de-la-sierra/1.0 (+urbanismo research)"
+    centroid: [40.5298, -5.2672]
+  notes: |
+    Web WordPress (turismo/patrimonio) + sede espublico gestiona + PlanPublica/SiuCyL (NSAP provincial).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
