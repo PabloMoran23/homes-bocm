@@ -20,8 +20,8 @@ from municipio.gis.sitcm import _merge_geometries, resolve_ambito_geometry
 
 SITE_BASE = "https://www.canencia.es"
 SEDE_BASE = "https://canencia.sedelectronica.es"
-MUNICIPIO = "Canencia"
-ID_PREFIX = "canencia"
+DEFAULT_MUNICIPIO = "Canencia de la Sierra"
+DEFAULT_ID_PREFIX = "canencia-de-la-sierra"
 SITCM_VISOR_URL = "http://www.madrid.org/cartografia/sitcm/html/visor.htm?municipio=034"
 
 WFS_BASE = "https://idem.comunidad.madrid/geoserver3/ows"
@@ -98,9 +98,9 @@ RE_ARTICLE_LINK = re.compile(
 )
 
 
-def _stable_id(kind: str, key: str) -> str:
+def _stable_id(prefix: str, kind: str, key: str) -> str:
     h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
-    return f"{ID_PREFIX}-{kind}-{h}"
+    return f"{prefix}-{kind}-{h}"
 
 
 def _strip_html(text: str) -> str:
@@ -175,6 +175,8 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
 
     def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
         super().__init__(slug, config, base_url or SITE_BASE)
+        self.municipio = str(self.config.get("municipio") or DEFAULT_MUNICIPIO)
+        self.id_prefix = str(self.config.get("id_prefix") or slug or DEFAULT_ID_PREFIX)
         self.delay_s = float(self.config.get("request_delay_s", 0.35))
         self.site_base = str(self.config.get("site_base") or SITE_BASE).rstrip("/")
         self.sede_base = str(self.config.get("sede_base") or SEDE_BASE).rstrip("/")
@@ -338,8 +340,8 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
         rows: list[dict[str, Any]] = []
         for seed in self.planeamiento_seeds:
             rec: dict[str, Any] = {
-                "id": _stable_id("proy", seed["url"] + seed["titulo"]),
-                "municipio": MUNICIPIO,
+                "id": _stable_id(self.id_prefix, "proy", seed["url"] + seed["titulo"]),
+                "municipio": self.municipio,
                 "titulo": seed["titulo"][:500],
                 "fecha": seed.get("fecha"),
                 "tipo": seed.get("tipo") or _proyecto_tipo(seed["titulo"]),
@@ -413,7 +415,7 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
     def _collect_licencia_info_pages(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = [
             {
-                "id": _stable_id("lic", self.urbanismo_url),
+                "id": _stable_id(self.id_prefix, "lic", self.urbanismo_url),
                 "fecha_concesion": None,
                 "tipo": "trámites de urbanismo",
                 "distrito": None,
@@ -426,7 +428,7 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
                 "origen": "joomla_tramite",
             },
             {
-                "id": _stable_id("lic", self.board_url),
+                "id": _stable_id(self.id_prefix, "lic", self.board_url),
                 "fecha_concesion": None,
                 "tipo": "tablón de anuncios",
                 "distrito": None,
@@ -439,7 +441,7 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
                 "origen": "sede_tablon",
             },
             {
-                "id": _stable_id("lic", f"{self.sede_base}/info.0"),
+                "id": _stable_id(self.id_prefix, "lic", f"{self.sede_base}/info.0"),
                 "fecha_concesion": None,
                 "tipo": "sede electrónica",
                 "distrito": None,
@@ -467,7 +469,7 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
                 continue
             rows.append(
                 {
-                    "id": _stable_id("lic", pdf_url),
+                    "id": _stable_id(self.id_prefix, "lic", pdf_url),
                     "fecha_concesion": None,
                     "tipo": "formulario licencia",
                     "distrito": None,
@@ -550,8 +552,8 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
             titulo = f"{name} — {fig}" if fig else name
             merged = _merge_geometries([f])
             rec: dict[str, Any] = {
-                "id": _stable_id("proy", f"sit:{name}"),
-                "municipio": MUNICIPIO,
+                "id": _stable_id(self.id_prefix, "proy", f"sit:{name}"),
+                "municipio": self.municipio,
                 "titulo": titulo[:500],
                 "fecha": None,
                 "tipo": _proyecto_tipo(name),
@@ -585,8 +587,8 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("pdf_url") or row["url"] + "|" + row["titulo"]
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
+            "id": _stable_id(self.id_prefix, "proy", key),
+            "municipio": self.municipio,
             "titulo": row["titulo"],
             "fecha": row.get("fecha"),
             "tipo": _proyecto_tipo(row["titulo"]),
@@ -612,8 +614,8 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("expediente") or row["url"]
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
+            "id": _stable_id(self.id_prefix, "proy", key),
+            "municipio": self.municipio,
             "titulo": row["titulo"],
             "fecha": row.get("fecha"),
             "tipo": _proyecto_tipo(blob),
@@ -636,7 +638,7 @@ class CanenciaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("expediente") or row["url"]
         return {
-            "id": _stable_id("lic", key),
+            "id": _stable_id(self.id_prefix, "lic", key),
             "fecha_concesion": row.get("fecha"),
             "tipo": row.get("procedimiento") or "licencia",
             "distrito": None,
