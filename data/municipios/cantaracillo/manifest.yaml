@@ -1,0 +1,28 @@
+slug: cantaracillo
+nombre: "Cantaracillo"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://cantaracillo.sedelectronica.es"
+  adapter: municipio.adapters.cantaracillo:CantaracilloAyuntamientoAdapter
+  config:
+    sede_base: "https://cantaracillo.sedelectronica.es"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "37083"
+    plan_provincia: "37"
+    plan_municipio: "083"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cantaracillo/1.0 (+urbanismo research)"
+    centroid: [40.90935, -5.1508]
+  notes: |
+    Sede espublico gestiona (tablón + catálogo trámites)
+    + PlanPublica JCyL + IDECyL WFS sectores/instrumentos (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
