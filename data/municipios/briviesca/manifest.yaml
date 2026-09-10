@@ -1,0 +1,26 @@
+slug: briviesca
+nombre: "Briviesca"
+provincia: "Briviesca (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://briviesca.es"
+  adapter: municipio.adapters.briviesca:BriviescaAyuntamientoAdapter
+  config:
+    web_base: "https://briviesca.es"
+    sede_base: "https://briviesca.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-briviesca/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "09056"
+    centroid: [42.55, -3.32]
+  notes: |
+    Web corporativa Drupal 10 (PDFs planeamiento) + sede espublico tablón +
+    IDECyL WFS sectores/instrumentos (c_mun=09056) + PLAU Junta CYL.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
