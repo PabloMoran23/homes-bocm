@@ -7150,9 +7150,9 @@ municipios:
 - slug: castellar
   nombre: Castellar
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-11T20:02:46.405923+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-09T00:03:05.083472+00:00'
+updated_at: '2026-09-11T20:02:46.407967+00:00'
