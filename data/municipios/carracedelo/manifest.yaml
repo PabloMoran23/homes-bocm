@@ -1,0 +1,32 @@
+slug: carracedelo
+nombre: "Carracedelo"
+provincia: "Carracedelo (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://carracedelo.sedelectronica.es"
+  adapter: municipio.adapters.carracedelo:CarracedeloAyuntamientoAdapter
+  config:
+    sede_base: "https://carracedelo.sedelectronica.es"
+    planpublica_provincia: 24
+    planpublica_municipio: 038
+    ine_code: "24038"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Carracedelo"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=24038"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=038"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=038"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carracedelo/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [42.5638, -6.7269]
+  notes: |
+    Sin web corporativa (www.carracedelo.es redirige a sede). Sede espublico gestiona +
+    PlanPublica JCyL (NUM vigente) + WFS IDECyL (10 sectores con geometría).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
