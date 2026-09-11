@@ -1,0 +1,31 @@
+slug: carbonero-el-mayor
+nombre: "Carbonero el Mayor"
+provincia: "Carbonero el Mayor (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://carboneroelmayor.es"
+  adapter: municipio.adapters.carbonero_el_mayor:CarboneroElMayorAyuntamientoAdapter
+  config:
+    web_base: "https://carboneroelmayor.es"
+    urbanismo_url: "https://carboneroelmayor.es/index.php?option=com_content&view=section&id=8&layout=blog&Itemid=81"
+    sede_base: "https://carboneroelmayor.sedelectronica.es"
+    board_url: "https://carboneroelmayor.sedelectronica.es/board"
+    plai_municipio: 49
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Carbonero el Mayor"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carbonero-el-mayor/1.0"
+    insecure_ssl: true
+  notes: |
+    Web Joomla 1.5 (NUM, modificaciones puntuales) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 049).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
