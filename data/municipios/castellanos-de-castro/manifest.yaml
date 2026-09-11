@@ -1,0 +1,32 @@
+slug: castellanos-de-castro
+nombre: "Castellanos de Castro"
+provincia: "Castellanos de Castro (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://castellanosdecastro.es"
+  adapter: municipio.adapters.castellanos_de_castro:CastellanosDeCastroAyuntamientoAdapter
+  config:
+    sede_base: "https://castellanosdecastro.sedelectronica.es"
+    planpublica_provincia: 09
+    planpublica_municipio: 089
+    ine_code: "09079"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Castellanos de Castro"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09079"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=089"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=089"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castellanos-de-castro/1.0"
+    insecure_ssl: true
+    centroid: [42.331, -4.045]
+  notes: |
+    Web Drupal 10 (Toools) + sede espublico gestiona + PlanPublica (provincia 09, municipio 089).
+    Instrumento vigente SPG vía WFS IDECyL. Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
