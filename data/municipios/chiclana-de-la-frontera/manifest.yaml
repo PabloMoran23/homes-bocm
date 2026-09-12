@@ -1,0 +1,22 @@
+slug: chiclana-de-la-frontera
+nombre: "Chiclana de la Frontera"
+provincia: Chiclana de la Frontera/Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://transparencia.chiclana.es/obras-publicas-y-urbanismo/"
+  adapter: municipio.adapters.chiclana_de_la_frontera:ChiclanaDeLaFronteraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-chiclana-de-la-frontera/1.0"
+    centroid: [36.4192, -6.1494]
+  notes: |
+    Portal transparencia WordPress (accesible) + web municipal/ventanilla virtual (Cloudflare).
+    Planeamiento vía SITUA Junta Andalucía (INE 11015). Tablón edictos en ventanillavirtual.chiclana.es.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
