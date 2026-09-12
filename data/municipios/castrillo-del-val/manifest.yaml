@@ -1,0 +1,27 @@
+slug: castrillo-del-val
+nombre: "Castrillo del Val"
+provincia: "Castrillo del Val (Burgos)"
+comunidad_autonoma: castilla-y-leon
+boletin_source_id: bocyl
+
+portal:
+  base_url: "https://www.castrillodelval.es"
+  adapter: municipio.adapters.castrillo_del_val:CastrilloDelValAyuntamientoAdapter
+  config:
+    sede_base: "https://castrillodelval.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-castrillo-del-val/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "09086"
+  notes: |
+    Fuentes: tablón sede (/board), PlanPublica CyL (mun=086, prov=9),
+    IDECyL WFS (c_mun 09086), noticias Drupal Toools.
+    Transparencia sección urbanismo vacía (0 docs).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
