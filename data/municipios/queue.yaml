@@ -7206,11 +7206,11 @@ municipios:
 - slug: castillo-de-locubin
   nombre: Castillo de Locubín
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-12T04:02:29.323769+00:00'
+  last_run: '2026-09-12T04:05:38.595242+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/636
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-12T04:02:29.325610+00:00'
+updated_at: '2026-09-12T04:05:38.596195+00:00'
