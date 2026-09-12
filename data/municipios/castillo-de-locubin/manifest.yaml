@@ -1,0 +1,26 @@
+slug: castillo-de-locubin
+nombre: "Castillo de Locubín"
+provincia: Jaén
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://aytocastillodelocubin.org"
+  adapter: municipio.adapters.castillo_de_locubin:CastilloDeLocubinAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castillo-de-locubin/1.0"
+    page_ids: [6032, 8460, 528, 11942]
+    centroid: [37.5286, -3.9431]
+  notes: |
+    WordPress BusinessX: formularios PDF (licencias), tablón anuncios (page 8460),
+    normativa urbanística PGOU/NN.SS (page 528), exposición pública (page 11942).
+    Sin sede electrónica operativa (pst.castillodelocubin.es inaccesible).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: boja
