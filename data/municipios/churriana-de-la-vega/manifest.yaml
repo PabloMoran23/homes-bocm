@@ -1,0 +1,28 @@
+slug: churriana-de-la-vega
+nombre: "Churriana de la Vega"
+provincia: "Churriana de la Vega-Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://churrianadelavega.sedelectronica.es"
+  adapter: municipio.adapters.churriana_de_la_vega:ChurrianaDeLaVegaAyuntamientoAdapter
+  config:
+    sede_base: "https://churrianadelavega.sedelectronica.es"
+    board_url: "https://churrianadelavega.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-churriana-de-la-vega/1.0"
+    centroid: [37.1453, -3.6447]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web ayuntamientochurrianadelavega.org (WordPress municipal).
+    PGOU aprobado 2015 (BOJA); innovaciones y estudios de detalle en BOP Dip. Granada.
+    VITUA/SITUA Junta Andalucía sin enlace por expediente del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
