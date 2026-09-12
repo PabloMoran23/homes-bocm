@@ -1,0 +1,32 @@
+slug: castrillo-de-la-vega
+nombre: "Castrillo de la Vega"
+provincia: "Castrillo de la Vega (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.castrillodelavega.es"
+  adapter: municipio.adapters.castrillo_de_la_vega:CastrilloDeLaVegaAyuntamientoAdapter
+  config:
+    web_base: "https://www.castrillodelavega.es"
+    sede_base: "https://castrillodelavega.sedelectronica.es"
+    planpublica_provincia: 9
+    planpublica_municipio: 85
+    ine_code: "09085"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Castrillo de la Vega"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09085"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=085"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=085"
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-castrillo-de-la-vega/1.0; +urbanismo municipal research)"
+    centroid: [41.7514, -3.9448]
+  notes: |
+    Drupal Toools (web corporativa) + sede espublico gestiona + PlanPublica JCYL + IDECyL WFS.
+    Ver RESEARCH.md para fuentes y geometría.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
