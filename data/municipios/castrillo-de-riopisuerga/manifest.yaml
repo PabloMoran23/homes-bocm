@@ -1,0 +1,28 @@
+slug: castrillo-de-riopisuerga
+nombre: "Castrillo de Riopisuerga"
+provincia: Burgos
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.castrilloderiopisuerga.es"
+  adapter: municipio.adapters.castrillo_de_riopisuerga:CastrilloDeRiopisuergaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castrillo-de-riopisuerga/1.0"
+    drupal_base: "https://www.castrilloderiopisuerga.es"
+    sede_base: "https://castrilloderiopisuerga.sedelectronica.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=088"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=088"
+    wfs_municipio: "Castrillo de Riopisuerga"
+    boletin_source_id: bocyl
+    insecure_ssl: true
+  notes: |
+    Drupal 9 (tema Toools, Diputación Burgos) + sede espublico gestiona + archivo PLAU JCyL
+    (prov. 09, mun. 088, INE 09088) e IDECyL WFS urbanismo (instrumentos ámbito municipal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
