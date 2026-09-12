@@ -1,0 +1,30 @@
+slug: castillejo-de-martin-viejo
+nombre: "Castillejo de Martín Viejo"
+provincia: Castillejo de Martín Viejo (Salamanca)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://castillejodemartinviejo.sedelectronica.es"
+  adapter: municipio.adapters.castillejo_de_martin_viejo:CastillejoDeMartinViejoAyuntamientoAdapter
+  config:
+    sede_base: "https://castillejodemartinviejo.sedelectronica.es"
+    info_url: "https://castillejodemartinviejo.sedelectronica.es/info.0"
+    dossier_url: "https://castillejodemartinviejo.sedelectronica.es/dossier.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "37096"
+    plan_provincia: "37"
+    plan_municipio: "096"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-castillejo-de-martin-viejo/1.0"
+    centroid: [40.670, -6.633]
+  notes: |
+    Sede espublico gestiona (tablón + catálogo trámites) + PlanPublica JCyL
+    + IDECyL WFS instrumento DSU (geometría partial). Web corporativa inactiva (404).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
