@@ -1,0 +1,33 @@
+slug: cullera
+nombre: "Cullera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.cullera.es"
+  adapter: municipio.adapters.cullera:CulleraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cullera/1.0"
+    centroid: [39.1639, -0.2517]
+    sede_base: "https://cullera.sedipualba.es"
+    urbanismo_url: "https://www.cullera.es/es/pagina/urbanismo"
+    visor_url: "https://cullera.gvsigonline.com/gvsigonline/core/load_public_project/UrbanismeConsultes/"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+      cod_ine_mun: "46105"
+  notes: |
+    Web Drupal 10 portalesmunicipales (cullera.es) + sede sedipualba.
+    Página urbanismo con PDFs PGOU/modificaciones; tablón RSS sede.
+    Geometría parcial vía ICV WFS InventarioSuSuz + Zonificacion (cod_ine_mun=46105).
+    Visor municipal gvsigonline (UrbanismeConsultes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
