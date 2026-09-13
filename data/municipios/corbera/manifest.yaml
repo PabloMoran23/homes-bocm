@@ -1,0 +1,40 @@
+slug: corbera
+nombre: "Corbera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://corbera.sedelectronica.es"
+  adapter: municipio.adapters.corbera:CorberaAyuntamientoAdapter
+  config:
+    sede_base: "https://corbera.sedelectronica.es"
+    board_url: "https://corbera.sedelectronica.es/board"
+    web_base: "https://www.corbera.es"
+    info_publica_ca: "https://www.corbera.es/ca/transparencia/informacio-publica"
+    info_publica_es: "https://www.corbera.es/es/transparencia/informacion-publica"
+    ordenanzas_url: "https://www.corbera.es/ca/pagina/ordenances-urbanistiques"
+    agenda_urbana_url: "https://agendaurbanacorbera.com/"
+    sede_info_ip_url: "https://corbera.sedelectronica.es/info.4"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-corbera/1.0"
+    centroid: [39.154, -0.356]
+    cod_ine_mun: "46098"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      offsets: [1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500]
+  notes: |
+    Drupal 10 portalesmunicipales (www.corbera.es, bilingüe ca/es) + sede espublico gestiona.
+    Tablón /board: anuncios municipales (sin licencias urbanísticas recientes).
+    Transparencia /informacio-publica + sede /info.4: normativa y proyectos en IP.
+    PGE/POP redactados por Dip. Valencia (PDFs en web). PAI subunidad UE 4.1 en curso.
+    Geometría partial: ICV WFS cod_ine_mun 46098 (homologación normas subsidiarias 1999).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
