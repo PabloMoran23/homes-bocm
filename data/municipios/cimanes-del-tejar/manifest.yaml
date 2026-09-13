@@ -1,0 +1,27 @@
+slug: cimanes-del-tejar
+nombre: "Cimanes del Tejar"
+provincia: "Cimanes del Tejar, León"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytocimanesdeltejar.es"
+  adapter: municipio.adapters.cimanes_del_tejar:CimanesDelTejarAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytocimanesdeltejar.es"
+    sede_base: "https://cimanesdeltejar.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cimanes-del-tejar/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Cimanes del Tejar"
+    centroid: [42.6807, -5.8154]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (tablón, trámites) + IDECyL WFS instrumentos (provincia 24, muni 055).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
