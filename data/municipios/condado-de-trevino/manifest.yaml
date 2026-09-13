@@ -1,0 +1,26 @@
+slug: condado-de-trevino
+nombre: "Condado de Treviño"
+provincia: Condado de Treviño (Burgos)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.condadodetrevino.es"
+  adapter: municipio.adapters.condado_de_trevino:CondadoDeTrevinoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-condado-de-trevino/1.0"
+    sede_base: "https://condadodetrevino.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 109
+    wfs_municipio: "Condado de Treviño"
+  notes: |
+    Drupal condadodetrevino.es + sede espublico (tablón, transparencia urbanismo, trámites OBRAS).
+    Planeamiento en PLAI JCYL (prov=09, mun=109) e IDECyL WFS (c_mun=09109).
+    Enclave burgales en Álava; sin visor municipal propio — geometría vía WFS regional.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
