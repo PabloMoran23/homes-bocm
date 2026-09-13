@@ -7500,11 +7500,11 @@ municipios:
 - slug: dozon
   nombre: Dozón
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-13T22:01:19.249098+00:00'
+  last_run: '2026-09-13T22:07:24.988555+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/657
   notes: ''
   boletin_source_id: dog
   comunidad_autonoma: galicia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-13T22:01:19.250974+00:00'
+updated_at: '2026-09-13T22:07:24.989484+00:00'
