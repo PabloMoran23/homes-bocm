@@ -7360,11 +7360,11 @@ municipios:
 - slug: colunga
   nombre: Colunga
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-13T02:11:13.081438+00:00'
+  last_run: '2026-09-13T02:17:32.948037+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/647
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-13T02:11:13.083794+00:00'
+updated_at: '2026-09-13T02:17:32.948949+00:00'
