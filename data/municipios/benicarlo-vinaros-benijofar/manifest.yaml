@@ -1,0 +1,30 @@
+slug: benicarlo-vinaros-benijofar
+nombre: "Benicarló, Vinaròs, Benijófar"
+provincia: "Benicarló (Castellón), Vinaròs (Castellón), Benijófar (Alicante)"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.benicarlo.org"
+  adapter: municipio.adapters.benicarlo_vinaros_benijofar:BenicarloVinarosBenijofarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-benicarlo-vinaros-benijofar/1.0"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    Entrada compuesta de 3 municipios CV:
+    - Benicarló: benicarlo.org + sedipualba tablón/RSS (INE 12018)
+    - Vinaròs: vinaros.es + urbanisme.vinaros.es + sede espublico (INE 12138)
+    - Benijófar: benijofar.es WP + sede espublico (INE 03012)
+    Geometría partial vía ICV WFS InventarioSuSuz por municipio.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
