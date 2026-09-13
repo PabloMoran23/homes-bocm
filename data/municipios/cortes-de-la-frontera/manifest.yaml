@@ -1,0 +1,32 @@
+slug: cortes-de-la-frontera
+nombre: "Cortes de la Frontera"
+provincia: "Cortes de la Frontera/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.cortesdelafrontera.es"
+  adapter: municipio.adapters.cortes_de_la_frontera:CortesDeLaFronteraAyuntamientoAdapter
+  config:
+    web_base: "https://www.cortesdelafrontera.es"
+    sede_base: "https://sede.malaga.es/cortesdelafrontera"
+    board_url: "https://sede.malaga.es/cortesdelafrontera/tablon-de-anuncios/"
+    transparency_url: "http://www.malaga.es/gobiernoabierto/portal/entidad/ent-770/cortesdelafrontera"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cortes-de-la-frontera/1.0"
+    centroid: [36.6161, -5.3444]
+  notes: |
+    Fuentes: web municipal Diputación Málaga (static.malaga.es) con UA navegador;
+    sede Diputación (sede.malaga.es) — tablón con timeout SSL posible en CI;
+    espublico gestiona (cortesdelafrontera.sedelectronica.es) inactiva;
+    SITUA Junta de Andalucía para PGOU (INE 29046);
+    formularios declaraciones responsables (11 PDFs en web municipal).
+    Visor PRP Málaga sin API REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
