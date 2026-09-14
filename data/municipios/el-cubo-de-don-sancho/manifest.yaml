@@ -1,0 +1,33 @@
+slug: el-cubo-de-don-sancho
+nombre: "El Cubo de Don Sancho"
+provincia: "El Cubo de Don Sancho - Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://elcubodedonsancho.sedelectronica.es"
+  adapter: municipio.adapters.el_cubo_de_don_sancho:ElCuboDeDonSanchoAyuntamientoAdapter
+  config:
+    sede_base: "https://elcubodedonsancho.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 113
+    ine_code: "37113"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "El Cubo de Don Sancho"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37113"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=113"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=113"
+    spg_doc_url: "https://servicios.jcyl.es/PlanPublica/openDocuIndice.do?cDocId=278415"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-cubo-de-don-sancho/1.0"
+    centroid: [40.88385, -6.3035]
+  notes: |
+    Sin web corporativa. Sede espublico indeterminada (no tablón operativo).
+    Planeamiento centralizado en PlanPublica/SiuCyL (SPG vigente, sin PGOU).
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
