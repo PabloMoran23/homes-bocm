@@ -1,0 +1,27 @@
+slug: el-pinar
+nombre: "El Pinar"
+provincia: "El Pinar/El Hierro"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.aytoelpinar.org"
+  adapter: municipio.adapters.el_pinar:ElPinarAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytoelpinar.org"
+    sede_base: "https://elpinardeelhierro.sedelectronica.es"
+    board_url: "https://elpinardeelhierro.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-el-pinar
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-pinar/1.0"
+    centroid: [27.643, -17.981]
+  notes: |
+    Portal corporativo Joomla (aytoelpinar.org, inestable en CI) + sede espublico
+    + SITCAN CKAN (3 instrumentos planeamiento) + GEOBDP Grafcan (PGO doc 1403 con polígono).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
