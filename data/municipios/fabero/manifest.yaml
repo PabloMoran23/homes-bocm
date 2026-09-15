@@ -1,0 +1,29 @@
+slug: fabero
+nombre: "Fabero"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytofabero.com"
+  adapter: municipio.adapters.fabero:FaberoAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytofabero.com"
+    sede_base: "https://fabero.sedelectronica.es"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "24070"
+    plan_provincia: "24"
+    plan_municipio: "070"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-fabero/1.0"
+    centroid: [42.768, -6.629]
+  notes: |
+    Web PHP municipal (plan_ordenacion.php + trámites) + sede espublico tablón (SSL)
+    + PlanPublica JCyL (prov=24/mun=070) + IDECyL WFS sectores (geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
