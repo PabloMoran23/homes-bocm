@@ -1,0 +1,31 @@
+slug: espartinas
+nombre: "Espartinas"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://espartinas.sedelectronica.es"
+  adapter: municipio.adapters.espartinas:EspartinasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-espartinas/1.0"
+    web_base: "https://www.espartinas.es"
+    sede_base: "https://espartinas.sedelectronica.es"
+    board_url: "https://espartinas.sedelectronica.es/board"
+    transparencia_pgou_url: "https://transparencia.espartinas.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00039/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41045"
+    urbanismo_sede_url: "https://espartinas.sedelectronica.es/citizen-service/a5e574c0-654d-4285-8ad3-fc31ba7ad2af"
+    insecure_ssl: true
+  notes: |
+    OpenCMS INPRO (espartinas.es) + sede espublico gestiona (tablón /board).
+    PGOU PDFs en transparencia (multimedia.dipusevilla.es) + SITUA cid=41045.
+    geometry_status: unavailable (PDFs sin georef).
+
+licencias:
+  enabled: true
+  notes: Tablón sede + páginas informativas trámites urbanismo
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Tablón planeamiento + PGOU transparencia + SITUA
