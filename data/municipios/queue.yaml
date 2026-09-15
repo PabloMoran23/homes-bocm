@@ -7696,11 +7696,11 @@ municipios:
 - slug: elche-elx
   nombre: Elche/Elx
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-15T02:00:57.810590+00:00'
+  last_run: '2026-09-15T02:25:23.977493+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/671
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-15T02:00:57.812494+00:00'
+updated_at: '2026-09-15T02:25:23.978460+00:00'
