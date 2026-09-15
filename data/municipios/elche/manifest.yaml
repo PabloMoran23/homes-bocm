@@ -1,0 +1,27 @@
+slug: elche
+nombre: "Elche"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.elche.es"
+  adapter: municipio.adapters.elche:ElcheAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-elche/1.0"
+    web_base: "https://www.elche.es"
+    sede_base: "https://sede.elche.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      cod_ine_mun: "03065"
+  notes: |
+    WordPress citygov (urbanismo/*) + sede STA TAO (tablón KEY=all, catálogo trámites).
+    Geometría parcial vía ICV InventarioSuSuz WFS (123 sectores SU/SUZ, INE 03065).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
