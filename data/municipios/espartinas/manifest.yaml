@@ -15,6 +15,7 @@ portal:
     transparencia_pgou_url: "https://transparencia.espartinas.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00039/"
     situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41045"
     urbanismo_sede_url: "https://espartinas.sedelectronica.es/citizen-service/a5e574c0-654d-4285-8ad3-fc31ba7ad2af"
+    centroid: [37.3814997, -6.1256520]
     insecure_ssl: true
   notes: |
     OpenCMS INPRO (espartinas.es) + sede espublico gestiona (tablón /board).
