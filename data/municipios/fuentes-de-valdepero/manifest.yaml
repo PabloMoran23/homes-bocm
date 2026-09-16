@@ -1,0 +1,32 @@
+slug: fuentes-de-valdepero
+nombre: "Fuentes de Valdepero"
+provincia: "Fuentes de Valdepero (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://fuentesdevaldepero.es"
+  adapter: municipio.adapters.fuentes_de_valdepero:FuentesDeValdeperoAyuntamientoAdapter
+  config:
+    web_base: "https://fuentesdevaldepero.es"
+    sede_base: "https://fuentesdevaldepero.sedelectronica.es"
+    planpublica_provincia: 34
+    planpublica_municipio: 086
+    ine_code: "34086"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Fuentes de Valdepero"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=34&municipio=086"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=34&municipio=086"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-fuentes-de-valdepero/1.0 (+urbanismo research)"
+    centroid: [42.053, -4.547]
+  notes: |
+    WordPress fuentesdevaldepero.es + sede espublico gestiona (tablón/catálogo)
+    + PlanPublica PLAU (prov=34/mun=086) + IDECyL WFS (NUM + 5 PP + 10 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
