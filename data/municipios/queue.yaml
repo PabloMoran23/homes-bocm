@@ -7920,11 +7920,11 @@ municipios:
 - slug: fromista
   nombre: Frómista
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-16T12:17:56.463826+00:00'
+  last_run: '2026-09-16T12:23:02.536196+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/687
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-16T12:17:56.465634+00:00'
+updated_at: '2026-09-16T12:23:02.537076+00:00'
