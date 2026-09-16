@@ -7948,11 +7948,11 @@ municipios:
 - slug: fuente-de-piedra
   nombre: Fuente de Piedra
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-16T16:06:17.438185+00:00'
+  last_run: '2026-09-16T16:10:58.341098+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/689
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-16T16:06:17.440029+00:00'
+updated_at: '2026-09-16T16:10:58.341979+00:00'
