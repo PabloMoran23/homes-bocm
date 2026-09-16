@@ -1,0 +1,28 @@
+slug: garachico
+nombre: "Garachico"
+provincia: Garachico
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.garachico.es"
+  adapter: municipio.adapters.garachico:GarachicoAyuntamientoAdapter
+  config:
+    wp_base: "https://www.garachico.es"
+    sede_base: "https://garachico.sedelectronica.es"
+    board_url: "https://garachico.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-garachico
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38015/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-garachico/1.0"
+    centroid: [28.3726, -16.7634]
+  notes: |
+    WordPress (transparencia/PGO, normas subsidiarias) + sede espublico gestiona (tablón)
+    + SITCAN CKAN (planeamiento) + GEOBDP Grafcan (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
