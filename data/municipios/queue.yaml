@@ -7892,11 +7892,11 @@ municipios:
 - slug: fresno-del-torote
   nombre: Fresno del Torote
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-16T08:18:07.141790+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/685
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-13T00:11:18.042154+00:00'
+updated_at: '2026-09-16T08:18:07.142678+00:00'
