@@ -8102,11 +8102,11 @@ municipios:
 - slug: gomezserracin
   nombre: Gomezserracín
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-17T20:03:19.053528+00:00'
+  last_run: '2026-09-17T20:07:34.628793+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/701
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-17T20:03:19.056196+00:00'
+updated_at: '2026-09-17T20:07:34.629749+00:00'
