@@ -1,0 +1,34 @@
+slug: el-palmar-de-troya
+nombre: "El Palmar de Troya"
+provincia: "El Palmar de Troya (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.elpalmardetroya.es"
+  adapter: municipio.adapters.el_palmar_de_troya:ElPalmarDeTroyaAyuntamientoAdapter
+  config:
+    web_base: "https://www.elpalmardetroya.es"
+    sede_base: "https://sede.elpalmardetroya.es"
+    tablon_url: "https://sede.elpalmardetroya.es/tablon-1.0/do/entradaPublica?ine=41996"
+    ine_code: "41996"
+    pgou_transparencia_url: "https://transparencia.elpalmardetroya.es/es/transparencia/indicadores-de-transparencia/indicador/50.-Esta-publicado-el-Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan.-00029/"
+    normativa_transparencia_url: "https://transparencia.elpalmardetroya.es/es/transparencia/indicadores-de-transparencia/indicador/56.-Se-publica-informacion-precisa-de-la-normativa-vigente-en-materia-de-gestion-urbanistica-del-Ayuntamiento.-00029/"
+    urbanismo_noticias_url: "https://www.elpalmardetroya.es/es/urbanismo/noticias/"
+    pgom_web_url: "https://elpalmardetroya.nuevoplan.es/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41996"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-palmar-de-troya/1.0"
+    centroid: [37.2353, -5.9642]
+  notes: |
+    Web OpenCMS INPRO (elpalmardetroya.es) + sede GSede propia (sede.elpalmardetroya.es).
+    Tablón INPRO tablon-1.0 (INE 41996) + PGOM/PGOU PDFs en portal transparencia.
+    Noticias urbanismo OpenCMS + enlace SITUA Junta (cid=41996).
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
