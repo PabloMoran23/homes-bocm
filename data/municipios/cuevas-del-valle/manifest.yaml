@@ -1,0 +1,30 @@
+slug: cuevas-del-valle
+nombre: "Cuevas del Valle"
+provincia: "Cuevas del Valle (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.cuevasdelvalle.es"
+  adapter: municipio.adapters.cuevas_del_valle:CuevasDelValleAyuntamientoAdapter
+  config:
+    web_base: "https://www.cuevasdelvalle.es"
+    sede_base: "https://cuevasdelvalle.sedelectronica.es"
+    board_url: "https://cuevasdelvalle.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&pager.sortname=fPublicacion&pager.sortindex=-3&provincia=05&municipio=066"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cuevas-del-valle/1.0"
+    centroid: [40.285, -5.058]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Cuevas del Valle"
+  notes: |
+    Web plantilla Diputación de Ávila (normas urbanísticas + PDFs).
+    Sede espublico gestiona: tablón /board.
+    PLAU JCyL provincia 05 / municipio 066.
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
