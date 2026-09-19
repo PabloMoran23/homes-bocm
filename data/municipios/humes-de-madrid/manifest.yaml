@@ -1,0 +1,33 @@
+slug: humes-de-madrid
+nombre: "Humes de Madrid"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://humesdemadrid.sedelectronica.es"
+  adapter: municipio.adapters.humes_de_madrid:HumesDeMadridAyuntamientoAdapter
+  config:
+    sede_base: "https://humesdemadrid.sedelectronica.es"
+    canonical_slug: humanes-de-madrid
+    canonical_sede: "https://humanes.sedelectronica.es"
+    canonical_web: "https://ayto-humanesdemadrid.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-humes-de-madrid/1.0"
+    centroid_lat: 40.2539
+    centroid_lng: -3.8278
+  notes: |
+    Alias BOCM de Humanes de Madrid (INE 28073). Sin web ni sede operativa propia.
+    Portal canónico: humanes-de-madrid (PR #42). Adapter emite filas de referencia estáticas.
+
+licencias:
+  enabled: true
+  notes: Sin concesiones publicadas; referencia al municipio canónico Humanes de Madrid.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  centroid_lat: 40.2539
+  centroid_lng: -3.8278
