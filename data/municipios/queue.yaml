@@ -8620,11 +8620,11 @@ municipios:
 - slug: la-torre
   nombre: La Torre
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-20T22:01:45.459352+00:00'
+  last_run: '2026-09-20T22:06:07.042898+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/738
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-20T22:01:45.461259+00:00'
+updated_at: '2026-09-20T22:06:07.043910+00:00'
