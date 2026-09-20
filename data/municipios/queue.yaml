@@ -8480,11 +8480,11 @@ municipios:
 - slug: la-hiniesta
   nombre: La Hiniesta
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-20T02:03:35.178671+00:00'
+  last_run: '2026-09-20T02:10:11.750353+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/728
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-20T02:03:35.181100+00:00'
+updated_at: '2026-09-20T02:10:11.751288+00:00'
