@@ -8536,11 +8536,11 @@ municipios:
 - slug: la-losa
   nombre: La Losa
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-20T10:01:44.251773+00:00'
+  last_run: '2026-09-20T10:08:10.673331+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/732
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-20T10:01:44.253695+00:00'
+updated_at: '2026-09-20T10:08:10.674248+00:00'
