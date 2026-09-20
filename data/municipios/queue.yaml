@@ -8592,11 +8592,11 @@ municipios:
 - slug: la-puebla-de-los-infantes
   nombre: La Puebla de los Infantes
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-20T18:02:07.810635+00:00'
+  last_run: '2026-09-20T18:06:08.093532+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/736
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-20T18:02:07.812473+00:00'
+updated_at: '2026-09-20T18:06:08.094454+00:00'
