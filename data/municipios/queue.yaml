@@ -8676,11 +8676,11 @@ municipios:
 - slug: langreo
   nombre: Langreo
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-21T06:03:13.920544+00:00'
+  last_run: '2026-09-21T06:08:41.112751+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/742
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T06:03:13.923054+00:00'
+updated_at: '2026-09-21T06:08:41.113753+00:00'
