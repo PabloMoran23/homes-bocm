@@ -8788,11 +8788,11 @@ municipios:
 - slug: lliria
   nombre: Lliria
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-21T22:13:40.325915+00:00'
+  last_run: '2026-09-21T22:31:46.150262+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/750
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T22:13:40.329130+00:00'
+updated_at: '2026-09-21T22:31:46.151411+00:00'
