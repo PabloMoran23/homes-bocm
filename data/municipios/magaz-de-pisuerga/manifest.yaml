@@ -1,0 +1,26 @@
+slug: magaz-de-pisuerga
+nombre: "Magaz de Pisuerga"
+provincia: "Magaz de Pisuerga (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://magazdepisuerga.es"
+  adapter: municipio.adapters.magaz_de_pisuerga:MagazDePisuergaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-magaz-de-pisuerga/1.0"
+    sede_base: "https://magazdepisuerga.sedelectronica.es"
+    wfs_municipio: "Magaz de Pisuerga"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=34&municipio=098"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=34&municipio=098"
+    ine_code: "34098"
+  notes: |
+    WordPress Divi (CPT ic_urbanismo) + sede espublico tablón + PlanPublica JCyL (prov. 34, mun. 098)
+    + IDECyL WFS sectores/instrumentos. REST API WP deshabilitada; scraping HTML.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
