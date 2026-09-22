@@ -8900,11 +8900,11 @@ municipios:
 - slug: lumbrales
   nombre: Lumbrales
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-22T14:08:58.451845+00:00'
+  last_run: '2026-09-22T14:14:17.949553+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/758
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-22T14:08:58.453795+00:00'
+updated_at: '2026-09-22T14:14:17.950429+00:00'
