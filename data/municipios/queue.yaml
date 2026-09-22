@@ -8928,12 +8928,12 @@ municipios:
 - slug: madrid-alcobendas-san-sebastian-de-los-reyes-y-paracuellos-de-jarama
   nombre: Madrid, Alcobendas, San Sebastián de los Reyes y Paracuellos de Jarama
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: skipped
+  attempts: 1
+  last_run: '2026-09-22T18:17:39.952474+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/760
+  notes: Artefacto BOCM multi-municipio (Plan Especial Aeroportuario/Arteria Norte). Sin portal ayuntamiento; adapters en alcobendas, san-sebastian-de-los-reyes, paracuellos-de-jarama y madrid (SIGMA).
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T00:15:24.602330+00:00'
+updated_at: '2026-09-22T18:17:39.955141+00:00'
