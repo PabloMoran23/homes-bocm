@@ -1,0 +1,29 @@
+slug: lozo-yuela
+nombre: "Lozo-yuela"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.lozoyuela.com"
+  adapter: municipio.adapters.lozo_yuela:LozoYuelaAyuntamientoAdapter
+  config:
+    sede_base: "https://lozoyuela.sedelectronica.es"
+    centroid: [40.9263383, -3.6176377]
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lozo-yuela/1.0"
+    wfs_municipio: "LOZOYUELA-NAVAS-SIETEIGLESIAS"
+  notes: |
+    Alias BOCM «Lozo-yuela» → municipio INE Lozoyuela-Navas-Sieteiglesias (28079).
+    Misma implementación que lozoyuela-navas-sieteiglesias (WordPress + sede espublico + SITCM WFS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - "Lozo-yuela"
+    - "Lozoyuela"
+    - "Lozoyuela-Navas-Sieteiglesias"
