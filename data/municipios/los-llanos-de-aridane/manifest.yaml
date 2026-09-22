@@ -1,0 +1,28 @@
+slug: los-llanos-de-aridane
+nombre: "Los Llanos de Aridane"
+provincia: "Los Llanos de Aridane, La Palma"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://opendata.sitcan.es/dataset/planeamiento-urbanistico-de-los-llanos-de-aridane"
+  adapter: municipio.adapters.los_llanos_de_aridane:LosLlanosDeAridaneAyuntamientoAdapter
+  config:
+    sede_base: "https://losllanosdearidane.sedelectronica.es"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38024/"
+    sitcan_dataset: "planeamiento-urbanistico-de-los-llanos-de-aridane"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-llanos-de-aridane/1.0"
+    centroid: [28.658, -17.918]
+  notes: |
+    Web municipal (losllanosdearidane.com/.es) no operativa (dominio parking).
+    Sede espublico indeterminada (sin tablón scrapeable).
+    Planeamiento sistematizado SITCAN/IDE Canarias (73 recursos) + GEOBDP Grafcan INE 38024.
+    Sin listado público de licencias concedidas; trámites informativos sede/SITCAN.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
