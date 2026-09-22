@@ -8956,11 +8956,11 @@ municipios:
 - slug: magaz-de-pisuerga
   nombre: Magaz de Pisuerga
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-22T22:03:08.380427+00:00'
+  last_run: '2026-09-22T22:09:58.310308+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/762
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-22T22:03:08.382979+00:00'
+updated_at: '2026-09-22T22:09:58.311203+00:00'
