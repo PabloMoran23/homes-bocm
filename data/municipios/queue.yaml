@@ -8946,7 +8946,7 @@ municipios:
   attempts: 1
   last_run: '2026-09-22T20:03:30.284052+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/761
   notes: Artefacto BOCM (alias geográfico Madrid-Vallecas, distrito Villa de Vallecas). Sin portal ayuntamiento; datos en adapter madrid (SIGMA). UZP 02.04 Los Berrocales.
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
