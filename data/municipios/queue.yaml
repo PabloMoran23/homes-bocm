@@ -8933,6 +8933,7 @@ municipios:
   last_run: '2026-09-22T18:17:39.952474+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/760
+  notes: Artefacto BOCM multi-municipio (Plan Especial Aeroportuario/Arteria Norte). Sin portal ayuntamiento; adapters en alcobendas, san-sebastian-de-los-reyes, paracuellos-de-jarama y madrid (SIGMA).
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Madrid
