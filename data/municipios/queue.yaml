@@ -9054,9 +9054,9 @@ municipios:
 - slug: marines
   nombre: Marines
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-23T12:02:54.062629+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T00:15:24.602330+00:00'
+updated_at: '2026-09-23T12:02:54.065463+00:00'
