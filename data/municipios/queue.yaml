@@ -9040,11 +9040,11 @@ municipios:
 - slug: marchena
   nombre: Marchena
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-23T10:02:31.904218+00:00'
+  last_run: '2026-09-23T10:05:40.421766+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/768
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-23T10:02:31.906066+00:00'
+updated_at: '2026-09-23T10:05:40.422655+00:00'
