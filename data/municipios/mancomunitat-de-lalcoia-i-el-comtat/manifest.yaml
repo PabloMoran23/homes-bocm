@@ -1,0 +1,23 @@
+slug: mancomunitat-de-lalcoia-i-el-comtat
+nombre: "Mancomunitat de L'Alcoià i El Comtat"
+provincia: L'Alcoià i El Comtat
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://lamancomunitat.org"
+  adapter: municipio.adapters.mancomunitat_de_lalcoia_i_el_comtat:MancomunitatDeLalcoiaIElComtatAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mancomunitat-de-lalcoia-i-el-comtat/1.0"
+    centroid: [38.6983, -0.4736]
+  notes: |
+    WordPress: PDFs convocatorias (vivienda, VERDEA) + páginas informativas.
+    Sede electrónica indeterminada (sin tablón urbanismo). Sin visor GIS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
