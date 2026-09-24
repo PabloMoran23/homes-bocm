@@ -9292,11 +9292,11 @@ municipios:
 - slug: montaverner
   nombre: Montaverner
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-24T22:59:48.174650+00:00'
   last_error: null
-  pr_url: null
+  pr_url: pending
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T00:15:24.602330+00:00'
+updated_at: '2026-09-24T22:59:48.175570+00:00'
