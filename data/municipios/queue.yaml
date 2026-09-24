@@ -9222,9 +9222,9 @@ municipios:
 - slug: mogarraz
   nombre: Mogarraz
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-24T12:10:27.124106+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T00:15:24.602330+00:00'
+updated_at: '2026-09-24T12:10:27.127187+00:00'
