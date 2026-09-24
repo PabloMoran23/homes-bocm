@@ -1,0 +1,32 @@
+slug: mojados
+nombre: "Mojados"
+provincia: "Mojados, Valladolid"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://mojados.sedelectronica.es"
+  adapter: municipio.adapters.mojados:MojadosAyuntamientoAdapter
+  config:
+    sede_base: "https://mojados.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 090
+    ine_code: "47103"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Mojados"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47103"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=090"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=090"
+    dossier_url: "https://mojados.sedelectronica.es/dossier/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mojados/1.0 (+urbanismo research)"
+    centroid: [41.0449, -4.2909]
+  notes: |
+    Sin dominio web corporativo (solo sede espublico gestiona). Planeamiento en PlanPublica JCYL
+    y geometría de sectores en IDECyL WFS (c_mun=47090). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
