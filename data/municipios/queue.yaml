@@ -8648,12 +8648,12 @@ municipios:
 - slug: lachar
   nombre: Láchar
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-25T00:06:12.055127+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/740
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Láchar (Granada)
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-21T00:15:24.602330+00:00'
+updated_at: '2026-09-25T00:06:12.055978+00:00'
