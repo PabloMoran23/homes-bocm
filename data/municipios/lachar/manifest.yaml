@@ -1,0 +1,28 @@
+slug: lachar
+nombre: "Láchar"
+provincia: "Láchar (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lachar.sedelectronica.es"
+  adapter: municipio.adapters.lachar:LacharAyuntamientoAdapter
+  config:
+    sede_base: "https://lachar.sedelectronica.es"
+    board_url: "https://lachar.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lachar/1.0"
+    centroid: [37.1989, -3.8392]
+  notes: |
+    Sede espublico gestiona (tablón /board, trámites DIPGR en /dossier).
+    Web corporativa lachar.es (Saga/Diputación Granada).
+    PGOU aprobado 2003; normas publicadas BOJA 2020.
+    Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
