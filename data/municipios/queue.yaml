@@ -9390,9 +9390,9 @@ municipios:
 - slug: mozarbez
   nombre: Mozárbez
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-09-25T14:07:09.008223+00:00'
   last_error: null
   pr_url: null
   notes: ''
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-25T00:06:12.055978+00:00'
+updated_at: '2026-09-25T14:07:09.011176+00:00'
