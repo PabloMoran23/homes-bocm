@@ -1,0 +1,27 @@
+slug: baltanas
+nombre: "Baltanás"
+provincia: Palencia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://baltanas.es"
+  adapter: municipio.adapters.baltanas:BaltanasAyuntamientoAdapter
+  config:
+    web_base: "https://baltanas.es"
+    sede_base: "https://baltanas.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-baltanas/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Baltanás"
+    centroid: [41.9403, -4.2561]
+  notes: |
+    WordPress Elementor + sede espublico gestiona + PlanPublica JCyL (provincia=34, municipio=18)
+    + IDECyL WFS sectores/NUM (n_mun='Baltanás', INE 34022).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,30 @@
+slug: martos
+nombre: "Martos"
+provincia: "Martos (Jaén)"
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://martos.es"
+  adapter: municipio.adapters.martos:MartosAyuntamientoAdapter
+  config:
+    wp_base: "https://martos.es"
+    transparencia_base: "https://transparencia.martos.es"
+    sede_base: "https://sedeelectronica.martos.es"
+    tablon_url: "https://sedeelectronica.martos.es/eAdmin/Tablon.do?action=verAnuncios"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-martos/1.0"
+    centroid: [37.721, -3.975]
+    cod_ine_mun: "23050"
+  notes: |
+    WordPress corporativo + WP File Download (urbanismo, ordenanzas, modelos).
+    Tablón propio sedeelectronica.martos.es/eAdmin (add4u).
+    Transparencia: procedimientos en exposición pública.
+    Geometría unavailable (sin visor GIS municipal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

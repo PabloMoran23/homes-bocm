@@ -1,0 +1,32 @@
+slug: olvega
+nombre: "Ólvega"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.olvega.es"
+  adapter: municipio.adapters.olvega:OlvegaAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.olvega.es"
+    sede_base: "https://olvega.sedelectronica.es"
+    board_url: "https://olvega.sedelectronica.es/board"
+    dossier_url: "https://olvega.sedelectronica.es/dossier"
+    plai_municipio: 134
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Ólvega"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-olvega/1.0"
+    centroid: [41.779, -1.980]
+  notes: |
+    Fuentes: Drupal 7 (tablón de edictos, NUM/PP/edictos PDF), sede espublico gestiona
+    (tablón /board, trámites /dossier), PLAI JCYL (municipio 134, Soria 42)
+    y capas IDECyL WFS (sectores/PP/instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

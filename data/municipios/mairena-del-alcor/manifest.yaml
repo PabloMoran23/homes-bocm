@@ -1,0 +1,33 @@
+slug: mairena-del-alcor
+nombre: "Mairena del Alcor"
+provincia: "Mairena del Alcor (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://mairenadelalcor.sedelectronica.es"
+  adapter: municipio.adapters.mairena_del_alcor:MairenaDelAlcorAyuntamientoAdapter
+  config:
+    sede_base: "https://mairenadelalcor.sedelectronica.es"
+    urbanismo_sede: "https://urbanismomairenadelalcor.sedelectronica.es"
+    board_url: "https://mairenadelalcor.sedelectronica.es/board"
+    urbanismo_board_url: "https://urbanismomairenadelalcor.sedelectronica.es/board"
+    transparencia_base: "https://transparencia.mairenadelalcor.es"
+    planeamiento_transp_url: "https://transparencia.mairenadelalcor.es/es/transparencia/indicadores-de-transparencia/indicador/50.-Planeamiento-urbanistico-Planeamiento-General/"
+    pgom_base: "https://pgom.mairenadelalcor.net"
+    transparency_url: "https://mairenadelalcor.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-mairena-del-alcor/1.0"
+    centroid: [37.3739, -5.7495]
+  notes: |
+    Fuentes: OpenCMS www.mairenadelalcor.es + transparencia Diputación Sevilla (IND-50 ~83 PDFs)
+    + sede espublico (tablón general + sede urbanismo) + portal PGOM participación.
+    Licencias: LicytalPub Diputación Sevilla P4105800E. Sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

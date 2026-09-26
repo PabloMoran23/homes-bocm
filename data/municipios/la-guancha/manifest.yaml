@@ -1,0 +1,29 @@
+slug: la-guancha
+nombre: "La Guancha"
+provincia: "La Guancha/Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.laguancha.es"
+  adapter: municipio.adapters.la_guancha:LaGuanchaAyuntamientoAdapter
+  config:
+    wp_base: "https://www.laguancha.es"
+    sede_base: "https://laguancha.sedelectronica.es"
+    sitcan_package: planeamiento-urbanistico-de-la-guancha
+    board_urls:
+      - "https://laguancha.sedelectronica.es/board/975040b6-f59b-11de-b600-00237da12c6a/"
+      - "https://laguancha.sedelectronica.es/board/974e6d5e-f59b-11de-b600-00237da12c6a/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-guancha/1.0"
+    centroid: [28.368, -16.651]
+  notes: |
+    WordPress Bones (departamento urbanismo) + sede espublico gestiona (tablón + bandos)
+    + SITCAN CKAN (3 instrumentos PGO/ED/ordenanzas) + GEOBDP Grafcan (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

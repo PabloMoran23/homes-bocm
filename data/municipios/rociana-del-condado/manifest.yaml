@@ -1,0 +1,30 @@
+slug: rociana-del-condado
+nombre: "Rociana del Condado"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.rocianadelcondado.es"
+  adapter: municipio.adapters.rociana_del_condado:RocianaDelCondadoAyuntamientoAdapter
+  config:
+    web_base: "https://www.rocianadelcondado.es"
+    sede_base: "https://rocianadelcondado.sedelectronica.es"
+    board_url: "https://rocianadelcondado.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-rociana/1.0"
+    centroid: [37.3057, -6.6072]
+  notes: |
+    Fuentes: web SAGA Diputación Huelva (OpenCms, galerías transparencia/ordenanzas),
+    sede espublico gestiona (tablón /board/), SITUA Junta de Andalucía.
+    Certificado SSL del portal municipal inválido (insecure_ssl).
+    Planeamiento vigente: Normas Subsidiarias; mod. puntual PGOU 1 publicada BOJA 2025.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

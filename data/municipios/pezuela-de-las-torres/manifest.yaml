@@ -1,0 +1,32 @@
+slug: pezuela-de-las-torres
+nombre: "Pezuela de las Torres"
+provincia: Pezuela de las Torres, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://pezueladelastorres.es"
+  adapter: municipio.adapters.pezuela_de_las_torres:PezuelaDeLasTorresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pezuela-de-las-torres/1.0"
+    sede_base: "https://pezueladelastorres.sedelectronica.es"
+    board_url: "https://pezueladelastorres.sedelectronica.es/board/"
+    dossier_url: "https://pezueladelastorres.sedelectronica.es/dossier"
+    transparency_url: "https://pezueladelastorres.sedelectronica.es/transparency/"
+    insecure_ssl: true
+    centroid: [40.7483, -3.2833]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PEZUELA DE LAS TORRES"
+  notes: |
+    WordPress Divi (pezueladelastorres.es) con PGOU en tramitación y noticias de actuaciones.
+    Sede espublico gestiona (pezueladelastorres.sedelectronica.es): tablón /board/, transparencia.
+    Geometría partial vía WFS SITCM Comunidad de Madrid (8 ámbitos UA).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

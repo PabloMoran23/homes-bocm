@@ -1,0 +1,28 @@
+slug: merindad-de-valdivielso
+nombre: "Merindad de Valdivielso"
+provincia: Burgos
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.merindaddevaldivielso.es"
+  adapter: municipio.adapters.merindad_de_valdivielso:MerindadDeValdivielsoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-merindad-de-valdivielso/1.0"
+    drupal_base: "https://www.merindaddevaldivielso.es"
+    sede_base: "https://merindaddevaldivielso.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 217
+    wfs_municipio: "Merindad de Valdivielso"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools, Diputación Burgos) + sede espublico gestiona
+    (tablón, catálogo /dossier/) + archivo PLAI/PLAU JCyL (prov. 09, mun. 217)
+    e IDECyL WFS urbanismo (instrumento de ámbito municipal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

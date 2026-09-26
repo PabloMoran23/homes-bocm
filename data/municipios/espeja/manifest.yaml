@@ -1,0 +1,32 @@
+slug: espeja
+nombre: "Espeja"
+provincia: "Espeja (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://espeja.sedelectronica.es"
+  adapter: municipio.adapters.espeja:EspejaAyuntamientoAdapter
+  config:
+    sede_base: "https://espeja.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 127
+    ine_code: "37127"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Espeja"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37127"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=127"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=127"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-espeja/1.0 (+urbanismo research)"
+    centroid: [40.5239, -6.7424]
+    insecure_ssl: true
+  notes: |
+    Web corporativa WordPress (aytoespeja.es) + sede espublico gestiona + PlanPublica/SiuCyL (DSU 1994).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

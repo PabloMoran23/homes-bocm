@@ -1,0 +1,26 @@
+slug: morales-del-vino
+nombre: "Morales del Vino"
+provincia: "Morales del Vino (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.moralesdelvino.es"
+  adapter: municipio.adapters.morales_del_vino:MoralesDelVinoAyuntamientoAdapter
+  config:
+    web_base: "https://www.moralesdelvino.es"
+    sede_base: "https://aytomoralesdelvino.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-morales-del-vino/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Morales del Vino"
+    centroid: [41.448, -5.730]
+  notes: |
+    Web WordPress (instancias/ordenanzas) + sede espublico (tablón, dossier)
+    + PlanPublica JCYL (provincia=49, municipio=138, c_mun=49138) + IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

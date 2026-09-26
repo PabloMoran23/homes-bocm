@@ -1,0 +1,30 @@
+slug: cantalejo
+nombre: "Cantalejo"
+provincia: "Cantalejo-Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.cantalejo.es"
+  adapter: municipio.adapters.cantalejo:CantalejoAyuntamientoAdapter
+  config:
+    web_base: "https://www.cantalejo.es"
+    sede_base: "https://cantalejo.sedelectronica.es"
+    board_url: "https://cantalejo.sedelectronica.es/board"
+    plai_municipio: 49
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Cantalejo"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cantalejo/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay Segovia8 (cantalejo.es) + sede espublico gestiona.
+    Urbanismo: galería PDF en /urbanismo + archivo PLAI JCYL (provincia 40, municipio 049).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

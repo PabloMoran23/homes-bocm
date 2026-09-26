@@ -1,0 +1,32 @@
+slug: castello-de-rugat
+nombre: "Castelló de Rugat"
+provincia: "Castelló de Rugat"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.castelloderugat.es"
+  adapter: municipio.adapters.castello_de_rugat:CastelloDeRugatAyuntamientoAdapter
+  config:
+    web_base: "https://www.castelloderugat.es"
+    sede_base: "https://castelloderugat.sedelectronica.es"
+    board_url: "https://castelloderugat.sedelectronica.es/board"
+    pgou_url: "https://www.castelloderugat.es/noticia-pagina/pgou"
+    request_delay_s: 0.5
+    insecure_ssl: true
+    user_agent: "poc-bocm-castello-de-rugat/1.0"
+    cod_ine_mun: "46219"
+    centroid: [38.974, -0.367]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 10 Portales (PGOU PDFs) + sede espublico gestiona (tablón/dossier).
+    ICV WFS cod_ine_mun=46219 (Rugat) para zonificación del Plan General.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

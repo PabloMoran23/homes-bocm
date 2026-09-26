@@ -12,6 +12,8 @@ portal:
     board_url: "https://canencia.sedelectronica.es/board"
     request_delay_s: 0.35
     user_agent: "poc-bocm-canencia/1.0"
+    municipio: "Canencia"
+    id_prefix: "canencia"
     centroid: [40.9089, -3.7428]
     geometry:
       kind: wfs

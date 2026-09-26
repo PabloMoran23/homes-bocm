@@ -1,0 +1,32 @@
+slug: ledesma
+nombre: "Ledesma"
+provincia: "Ledesma (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.ayuntamientodeledesma.com"
+  adapter: municipio.adapters.ledesma:LedesmaAyuntamientoAdapter
+  config:
+    sede_base: "https://ledesma.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 170
+    ine_code: "37170"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Ledesma"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37170"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=170"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=170"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ledesma/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [41.0965, -6.0028]
+  notes: |
+    Web corporativa Angular + sede espublico gestiona + PlanPublica/SiuCyL (NUM y planes parciales).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: santa-maria-del-paramo
+nombre: "Santa María del Páramo"
+provincia: "Santa María del Páramo (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.santamariadelparamo.es"
+  adapter: municipio.adapters.santa_maria_del_paramo:SantaMariaDelParamoAyuntamientoAdapter
+  config:
+    web_base: "https://www.santamariadelparamo.es"
+    sede_base: "https://santamariadelparamo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-santa-maria-del-paramo/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Santa María del Páramo"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=157"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=157"
+    centroid: [42.361, -5.752]
+  notes: |
+    Drupal 7 web + sede espublico gestiona + PlanPublica PLAU (prov. 24, mun. 157) + IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

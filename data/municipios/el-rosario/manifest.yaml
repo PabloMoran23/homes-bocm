@@ -1,0 +1,28 @@
+slug: el-rosario
+nombre: "El Rosario"
+provincia: "El Rosario"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.ayuntamientoelrosario.org"
+  adapter: municipio.adapters.el_rosario:ElRosarioAyuntamientoAdapter
+  config:
+    wp_base: "https://www.ayuntamientoelrosario.org"
+    sede_base: "https://elrosario.sedelectronica.es"
+    board_url: "https://elrosario.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-el-rosario
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38028/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-rosario/1.0"
+    centroid: [28.4667, -16.3167]
+  notes: |
+    WordPress (planeamiento con secciones H3 + PDFs) + sede espublico gestiona (tablón)
+    + SITCAN CKAN (16 instrumentos) + GEOBDP Grafcan (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

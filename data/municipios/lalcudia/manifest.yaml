@@ -1,0 +1,33 @@
+slug: lalcudia
+nombre: "L'Alcúdia"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.lalcudia.com/web"
+  adapter: municipio.adapters.lalcudia:LalcudiaAyuntamientoAdapter
+  config:
+    web_base: "https://www.lalcudia.com"
+    web_joomla: "https://www.lalcudia.com/web"
+    tramites_url: "https://www.lalcudia.com/web/index.php?option=com_content&view=article&id=460"
+    pgou_url: "https://www.lalcudia.com/web/index.php?option=com_content&view=article&id=116"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lalcudia/1.0"
+    centroid: [39.195, -0.504]
+    cod_ine_mun: "46019"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+  notes: |
+    Joomla JSN Boot Pro (lalcudia.com/web): PGOU PDFs art.116, trámites art.460,
+    registro urbanístico art.887, PMUS art.980, transparencia art.434.
+    Sede GVA (lalcudia.sede.gva.es) 503; sedipualba inactiva.
+    Geometría partial: ICV WFS cod_ine_mun 46019 (PGOU + sector S-15).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
