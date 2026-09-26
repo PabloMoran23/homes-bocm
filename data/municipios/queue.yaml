@@ -3664,12 +3664,12 @@ municipios:
 - slug: mombeltran
   nombre: Mombeltrán
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T11:13:39.694136+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/380
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36238134828
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Mombeltrán, Ávila
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T11:10:10.795957+00:00'
+updated_at: '2026-09-26T11:13:39.695527+00:00'
