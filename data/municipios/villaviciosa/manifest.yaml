@@ -1,0 +1,28 @@
+slug: villaviciosa
+nombre: "Villaviciosa"
+provincia: Villaviciosa
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.villaviciosa.es"
+  adapter: municipio.adapters.villaviciosa:VillaviciosaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villaviciosa/1.0"
+    centroid: [43.4813, -5.4350]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "76"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+  notes: |
+    Liferay villaviciosa.es (PGOU, normativa, instrumentos vigentes).
+    RPGUR Principado idConcejo=76 (VILLAVICIOSA, INE 33076).
+    Sede villaviciosa.sedelectronica.e-ayuntamiento.es — tablón accesible.
+    Geometría parcial vía WFS visorrpgur (3 polígonos municipales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
