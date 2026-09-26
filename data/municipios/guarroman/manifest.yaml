@@ -1,0 +1,30 @@
+slug: guarroman
+nombre: "Guarromán"
+provincia: "Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://guarroman.sedelectronica.es"
+  adapter: municipio.adapters.guarroman:GuarromanAyuntamientoAdapter
+  config:
+    sede_base: "https://guarroman.sedelectronica.es"
+    board_url: "https://guarroman.sedelectronica.es/board"
+    ordenanzas_url: "https://www.guarroman.es/transparencia-ayuntamiento-guarroman/informacion-institucional/normativa/ordenanzas-urbanisiticas/"
+    urbanismo_url: "https://www.guarroman.es/urbanismo/"
+    registro_planeamiento_url: "https://www.guarroman.es/registro-municipal-instrumentos-planeamiento/"
+    citizen_urbanismo_url: "https://guarroman.sedelectronica.es/citizen-service/4b04d1fc-d511-4ec8-9239-4c3d2c05a3cc"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-guarroman/1.0"
+    centroid: [38.182, -3.687]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board), ordenanzas y planos en www.guarroman.es/urbanismo/.
+    PBOM en tramitación (pbomguarroman.es). Transparencia sede carpeta Urbanismo (3 docs) sin acceso público directo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
