@@ -7906,12 +7906,12 @@ municipios:
 - slug: frigiliana
   nombre: Frigiliana
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:53:43.992965+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/686
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36237130661
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Frigiliana-Málaga
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T10:49:48.015625+00:00'
+updated_at: '2026-09-26T10:53:43.994578+00:00'
