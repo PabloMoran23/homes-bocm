@@ -1,4 +1,4 @@
-/** `madrid` = ciudad (prod). `cm` = Comunidad de Madrid + portales municipales (local). */
+/** `madrid` = solo la ciudad. `cm` = un municipio cada vez, con portales (producción y `dev:cm`). */
 export type MapScope = "madrid" | "cm";
 
 export function getMapScope(): MapScope {
