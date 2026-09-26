@@ -1,0 +1,28 @@
+slug: noceda-del-bierzo
+nombre: "Noceda del Bierzo"
+provincia: "Noceda del Bierzo (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://nocedadelbierzo.es"
+  adapter: municipio.adapters.noceda_del_bierzo:NocedaDelBierzoAyuntamientoAdapter
+  config:
+    web_base: "https://nocedadelbierzo.es"
+    sede_base: "https://nocedadelbierzo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-noceda-del-bierzo/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Noceda del Bierzo"
+    wfs_c_mun: "24102"
+    centroid: [42.65, -6.48]
+  notes: |
+    WordPress CityGov + sede espublico gestiona (tablón) + IDECyL WFS (c_mun=24102)
+    + PlanPublica CYL (provincia 24, municipio 102).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
