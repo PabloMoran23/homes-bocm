@@ -1,0 +1,32 @@
+slug: lucena-del-puerto
+nombre: "Lucena del Puerto"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lucenadelpuerto.sedelectronica.es"
+  adapter: municipio.adapters.lucena_del_puerto:LucenaDelPuertoAyuntamientoAdapter
+  config:
+    sede_base: "https://lucenadelpuerto.sedelectronica.es"
+    board_url: "https://lucenadelpuerto.sedelectronica.es/board/"
+    dossier_url: "https://lucenadelpuerto.sedelectronica.es/dossier"
+    transparency_url: "https://lucenadelpuerto.sedelectronica.es/transparency/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    situa_pgou_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/planeamientoGeneralCompartir.jsf?municipiosSeleccionados=21047&codigosMunicipios=21047"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lucena-del-puerto/1.0"
+    centroid: [37.3089, -6.7289]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board/, catálogo /dossier, transparencia)
+    + SITUA/VITUA Junta de Andalucía (PGOU/NNSS, INE 21047).
+    Web corporativa (lucenadelpuerto.es) no resuelve DNS.
+    Sin visor urbanístico municipal ni WFS enlazable a expedientes del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
