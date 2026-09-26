@@ -1,0 +1,31 @@
+slug: fresno-de-cantespino
+nombre: "Fresno de Cantespino"
+provincia: "Fresno de Cantespino (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.fresnodecantespino.es"
+  adapter: municipio.adapters.fresno_de_cantespino:FresnoDeCantespinoAyuntamientoAdapter
+  config:
+    corporate_base: "https://www.fresnodecantespino.es"
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-fresno-de-cantespino"
+    sede_base: "https://fresnodecantespino.sedelectronica.es"
+    board_url: "https://fresnodecantespino.sedelectronica.es/board"
+    plai_municipio: 89
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Fresno de Cantespino"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fresno-de-cantespino/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay (Segovia11) en fresnodecantespino.es + réplica DipSegovia.
+    Sede espublico gestiona. Planeamiento: archivo PLAI JCYL (provincia 40, municipio 089).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

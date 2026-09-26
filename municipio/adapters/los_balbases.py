@@ -1,0 +1,827 @@
+from __future__ import annotations
+
+import hashlib
+import http.cookiejar
+import json
+import re
+import ssl
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import datetime, timezone
+from html import unescape
+from pathlib import Path
+from typing import Any
+
+from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.geometry import geometry_centroid, record_geometry
+
+DRUPAL_BASE = "https://losbalbases.es"
+SEDE_BASE = "https://losbalbases.sedelectronica.es"
+PLANPUBLICA_BASE = "https://servicios.jcyl.es/PlanPublica"
+WFS_BASE = "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+MUNICIPIO = "Los Balbases"
+ID_PREFIX = "los-balbases"
+PLAN_MUNICIPIO = 34
+PLAN_PROVINCIA = 9
+INE_CODE = "09034"
+
+WFS_LAYERS: tuple[tuple[str, str], ...] = (
+    ("urbanismo:plau_cyl_instrumentos_ambito", "instrumento"),
+    ("urbanismo:plau_cyl_planes_parciales", "plan parcial"),
+    ("urbanismo:plau_cyl_sectores", "sector"),
+)
+
+DEFAULT_INFO_PAGES: list[tuple[str, str]] = [
+    (f"{SEDE_BASE}/board", "tablón de anuncios"),
+    (f"{SEDE_BASE}/transparency", "portal de transparencia — urbanismo (17 docs)"),
+    (f"{DRUPAL_BASE}/noticias/anuncios", "anuncios municipales"),
+    (f"{DRUPAL_BASE}/normativa", "normativa municipal"),
+    (
+        f"{PLANPUBLICA_BASE}/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=034",
+        "archivo planeamiento aprobado JCyL (Los Balbases)",
+    ),
+    (
+        f"http://www.jcyl.es/plau/lplanes.plau?municipio={INE_CODE}",
+        "archivo planeamiento JCyL legacy",
+    ),
+]
+
+RE_PREVIEW = re.compile(
+    r'href="(https://losbalbases\.sedelectronica\.es/preview-document/[^"]+)"',
+    re.I,
+)
+RE_CATALOG = re.compile(
+    r'href="((?:https://losbalbases\.sedelectronica\.es)?/catalog/t/[^"]+)"[^>]*>([^<]+)</a>',
+    re.I,
+)
+RE_DRUPAL_LINK = re.compile(
+    r'href="((?:https://losbalbases\.es)?/[^"]+\.(?:pdf|PDF)|(?:https://losbalbases\.es)?/noticias/[^"]+)"[^>]*>([^<]{10,})<',
+    re.I,
+)
+RE_LICENCIA = re.compile(
+    r"(?i)(licencia|licencias|solicitud de licencia|comunicaci[oó]n previa|"
+    r"declaraci[oó]n responsable|autorizaci[oó]n (?:previa|urban)|obra (?:mayor|menor)|"
+    r"primera ocupaci[oó]n|recepci[oó]n de obras|instalaci[oó]n)",
+)
+RE_PROYECTO = re.compile(
+    r"(?i)(urban|planeam|plan (?:parcial|especial|general|regional)|pgou|convenio|"
+    r"informaci[oó]n p[uú]blica|expediente|proyecto de (?:urbaniz|actuaci)|estudio de detalle|"
+    r"modificaci[oó]n|aprobaci[oó]n (?:inicial|definitiva)|reparcel|sector|"
+    r"normas urban|num\b|instrumento|parrat|parralejo|un-\d|su-\d|prat|pau\b|"
+    r"ordenaci[oó]n detallada|actuaci[oó]n urban)",
+)
+RE_NOISE = re.compile(
+    r"(?i)(acta del pleno|decreto bases|concurso|fiestas|subvenci[oó]n|"
+    r"ordenanza fiscal|plusval[ií]a|tasa de piscinas|albergue)",
+)
+RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
+RE_FECHA_YMD = re.compile(r"\b((?:19|20)\d{2})(\d{2})(\d{2})\b")
+RE_SECTOR_CODE = re.compile(
+    r"(?i)\b("
+    r"SUR[-\s]?[A-Z]\d*|"
+    r"UN[-\s]?\d+|SU[-\s]?\d+|"
+    r"SECTOR\s+SU[-\s]?\d+"
+    r")\b",
+)
+
+
+def _stable_id(kind: str, key: str) -> str:
+    h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
+    return f"{ID_PREFIX}-{kind}-{h}"
+
+
+def _strip_html(text: str) -> str:
+    t = re.sub(r"<[^>]+>", " ", text or "")
+    return unescape(re.sub(r"\s+", " ", t)).strip()
+
+
+def _parse_fecha_dmy(text: str) -> str | None:
+    m = RE_FECHA_DMY.search(text or "")
+    if not m:
+        return None
+    try:
+        return datetime(int(m.group(3)), int(m.group(2)), int(m.group(1))).strftime("%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def _fecha_from_blob(text: str) -> str | None:
+    dmy = _parse_fecha_dmy(text)
+    if dmy:
+        return dmy
+    m = RE_FECHA_YMD.search(text or "")
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).strftime("%Y-%m-%d")
+        except ValueError:
+            pass
+    return None
+
+
+def _proyecto_tipo(title: str, instrumento: str = "") -> str:
+    blob = f"{title} {instrumento}".lower()
+    if "estudio de detalle" in blob:
+        return "estudio de detalle"
+    if "plan parcial" in blob:
+        return "plan parcial"
+    if "plan regional" in blob or "prat" in blob:
+        return "plan regional de ámbito territorial"
+    if "proyecto de urbaniz" in blob or "pau" in blob:
+        return "proyecto de urbanización"
+    if "modificaci" in blob:
+        return "modificación planeamiento"
+    if "normas urban" in blob or blob.strip() == "num":
+        return "normas urbanísticas"
+    if "ordenaci" in blob and "detallada" in blob:
+        return "ordenación detallada"
+    if "informaci" in blob:
+        return "información pública"
+    if "sector" in blob or "su-" in blob or "un-" in blob:
+        return "sector urbanístico"
+    return "planeamiento"
+
+
+def _sector_codes_from_text(text: str) -> list[str]:
+    seen: set[str] = set()
+    out: list[str] = []
+    for m in RE_SECTOR_CODE.finditer(text or ""):
+        code = re.sub(r"\s+", "-", m.group(1).strip().upper())
+        if code and code not in seen:
+            seen.add(code)
+            out.append(code)
+    return out
+
+
+class LosBalbasesAyuntamientoAdapter(AyuntamientoAdapter):
+    """Drupal Toools + sede espublico + PlanPublica JCyL + IDECyL WFS (geometría partial)."""
+
+    def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
+        super().__init__(slug, config, base_url or DRUPAL_BASE)
+        self.delay_s = float(self.config.get("request_delay_s", 0.35))
+        self.drupal_base = str(self.config.get("drupal_base") or DRUPAL_BASE).rstrip("/")
+        self.sede_base = str(self.config.get("sede_base") or SEDE_BASE).rstrip("/")
+        self.board_url = str(self.config.get("board_url") or f"{self.sede_base}/board")
+        self.info_url = str(self.config.get("info_url") or f"{self.sede_base}/info")
+        self.dossier_url = str(self.config.get("dossier_url") or f"{self.sede_base}/dossier")
+        self.plan_municipio = int(self.config.get("plan_municipio") or self.config.get("plai_municipio") or PLAN_MUNICIPIO)
+        self.plan_provincia = int(self.config.get("plan_provincia") or self.config.get("plai_provincia") or PLAN_PROVINCIA)
+        self.plan_max_pages = int(self.config.get("plan_max_pages", 4))
+        self.plan_page_size = int(self.config.get("plan_page_size", 15))
+        self.anuncios_url = str(self.config.get("anuncios_url") or f"{self.drupal_base}/noticias/anuncios")
+        self.info_pages = list(self.config.get("info_pages") or DEFAULT_INFO_PAGES)
+        self.wfs_base = str(self.config.get("wfs_base") or WFS_BASE).rstrip("/")
+        self.wfs_municipio = str(self.config.get("wfs_municipio") or MUNICIPIO)
+        self._ssl_ctx = ssl.create_default_context()
+        if self.config.get("insecure_ssl", True):
+            self._ssl_ctx.check_hostname = False
+            self._ssl_ctx.verify_mode = ssl.CERT_NONE
+        self._jar = http.cookiejar.CookieJar()
+        self._opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(self._jar),
+            urllib.request.HTTPSHandler(context=self._ssl_ctx),
+        )
+        self._wfs_cache: list[dict[str, Any]] | None = None
+        self._sector_geom_cache: dict[str, dict[str, Any] | None] = {}
+
+    def _fetch(self, url: str, *, sede: bool = False) -> str:
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-los-balbases/1.0")},
+        )
+        opener = self._opener if sede else urllib.request.build_opener()
+        with opener.open(req, timeout=90 if sede else 60) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+
+    def _fetch_json(self, url: str) -> Any:
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-los-balbases/1.0")},
+        )
+        with urllib.request.urlopen(req, timeout=90) as resp:
+            return json.loads(resp.read().decode("utf-8", errors="replace"))
+
+    def _parse_board_table(self, html: str, origen: str) -> list[dict[str, Any]]:
+        tbody_m = re.search(r"<tbody[^>]*>(.*?)</tbody>", html, re.S | re.I)
+        if not tbody_m:
+            return []
+        rows: list[dict[str, Any]] = []
+        for tr in re.findall(r"<tr>(.*?)</tr>", tbody_m.group(1), re.S):
+            if "preview-document" not in tr:
+                continue
+            cells = re.findall(r"<td[^>]*>(.*?)</td>", tr, re.S)
+            if len(cells) < 6:
+                continue
+            link_m = RE_PREVIEW.search(tr)
+            title_m = re.search(r'title="([^"]*)"', tr, re.I)
+            doc = _strip_html(cells[0])
+            titulo = (title_m.group(1).strip() if title_m else "") or doc
+            rows.append(
+                {
+                    "titulo": titulo[:500],
+                    "doc_label": doc[:500],
+                    "expediente": _strip_html(cells[1]),
+                    "procedimiento": _strip_html(cells[2]),
+                    "categoria": _strip_html(cells[3]),
+                    "descripcion": _strip_html(cells[4]),
+                    "fecha": _parse_fecha_dmy(_strip_html(cells[5])),
+                    "url": link_m.group(1) if link_m else self.board_url,
+                    "pdf_url": link_m.group(1) if link_m else None,
+                    "origen": origen,
+                }
+            )
+        return rows
+
+    def _parse_board_links(self, html: str, origen: str) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        for m in RE_PREVIEW.finditer(html):
+            url = m.group(1)
+            local = html[max(0, m.start() - 400) : m.end() + 200]
+            title_m = re.search(r'title="([^"]*)"', local, re.I)
+            text_m = re.search(rf'href="{re.escape(url)}"[^>]*>([^<]+)<', local, re.I)
+            titulo = ""
+            if title_m:
+                titulo = unescape(title_m.group(1).strip())
+            elif text_m:
+                titulo = unescape(text_m.group(1).strip())
+            rows.append(
+                {
+                    "titulo": (titulo or url)[:500],
+                    "doc_label": titulo[:500],
+                    "expediente": "",
+                    "procedimiento": "",
+                    "categoria": "",
+                    "descripcion": titulo,
+                    "fecha": _fecha_from_blob(titulo),
+                    "url": url,
+                    "pdf_url": url,
+                    "origen": origen,
+                }
+            )
+        return rows
+
+    def _collect_board(self) -> list[dict[str, Any]]:
+        by_url: dict[str, dict[str, Any]] = {}
+        for url, origen in ((self.board_url, "tablon"), (self.info_url, "info_tablon")):
+            try:
+                html = self._fetch(url, sede=True)
+            except (urllib.error.URLError, OSError, ConnectionError):
+                continue
+            items = self._parse_board_table(html, origen)
+            if not items:
+                items = self._parse_board_links(html, origen)
+            for rec in items:
+                by_url[rec["url"]] = rec
+        return list(by_url.values())
+
+    def _collect_tramites(self) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        try:
+            html = self._fetch(self.dossier_url, sede=True)
+        except (urllib.error.URLError, OSError, ConnectionError):
+            html = ""
+        if html:
+            for m in RE_CATALOG.finditer(html):
+                url = m.group(1)
+                if not url.startswith("http"):
+                    url = f"{self.sede_base}{url}"
+                titulo = unescape(m.group(2).strip())
+                if url in seen:
+                    continue
+                seen.add(url)
+                if not RE_LICENCIA.search(titulo) and not RE_PROYECTO.search(titulo):
+                    continue
+                rows.append({"titulo": titulo[:500], "url": url, "origen": "catalogo_tramites"})
+        for url, titulo in self.info_pages:
+            if url in seen:
+                continue
+            seen.add(url)
+            rows.append({"titulo": titulo[:500], "url": url, "origen": "pagina_informativa"})
+        return rows
+
+    def _planpublica_page_url(self, endpoint: str, offset: int) -> str:
+        params = {
+            "pager.size": str(self.plan_page_size),
+            "pager.reload": "no",
+            "municipio": f"{self.plan_municipio:03d}",
+            "provincia": str(self.plan_provincia),
+            "urlResults": endpoint,
+            "pager.offset": str(offset),
+        }
+        if endpoint == "searchVPubDocMuniPlai.do":
+            params["bInfoPublica"] = "S"
+        else:
+            params["bInfoPublica"] = "N"
+        return f"{PLANPUBLICA_BASE}/{endpoint}?{urllib.parse.urlencode(params)}"
+
+    @staticmethod
+    def _parse_planpublica_rows(html: str, origen: str) -> list[dict[str, str]]:
+        rows: list[dict[str, str]] = []
+        for tr in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S | re.I):
+            cells = [
+                _strip_html(c)
+                for c in re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", tr, re.S | re.I)
+            ]
+            cells = [c for c in cells if c]
+            if len(cells) < 5 or cells[0] in {"Libro", "Tipo"}:
+                continue
+            titulo = cells[4] if len(cells) > 4 else cells[-1]
+            if not titulo or re.fullmatch(r"\d{1,2}/\d{1,2}/\d{4}", titulo):
+                continue
+            fecha_pub = cells[2]
+            doc_m = re.search(r"doOpen\('(\d+)'", tr) or re.search(r"doOpenDocumento\((\d+)\)", tr)
+            boletin_m = re.search(r"doGoBoletin\('(\d+)'", tr)
+            doc_id = doc_m.group(1) if doc_m else (boletin_m.group(1) if boletin_m else None)
+            if doc_id and doc_m:
+                url = f"{PLANPUBLICA_BASE}/openDocumento.do?cDocId={doc_id}"
+            elif boletin_m:
+                url = f"{PLANPUBLICA_BASE}/openBoletin.do?cDocId={boletin_m.group(1)}"
+            else:
+                url = (
+                    f"{PLANPUBLICA_BASE}/searchVPubDocMuniPlau.do?"
+                    f"bInfoPublica=N&provincia={PLAN_PROVINCIA}&municipio={PLAN_MUNICIPIO:03d}"
+                )
+            rows.append(
+                {
+                    "title": titulo,
+                    "url": url,
+                    "fecha": fecha_pub,
+                    "instrumento": cells[1] if len(cells) > 1 else "",
+                    "origen": origen,
+                    "doc_id": doc_id or "",
+                }
+            )
+        return rows
+
+    def _collect_planpublica(self, endpoint: str, origen: str) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for page in range(self.plan_max_pages):
+            offset = page * self.plan_page_size
+            try:
+                html = self._fetch(self._planpublica_page_url(endpoint, offset))
+            except urllib.error.URLError:
+                break
+            parsed = self._parse_planpublica_rows(html, origen)
+            if not parsed:
+                break
+            for item in parsed:
+                key = item["url"] + item["title"]
+                if key in seen:
+                    continue
+                seen.add(key)
+                rows.append(
+                    {
+                        "titulo": item["title"][:500],
+                        "fecha": _parse_fecha_dmy(item.get("fecha") or ""),
+                        "url": item["url"],
+                        "instrumento": item.get("instrumento") or "",
+                        "origen": origen,
+                    }
+                )
+            if len(parsed) < self.plan_page_size:
+                break
+        return rows
+
+    def _collect_drupal_anuncios(self) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for page_url in (self.anuncios_url, f"{self.drupal_base}/inicio"):
+            try:
+                html = self._fetch(page_url)
+            except (urllib.error.URLError, OSError, ConnectionError):
+                continue
+            for m in RE_DRUPAL_LINK.finditer(html):
+                href = m.group(1)
+                titulo = unescape(m.group(2).strip())
+                if not href.startswith("http"):
+                    href = f"{self.drupal_base}{href}"
+                if href in seen:
+                    continue
+                if not RE_PROYECTO.search(titulo) and not RE_LICENCIA.search(titulo):
+                    continue
+                seen.add(href)
+                rows.append(
+                    {
+                        "titulo": titulo[:500],
+                        "fecha": _fecha_from_blob(titulo),
+                        "url": href,
+                        "origen": "drupal_anuncios",
+                    }
+                )
+        return rows
+
+    def _wfs_query_url(self, layer: str) -> str:
+        escaped = self.wfs_municipio.replace("'", "''")
+        params = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeNames": layer,
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "count": "120",
+                "CQL_FILTER": f"n_mun = '{escaped}'",
+            }
+        )
+        return f"{self.wfs_base}?{params}"
+
+    def _collect_wfs(self) -> list[dict[str, Any]]:
+        if self._wfs_cache is not None:
+            return self._wfs_cache
+        rows: list[dict[str, Any]] = []
+        for layer, default_tipo in WFS_LAYERS:
+            url = self._wfs_query_url(layer)
+            try:
+                data = self._fetch_json(url)
+            except (urllib.error.URLError, json.JSONDecodeError):
+                continue
+            for feat in data.get("features") or []:
+                if not isinstance(feat, dict):
+                    continue
+                props = feat.get("properties") or {}
+                geom = feat.get("geometry")
+                sector = str(props.get("n_sector") or "").strip()
+                num = str(props.get("n_num_sect") or "").strip()
+                titulo = str(props.get("n_titulo") or "").strip()
+                if not titulo:
+                    titulo = f"{sector} ({num})" if sector else num
+                if not titulo:
+                    titulo = str(props.get("c_id_sect") or props.get("c_plan") or layer)
+                instrum = str(props.get("n_instrum") or props.get("c_instrum") or "")
+                blob = f"{titulo} {instrum}"
+                fecha = None
+                for fk in ("f_bocyl", "f_aprob"):
+                    raw = str(props.get(fk) or "")
+                    if raw and len(raw) >= 10:
+                        fecha = raw[:10]
+                        break
+                doc_url = str(props.get("url_doc_info") or "").strip() or url
+                key = str(props.get("c_id_sect") or props.get("c_plan") or props.get("fid") or titulo)
+                rec: dict[str, Any] = {
+                    "titulo": titulo[:500],
+                    "fecha": fecha,
+                    "tipo": _proyecto_tipo(blob) if blob.strip() else default_tipo,
+                    "url": doc_url,
+                    "origen": "idecyl_wfs",
+                    "wfs_layer": layer,
+                    "wfs_key": key,
+                    "instrumento": instrum or None,
+                }
+                if num:
+                    rec["sector_code"] = num
+                if isinstance(geom, dict) and geom.get("type"):
+                    rec["geom_geojson"] = geom
+                    rec["geometry_source"] = "portal_wfs"
+                    rec["geometry_source_url"] = url
+                    rec["coord_source"] = "portal_geometry_centroid"
+                    centroid = geometry_centroid(geom)
+                    if centroid:
+                        rec["lat"], rec["lon"] = centroid
+                    if num:
+                        self._sector_geom_cache[num.upper()] = {
+                            "geom_geojson": geom,
+                            "geometry_source_url": url,
+                        }
+                rows.append(rec)
+        self._wfs_cache = rows
+        return rows
+
+    def _wfs_sector_geometry(self, sector_code: str) -> tuple[dict[str, Any] | None, str | None]:
+        norm = sector_code.upper().replace(" ", "-")
+        if norm in self._sector_geom_cache:
+            hit = self._sector_geom_cache[norm]
+            if hit:
+                return hit["geom_geojson"], hit["geometry_source_url"]
+            return None, None
+        escaped_mun = self.wfs_municipio.replace("'", "''")
+        escaped_code = norm.replace("'", "''")
+        cql = f"n_mun='{escaped_mun}' AND n_num_sect ILIKE '%{escaped_code}%'"
+        qs = urllib.parse.urlencode(
+            {
+                "service": "WFS",
+                "version": "2.0.0",
+                "request": "GetFeature",
+                "typeNames": "urbanismo:plau_cyl_sectores",
+                "count": "1",
+                "outputFormat": "application/json",
+                "srsName": "EPSG:4326",
+                "CQL_FILTER": cql,
+            }
+        )
+        url = f"{self.wfs_base}?{qs}"
+        geom: dict[str, Any] | None = None
+        try:
+            data = self._fetch_json(url)
+            feats = data.get("features") or []
+            if feats and isinstance(feats[0], dict):
+                geom = feats[0].get("geometry")
+        except (urllib.error.URLError, json.JSONDecodeError, KeyError):
+            geom = None
+        if isinstance(geom, dict) and geom.get("type"):
+            self._sector_geom_cache[norm] = {"geom_geojson": geom, "geometry_source_url": url}
+            return geom, url
+        self._sector_geom_cache[norm] = None
+        return None, None
+
+    def _attach_geometry(self, rec: dict[str, Any]) -> None:
+        if record_geometry(rec):
+            return
+        blob = " ".join(str(rec.get(k) or "") for k in ("titulo", "instrumento", "sector_code"))
+        for code in _sector_codes_from_text(blob):
+            geom, source_url = self._wfs_sector_geometry(code)
+            if not geom:
+                continue
+            rec["geom_geojson"] = geom
+            rec["geometry_source"] = "portal_wfs"
+            rec["geometry_source_url"] = source_url
+            rec["coord_source"] = "portal_geometry_centroid"
+            rec["sector_code"] = code
+            centroid = geometry_centroid(geom)
+            if centroid:
+                rec["lat"], rec["lon"] = centroid
+            return
+        titulo = str(rec.get("titulo") or "").lower()
+        for wfs_rec in self._collect_wfs():
+            wfs_title = str(wfs_rec.get("titulo") or "").lower()
+            if titulo and (titulo in wfs_title or wfs_title in titulo):
+                for key in (
+                    "geom_geojson",
+                    "geometry_source",
+                    "geometry_source_url",
+                    "coord_source",
+                    "lat",
+                    "lon",
+                ):
+                    if wfs_rec.get(key) is not None:
+                        rec[key] = wfs_rec[key]
+                return
+
+    def _board_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        blob = " ".join(
+            str(row.get(k) or "")
+            for k in ("titulo", "procedimiento", "categoria", "descripcion", "doc_label")
+        )
+        if RE_NOISE.search(blob) and not RE_LICENCIA.search(blob):
+            return None
+        if not RE_LICENCIA.search(blob):
+            return None
+        key = row.get("expediente") or row["url"]
+        return {
+            "id": _stable_id("lic", key),
+            "fecha_concesion": row.get("fecha"),
+            "tipo": row.get("procedimiento") or "licencia",
+            "distrito": None,
+            "lat": None,
+            "lon": None,
+            "titulo": row["titulo"],
+            "expte": row.get("expediente") or None,
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+            **({"pdf_url": row["pdf_url"]} if row.get("pdf_url") else {}),
+        }
+
+    def _board_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        blob = " ".join(
+            str(row.get(k) or "")
+            for k in ("titulo", "procedimiento", "categoria", "descripcion", "doc_label")
+        )
+        if RE_NOISE.search(blob) and not RE_PROYECTO.search(blob):
+            return None
+        if RE_LICENCIA.search(blob) and not RE_PROYECTO.search(blob):
+            return None
+        if row.get("categoria", "").lower() == "urbanismo":
+            pass
+        elif not RE_PROYECTO.search(blob):
+            return None
+        key = row.get("expediente") or row["url"]
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", key),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha") or _fecha_from_blob(row["titulo"]),
+            "tipo": _proyecto_tipo(blob),
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "expte": row.get("expediente") or None,
+            "origen": row.get("origen"),
+        }
+        if row.get("pdf_url"):
+            rec["pdf_url"] = row["pdf_url"]
+        self._attach_geometry(rec)
+        return rec
+
+    def _tramite_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        if not RE_LICENCIA.search(row["titulo"]):
+            return None
+        return {
+            "id": _stable_id("lic", row["url"]),
+            "fecha_concesion": None,
+            "tipo": "trámite licencia / obras",
+            "distrito": None,
+            "lat": None,
+            "lon": None,
+            "titulo": row["titulo"],
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "nota": "Página informativa; no concesión publicada en tablón",
+            "origen": row.get("origen"),
+        }
+
+    def _tramite_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        if not RE_PROYECTO.search(row["titulo"]):
+            return None
+        if RE_LICENCIA.search(row["titulo"]) and not re.search(
+            r"(?i)planeam|actuaci[oó]n urban|modificaci[oó]n del planeamiento|archivo",
+            row["titulo"],
+        ):
+            return None
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", row["url"]),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": None,
+            "tipo": _proyecto_tipo(row["titulo"]),
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+        }
+        self._attach_geometry(rec)
+        return rec
+
+    def _drupal_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
+        if not RE_PROYECTO.search(row["titulo"]):
+            return None
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", row["url"]),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha"),
+            "tipo": _proyecto_tipo(row["titulo"]),
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+        }
+        self._attach_geometry(rec)
+        return rec
+
+    def _planpublica_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any]:
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", row["url"]),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha"),
+            "tipo": _proyecto_tipo(row["titulo"], row.get("instrumento", "")),
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+            "instrumento": row.get("instrumento") or None,
+        }
+        self._attach_geometry(rec)
+        return rec
+
+    def _wfs_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any]:
+        key = f"wfs:{row.get('wfs_layer')}:{row.get('wfs_key')}"
+        rec: dict[str, Any] = {
+            "id": _stable_id("proy", key),
+            "municipio": MUNICIPIO,
+            "titulo": row["titulo"],
+            "fecha": row.get("fecha"),
+            "tipo": row.get("tipo") or "planeamiento",
+            "url": row["url"],
+            "source": "ayuntamiento",
+            "origen": row.get("origen"),
+            "wfs_layer": row.get("wfs_layer"),
+        }
+        for key_name in (
+            "geom_geojson",
+            "geometry_source",
+            "geometry_source_url",
+            "coord_source",
+            "lat",
+            "lon",
+            "instrumento",
+            "sector_code",
+        ):
+            if row.get(key_name) is not None:
+                rec[key_name] = row[key_name]
+        return rec
+
+    def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("w", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    def _load_jsonl(self, path: Path) -> list[dict[str, Any]]:
+        if not path.is_file():
+            return []
+        rows: list[dict[str, Any]] = []
+        with path.open(encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    rows.append(json.loads(line))
+        return rows
+
+    def _collect_licencias(self) -> list[dict[str, Any]]:
+        seen: set[str] = set()
+        rows: list[dict[str, Any]] = []
+        for item in self._collect_board():
+            rec = self._board_to_licencia(item)
+            if rec and rec["id"] not in seen:
+                seen.add(rec["id"])
+                rows.append(rec)
+        for item in self._collect_tramites():
+            rec = self._tramite_to_licencia(item)
+            if rec and rec["id"] not in seen:
+                seen.add(rec["id"])
+                rows.append(rec)
+        return rows
+
+    def _collect_proyectos(self) -> list[dict[str, Any]]:
+        by_id: dict[str, dict[str, Any]] = {}
+        for item in self._collect_planpublica("searchVPubDocMuniPlau.do", "plau_jcyl"):
+            rec = self._planpublica_to_proyecto(item)
+            by_id[rec["id"]] = rec
+        for item in self._collect_planpublica("searchVPubDocMuniPlai.do", "plai_jcyl"):
+            rec = self._planpublica_to_proyecto(item)
+            by_id[rec["id"]] = rec
+        for item in self._collect_wfs():
+            rec = self._wfs_to_proyecto(item)
+            by_id[rec["id"]] = rec
+        for item in self._collect_drupal_anuncios():
+            rec = self._drupal_to_proyecto(item)
+            if rec:
+                by_id[rec["id"]] = rec
+        for item in self._collect_board():
+            rec = self._board_to_proyecto(item)
+            if rec:
+                by_id[rec["id"]] = rec
+        for item in self._collect_tramites():
+            rec = self._tramite_to_proyecto(item)
+            if rec:
+                by_id[rec["id"]] = rec
+        return list(by_id.values())
+
+    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+        rows = self._collect_licencias()
+        self._write_jsonl(out_jsonl, rows)
+        return {
+            "rows": len(rows),
+            "source": "ayuntamiento",
+            "adapter": self.__class__.__name__,
+            "tablon": sum(1 for r in rows if r.get("origen") in ("tablon", "info_tablon")),
+            "tramites": sum(
+                1 for r in rows if r.get("origen") in ("catalogo_tramites", "pagina_informativa")
+            ),
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
+        existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
+        result = self.backfill_licencias(out_jsonl)
+        for rec in self._collect_licencias():
+            existing[rec["id"]] = rec
+        rows = list(existing.values())
+        self._write_jsonl(out_jsonl, rows)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(
+            json.dumps({"updated_at": datetime.now(timezone.utc).isoformat(), "count": len(rows)}, indent=2),
+            encoding="utf-8",
+        )
+        return {**result, "rows": len(rows)}
+
+    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+        rows = self._collect_proyectos()
+        self._write_jsonl(out_jsonl, rows)
+        return {
+            "rows": len(rows),
+            "source": "ayuntamiento",
+            "adapter": self.__class__.__name__,
+            "plau_jcyl": sum(1 for r in rows if r.get("origen") == "plau_jcyl"),
+            "plai_jcyl": sum(1 for r in rows if r.get("origen") == "plai_jcyl"),
+            "drupal_anuncios": sum(1 for r in rows if r.get("origen") == "drupal_anuncios"),
+            "idecyl_wfs": sum(1 for r in rows if r.get("origen") == "idecyl_wfs"),
+            "with_geometry": sum(1 for r in rows if r.get("geom_geojson")),
+            "at": datetime.now(timezone.utc).isoformat(),
+        }
+
+    def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
+        existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
+        result = self.backfill_proyectos(out_jsonl)
+        for rec in self._collect_proyectos():
+            existing[rec["id"]] = rec
+        rows = list(existing.values())
+        self._write_jsonl(out_jsonl, rows)
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state_path.write_text(
+            json.dumps({"updated_at": datetime.now(timezone.utc).isoformat(), "count": len(rows)}, indent=2),
+            encoding="utf-8",
+        )
+        return {**result, "rows": len(rows)}

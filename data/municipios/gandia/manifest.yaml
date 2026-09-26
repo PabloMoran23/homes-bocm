@@ -1,0 +1,38 @@
+slug: gandia
+nombre: "Gandia"
+provincia: Gandia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://gandia.sedelectronica.es"
+  adapter: municipio.adapters.gandia:GandiaAyuntamientoAdapter
+  config:
+    sede_base: "https://gandia.sedelectronica.es"
+    board_url: "https://gandia.sedelectronica.es/board"
+    web_base: "https://www.gandia.es"
+    atg_base: "https://www.gandia.es/atg/Web_php"
+    info_publica_url: "https://www.gandia.es/atg/Web_php/index.php?contenido=subapartados_woden&id_boto=479&lang=1"
+    urbanismo_url: "https://www.gandia.es/atg/Web_php/index.php?contenido=subapartados_woden&id_boto=141&lang=1"
+    geo_gandia_url: "http://geo.gandia.org/geognd/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-gandia/1.0"
+    centroid: [38.967, -0.183]
+    cod_ine_mun: "46131"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    ATG Woden (www.gandia.es/atg) + sede espublico gestiona.
+    Información pública urbanística (id_boto=479): tabla HTML expedientes.
+    Tablón /board: edictos BOP/BOPV.
+    GeoGandia (geo.gandia.org): visor JS ofuscado.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46131, 7 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

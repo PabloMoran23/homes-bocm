@@ -1,0 +1,28 @@
+slug: gomezserracin
+nombre: "Gomezserracín"
+provincia: "Gomezserracín (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.gomezserracin.es"
+  adapter: municipio.adapters.gomezserracin:GomezserracinAyuntamientoAdapter
+  config:
+    web_base: "https://www.gomezserracin.es"
+    sede_base: "https://gomezserracin.sedelectronica.es"
+    board_url: "https://gomezserracin.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gomezserracin/1.0"
+    centroid: [41.2889, -4.3264]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: Gomezserracín
+  notes: |
+    Web Liferay (Diputación Segovia) con PDF NNSS en /urbanismo.
+    Sede espublico gestiona con tablón /board (sin anuncios urbanísticos activos).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento NNSS + 1 sector A1 Dehesa Boyal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

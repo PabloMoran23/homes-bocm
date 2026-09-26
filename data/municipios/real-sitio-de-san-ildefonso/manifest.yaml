@@ -1,0 +1,32 @@
+slug: real-sitio-de-san-ildefonso
+nombre: "Real Sitio de San Ildefonso"
+provincia: "Real Sitio de San Ildefonso (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.lagranja-valsain.com"
+  adapter: municipio.adapters.real_sitio_de_san_ildefonso:RealSitioDeSanIldefonsoAyuntamientoAdapter
+  config:
+    web_base: "https://www.lagranja-valsain.com"
+    sede_base: "https://realsitiodesanildefonso.sedelectronica.es"
+    board_url: "https://realsitiodesanildefonso.sedelectronica.es/board"
+    dossier_url: "https://realsitiodesanildefonso.sedelectronica.es/dossier/.0"
+    plai_municipio: 181
+    plai_provincia: 40
+    plai_max_pages: 10
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Real Sitio de San Ildefonso"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-real-sitio-de-san-ildefonso/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal WordPress (La Granja-Valsaín) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 181).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, sectores SU-NC).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

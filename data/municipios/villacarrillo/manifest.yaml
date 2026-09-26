@@ -1,0 +1,31 @@
+slug: villacarrillo
+nombre: "Villacarrillo"
+provincia: "Villacarrillo, Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.villacarrillo.es"
+  adapter: municipio.adapters.villacarrillo:VillacarrilloAyuntamientoAdapter
+  config:
+    wp_base: "https://www.villacarrillo.es"
+    sede_base: "https://villacarrillo.sedelectronica.es"
+    board_url: "https://villacarrillo.sedelectronica.es/board/"
+    pmvs_url: "https://www.villacarrillo.es/plan-municipal-de-vivienda-y-suelo/"
+    wp_categories: [218]
+    obras_category_id: 40
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-villacarrillo/1.0"
+    centroid: [38.1156, -3.0848]
+  notes: |
+    Fuentes: WordPress WPBakery (categorías urbanismo/obras) + tablón sede espublico
+    + PMVS PDFs (GCS stateless) + SITUA Junta de Andalucía (metadato PGOU).
+    Sin visor urbanístico municipal ni WFS enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

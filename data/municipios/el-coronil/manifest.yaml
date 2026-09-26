@@ -1,0 +1,27 @@
+slug: el-coronil
+nombre: "El Coronil"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.elcoronil.es"
+  adapter: municipio.adapters.el_coronil:ElCoronilAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-coronil/1.0"
+    centroid: [37.3811, -5.6294]
+    ine_code: "41036"
+    tablon_base: "https://sedeelectronicadipusevilla.es"
+    sede_base: "https://sede.elcoronil.es"
+    transparencia_urban_url: "https://transparencia.elcoronil.es/es/transparencia/indicadores-de-transparencia/indicador/50.-Instrumentos-de-ordenacion-urbanistica/"
+  notes: |
+    OpenCMS/Guadaltel web + GSede sede propia + tablón INPRO Diputación Sevilla (INE 41036).
+    Planeamiento: portal transparencia indicador 50 (PGOU 2012, PBOM, plan parcial, MP nº9).
+    PBOM participación (nuevoplanelcoronil.es) bloqueado por captcha en CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,33 @@
+slug: benidorm
+nombre: "Benidorm"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.benidorm.org"
+  adapter: municipio.adapters.benidorm:BenidormAyuntamientoAdapter
+  config:
+    web_base: "https://www.benidorm.org"
+    content_base: "https://contenidos.benidorm.org"
+    sede_tablon: "https://sede.benidorm.org/eAdmin/Tablon.do?action=verAnuncios&tipoTablon=1"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benidorm/1.0"
+    max_crawl_pages: 220
+    centroid: [38.5367, -0.1310]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      cod_ine_mun: "03031"
+  notes: |
+    Drupal 11 www.benidorm.org: concejalía Urbanismo (información pública, PGMO,
+    convenios, estudios de detalle) + Obras/Ingeniería IP + ordenanzas urbanísticas.
+    PDFs en contenidos.benidorm.org. Sede propia sede.benidorm.org (tablón timeout CI).
+    ICV GVA WFS InventarioSuSuz cod_ine_mun 03031 (37 polígonos SUZ/PP).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

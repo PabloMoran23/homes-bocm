@@ -1,0 +1,33 @@
+slug: el-campillo
+nombre: "El Campillo"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://elcampillo.ayuntamientosdevalladolid.es"
+  adapter: municipio.adapters.el_campillo:ElCampilloAyuntamientoAdapter
+  config:
+    web_base: "https://elcampillo.ayuntamientosdevalladolid.es"
+    sede_base: "https://campillo.sedelectronica.es"
+    board_url: "https://campillo.sedelectronica.es/board"
+    info_url: "https://campillo.sedelectronica.es/info.0"
+    dossier_url: "https://campillo.sedelectronica.es/dossier"
+    plai_municipio: 31
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "El Campillo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-el-campillo/1.0 (+urbanismo research)"
+    centroid: [42.108, -5.195]
+  notes: |
+    Fuentes: portal Diputación Valladolid (ayuntamientosdevalladolid.es), sede espublico
+    (campillo.sedelectronica.es — warm /info.0), PLAI JCYL (municipio 031, prov. 47, INE 47031)
+    e IDECyL WFS (NUM municipal, sin sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

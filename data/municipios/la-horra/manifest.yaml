@@ -1,0 +1,29 @@
+slug: la-horra
+nombre: "La Horra"
+provincia: "La Horra (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.lahorra.es"
+  adapter: municipio.adapters.la_horra:LaHorraAyuntamientoAdapter
+  config:
+    wp_base: "https://www.lahorra.es"
+    sede_base: "https://lahorra.sedelectronica.es"
+    board_url: "https://lahorra.sedelectronica.es/board"
+    plau_provincia: 9
+    plau_municipio: 168
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-horra/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "La Horra"
+  notes: |
+    Web Drupal 10 (información general enlaza a PlanPublica JCyL).
+    Sede espublico gestiona: tablón /board (anuncios urbanismo EDAR BALBAS).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento + 2 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

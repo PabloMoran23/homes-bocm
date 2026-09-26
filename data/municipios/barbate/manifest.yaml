@@ -1,0 +1,30 @@
+slug: barbate
+nombre: "Barbate"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://barbate.sedelectronica.es"
+  adapter: municipio.adapters.barbate:BarbateAyuntamientoAdapter
+  config:
+    sede_base: "https://barbate.sedelectronica.es"
+    board_url: "https://barbate.sedelectronica.es/board/"
+    web_base: "https://www.barbate.es"
+    urbanismo_url: "https://www.barbate.es/el-ayuntamiento/urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-barbate/1.0"
+    centroid: [36.1925, -5.9219]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + web Joomla Phoca Download (urbanismo EPICSA).
+    Transparencia sede requiere navegación Wicket AJAX — no scrapeable sin sesión.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

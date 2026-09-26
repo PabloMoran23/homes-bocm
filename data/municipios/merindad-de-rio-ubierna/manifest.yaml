@@ -1,0 +1,27 @@
+slug: merindad-de-rio-ubierna
+nombre: "Merindad de Río Ubierna"
+provincia: Merindad de Río Ubierna (Burgos)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.merindadderioubierna.es"
+  adapter: municipio.adapters.merindad_de_rio_ubierna:MerindadDeRioUbiernaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-merindad-de-rio-ubierna/1.0"
+    drupal_base: "https://www.merindadderioubierna.es"
+    sede_base: "https://merindadderioubierna.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 229
+    wfs_municipio: "Merindad de Río Ubierna"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools, Diputación Burgos) + sede espublico gestiona (tablón licencias/comunicaciones)
+    + archivo PLAI JCyL (prov. 09, mun. 229) e IDECyL WFS urbanismo (NUM, sectores, planes parciales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

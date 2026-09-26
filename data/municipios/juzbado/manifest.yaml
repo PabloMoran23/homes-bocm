@@ -1,0 +1,33 @@
+slug: juzbado
+nombre: "Juzbado"
+provincia: "Juzbado-Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://juzbado.es/nuevaweb"
+  adapter: municipio.adapters.juzbado:JuzbadoAyuntamientoAdapter
+  config:
+    wp_base: "https://juzbado.es/nuevaweb"
+    sede_base: "https://juzbado.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 167
+    ine_code: "37167"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Juzbado"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37167"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=167"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=167"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-juzbado/1.0"
+    insecure_ssl: true
+    centroid: [41.097, -5.776]
+  notes: |
+    WordPress Kubio (juzbado.es/nuevaweb) + sede espublico gestiona + PlanPublica JCyL + IDECyL WFS.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

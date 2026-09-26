@@ -1,0 +1,27 @@
+slug: la-fregeneda
+nombre: "La Fregeneda"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://lafregeneda.sedelectronica.es"
+  adapter: municipio.adapters.la_fregeneda:LaFregenedaAyuntamientoAdapter
+  config:
+    sede_base: "https://lafregeneda.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-fregeneda/1.0"
+    wfs_municipio: "La Fregeneda"
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board, trámites /dossier),
+    web WordPress lafregeneda.com (sin sección urbanismo),
+    archivo PlanPublica JCyL (provincia 37, municipio 132, INE 37132),
+    visor SIUR IDECyL e IDECyL WFS (instrumentos + sectores S-1/S-2).
+    Tablón vacío en scraping; licencias vía catálogo de trámites informativos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

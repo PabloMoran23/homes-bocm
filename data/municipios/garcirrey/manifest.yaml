@@ -1,0 +1,25 @@
+slug: garcirrey
+nombre: "Garcirrey"
+provincia: "Garcirrey (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://garcirrey.sedelectronica.es"
+  adapter: municipio.adapters.garcirrey:GarcirreyAyuntamientoAdapter
+  config:
+    sede_base: "https://garcirrey.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-garcirrey/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Garcirrey"
+    centroid: [40.88, -6.145]
+  notes: |
+    Sede espublico (sin web corporativa) + IDECyL WFS (SPG, 1 polígono municipal).
+    Tablón vacío; catálogo /dossier con trámites urbanísticos informativos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

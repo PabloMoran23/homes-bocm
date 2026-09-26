@@ -1,0 +1,34 @@
+slug: geria
+nombre: "Geria"
+provincia: "Geria (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://geria.sedelectronica.es"
+  adapter: municipio.adapters.geria:GeriaAyuntamientoAdapter
+  config:
+    sede_base: "https://geria.sedelectronica.es"
+    web_base: "https://geria.ayuntamientosdevalladolid.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 071
+    ine_code: "47071"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Geria"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47071"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=071"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=071"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-geria/1.0"
+    centroid: [41.3833, -4.9000]
+  notes: |
+    Web Diputación Valladolid (ayuntamientosdevalladolid.es) + sede espublico gestiona
+    (tablón /board, catálogo /dossier) + PlanPublica Junta CYL (prov 47, mun 071).
+    IDECyL WFS: NUM + 17 sectores + 4 planes parciales (geometry_status: partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

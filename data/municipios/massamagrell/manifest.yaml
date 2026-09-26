@@ -1,0 +1,41 @@
+slug: massamagrell
+nombre: "Massamagrell"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://massamagrell.sedelectronica.es"
+  adapter: municipio.adapters.massamagrell:MassamagrellAyuntamientoAdapter
+  config:
+    sede_base: "https://massamagrell.sedelectronica.es"
+    board_url: "https://massamagrell.sedelectronica.es/board"
+    web_base: "https://www.massamagrell.es"
+    urbanismo_url: "https://www.massamagrell.es/es/pagina/urbanismo"
+    planos_url: "https://www.massamagrell.es/es/content/planos"
+    pmus_url: "https://www.massamagrell.es/va/pagina/plan-movilidad-urbana-sostenible-pmus"
+    transparency_url: "https://massamagrell.sedelectronica.es/transparency/"
+    agenda_urbana_url: "https://www.massamagrell.es/sites/www.massamagrell.es/files/Agenda_Urbana_Massamagrell.pdf"
+    visor_gva_url: "https://visor.gva.es/visor/?capas=spaicv0702_plan_zonificacion"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-massamagrell/1.0"
+    centroid: [39.369, -0.333]
+    cod_ine_mun: "46164"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal portalesmunicipales (www.massamagrell.es) + sede espublico gestiona.
+    Tablón /board: edictos municipales (sin licencias urbanísticas recientes).
+    Transparencia sede sección 7: 60 docs urbanismo (Wicket AJAX).
+    Geometría partial: ICV WFS zonificación + InventarioSuSuz (cod_ine_mun 46164, 8+1 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: dogv

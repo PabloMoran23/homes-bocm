@@ -1,0 +1,30 @@
+slug: las-tres-villas-macael-cuevas-del-almanzora-y-vera
+nombre: "Las Tres Villas, Macael, Cuevas del Almanzora y Vera"
+provincia: "Almería"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.lastresvillas.es"
+  adapter: municipio.adapters.las_tres_villas_macael_cuevas_del_almanzora_y_vera:LasTresVillasMacaelCuevasDelAlmanzoraYVeraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ltv-mcv/1.0"
+    geometry:
+      wfs_url: "https://app.dipalme.org/geoserver/urbanismo/ows"
+      type_name: "urbanismo:v_siu_ambitos_o_sectores"
+  notes: |
+    Entrada compuesta BOJA de 4 municipios de Almería:
+    - Las Tres Villas (INE 04045): lastresvillas.sedelectronica.es + tablón DipAlmería cmsdipro
+    - Macael (INE 04061): macael.sedelectronica.es
+    - Cuevas del Almanzora (INE 04049): cuevasdelalmanzora.es + sede cmsdipro
+    - Vera (INE 04102): vera.sedelectronica.es + ordenanzas www.vera.es
+    Geometría partial vía WFS Diputación sectores por cod_ine.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

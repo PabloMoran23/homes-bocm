@@ -1,0 +1,33 @@
+slug: gavilanes
+nombre: "Gavilanes"
+provincia: "Gavilanes (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.gavilanes.es"
+  adapter: municipio.adapters.gavilanes:GavilanesAyuntamientoAdapter
+  config:
+    web_base: "https://www.gavilanes.es"
+    sede_base: "https://gavilanes.sedelectronica.es"
+    board_url: "https://gavilanes.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=05&municipio=082"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=05&municipio=082"
+    plan_provincia: "05"
+    plan_municipio: "082"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "05082"
+    wfs_municipio: "Gavilanes"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-gavilanes/1.0"
+    centroid: [40.2614, -4.8723]
+  notes: |
+    WordPress (turismo/noticias) + sede espublico gestiona (tablón vacío, transparencia)
+    + PlanPublica JCyL (NSAP provincial + SPG) + IDECyL WFS (1 instrumento municipal).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

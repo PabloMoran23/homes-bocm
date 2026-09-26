@@ -1,0 +1,28 @@
+slug: herrera-de-pisuerga
+nombre: "Herrera de Pisuerga"
+provincia: "Herrera de Pisuerga (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://herreradepisuerga.es"
+  adapter: municipio.adapters.herrera_de_pisuerga:HerreraDePisuergaAyuntamientoAdapter
+  config:
+    web_base: "https://herreradepisuerga.es"
+    sede_base: "https://herreradepisuerga.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-herrera-de-pisuerga/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Herrera de Pisuerga"
+    centroid: [42.5936, -4.3317]
+  notes: |
+    WordPress (galería urbanismo) + sede espublico tablón/catálogo
+    + PLAU/PLAI Junta CYL (prov=34, mun=83, INE 34083)
+    + IDECyL WFS sectores/instrumentos (n_mun='Herrera de Pisuerga').
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
