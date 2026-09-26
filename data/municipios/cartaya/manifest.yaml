@@ -1,0 +1,29 @@
+slug: cartaya
+nombre: "Cartaya"
+provincia: "Cartaya (Huelva)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.cartaya.es"
+  adapter: municipio.adapters.cartaya:CartayaAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.cartaya.es"
+    sede_base: "https://cartaya.sedelectronica.es"
+    board_url: "https://cartaya.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-cartaya/1.0)"
+    centroid: [37.2811, -7.1507]
+  notes: |
+    Fuentes: Drupal 7 cartaya.es (agenda urbana, noticias urbanismo, normativa)
+    + tablón sede espublico gestiona (cartaya.sedelectronica.es).
+    Certificado SSL de la sede inválido en CI (insecure_ssl).
+    Sin visor GIS municipal; SITUA Junta de Andalucía solo consulta web.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

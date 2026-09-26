@@ -1,0 +1,28 @@
+slug: milagros
+nombre: "Milagros"
+provincia: "Milagros (Burgos)"
+comunidad_autonoma: castilla-y-leon
+boletin_source_id: bocyl
+
+portal:
+  base_url: "https://www.milagros.es"
+  adapter: municipio.adapters.milagros:MilagrosAyuntamientoAdapter
+  config:
+    sede_base: "https://milagros.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-milagros/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_c_mun: "09218"
+    plan_provincia: "09"
+    plan_municipio: "218"
+  notes: |
+    Fuentes: Drupal Toools (www.milagros.es/noticias), sede espublico (/board vacío,
+    /dossier trámites), PlanPublica JCyL (prov=09/mun=218), IDECyL WFS (c_mun 09218).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

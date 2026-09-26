@@ -1,0 +1,25 @@
+slug: guijuelo
+nombre: "Guijuelo"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://guijuelo.es"
+  adapter: municipio.adapters.guijuelo:GuijueloAyuntamientoAdapter
+  config:
+    sede_base: "https://guijuelo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-guijuelo/1.0"
+    wfs_municipio: "Guijuelo"
+  notes: |
+    Fuentes: web WordPress (/urbanismo/), tablón sede (/board), transparencia sede,
+    catálogo trámites (/dossier.0), archivo PLAI Junta CYL (provincia 37, municipio 154)
+    e IDECyL WFS sectores/planes parciales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

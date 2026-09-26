@@ -1,0 +1,34 @@
+slug: chauchina
+nombre: "Chauchina"
+provincia: "Chauchina, Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://chauchina.sedelectronica.es"
+  adapter: municipio.adapters.chauchina:ChauchinaAyuntamientoAdapter
+  config:
+    sede_base: "https://chauchina.sedelectronica.es"
+    web_base: "https://chauchina.es"
+    board_url: "https://chauchina.sedelectronica.es/board/"
+    urbanismo_url: "https://chauchina.es/urbanismo.html"
+    transparency_url: "https://chauchina.sedelectronica.es/transparency/"
+    dipgra_transparency_url: "https://www.dipgra.es/servicios/areas/transparencia/transparencia-municipal/chauchina/index.html"
+    nnss_pdf_url: "https://www.dipgra.es/export/sites/diputaciongranada/servicios/areas/transparencia/transparencia-municipal/.galleries/AREA-Transparencia-Municipal-CHAUCHINA/AREA-Transparencia-Municipal-CHAUCHINA-I2/normas-subsidiarias-transparencia.pdf"
+    situa_search: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-chauchina/1.0"
+    centroid: [37.2014, -3.7724]
+  notes: |
+    Fuentes: Mobirise chauchina.es (urbanismo/trámites) +
+    sede espublico gestiona (tablón /board/, transparencia urbanismo) +
+    Dip. Granada (NNSS PDF) + BOJA (innovaciones PGOU) + SITUA.
+    Sin visor GIS público enlazado a expedientes; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: benameji
+nombre: "Benamejí"
+provincia: "Benamejí, Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://benameji.es"
+  adapter: municipio.adapters.benameji:BenamejiAyuntamientoAdapter
+  config:
+    documentos_url: "https://benameji.es/ayuntamiento/ayuntamiento-documentos/"
+    sede_base: "https://sede.eprinsa.es/benameji"
+    tablon_url: "https://sede.eprinsa.es/benameji/tablon-de-edictos"
+    pgou_url: "https://drive.google.com/file/d/12r5tqom9aiJMIADEh8r8vhi5ZbbpvcDV/view?usp=share_link"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benameji/1.0"
+    centroid: [37.2683, -4.5417]
+  notes: |
+    Fuentes: página documentos (WordPress Divi eprinsa) + sede eprinsa/Diputación Córdoba.
+    PGOU en Google Drive; convenios anuales en PDF; modelos licencia (anexos I–V).
+    Tablón de edictos en SPA Ember sin API pública sin token.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

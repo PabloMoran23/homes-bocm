@@ -1,0 +1,33 @@
+slug: huetor-tajar
+nombre: "Huétor Tájar"
+provincia: "Huétor Tájar (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://huetortajar.sedelectronica.es"
+  adapter: municipio.adapters.huetor_tajar:HuetorTajarAyuntamientoAdapter
+  config:
+    sede_base: "https://huetortajar.sedelectronica.es"
+    web_base: "https://huetortajar.org"
+    board_url: "https://huetortajar.sedelectronica.es/board/"
+    dossier_url: "https://huetortajar.sedelectronica.es/dossier"
+    normativa_url: "https://huetortajar.org/transparencia/normativa-municipal/"
+    nnss_url: "https://huetortajar.org/transparencia/normas-subsidiarias/"
+    pmvs_url: "https://huetortajar.org/transparencia/plan-municipal-de-vivienda-y-suelo/"
+    obras_citizen_url: "https://huetortajar.sedelectronica.es/citizen-service/84d48a70-c98d-4e64-9932-c9e6f9d38a40"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-huetor-tajar/1.0"
+    centroid: [37.1944, -4.0467]
+  notes: |
+    Fuentes: WordPress huetortajar.org (transparencia: normativa urbanismo, NNSS, PMVS) +
+    sede espublico gestiona (tablón /board/, dossier trámites DIPGR Obras y Urbanismo).
+    Sin visor GIS público; SITUA/VITUA Junta sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

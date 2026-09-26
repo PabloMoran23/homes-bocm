@@ -1,0 +1,28 @@
+slug: arafo
+nombre: "Arafo"
+provincia: Arafo/Tenerife
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.arafo.es"
+  adapter: municipio.adapters.arafo:ArafoAyuntamientoAdapter
+  config:
+    web_base: "https://www.arafo.es"
+    sede_base: "https://arafo.sedelectronica.es"
+    board_url: "https://arafo.sedelectronica.es/board/"
+    sitcan_package: planeamiento-urbanistico-de-arafo
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38004/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arafo/1.0"
+    centroid: [28.3417, -16.4222]
+  notes: |
+    Portal WebSite X5 (arafo.es) + sede espublico gestiona (/board)
+    + SITCAN CKAN planeamiento-urbanistico-de-arafo + GEOBDP Grafcan (INE 38004).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

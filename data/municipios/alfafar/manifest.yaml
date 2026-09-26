@@ -1,0 +1,36 @@
+slug: alfafar
+nombre: "Alfafar"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://alfafar.sedelectronica.es"
+  adapter: municipio.adapters.alfafar:AlfafarAyuntamientoAdapter
+  config:
+    sede_base: "https://alfafar.sedelectronica.es"
+    board_url: "https://alfafar.sedelectronica.es/board"
+    web_base: "https://www.alfafar.es"
+    transparencia_obras_url: "https://www.alfafar.es/es/transparenciadana/obras-publicas"
+    transparencia_normativa_url: "https://www.alfafar.es/es/transparenciadana/normativa-elaboracion"
+    visor_url: "https://visor.alfafar.es/es/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alfafar/1.0"
+    centroid: [39.368, -0.389]
+    cod_ine_mun: "46022"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 10 portalesmunicipales (www.alfafar.es) + sede espublico gestiona.
+    Tablón /board: licencias actividad, planeamiento (IATE sector 2).
+    Transparenciadana: obras públicas, normativa elaborada.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46022, 4 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

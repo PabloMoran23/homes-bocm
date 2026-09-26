@@ -1,0 +1,29 @@
+slug: valle-de-losa
+nombre: "Valle de Losa"
+provincia: "Valle de Losa (Burgos)"
+comunidad_autonoma: castilla-y-leon
+boletin_source_id: bocyl
+
+portal:
+  base_url: "https://www.valledelosa.es"
+  adapter: municipio.adapters.valle_de_losa:ValleDeLosaAyuntamientoAdapter
+  config:
+    sede_base: "https://valledelosa.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-valle-de-losa/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Valle de Losa"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=9&municipio=908"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=9&municipio=908"
+  notes: |
+    Fuentes: web Drupal Toools (valledelosa.es), sede espublico (/board, /dossier),
+    PlanPublica JCyL (provincia 9, municipio 908), IDECyL WFS (n_mun='Valle de Losa').
+    /dossier requiere cookie de sesión (warm-up vía /board).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,26 @@
+slug: la-hiniesta
+nombre: "La Hiniesta"
+provincia: "La Hiniesta (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://lahiniesta.sedelectronica.es"
+  adapter: municipio.adapters.la_hiniesta:LaHiniestaAyuntamientoAdapter
+  config:
+    sede_base: "https://lahiniesta.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-hiniesta/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "La Hiniesta"
+    centroid: [41.968, -5.625]
+  notes: |
+    Sede espublico gestiona (tablón) + PlanPublica Junta CYL (prov=49, mun=095)
+    + IDECyL WFS (NUM + 5 sectores). Web corporativa sin urbanismo publicado.
+    /dossier e /info de la sede devuelven bucle de redirección 302.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

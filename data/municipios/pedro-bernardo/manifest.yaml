@@ -1,0 +1,33 @@
+slug: pedro-bernardo
+nombre: "Pedro Bernardo"
+provincia: "Pedro Bernardo (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://pedrobernardo.sedelectronica.es"
+  adapter: municipio.adapters.pedro_bernardo:PedroBernardoAyuntamientoAdapter
+  config:
+    sede_base: "https://pedrobernardo.sedelectronica.es"
+    board_url: "https://pedrobernardo.sedelectronica.es/board"
+    dossier_url: "https://pedrobernardo.sedelectronica.es/dossier"
+    transparency_url: "https://pedrobernardo.sedelectronica.es/transparency"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=05182"
+    plau_provincia: 5
+    plau_municipio: 182
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-pedro-bernardo/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Pedro Bernardo"
+  notes: |
+    Web corporativa (pedrobernardo.es) en mantenimiento (Interportal 3.0).
+    Sede espublico gestiona: tablón /board, trámites /dossier, transparencia.
+    Planeamiento: IDECyL WFS PLAU CyL (1 instrumento NS + 1 PP + 5 sectores).
+    Visor SIUR JCyL: idecyl.jcyl.es/siur/index.html?id=05182
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

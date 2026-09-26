@@ -1,0 +1,31 @@
+slug: mijas-alhaurin-el-grande
+nombre: "Mijas-Alhaurín El Grande"
+provincia: "Mijas, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.mijas.es/portal"
+  adapter: municipio.adapters.mijas_alhaurin_el_grande:MijasAlhaurinElGrandeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mijas-alhaurin-el-grande/1.0"
+    centroid: [36.6194, -4.6645]
+  notes: |
+    Alias BOCM que combina dos municipios malagueños con adaptadores propios:
+    - Mijas: www.mijas.es/portal (WordPress) + mijas.sedelectronica.es (espublico)
+    - Alhaurín el Grande: alhaurinelgrande.es + alhaurinelgrande.sedelectronica.es
+    El adapter compuesto delega en municipio.adapters.mijas y alhaurin_el_grande.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - "Mijas-Alhaurín El Grande"
+    - "Alhaurín el Grande/Mijas"
+    - "Mijas"
+    - "Alhaurín el Grande"

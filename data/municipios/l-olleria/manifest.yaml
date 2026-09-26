@@ -1,0 +1,32 @@
+slug: l-olleria
+nombre: "L'Olleria"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.lolleria.org"
+  adapter: municipio.adapters.l_olleria:LOlleriaAyuntamientoAdapter
+  config:
+    web_base: "https://www.lolleria.org"
+    sede_base: "https://lolleria.sedelectronica.es"
+    urbanismo_url: "https://www.lolleria.org/es/pagina/urbanismo"
+    transparencia_url: "https://www.lolleria.org/es/pagina/transparencia"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-l-olleria/1.0"
+    cod_ine_mun: "46189"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal portalesmunicipales (www.lolleria.org) + sede espublico gestiona (inactiva).
+    Transparencia: PDFs PGOU, planes parciales (Galol, Els Teularets), modificaciones, PAN.
+    Urbanismo: formularios licencia de obra (PDF). Sede tablón no accesible.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46189, 4 instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

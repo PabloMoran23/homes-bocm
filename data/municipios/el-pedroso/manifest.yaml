@@ -1,0 +1,30 @@
+slug: el-pedroso
+nombre: "El Pedroso"
+provincia: "El Pedroso (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://elpedroso.sedelectronica.es"
+  adapter: municipio.adapters.el_pedroso:ElPedrosoAyuntamientoAdapter
+  config:
+    sede_base: "https://elpedroso.sedelectronica.es"
+    wp_base: "https://elpedroso.es"
+    board_url: "https://elpedroso.sedelectronica.es/board"
+    transparency_url: "https://elpedroso.sedelectronica.es/transparency"
+    pic_url: "https://elpedroso.es/punto-de-informacion-catastral/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-el-pedroso/1.0"
+    centroid: [38.049, -6.194]
+  notes: |
+    Fuentes: WordPress elpedroso.es (PIC) + sede espublico gestiona (tablón /board +
+    transparencia urbanismo 417 docs). Licencias: portal Diputación Sevilla LicytalPub
+    (CIF P4107300H). Sin visor GIS municipal; SITUA Junta sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

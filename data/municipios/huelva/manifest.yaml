@@ -1,0 +1,26 @@
+slug: huelva
+nombre: "Huelva"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sede.huelva.es"
+  adapter: municipio.adapters.huelva:HuelvaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-huelva/1.0"
+    insecure_ssl: true
+    centroid: [37.2614, -6.9447]
+  notes: |
+    Fuentes: OpenSIAC/OpenCERTIAC sede.huelva.es — tablón edictos (infopublica_search),
+    consultas públicas (edictos=CP), trámites licencias urbanismo (id=35).
+    Web institucional www.huelva.es (PGOU PDFs) inaccesible por timeout SSL desde CI;
+    referencias estáticas en adapter. SITUA Junta de Andalucía para planeamiento general.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

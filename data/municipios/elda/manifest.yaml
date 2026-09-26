@@ -1,0 +1,29 @@
+slug: elda
+nombre: "Elda"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.elda.es"
+  adapter: municipio.adapters.elda:EldaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-elda/1.0"
+    web_base: "https://www.elda.es"
+    sede_base: "https://eamic.elda.es:20443"
+    insecure_ssl: true
+    cod_ine_mun: "03066"
+    max_wp_pages: 8
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+  notes: |
+    Web WordPress Divi (urbanismo-y-actividades) + sede EAMIC Munitecnia (entidad 03066)
+    + portal transparencia EAMIC (epígrafes PGOU/sectores/UAs) + ICV InventarioSuSuz WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

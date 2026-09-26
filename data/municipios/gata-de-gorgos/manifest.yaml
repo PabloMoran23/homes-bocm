@@ -1,0 +1,35 @@
+slug: gata-de-gorgos
+nombre: "Gata de Gorgos"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.gatadegorgos.org"
+  adapter: municipio.adapters.gata_de_gorgos:GataDeGorgosAyuntamientoAdapter
+  config:
+    web_base: "https://www.gatadegorgos.org"
+    sede_base: "https://gatadegorgos.sedelectronica.es"
+    board_url: "https://gatadegorgos.sedelectronica.es/board"
+    planejament_url: "https://www.gatadegorgos.org/ajuntament/planejament/"
+    tauler_url: "https://www.gatadegorgos.org/category/noticies/tauler-danuncis/"
+    gva_base: "https://politicaterritorial.gva.es/auto/urbanismo/reg-planeamiento/2%20ALICANTE/03071%20GATA%20DE%20GORGOS/"
+    cod_ine_mun: "03071"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-gata-de-gorgos/1.0"
+    centroid: [38.7758, 0.0853]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Fuentes: WordPress gatadegorgos.org (planejament + tauler d'anuncis) +
+    sede espublico gestiona (tablón / dossier) + registro GVA planeamiento +
+    ICV WFS zonificación (cod_ine_mun=03071).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

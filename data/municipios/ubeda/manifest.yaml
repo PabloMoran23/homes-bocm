@@ -1,0 +1,32 @@
+slug: ubeda
+nombre: "Úbeda"
+provincia: Jaén
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://transparencia.ayuntamientodeubeda.com"
+  adapter: municipio.adapters.ubeda:UbedaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ubeda/1.0"
+    centroid: [38.0133, -3.3705]
+    transparencia_base: "https://transparencia.ayuntamientodeubeda.com"
+    sede_base: "https://sede.ubeda.es"
+    wp_base: "https://ubeda.es"
+    planes_urbanisticos_url: "https://transparencia.ayuntamientodeubeda.com/2023/02/02/planes-urbanisticos/"
+    transparencia_local_url: "https://aytoubeda.transparencialocal.gob.es/es_ES/urbanismo"
+    perfil_contratante_url: "https://sede.ubeda.es/eAdmin/PerfilContratante.do?action=verPublicaciones"
+    tramites_url: "https://sede.ubeda.es/eAdmin/Registrar.do?action=inicioPortalTramites"
+  notes: |
+    WordPress transparencia (planes urbanísticos PDFs) + transparencialocal Absis +
+    sede eAdmin (trámites informativos + perfil contratante obras públicas).
+    Sin tablón de licencias concedidas ni visor GIS municipal.
+
+licencias:
+  enabled: true
+  notes: Trámites informativos sede (obras/actividades); sin concesiones publicadas
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: PDFs planeamiento transparencia + perfil contratante obras

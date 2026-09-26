@@ -1,0 +1,32 @@
+slug: el-saucejo
+nombre: "El Saucejo"
+provincia: "El Saucejo (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.elsaucejo.es"
+  adapter: municipio.adapters.el_saucejo:ElSaucejoAyuntamientoAdapter
+  config:
+    wp_base: "https://www.elsaucejo.es"
+    sede_base: "https://sedeelsaucejo.dipusevilla.es"
+    tablon_url: "https://sedeelsaucejo.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41090"
+    pgou_url: "https://www.elsaucejo.es/es/ayuntamiento/pgou"
+    nss_url: "https://3web.dipusevilla.es/planeamiento/NSSaucejo/inicio-saucejo.htm"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41090"
+    licytal_url: "https://portal.dipusevilla.es/LicytalPub/jsp/pub/index.faces?cif=P4109000B"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-saucejo/1.0"
+    centroid: [37.0736, -5.0389]
+  notes: |
+    Web OpenCMS INPRO (elsaucejo.es) + sede GSede Diputación Sevilla.
+    Tablón INPRO tablon-1.0 (INE 41090) + PGOU/PBOM PDFs indicador transparencia IND-50.
+    NSS vigentes en 3web.dipusevilla.es/planeamiento/NSSaucejo/.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

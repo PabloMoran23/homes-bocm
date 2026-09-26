@@ -1,0 +1,28 @@
+slug: el-tanque
+nombre: "El Tanque"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.eltanque.es"
+  adapter: municipio.adapters.el_tanque:ElTanqueAyuntamientoAdapter
+  config:
+    wp_base: "https://www.eltanque.es"
+    sede_base: "https://eltanque.sedelectronica.es"
+    board_url: "https://eltanque.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-el-tanque
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38044/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-tanque/1.0"
+    centroid: [28.358, -16.799]
+  notes: |
+    WordPress Elementor (eltanque.es) + sede espublico gestiona (tablón /board)
+    + SITCAN CKAN (Normas Subsidiarias) + GEOBDP Grafcan doc 561 (polígono UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,31 @@
+slug: hospital-de-orbigo
+nombre: "Hospital de Órbigo"
+provincia: "Hospital de Órbigo, León"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytohospitaldeorbigo.es"
+  adapter: municipio.adapters.hospital_de_orbigo:HospitalDeOrbigoAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytohospitaldeorbigo.es"
+    joomla_base: "https://www.hospitaldeorbigo.com"
+    sede_base: "https://hospitaldeorbigo.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-hospital-de-orbigo/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "24107"
+    wfs_municipio: "Hospital de Órbigo"
+    plai_provincia: 24
+    plai_municipio: 107
+    centroid: [42.3278, -5.4754]
+  notes: |
+    OpenCms (Diputación León) + Joomla hospitaldeorbigo.com + sede espublico gestiona
+    (tablón, trámites OBRAS) + PLAI JCYL (prov 24, muni 107) + IDECyL WFS (c_mun 24107).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

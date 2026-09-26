@@ -1,0 +1,28 @@
+slug: saldana
+nombre: "Saldaña"
+provincia: "Saldaña-Palencia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://saldana.es"
+  adapter: municipio.adapters.saldana:SaldanaAyuntamientoAdapter
+  config:
+    web_base: "https://saldana.es"
+    sede_base: "https://saldana.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-saldana/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Saldaña"
+    centroid: [42.5233, -4.7389]
+    dossier_timeout_s: 90
+  notes: |
+    WordPress Dream City (CPT project) + sede espublico tablón + PLAU JCyL (mun 157)
+    + IDECyL WFS sectores SU-NC/SUR (n_mun='Saldaña', c_mun=34157).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
