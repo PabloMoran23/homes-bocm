@@ -1,0 +1,32 @@
+slug: fromista
+nombre: "Frómista"
+provincia: "Frómista-Palencia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://fromista.sedelectronica.es"
+  adapter: municipio.adapters.fromista:FromistaAyuntamientoAdapter
+  config:
+    sede_base: "https://fromista.sedelectronica.es"
+    planpublica_provincia: 34
+    planpublica_municipio: 069
+    ine_code: "34069"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Frómista"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=34069"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=34&municipio=069"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=34&municipio=069"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fromista/1.0 (+urbanismo research)"
+    centroid: [42.2670, -4.5280]
+    insecure_ssl: true
+  notes: |
+    Sin web corporativa activa. Sede espublico gestiona (Wicket) + PlanPublica/SiuCyL (NSPM vigente).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
