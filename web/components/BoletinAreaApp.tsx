@@ -93,7 +93,7 @@ function EventoFila({ ev }: { ev: BoletinEvento }) {
               {ev.tipo === "sigma" ? "Proyecto" : "Licencia"}
             </span>
             {ev.contienePunto ? (
-              <span className="text-[10px] font-medium text-teal-700">Te afecta directamente</span>
+              <span className="text-[10px] font-medium text-[var(--portal-warm)]">Te afecta directamente</span>
             ) : null}
           </div>
           {ev.tipo === "licencia" ? (
@@ -418,8 +418,8 @@ export function BoletinAreaApp() {
           ) : null}
 
           {filtersStale ? (
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-teal-200/80 bg-teal-50/80 px-3 py-2.5">
-              <p className="text-sm text-teal-950">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)]/80 px-3 py-2.5">
+              <p className="text-sm text-[var(--portal-ink)]">
                 Has cambiado el radio o el periodo. Pulsa «Actualizar» para regenerar el boletín.
               </p>
               <button

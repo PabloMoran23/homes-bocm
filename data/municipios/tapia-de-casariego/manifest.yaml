@@ -1,0 +1,29 @@
+slug: tapia-de-casariego
+nombre: "Tapia de Casariego"
+provincia: Tapia de Casariego
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.tapiadecasariego.es"
+  adapter: municipio.adapters.tapia_de_casariego:TapiaDeCasariegoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tapia-de-casariego/1.0"
+    centroid: [43.5704, -6.9442]
+    sede_base: "https://tapiadecasariego.sedelectronica.es"
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "70"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+  notes: |
+    Web municipal eDise (tapiadecasariego.es) — urbanismo, PGOU/ISA en /images/documentos/.
+    Sede espublico (tapiadecasariego.sedelectronica.es) — tablón de anuncios y catálogo trámites.
+    Registro regional RPGUR (www54.asturias.es) — 37 instrumentos vigentes concejo TAPIA DE CASARIEGO.
+    Geometría parcial vía WFS visorrpgur (2 polígonos: PGOU + catálogo urbanístico).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -13,7 +13,7 @@ export function escapeMapPopupAttr(s: string): string {
 export function mapPopupLinkHtml(href: string, label: string): string {
   return (
     `<a href="${escapeMapPopupAttr(href)}" ` +
-    `style="display:inline-block;margin-top:8px;color:#0f766e;font-weight:700;font-size:13px;text-decoration:none">` +
+    `style="display:inline-block;margin-top:8px;color:#1f4f53;font-weight:700;font-size:13px;text-decoration:none">` +
     `${escapeMapPopupHtml(label)} →</a>`
   );
 }

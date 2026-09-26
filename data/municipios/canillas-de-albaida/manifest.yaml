@@ -1,0 +1,30 @@
+slug: canillas-de-albaida
+nombre: "Canillas de Albaida"
+provincia: "Canillas de Albaida/Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://canillasdealbaida.sedelectronica.es"
+  adapter: municipio.adapters.canillas_de_albaida:CanillasDeAlbaidaAyuntamientoAdapter
+  config:
+    sede_base: "https://canillasdealbaida.sedelectronica.es"
+    web_base: "https://canillasdealbaida.es"
+    board_url: "https://canillasdealbaida.sedelectronica.es/board/"
+    urbanismo_url: "https://canillasdealbaida.es/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-canillas-de-albaida/1.0"
+    centroid: [36.8569, -3.9878]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web WordPress Divi (canillasdealbaida.es) con sección urbanismo rica en PDFs (PDSU, PMUS, PGOU, inventario caminos).
+    Participación ciudadana: consulta pública ordenanza urbanística (Ley 7/2021 LISTA).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

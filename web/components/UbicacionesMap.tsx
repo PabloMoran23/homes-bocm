@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   MapContainer,
   ScaleControl,
-  TileLayer,
   ZoomControl,
   useMap,
 } from "react-leaflet";
@@ -18,7 +17,8 @@ import {
   clasificarLicenciaMapaDesdeActuacion,
   createLicenciaDivIcon,
 } from "@/lib/licencia-mapa";
-import { HOMES_MAP_ATTRIBUTION, HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
+import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
 import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
 import { ubicacionMapPopupHtml } from "@/lib/ubicacion-map-popup";
@@ -154,16 +154,18 @@ export function UbicacionesMap({
 
   return (
     <div
-      className={`homes-map-shell overflow-hidden rounded-xl border border-teal-100/80 bg-teal-50/40 shadow-sm ${className}`}
+      className={`homes-map-shell overflow-hidden rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-sm ${className}`}
     >
       <MapContainer
         center={MADRID_CENTER}
         zoom={11}
+        minZoom={HOMES_MAP_MIN_ZOOM}
+        maxZoom={HOMES_MAP_MAX_ZOOM}
         className="h-full w-full min-h-[min(70vh,640px)]"
         zoomControl={false}
         scrollWheelZoom
       >
-        <TileLayer attribution={HOMES_MAP_ATTRIBUTION} url={HOMES_MAP_TILE_URL} />
+        <HomesBasemapLayer />
         <ZoomControl position="topright" />
         <ScaleControl position="bottomleft" imperial={false} />
         {bounds ? (

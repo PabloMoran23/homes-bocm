@@ -5,7 +5,10 @@
   "scripts": {
     "build-data": "node scripts/build-data.mjs",
     "build-data:public": "BUILD_DATA_SCOPE=madrid-public node scripts/build-data.mjs",
-    "prebuild": "node -e \"const cp=require('child_process');if(process.env.SKIP_BUILD_DATA){cp.execSync('node scripts/assert-map-geo.mjs',{stdio:'inherit'})}else{const e={...process.env};if(e.NEXT_PUBLIC_EDITION==='public'&&!e.BUILD_DATA_SCOPE)e.BUILD_DATA_SCOPE='madrid-public';cp.execSync('npm run build-data',{stdio:'inherit',env:e});cp.execSync('node scripts/assert-map-geo.mjs',{stdio:'inherit'})}\"",
+    "copy-maplibre-worker": "node scripts/copy-maplibre-worker.mjs",
+    "postinstall": "node scripts/copy-maplibre-worker.mjs",
+    "predev": "node scripts/copy-maplibre-worker.mjs",
+    "prebuild": "node scripts/copy-maplibre-worker.mjs && node -e \"const cp=require('child_process');if(process.env.SKIP_BUILD_DATA){cp.execSync('node scripts/assert-map-geo.mjs',{stdio:'inherit'})}else{const e={...process.env};if(e.NEXT_PUBLIC_EDITION==='public'&&!e.BUILD_DATA_SCOPE)e.BUILD_DATA_SCOPE='madrid-public';cp.execSync('npm run build-data',{stdio:'inherit',env:e});cp.execSync('node scripts/assert-map-geo.mjs',{stdio:'inherit'})}\"",
     "build:public": "NEXT_PUBLIC_EDITION=public BUILD_DATA_SCOPE=madrid-public SKIP_BUILD_DATA=1 npm run build",
     "export-cm-portal": "python3 ../db/export_cm_portal_web.py",
     "dev": "next dev",
@@ -17,12 +20,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@maplibre/maplibre-gl-leaflet": "^0.1.4",
     "@supabase/supabase-js": "^2.105.4",
     "@vercel/analytics": "^2.0.1",
     "chart.js": "^4.5.1",
     "csv-parse": "^6.2.1",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
+    "maplibre-gl": "^6.4.1",
     "next": "16.2.6",
     "proj4": "^2.20.8",
     "react": "19.2.4",

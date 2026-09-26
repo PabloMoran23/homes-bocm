@@ -44,15 +44,15 @@ function applySigmaFeatureStyle(
     }
     return;
   }
-  const selected = Boolean(
-    selectedExpediente && expedienteFromProps(props) === selectedExpediente,
-  );
   const geom = feature.geometry;
   const base =
     geom?.type === "Point"
       ? (featurePointStyle(props, preview ? null : visual) as PathOptions)
       : (featureLayerStyle(props, preview ? null : visual) as PathOptions);
 
+  const selected = Boolean(
+    selectedExpediente && expedienteFromProps(props) === selectedExpediente,
+  );
   const style: PathOptions = selected
     ? {
         ...base,

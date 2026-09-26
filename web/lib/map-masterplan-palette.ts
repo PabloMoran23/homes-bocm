@@ -1,0 +1,31 @@
+/**
+ * Paleta del basemap tipo plano arquitectónico (papel, vegetación punteada,
+ * agua teal, vías salmón, edificios blancos).
+ */
+export const MASTERPLAN = {
+  paper: "#f3eee4",
+  paperUrban: "#ebe4d6",
+  water: "#1f4f53",
+  waterway: "#2a5c60",
+  park: "#c7d4a8",
+  grass: "#d4e0b6",
+  wood: "#7e9a62",
+  farmland: "#ddd6b8",
+  sand: "#e8dcc0",
+  building: "#fffcf7",
+  buildingLine: "#cfc6ba",
+  roadMajor: "#d4a090",
+  roadMajorCasing: "#c07f6c",
+  roadMid: "#e6c3b4",
+  roadMidCasing: "#d4a090",
+  roadMinor: "#fbf7f0",
+  roadMinorCasing: "#ddd4c8",
+  path: "#efe6d8",
+  rail: "#c8bdb0",
+  accentOchre: "#d4923a",
+  accentRose: "#d9a39a",
+  pitch: "#c9d4a0",
+  boundary: "#c4b8aa",
+  label: "#6a6158",
+  labelHalo: "#f3eee4",
+} as const;

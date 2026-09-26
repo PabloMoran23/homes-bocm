@@ -1,0 +1,30 @@
+slug: benicasim
+nombre: "Benicasim"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://ayto.benicassim.es"
+  adapter: municipio.adapters.benicasim:BenicasimAyuntamientoAdapter
+  config:
+    sede_base: "https://benicassim.sedelectronica.es"
+    board_url: "https://benicassim.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-benicasim/1.0"
+    centroid: [40.055, 0.064]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "12018"
+  notes: |
+    WordPress ayto.benicassim.es (PGOU PDFs, planeamiento, mapas PGOU) +
+    sede espublico gestiona (/board) + ICV GVA WFS InventarioSuSuz (8 ámbitos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,33 @@
+slug: gomecello
+nombre: "Gomecello"
+provincia: "Gomecello (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://gomecello.sedelectronica.es"
+  adapter: municipio.adapters.gomecello:GomecelloAyuntamientoAdapter
+  config:
+    sede_base: "https://gomecello.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 121
+    ine_code: "37121"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Gomecello"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37121"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=121"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=121"
+    wp_base: "http://gomecello.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gomecello/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [41.0538, -5.5300]
+  notes: |
+    WordPress gomecello.es (timeouts frecuentes) + sede espublico gestiona + PlanPublica/SiuCyL.
+    Tablón de anuncios vacío (ago 2026). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

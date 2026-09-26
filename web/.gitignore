@@ -39,6 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 
+# MapLibre worker copiado desde node_modules (postinstall / predev)
+public/maplibre/
+
 # Datos generados (npm run build-data → public/data/)
 public/data/*.json
 !public/data/madrid-sigma-visor-slim.json

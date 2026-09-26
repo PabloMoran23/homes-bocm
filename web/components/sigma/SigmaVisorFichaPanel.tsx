@@ -55,16 +55,16 @@ export function SigmaVisorFichaPanel({
 
   return (
     <section
-      className={`rounded-xl border border-teal-200/60 bg-gradient-to-br from-white to-teal-50/30 ${
+      className={`rounded-xl border border-[var(--portal-accent)]/20 bg-gradient-to-br from-[var(--portal-paper)] to-[var(--portal-accent-soft)]/40 ${
         compact ? "p-3.5" : "p-4 sm:p-5"
       }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-teal-800">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--portal-accent)]">
           Detalles
         </p>
         {hasValue(ficha.figuraCodigo) ? (
-          <span className="font-mono text-[10px] text-teal-700/80">{ficha.figuraCodigo}</span>
+          <span className="font-mono text-[10px] text-[var(--portal-accent)]/80">{ficha.figuraCodigo}</span>
         ) : null}
       </div>
 

@@ -22,14 +22,26 @@ import {
 import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 import { useMapVisualContext } from "@/components/map/useMapVisualContext";
 
+const FOCUS_HITAREA: PathOptions = {
+  stroke: false,
+  fill: true,
+  fillOpacity: 0.01,
+  fillColor: "#ffffff",
+  opacity: 0,
+  weight: 0,
+};
+
 export function SectorFeaturesGeoLayer({
   geojson,
   popupOptions,
   layerKey,
+  appearance = "default",
 }: {
   geojson: SectorFeatureCollection;
   popupOptions?: FeaturePopupOptions | null;
   layerKey: string;
+  /** `focus`: el velo pinta el borde; esta capa solo sirve de hit-area. */
+  appearance?: "default" | "focus";
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
@@ -41,13 +53,14 @@ export function SectorFeaturesGeoLayer({
     return { type: "FeatureCollection" as const, features };
   }, [geojson, map, visual.zoom, visual.containerWidth, visual.containerHeight]);
 
-  const dataKey = `${layerKey}-z${visual.zoom}-w${visual.containerWidth}`;
+  const dataKey = `${layerKey}-${appearance}-z${visual.zoom}-w${visual.containerWidth}`;
 
   return (
     <GeoJSON
       key={dataKey}
       data={filtered as never}
       style={(feature) => {
+        if (appearance === "focus") return FOCUS_HITAREA;
         const props = feature?.properties as SectorFeatureProperties | undefined;
         return featureLayerStyle(props, visual) as PathOptions;
       }}

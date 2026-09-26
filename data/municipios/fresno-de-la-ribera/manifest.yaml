@@ -1,0 +1,25 @@
+slug: fresno-de-la-ribera
+nombre: "Fresno de la Ribera"
+provincia: "Fresno de la Ribera, Zamora"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://fresnodelaribera.sedelectronica.es"
+  adapter: municipio.adapters.fresno_de_la_ribera:FresnoDeLaRiberaAyuntamientoAdapter
+  config:
+    sede_base: "https://fresnodelaribera.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fresno-de-la-ribera/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Fresno de la Ribera"
+    centroid: [41.5246, -5.5743]
+  notes: |
+    Sede espublico tablón + Junta CYL PlanPublica (prov=49/mun=076, INE 49076)
+    + IDECyL WFS (NUM + 4 sectores SUR). Sin web corporativa activa.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,27 @@
+slug: marchena
+nombre: "Marchena"
+provincia: Marchena (Sevilla)
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sedemarchena.dipusevilla.es"
+  adapter: municipio.adapters.marchena:MarchenaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-marchena/1.0"
+    sede_base: "https://sedemarchena.dipusevilla.es"
+    wp_base: "https://marchena.es"
+    transparencia_base: "http://transparencia.marchena.es"
+    tablon_url: "https://sedemarchena.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41060"
+    licytal_url: "https://sedeelectronicadipusevilla.es/LicytalSede/jsp/index.faces?cif=P4106000E"
+    centroid: [37.3297, -5.4169]
+  notes: |
+    WordPress marchena.es + GSede OpenCMS Diputación Sevilla + tablón INPRO (INE 41060).
+    Transparencia SagaSuite (PGOU, modificaciones, convenios urbanísticos) + SITUA Junta.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

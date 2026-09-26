@@ -677,7 +677,7 @@ function SigmaRow({
         {bocmHits?.length ? (
           <Link
             href={projectPath(bocmHits[0].id)}
-            className="mr-3 text-xs font-semibold text-teal-700 hover:underline"
+            className="mr-3 text-xs font-semibold text-[var(--portal-accent)] hover:underline"
             prefetch={false}
             title="Anuncio BOCM enlazado"
           >

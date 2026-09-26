@@ -55,16 +55,16 @@ export function SigmaProgramaPanel({
 
   return (
     <section
-      className={`overflow-hidden rounded-2xl border border-indigo-200/70 bg-indigo-50/35 ${compact ? "" : "shadow-sm"}`}
+      className={`overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] ${compact ? "" : "shadow-sm"}`}
       aria-labelledby="sigma-programa-heading"
     >
-      <header className="border-b border-indigo-100/80 px-4 py-4 sm:px-5">
+      <header className="border-b border-[var(--portal-paper-deep)] px-4 py-4 sm:px-5">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-950">
+          <span className="rounded-full bg-[var(--portal-accent-soft)] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--portal-accent)]">
             Programa urbanístico
           </span>
           {programa.confianza === "alta" ? (
-            <span className="rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-medium text-teal-800 ring-1 ring-teal-200">
+            <span className="rounded-full bg-[var(--portal-paper)] px-2 py-0.5 text-[10px] font-medium text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/20">
               Mismo ámbito
             </span>
           ) : (
@@ -78,12 +78,12 @@ export function SigmaProgramaPanel({
           {programa.titulo}
         </h2>
         {programa.ambitoOrdenacion ? (
-          <p className="mt-1 text-xs text-indigo-800/80">Ámbito {programa.ambitoOrdenacion}</p>
+          <p className="mt-1 text-xs text-[var(--portal-ink)]/55">Ámbito {programa.ambitoOrdenacion}</p>
         ) : null}
         {rolActual ? (
           <p className="mt-2 text-sm text-slate-700">
-            <span className="font-semibold text-indigo-950">Este expediente</span> corresponde a la fase de{" "}
-            <span className="font-semibold text-indigo-900">{sigmaProgramaRolLabel(rolActual)}</span> dentro del
+            <span className="font-semibold text-[var(--portal-ink)]">Este expediente</span> corresponde a la fase de{" "}
+            <span className="font-semibold text-[var(--portal-accent)]">{sigmaProgramaRolLabel(rolActual)}</span> dentro del
             programa ({miembros.length} expedientes enlazados).
           </p>
         ) : null}
@@ -94,13 +94,13 @@ export function SigmaProgramaPanel({
 
       <div className="px-4 py-4 sm:px-5">
         <div
-          className="overflow-x-auto overscroll-x-contain pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-indigo-300/80"
+          className="overflow-x-auto overscroll-x-contain pb-2 [-ms-overflow-style:none] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--portal-paper-deep)]"
           role="region"
           aria-label="Fases del programa urbanístico"
         >
           <div className="relative min-w-min px-1 pt-1">
             <div
-              className="pointer-events-none absolute top-4 right-8 left-8 h-0.5 bg-indigo-200/90"
+              className="pointer-events-none absolute top-4 right-8 left-8 h-0.5 bg-[var(--portal-paper-deep)]"
               aria-hidden
             />
             <ol className="relative flex snap-x snap-mandatory gap-0">
@@ -126,12 +126,12 @@ export function SigmaProgramaPanel({
                     <div
                       className={`flex flex-1 flex-col rounded-xl border p-3 shadow-sm ${
                         esActual
-                          ? "border-indigo-400 bg-white ring-2 ring-indigo-300/80"
-                          : "border-indigo-100/90 bg-white/90"
+                          ? "border-[var(--portal-accent)]/40 bg-[var(--portal-paper)] ring-2 ring-[var(--portal-accent)]/25"
+                          : "border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/90"
                       }`}
                     >
                       {esActual ? (
-                        <span className="mb-2 w-fit rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                        <span className="mb-2 w-fit rounded-full bg-[var(--portal-accent)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
                           Este expediente
                         </span>
                       ) : null}
@@ -153,7 +153,7 @@ export function SigmaProgramaPanel({
                       {!esActual ? (
                         <Link
                           href={fichaHref}
-                          className="mt-3 inline-flex text-xs font-semibold text-indigo-700 hover:underline"
+                          className="mt-3 inline-flex text-xs font-semibold text-[var(--portal-accent)] hover:underline"
                         >
                           Ver ficha del proyecto →
                         </Link>

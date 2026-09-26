@@ -1,0 +1,32 @@
+slug: valdeavellano-de-tera
+nombre: "Valdeavellano de Tera"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.valdeavellanodetera.es"
+  adapter: municipio.adapters.valdeavellano_de_tera:ValdeavellanoDeTeraAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.valdeavellanodetera.es"
+    sede_base: "https://valdeavellanodetera.sedelectronica.es"
+    board_url: "https://valdeavellanodetera.sedelectronica.es/board"
+    dossier_url: "https://valdeavellanodetera.sedelectronica.es/dossier"
+    plai_municipio: 206
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Valdeavellano de Tera"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-valdeavellano-de-tera/1.0"
+    centroid: [41.949, -2.093]
+  notes: |
+    Fuentes: Drupal 7 (noticias urbanismo/PDFs), sede espublico gestiona
+    (tablón /board, trámites /dossier), PLAI JCYL (municipio 206, Soria 42)
+    y capas IDECyL WFS (sectores/PP/instrumentos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

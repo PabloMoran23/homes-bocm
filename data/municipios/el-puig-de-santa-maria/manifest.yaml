@@ -1,0 +1,34 @@
+slug: el-puig-de-santa-maria
+nombre: "El Puig de Santa Maria"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://elpuig.sede.dival.es"
+  adapter: municipio.adapters.el_puig_de_santa_maria:ElPuigDeSantaMariaAyuntamientoAdapter
+  config:
+    sede_base: "https://elpuig.sede.dival.es"
+    web_base: "https://www.elpuig.es"
+    tablon_rss: "https://elpuig.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://elpuig.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://elpuig.sede.dival.es/catalogoservicios.aspx"
+    urbanisme_url: "https://elpuig.sede.dival.es/catalogoservicios.aspx?area=1835&ambito=1"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-puig-de-santa-maria/1.0"
+    centroid: [39.3667, -0.3030]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000]
+  notes: |
+    Sede Dival (Sedipualba): tablón RSS + catálogo trámites URB01–URB21.
+    Web www.elpuig.es inaccesible en CI (timeout SSL).
+    Geometría parcial: ICV GVA WFS Planeamiento.Zonificacion (INE 46104).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

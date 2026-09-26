@@ -11,10 +11,10 @@ export function ViviendaBadge({ code }: { code: string | null | undefined }) {
   const label = viviendaNuevaLabel(code);
   const tone =
     code === "si" || code === "probable_si"
-      ? "bg-teal-50 text-teal-900 ring-teal-200"
+      ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)] ring-[var(--portal-accent)]/25"
       : code === "no" || code === "stock_existente_o_rehabilitacion"
-        ? "bg-slate-100 text-slate-700 ring-slate-200"
-        : "bg-amber-50 text-amber-900 ring-amber-200";
+        ? "bg-[var(--portal-paper-deep)] text-[var(--portal-ink)]/70 ring-[var(--portal-ink)]/10"
+        : "bg-[#f4e8d2] text-[#8a5a1e] ring-[#d4923a]/40";
   return (
     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${tone}`}>
       {label}
@@ -37,7 +37,7 @@ export function KpiTile({
     <div
       className={`rounded-xl px-4 py-3 ring-1 ${
         accent
-          ? "bg-gradient-to-br from-teal-50 to-white ring-teal-200/80"
+          ? "bg-gradient-to-br from-[var(--portal-accent-soft)] to-[var(--portal-paper)] ring-[var(--portal-accent)]/25"
           : "bg-white/95 ring-slate-200/90"
       }`}
     >
@@ -64,7 +64,7 @@ export function SigmaMetricsPanel({
           <span
             className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${
               cov.tone === "teal"
-                ? "bg-teal-50 text-teal-900 ring-teal-200"
+                ? "bg-[var(--portal-accent-soft)] text-[var(--portal-accent)] ring-[var(--portal-accent)]/25"
                 : "bg-slate-100 text-slate-600 ring-slate-200"
             }`}
           >

@@ -25,7 +25,7 @@ export function AdminLoginForm({ from }: { from?: string }) {
         return;
       }
       const dest =
-        from && from.startsWith("/admin") && from !== "/admin/login" ? from : "/admin/municipios";
+        from && from.startsWith("/admin") && from !== "/admin/login" ? from : "/admin/scrapers";
       router.replace(dest);
       router.refresh();
     } catch {

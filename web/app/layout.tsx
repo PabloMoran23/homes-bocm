@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@/components/Analytics";
 import { GlobalSiteJsonLd } from "@/components/seo/GlobalSiteJsonLd";
@@ -58,6 +58,10 @@ export const metadata: Metadata = {
       }),
 };
 
+export const viewport: Viewport = {
+  themeColor: "#1f4f53",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,7 +69,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="flex min-h-full flex-col bg-[var(--surface)] font-sans text-slate-900 antialiased">
+      <body className="flex min-h-full flex-col bg-[var(--surface)] font-sans text-[var(--portal-ink)] antialiased">
         <GlobalSiteJsonLd />
         <Analytics />
         <TierProvider>

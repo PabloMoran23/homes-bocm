@@ -105,9 +105,9 @@ function KpiCard({
 }) {
   const tones = {
     neutral: "bg-white ring-slate-200",
-    teal: "bg-teal-50/80 ring-teal-200/80",
-    sky: "bg-sky-50/80 ring-sky-200/80",
-    amber: "bg-amber-50/80 ring-amber-200/80",
+    teal: "bg-[var(--portal-accent-soft)]/80 ring-[var(--portal-accent)]/25",
+    sky: "bg-[#e4ecec]/80 ring-[#1f4f53]/20",
+    amber: "bg-[#f4e8d2]/80 ring-[#d4923a]/35",
   };
   return (
     <div className={`rounded-xl p-4 ring-1 ${tones[tone]}`}>
@@ -226,7 +226,7 @@ export function ProjectDetailView({
       <header className="portal-hero-bg mb-8 overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm">
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-white/90 px-3 py-0.5 text-xs font-semibold text-[var(--portal-accent)] ring-1 ring-teal-200/80">
+            <span className="rounded-full bg-[var(--portal-paper)]/90 px-3 py-0.5 text-xs font-semibold text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/20">
               {p.territorioLabel}
             </span>
             <span
@@ -257,7 +257,7 @@ export function ProjectDetailView({
           ) : null}
 
           {p.sigmaExpediente ? (
-            <p className="mt-3 font-mono text-sm font-medium text-teal-900">
+            <p className="mt-3 font-mono text-sm font-medium text-[var(--portal-accent)]">
               Expediente {p.sigmaExpediente}
             </p>
           ) : null}
@@ -286,7 +286,7 @@ export function ProjectDetailView({
                 href={p.sigmaVisorUrl!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg border border-teal-300 bg-white/90 px-4 py-2.5 text-sm font-semibold text-teal-950 hover:bg-teal-50"
+                className="inline-flex items-center rounded-lg border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)]/90 px-4 py-2.5 text-sm font-semibold text-[var(--portal-ink)] hover:bg-[var(--portal-paper-deep)]"
               >
                 Ayuntamiento
               </a>
@@ -415,7 +415,7 @@ export function ProjectDetailView({
                 onClick={() => setTab(t.id)}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition ${
                   activeTab === t.id
-                    ? "bg-white text-teal-900 shadow-sm"
+                    ? "bg-[var(--portal-paper)] text-[var(--portal-accent)] shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -500,7 +500,7 @@ export function ProjectDetailView({
                           href={u}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex rounded-lg border border-teal-200 bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-100"
+                          className="inline-flex rounded-lg border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--portal-accent)] hover:bg-[var(--portal-accent-soft)]"
                         >
                           {u.includes("listado.htm") ? "Listado NTI" : "Portal documentación"}
                         </a>

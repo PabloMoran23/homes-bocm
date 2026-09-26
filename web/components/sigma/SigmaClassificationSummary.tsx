@@ -2,25 +2,17 @@
 
 import {
   sigmaClassificationResumen,
-  sigmaClassificationTone,
   sigmaConfidenceLabel,
   type SigmaClassification,
   type SigmaClassificationTag,
 } from "@/lib/sigma-classification";
-
-const TAG_CLASS: Record<ReturnType<typeof sigmaClassificationTone>, string> = {
-  teal: "border-teal-200 bg-teal-50 text-teal-950 ring-teal-100",
-  violet: "border-violet-200 bg-violet-50 text-violet-950 ring-violet-100",
-  amber: "border-amber-200 bg-amber-50 text-amber-950 ring-amber-100",
-  sky: "border-sky-200 bg-sky-50 text-sky-950 ring-sky-100",
-  slate: "border-slate-200 bg-white text-slate-800 ring-slate-100",
-};
+import { PORTAL_TAG_TONE_BORDERED } from "@/lib/portal-tones";
 
 function ClassificationTag({ tag }: { tag: SigmaClassificationTag }) {
   return (
     <span
       title={tag.hint}
-      className={`inline-flex max-w-full items-center rounded-full border px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${TAG_CLASS[tag.tone]}`}
+      className={`inline-flex max-w-full items-center rounded-full border px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${PORTAL_TAG_TONE_BORDERED[tag.tone]}`}
     >
       <span className="truncate">{tag.label}</span>
     </span>
@@ -63,7 +55,7 @@ export function SigmaClassificationSummary({
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm sm:px-5">
+    <section className="rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-4 py-4 shadow-sm sm:px-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-semibold text-slate-900">De qué va este proyecto</p>
         {confianza ? (

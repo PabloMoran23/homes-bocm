@@ -25,6 +25,8 @@ export type UbicacionSearchItem = {
   distrito: string;
   barrio: string;
   label: string;
+  lat?: number | null;
+  lng?: number | null;
 };
 
 export type UbicacionInmueble = {

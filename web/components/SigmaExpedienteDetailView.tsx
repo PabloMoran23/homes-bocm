@@ -193,8 +193,8 @@ export function SigmaExpedienteDetailView({
       <div className="mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <aside className="min-w-0 space-y-5 lg:sticky lg:top-6 lg:self-start">
           {sigmaGeo ? (
-            <div className="overflow-hidden rounded-xl border border-indigo-200/80 bg-white shadow-sm">
-              <p className="border-b border-indigo-100 bg-indigo-50/70 px-3 py-2 text-xs font-semibold text-indigo-900">
+            <div className="overflow-hidden rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-sm">
+              <p className="border-b border-[var(--portal-paper-deep)] bg-[var(--portal-accent-soft)]/70 px-3 py-2 text-xs font-semibold text-[var(--portal-accent)]">
                 Ámbito del proyecto
               </p>
               <ProjectsMap
@@ -215,7 +215,7 @@ export function SigmaExpedienteDetailView({
           )}
 
           {ficha.clasificacion ? (
-            <div className="rounded-xl border border-indigo-100 bg-white p-4 shadow-sm">
+            <div className="rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] p-4 shadow-sm">
               <SigmaClassificationSummary value={ficha.clasificacion} compact />
             </div>
           ) : null}
@@ -244,7 +244,7 @@ export function SigmaExpedienteDetailView({
                 onClick={() => setTab(t.id)}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition ${
                   activeTab === t.id
-                    ? "bg-white text-indigo-950 shadow-sm"
+                    ? "bg-[var(--portal-paper)] text-[var(--portal-ink)] shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >

@@ -1,15 +1,15 @@
 import { PORTAL_TEAL } from "@/lib/dashboard-chart-theme";
 
-/** Gris (sin datos) → verdes/teal del portal (bajo → alto). */
+/** Papel (sin datos) → sage/agua del plano (bajo → alto). */
 export const DISTRITO_HEAT_PALETTE = [
-  { fill: "#f1f5f9", stroke: "#94a3b8" },
-  { fill: "#ecfdf5", stroke: "#99f6e4" },
-  { fill: "#ccfbf1", stroke: "#5eead4" },
-  { fill: "#99f6e4", stroke: "#2dd4bf" },
-  { fill: "#5eead4", stroke: "#14b8a6" },
-  { fill: "#2dd4bf", stroke: "#0f766e" },
-  { fill: "#14b8a6", stroke: "#0f766e" },
-  { fill: "#0f766e", stroke: "#134e4a" },
+  { fill: "#f3eee4", stroke: "#c4b8aa" },
+  { fill: "#ebe4d6", stroke: "#cfc6ba" },
+  { fill: "#d4e0b6", stroke: "#7e9a62" },
+  { fill: "#c7d4a8", stroke: "#5f7a4a" },
+  { fill: "#7a9a96", stroke: "#1f4f53" },
+  { fill: "#4a7578", stroke: "#1f4f53" },
+  { fill: "#2a5c60", stroke: "#16383b" },
+  { fill: "#1f4f53", stroke: "#16383b" },
 ] as const;
 
 export type MadridDistritoGeoProperties = {

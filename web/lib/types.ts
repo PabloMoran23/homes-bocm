@@ -445,6 +445,23 @@ export type MunicipioBotStatus =
   | "failed"
   | "skipped";
 
+export type MunicipioFillRates = {
+  titulo: number;
+  fecha: number;
+  url: number;
+  coords: number;
+  geometry: number;
+  pdf: number;
+  expediente: number;
+  tipo: number;
+  resumen: number;
+  metrics: number;
+  visor: number;
+};
+
+export type MunicipioFreshness = "fresh" | "due" | "never" | "error" | "unknown";
+export type MunicipioCompletenessBand = "rico" | "medio" | "basico" | "fino" | "sin_datos";
+
 export type MunicipioBotRow = {
   slug: string;
   nombre: string;
@@ -478,6 +495,17 @@ export type MunicipioBotRow = {
   withGeometry: number;
   parityOverall: string | null;
   boletinCounts: Record<string, number>;
+  lastIngestAt?: string | null;
+  lastOutputAt?: string | null;
+  ingestAgeDays?: number | null;
+  freshness?: MunicipioFreshness;
+  completenessScore?: number;
+  completenessBand?: MunicipioCompletenessBand;
+  fill?: MunicipioFillRates;
+  withPdf?: number;
+  withExpediente?: number;
+  geometryStatus?: "available" | "partial" | "unavailable" | null;
+  dataSource?: "jsonl" | "db" | "mixed" | "none";
 };
 
 export type MunicipioBotsPayload = {
@@ -485,6 +513,7 @@ export type MunicipioBotsPayload = {
   queueUpdatedAt: string | null;
   queueDescription?: string | null;
   minBocmCount?: number | null;
+  dbAvailable?: boolean;
   summary: {
     total: number;
     byStatus: Record<string, number>;
@@ -495,6 +524,24 @@ export type MunicipioBotsPayload = {
     parityOk: number;
     withPortalGeometry: number;
     openPrs: number;
+    live?: {
+      fresh: number;
+      due: number;
+      never: number;
+      error: number;
+      withLastIngest: number;
+      totalProyectos: number;
+      totalLicencias: number;
+    };
+    completeness?: {
+      avgScore: number;
+      byBand: Record<MunicipioCompletenessBand, number>;
+      withPdf: number;
+      withGeometry: number;
+      withCoords: number;
+      withExpediente: number;
+      scoredAdapters: number;
+    };
   };
   next: Record<string, unknown> | null;
   openPrsBySlug: Record<string, string>;

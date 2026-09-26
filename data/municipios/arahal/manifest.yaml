@@ -1,0 +1,31 @@
+slug: arahal
+nombre: "Arahal"
+provincia: Arahal/Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.arahal.es"
+  adapter: municipio.adapters.arahal:ArahalAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arahal/1.0"
+    web_base: "https://www.arahal.es"
+    sede_base: "https://sede.arahal.es"
+    tablon_url: "https://sede.arahal.es/tablon-1.0/do/entradaPublica?ine=41005"
+    nuevoplan_base: "https://arahal.nuevoplan.es"
+    nuevosplanes_base: "https://www.nuevosplanes.arahal.org"
+    centroid: [37.2631, -5.5453]
+  notes: |
+    OpenCMS (Guadaltel/EPICSA) web + GSede sede.arahal.es con tablón INPRO (INE 41005).
+    Consulta previa pública (31 PDFs en galería OpenCms).
+    PGOM en trámite: arahal.nuevoplan.es (WP REST media) + nuevosplanes.arahal.org (Google Drive).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: boja

@@ -16,7 +16,7 @@ function formatGeneratedAt(iso: string): string {
 
 function RadarBadge() {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-teal-200/90 bg-[var(--portal-accent-soft)]/60 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-teal-900">
+    <span className="inline-flex items-center gap-2 rounded-full border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)]/70 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--portal-accent)]">
       <span className="relative flex h-2 w-2" aria-hidden>
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--portal-accent)] opacity-70" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--portal-accent)]" />
@@ -44,7 +44,7 @@ function FeaturedCase({ item }: { item: LandingNewsSpotlight }) {
     <article className="min-w-0">
       <Link
         href={item.href}
-        className="group block rounded-2xl border border-teal-100/90 bg-gradient-to-br from-teal-50/70 via-white to-white p-6 ring-1 ring-teal-900/[0.04] transition hover:border-teal-200/90 hover:shadow-md hover:shadow-teal-900/5 sm:p-8"
+        className="group block rounded-2xl border border-[var(--portal-paper-deep)] bg-gradient-to-br from-[var(--portal-accent-soft)]/50 via-[var(--portal-paper)] to-[var(--portal-paper)] p-6 ring-1 ring-[var(--portal-ink)]/[0.04] transition hover:border-[var(--portal-accent)]/25 hover:shadow-md hover:shadow-[var(--portal-accent)]/5 sm:p-8"
       >
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-md bg-[var(--portal-accent)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
@@ -61,7 +61,7 @@ function FeaturedCase({ item }: { item: LandingNewsSpotlight }) {
           {item.dek}
         </p>
         {item.trendLabel ? (
-          <p className="mt-3 inline-flex rounded-lg border border-teal-200/80 bg-teal-50/80 px-3 py-1.5 text-xs font-medium text-teal-900">
+          <p className="mt-3 inline-flex rounded-lg border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)] px-3 py-1.5 text-xs font-medium text-[var(--portal-accent)]">
             {item.trendLabel}
           </p>
         ) : null}
@@ -80,7 +80,7 @@ function BriefCase({ item }: { item: LandingNewsSpotlight }) {
     <article className="min-w-0">
       <Link
         href={item.href}
-        className="group flex h-full flex-col rounded-xl border border-slate-200/90 bg-white p-5 transition hover:border-teal-200/90 hover:shadow-sm hover:shadow-teal-900/5"
+        className="group flex h-full flex-col rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] p-5 transition hover:border-[var(--portal-accent)]/25 hover:shadow-sm hover:shadow-[var(--portal-accent)]/5"
       >
         <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--portal-accent)]">
           {item.tag}
@@ -90,7 +90,7 @@ function BriefCase({ item }: { item: LandingNewsSpotlight }) {
         </h3>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-600">{item.dek}</p>
         {item.trendLabel ? (
-          <p className="mt-2 text-[11px] font-medium text-teal-800/90">{item.trendLabel}</p>
+          <p className="mt-2 text-[11px] font-medium text-[var(--portal-warm)]">{item.trendLabel}</p>
         ) : null}
         <MetaLine item={item} />
         <span className="mt-3 text-xs font-semibold text-[var(--portal-accent)]">
@@ -114,16 +114,16 @@ export function LandingNewsSection({
 
   return (
     <section
-      className="relative overflow-hidden rounded-2xl border border-teal-100/90 bg-white shadow-sm ring-1 ring-slate-900/[0.03]"
+      className="relative overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-sm ring-1 ring-[var(--portal-ink)]/[0.03]"
       aria-labelledby="landing-news-heading"
     >
       <div
-        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-teal-400/10 blur-3xl"
+        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[var(--portal-ochre)]/12 blur-3xl"
         aria-hidden
       />
 
       <div className="relative px-5 py-8 sm:px-8 sm:py-10">
-        <header className="flex flex-col gap-5 border-b border-teal-100/80 pb-6 sm:flex-row sm:items-start sm:justify-between">
+        <header className="flex flex-col gap-5 border-b border-[var(--portal-paper-deep)] pb-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <RadarBadge />
             <h2
@@ -142,7 +142,7 @@ export function LandingNewsSection({
             </p>
             {summary?.total ? (
               <p className="mt-3 text-xs text-slate-500">
-                <span className="font-semibold text-teal-800">{news.items.length} casos</span> en
+                <span className="font-semibold text-[var(--portal-accent)]">{news.items.length} casos</span> en
                 esta selección · seguimos{" "}
                 {summary.total.toLocaleString("es-ES")} anuncios y actuaciones de referencia
               </p>
@@ -150,7 +150,7 @@ export function LandingNewsSection({
           </div>
           <Link
             href="/explore"
-            className="shrink-0 self-start rounded-lg border border-teal-200/80 bg-teal-50/50 px-4 py-2.5 text-sm font-semibold text-[var(--portal-accent)] transition hover:bg-[var(--portal-accent-soft)]"
+            className="shrink-0 self-start rounded-lg border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)]/70 px-4 py-2.5 text-sm font-semibold text-[var(--portal-accent)] transition hover:bg-[var(--portal-accent-soft)]"
           >
             Ver en el mapa →
           </Link>
@@ -165,9 +165,9 @@ export function LandingNewsSection({
         {rest.length > 0 ? (
           <div className="mt-8">
             <p className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <span className="h-px flex-1 max-w-[2rem] bg-teal-300/80" aria-hidden />
+              <span className="h-px flex-1 max-w-[2rem] bg-[var(--portal-ochre)]/50" aria-hidden />
               Más destacados
-              <span className="h-px flex-1 bg-teal-100" aria-hidden />
+              <span className="h-px flex-1 bg-[var(--portal-paper-deep)]" aria-hidden />
             </p>
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((item) => (
@@ -179,7 +179,7 @@ export function LandingNewsSection({
           </div>
         ) : null}
 
-        <footer className="mt-8 border-t border-teal-50 pt-4 text-[11px] leading-relaxed text-slate-500">
+        <footer className="mt-8 border-t border-[var(--portal-paper-deep)] pt-4 text-[11px] leading-relaxed text-slate-500">
           Basado en datos públicos del Ayuntamiento. Las cifras son orientativas — consulta siempre
           la documentación oficial.
         </footer>

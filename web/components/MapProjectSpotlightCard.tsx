@@ -3,17 +3,10 @@
 import Link from "next/link";
 import { SigmaClassificationIcon } from "@/components/sigma/SigmaClassificationIcon";
 import type { MapProjectSpotlightItem } from "@/lib/map-project-spotlight";
+import { PORTAL_TAG_TONE } from "@/lib/portal-tones";
 import { sigmaClassificationTone } from "@/lib/sigma-classification";
 import type { MapSpotlightPlacement } from "@/lib/map-spotlight-placement";
 import { MAP_SPOTLIGHT_PLACEMENT_CLASS } from "@/lib/map-spotlight-placement";
-
-const TAG_TONE_CLASS = {
-  teal: "bg-teal-50 text-teal-900 ring-teal-200/90",
-  sky: "bg-sky-50 text-sky-900 ring-sky-200/90",
-  violet: "bg-violet-50 text-violet-900 ring-violet-200/90",
-  amber: "bg-amber-50 text-amber-950 ring-amber-200/90",
-  slate: "bg-slate-50 text-slate-800 ring-slate-200/90",
-} as const;
 
 function spotlightTitleParts(locationLine: string | null): {
   distrito: string | null;
@@ -29,7 +22,7 @@ function spotlightTitleParts(locationLine: string | null): {
 
 function CardBody({ item }: { item: MapProjectSpotlightItem }) {
   const tone = sigmaClassificationTone(item.categoriaProyecto ?? item.tipoObra);
-  const tagClass = TAG_TONE_CLASS[tone];
+  const tagClass = PORTAL_TAG_TONE[tone];
   const { distrito, headline } = spotlightTitleParts(item.locationLine);
 
   return (
@@ -105,7 +98,7 @@ export function MapProjectSpotlightCard({
       aria-hidden={!show}
     >
       {item ? (
-        <article className="relative rounded-xl border border-white/95 bg-white/94 px-3.5 py-3 shadow-lg shadow-teal-950/10 backdrop-blur-sm sm:px-4 sm:py-3.5">
+        <article className="relative rounded-xl border border-[var(--portal-paper)]/95 bg-[var(--portal-paper)]/94 px-3.5 py-3 shadow-lg shadow-[var(--portal-ink)]/10 backdrop-blur-sm sm:px-4 sm:py-3.5">
           {interactive && onClose ? (
             <button
               type="button"

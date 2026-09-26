@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import {
   MapContainer,
   ScaleControl,
-  TileLayer,
   ZoomControl,
   useMap,
 } from "react-leaflet";
@@ -33,7 +32,8 @@ import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import { usePreferCanvas } from "@/lib/use-prefer-canvas";
 import { capZoomForContainer, fixedZoomForContainer } from "@/lib/map-visual-scale";
-import { HOMES_MAP_TILE_URL } from "@/lib/map-tiles";
+import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
+import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
 
 const MADRID_CENTER: LatLngExpression = [40.42, -3.703];
 
@@ -365,7 +365,7 @@ export function MadridUnifiedMap({
   initialView?: MapInitialView;
   /** Mejor rendimiento con muchos polígonos en móvil. Si no se pasa, se detecta automáticamente. */
   preferCanvas?: boolean;
-  /** Atribución OSM/CARTO (desactivar si el mapa va dentro de un enlace). */
+  /** Atribución OSM/OpenFreeMap (desactivar si el mapa va dentro de un enlace). */
   showAttribution?: boolean;
   /** Portada animada: proyectos que aparecen y desaparecen (solo visual). */
   landingPulse?: boolean;
@@ -435,7 +435,7 @@ export function MadridUnifiedMap({
 
   const legend = useMemo(
     () => (
-      <div className="pointer-events-none absolute bottom-12 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-white/90 bg-white px-3 py-2.5 text-[11px] text-slate-600 shadow-md md:bg-white/92 md:backdrop-blur-sm sm:bottom-14 sm:flex">
+      <div className="pointer-events-none absolute bottom-12 left-3 z-[1000] hidden max-h-[min(40vh,280px)] max-w-[calc(100%-5rem)] flex-col gap-1.5 overflow-y-auto rounded-xl border border-[var(--portal-paper)]/90 bg-[var(--portal-paper)] px-3 py-2.5 text-[11px] text-[var(--portal-ink)]/70 shadow-md md:bg-[var(--portal-paper)]/92 md:backdrop-blur-sm sm:bottom-14 sm:flex">
         {showSigma ? (
           <>
             <span className="flex items-center gap-2">
@@ -451,7 +451,7 @@ export function MadridUnifiedMap({
         {showUbicaciones ? <LicenciaMapLegend /> : null}
         {showPortal ? (
           <span className="flex items-center gap-2">
-            <span className="inline-block h-2.5 w-2.5 rounded-full bg-violet-600 ring-2 ring-white" />
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#c07f6c] ring-2 ring-[var(--portal-paper)]" />
             Portales municipales CM
           </span>
         ) : null}
@@ -466,10 +466,10 @@ export function MadridUnifiedMap({
         className="pointer-events-none absolute inset-0 z-[500] rounded-none ring-1 ring-black/[0.05] ring-inset"
         aria-hidden
       />
-      <div className="absolute inset-0 overflow-hidden bg-teal-50/40">
+      <div className="absolute inset-0 overflow-hidden bg-[#f3eee4]">
         {statsLabel ? (
           <div className="pointer-events-none absolute bottom-3 left-1/2 z-[1000] flex w-[min(calc(100%-1.5rem),28rem)] -translate-x-1/2 justify-center px-3 sm:bottom-4">
-            <p className="rounded-xl border border-white/90 bg-white px-3 py-1.5 text-center text-xs leading-snug text-slate-600 shadow-md md:bg-white/92 md:backdrop-blur-sm">
+            <p className="rounded-xl border border-[var(--portal-paper)]/90 bg-[var(--portal-paper)] px-3 py-1.5 text-center text-xs leading-snug text-[var(--portal-ink)]/70 shadow-md md:bg-[var(--portal-paper)]/92 md:backdrop-blur-sm">
               {statsLabel}
             </p>
           </div>
@@ -482,6 +482,8 @@ export function MadridUnifiedMap({
             key={mapKey}
             center={mapCenter}
             zoom={mapZoom}
+            minZoom={HOMES_MAP_MIN_ZOOM}
+            maxZoom={HOMES_MAP_MAX_ZOOM}
             className="z-0 h-full w-full"
             style={{ height: "100%", width: "100%" }}
             zoomControl={false}
@@ -494,7 +496,7 @@ export function MadridUnifiedMap({
             attributionControl={false}
             preferCanvas={preferCanvas}
           >
-            <TileLayer url={HOMES_MAP_TILE_URL} />
+            <HomesBasemapLayer />
             <MapSizeFix />
             {interactive && onBoundsChange ? (
               <MapBoundsReporter onBoundsChange={onBoundsChange} />
@@ -577,12 +579,12 @@ export function MadridUnifiedMap({
               >
                 © OSM
               </a>
-              {" · CARTO"}
+              {" · OpenFreeMap"}
             </span>
           </div>
         ) : (
           <div className="pointer-events-none absolute bottom-2 right-2 z-[1000] text-right text-[9px] text-slate-400/90">
-            © OSM · CARTO
+            © OSM · OpenFreeMap
           </div>
         )}
       </div>

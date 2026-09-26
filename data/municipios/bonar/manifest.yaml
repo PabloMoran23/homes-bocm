@@ -1,0 +1,27 @@
+slug: bonar
+nombre: "Boñar"
+provincia: "Boñar, León"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytobonar.es"
+  adapter: municipio.adapters.bonar:BonarAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytobonar.es"
+    sede_base: "https://aytobonar.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-bonar/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Boñar"
+    centroid: [42.8667, -5.3167]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (tablón, trámites licencias de obras) + IDECyL WFS sectores/NUM (INE 24021, PlanPublica muni 021).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

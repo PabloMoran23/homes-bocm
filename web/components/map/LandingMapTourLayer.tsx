@@ -17,7 +17,10 @@ import {
   featurePointStyle,
   type SectorFeatureCollection,
 } from "@/lib/sector-geo";
+import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import { capZoomForContainer } from "@/lib/map-visual-scale";
+import { HomesFocusMask } from "@/components/map/homes-focus-mask-layer";
+import { isPolygonFeature } from "@/lib/map-focus-mask";
 
 const HIDDEN_STYLE: PathOptions = {
   opacity: 0,
@@ -49,19 +52,31 @@ function baseStyleForFeature(feature: GeoJSON.Feature): PathOptions {
   );
 }
 
-function styleWithVisibility(feature: GeoJSON.Feature, visibility: number, active: boolean): PathOptions {
-  const base = baseStyleForFeature(feature);
-  const vis = Math.min(1, Math.max(0, visibility));
-  const baseFill = Number(base.fillOpacity) || 0.28;
-  const weight = active ? Math.max(2.5, (Number(base.weight) || 2) + 1.5) : Number(base.weight) || 2;
+const FOCUS_OUTLINE: PathOptions = {
+  color: "#2a2622",
+  weight: 0,
+  dashArray: "7 5",
+  fill: true,
+  fillColor: "#d4923a",
+  fillOpacity: 0.01,
+  opacity: 0,
+  stroke: false,
+};
 
+function styleWithVisibility(feature: GeoJSON.Feature, visibility: number, active: boolean): PathOptions {
+  const vis = Math.min(1, Math.max(0, visibility));
+  if (!active || vis <= 0.02) return HIDDEN_STYLE;
+  if (!isPolygonFeature(feature)) {
+    const base = baseStyleForFeature(feature);
+    return {
+      ...base,
+      opacity: vis,
+      fillOpacity: (Number(base.fillOpacity) || 0.5) * vis,
+    };
+  }
   return {
-    ...base,
-    stroke: true,
-    fill: true,
-    opacity: vis * (active ? 1 : 0.85),
-    fillOpacity: Math.min(0.72, baseFill * vis * (active ? 1.15 : 1)),
-    weight: weight * vis,
+    ...FOCUS_OUTLINE,
+    fillOpacity: 0.01 * vis,
   };
 }
 
@@ -107,6 +122,11 @@ function fadeLayers(
 
   raf = requestAnimationFrame(tick);
   return () => cancelAnimationFrame(raf);
+}
+
+function featuresForGrupo(entries: IndexedLayer[], grupo: string): GeoJSON.Feature[] {
+  const key = expedienteGrupoKeyFromVariant(grupo);
+  return entries.filter((e) => e.grupo === key).map((e) => e.feature);
 }
 
 function hideAll(entries: IndexedLayer[]) {
@@ -216,7 +236,9 @@ export function LandingMapTourLayer({
         },
         onEachFeature(feature, subLayer) {
           const props = feature.properties as Record<string, unknown> | undefined;
-          const grupo = String(props?.expedienteGrupo || "");
+          const grupo = expedienteGrupoKeyFromVariant(
+            String(props?.expedienteGrupo || props?.EXP_TX_NUMERO || ""),
+          );
           entries.push({ layer: subLayer, feature, grupo });
         },
       },
@@ -225,6 +247,9 @@ export function LandingMapTourLayer({
     layer.addTo(map);
     layer.bringToFront();
     layerRef.current = layer;
+
+    const mask = new HomesFocusMask();
+    mask.addTo(map);
 
     let cancelled = false;
     let cancelFade: (() => void) | null = null;
@@ -248,9 +273,19 @@ export function LandingMapTourLayer({
       });
       const placement = placementFromLatLng(map, item.center);
       cancelFade?.();
-      cancelFade = fadeLayers(entries, item.expedienteGrupo, FADE_MS, () => {
-        onActiveChangeRef.current({ item, placement });
-      });
+      const feat = featuresForGrupo(entries, item.expedienteGrupo).filter(isPolygonFeature);
+      if (feat.length) {
+        mask.setFeatures(feat);
+        mask.animateProgress(1, FADE_MS);
+      }
+      cancelFade = fadeLayers(
+        entries,
+        expedienteGrupoKeyFromVariant(item.expedienteGrupo),
+        FADE_MS,
+        () => {
+          onActiveChangeRef.current({ item, placement });
+        },
+      );
     };
 
     const runTour = async () => {
@@ -263,6 +298,7 @@ export function LandingMapTourLayer({
 
         onActiveChangeRef.current({ item: null, placement: null });
         hideAll(entries);
+        mask.animateProgress(0, 220);
 
         const [s, w, n, e] = item.bounds;
         const bounds = L.latLngBounds([s, w], [n, e]);
@@ -272,15 +308,26 @@ export function LandingMapTourLayer({
         const placement = await flyToBoundsWithPlacement(map, bounds, item.center, maxZoom);
         if (cancelled) break;
 
+        const feat = featuresForGrupo(entries, item.expedienteGrupo).filter(isPolygonFeature);
+        if (feat.length) {
+          mask.setFeatures(feat);
+          mask.animateProgress(1, 520);
+        }
+
         await wait(CARD_DELAY_MS, isCancelled);
         if (cancelled) break;
 
         cancelFade?.();
         await new Promise<void>((resolve) => {
-          cancelFade = fadeLayers(entries, item.expedienteGrupo, FADE_MS, () => {
-            onActiveChangeRef.current({ item, placement });
-            resolve();
-          });
+          cancelFade = fadeLayers(
+            entries,
+            expedienteGrupoKeyFromVariant(item.expedienteGrupo),
+            FADE_MS,
+            () => {
+              onActiveChangeRef.current({ item, placement });
+              resolve();
+            },
+          );
         });
         if (cancelled) break;
 
@@ -289,6 +336,7 @@ export function LandingMapTourLayer({
 
         onActiveChangeRef.current({ item: null, placement: null });
         hideAll(entries);
+        mask.animateProgress(0, 280);
 
         await wait(BETWEEN_MS, isCancelled);
         if (cancelled) break;
@@ -312,6 +360,8 @@ export function LandingMapTourLayer({
       cancelled = true;
       window.clearTimeout(stepTimer);
       cancelFade?.();
+      mask.animateProgress(0, 1);
+      map.removeLayer(mask);
       onActiveChangeRef.current({ item: null, placement: null });
       map.removeLayer(layer);
       layerRef.current = null;

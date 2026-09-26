@@ -265,10 +265,10 @@ export function sectorLayerStyle(resolverId: string | null | undefined) {
     return { ...SIGMA_MAP_POLYGON.gestion };
   }
   return {
-    color: "#0f766e",
+    color: "#1f4f53",
     weight: 1.5,
-    fillColor: "#99f6e4",
-    fillOpacity: 0.18,
+    fillColor: "#7a9a96",
+    fillOpacity: 0.2,
   };
 }
 
@@ -299,7 +299,7 @@ export function sectorPointStyle(resolverId: string | null | undefined) {
   }
   const isCm = resolverId?.startsWith("cm_sitcm");
   if (isCm) {
-    return { ...SIGMA_MAP_POINT.default, radius: 7, fillColor: "#14b8a6" };
+    return { ...SIGMA_MAP_POINT.default, radius: 7, fillColor: "#4a7578" };
   }
-  return { radius: 5, color: "#0f766e", weight: 2, fillColor: "#99f6e4", fillOpacity: 0.72 };
+  return { radius: 5, color: "#1f4f53", weight: 2, fillColor: "#7a9a96", fillOpacity: 0.75 };
 }

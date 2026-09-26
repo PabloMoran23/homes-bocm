@@ -1,29 +1,29 @@
 import type { ChartOptions, TooltipItem } from "chart.js";
 
-export const PORTAL_TEAL = "#0f766e";
-export const PORTAL_TEAL_LIGHT = "rgba(15, 118, 110, 0.12)";
+export const PORTAL_TEAL = "#1f4f53";
+export const PORTAL_TEAL_LIGHT = "rgba(31, 79, 83, 0.12)";
 
 export const DONUT_PALETTE = [
-  "#0f766e",
-  "#14b8a6",
-  "#0ea5e9",
-  "#6366f1",
-  "#8b5cf6",
-  "#d946ef",
-  "#f43f5e",
-  "#f97316",
-  "#eab308",
-  "#84cc16",
-  "#64748b",
-  "#94a3b8",
+  "#1f4f53",
+  "#6b8f54",
+  "#c07f6c",
+  "#d4923a",
+  "#7a5c58",
+  "#4a7578",
+  "#5f7a4a",
+  "#b86f5e",
+  "#a67c3a",
+  "#7e9a62",
+  "#5a5850",
+  "#7a7268",
 ];
 
 export const CHART_COLORS = {
-  grid: "rgba(148, 163, 184, 0.25)",
-  tick: "#64748b",
-  tickMuted: "#94a3b8",
-  tooltipBg: "rgba(15, 23, 42, 0.92)",
-  tooltipBorder: "rgba(51, 65, 85, 0.5)",
+  grid: "rgba(122, 114, 104, 0.22)",
+  tick: "#6a6158",
+  tickMuted: "#8a8278",
+  tooltipBg: "rgba(42, 38, 34, 0.92)",
+  tooltipBorder: "rgba(90, 84, 76, 0.45)",
 };
 
 export function fmtChart(n: number): string {
@@ -58,7 +58,7 @@ export function baseLegendOptions(position: "top" | "bottom" = "bottom") {
       usePointStyle: true,
       pointStyle: "circle" as const,
       padding: 14,
-      color: "#475569",
+      color: "#6a6158",
       font: { family: "var(--font-geist-sans), system-ui, sans-serif", size: 11 },
     },
   };

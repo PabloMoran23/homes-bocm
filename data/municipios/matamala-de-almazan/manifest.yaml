@@ -1,0 +1,32 @@
+slug: matamala-de-almazan
+nombre: "Matamala de Almazán"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.matamaladealmazan.es"
+  adapter: municipio.adapters.matamala_de_almazan:MatamalaDeAlmazanAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.matamaladealmazan.es"
+    sede_base: "https://matamaladealmazan.sedelectronica.es"
+    board_url: "https://matamaladealmazan.sedelectronica.es/board/"
+    dossier_url: "https://matamaladealmazan.sedelectronica.es/dossier"
+    plai_municipio: 111
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Matamala de Almazán"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-matamala-de-almazan/1.0"
+    centroid: [41.548, -2.606]
+  notes: |
+    Fuentes: Drupal 7 (normas urbanísticas, modificaciones puntuales NUM, PE Finca
+    Concepción), sede espublico gestiona (tablón /board, trámites /dossier),
+    PLAI JCYL (municipio 111, Soria 42) e IDECyL WFS (NUM + 9 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

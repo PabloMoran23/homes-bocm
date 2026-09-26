@@ -32,7 +32,7 @@ export function SigmaProjectHero({
   const classHeadline = sigmaHeroClassificationHeadline(clasificacion);
 
   return (
-    <header className="portal-hero-bg overflow-hidden rounded-2xl border border-indigo-200/50 shadow-sm">
+    <header className="portal-hero-bg overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] shadow-sm">
       <div className={compact ? "p-4 sm:p-5" : "p-5 sm:p-8"}>
         <div className="flex min-w-0 max-w-full flex-col gap-3 sm:flex-row sm:items-start sm:gap-5">
           {clasificacion ? (
@@ -42,7 +42,7 @@ export function SigmaProjectHero({
           ) : null}
           <div className="min-w-0 flex-1 sm:order-1">
             <div className="flex flex-wrap gap-2">
-              <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-semibold text-indigo-950 ring-1 ring-indigo-200">
+              <span className="rounded-full bg-[var(--portal-accent-soft)] px-3 py-0.5 text-xs font-semibold text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/20">
                 Proyecto urbanístico
               </span>
               {presentation.source === "informacion_publica" ? (
@@ -50,7 +50,7 @@ export function SigmaProjectHero({
                   {status.label}
                 </span>
               ) : fase ? (
-                <span className="rounded-full bg-sky-50 px-3 py-0.5 text-xs font-semibold text-sky-900 ring-1 ring-sky-200">
+                <span className="rounded-full bg-[var(--portal-paper)] px-3 py-0.5 text-xs font-semibold text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/20">
                   {fase}
                 </span>
               ) : null}
@@ -110,7 +110,7 @@ export function SigmaProjectHero({
               {bocmFirstId ? (
                 <Link
                   href={projectPath(bocmFirstId)}
-                  className="inline-flex rounded-lg border border-teal-300 bg-white px-4 py-2 text-sm font-semibold text-teal-950 hover:bg-teal-50"
+                  className="inline-flex rounded-lg border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] px-4 py-2 text-sm font-semibold text-[var(--portal-ink)] hover:bg-[var(--portal-paper-deep)]"
                 >
                   Ver anuncio en el Boletín
                 </Link>

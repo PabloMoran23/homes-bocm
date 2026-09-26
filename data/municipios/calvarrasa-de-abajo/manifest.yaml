@@ -1,0 +1,34 @@
+slug: calvarrasa-de-abajo
+nombre: "Calvarrasa de Abajo"
+provincia: Calvarrasa de Abajo (Salamanca)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://calvarrasadeabajo.es"
+  adapter: municipio.adapters.calvarrasa_de_abajo:CalvarrasaDeAbajoAyuntamientoAdapter
+  config:
+    wp_base: "https://calvarrasadeabajo.es"
+    sede_base: "https://calvarrasadeabajo.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 069
+    ine_code: "37069"
+    c_mun: "37069"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Calvarrasa de Abajo"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37069"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=069"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=069"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-calvarrasa-de-abajo/1.0"
+    insecure_ssl: true
+    centroid: [40.943, -5.528]
+  notes: |
+    WordPress Divi (calvarrasadeabajo.es) + sede espublico + PlanPublica JCyL (prov37 mun069)
+    + IDECyL WFS sectores (c_mun=37069). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

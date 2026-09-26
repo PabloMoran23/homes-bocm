@@ -1,0 +1,41 @@
+slug: vinaros
+nombre: "Vinaròs"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://urbanisme.vinaros.es"
+  adapter: municipio.adapters.vinaros:VinarosAyuntamientoAdapter
+  config:
+    sede_base: "https://vinaros.sedelectronica.es"
+    board_url: "https://vinaros.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-vinaros/1.0"
+    centroid: [40.4703, 0.4756]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "12138"
+    seed_pages:
+      - "https://urbanisme.vinaros.es/es/contenido/planeamiento-urbanistico-municipal"
+      - "https://urbanisme.vinaros.es/es/contenido/modificaciones-del-pgou-2001"
+      - "https://urbanisme.vinaros.es/es/contenido/planes-parciales-i-planes-de-reforma-interior"
+      - "https://urbanisme.vinaros.es/es/node/302"
+      - "https://urbanisme.vinaros.es/es/node/275"
+      - "https://urbanisme.vinaros.es/es/contenido/estudios-de-detalle"
+      - "https://urbanisme.vinaros.es/es/contenido/planes-especiales"
+      - "https://urbanisme.vinaros.es/es/contenido/programas-e-instrumentos-de-planeamiento-en-tramite-de-aprobacion-o-desarrollo"
+  notes: |
+    Fuentes: Drupal 8 urbanisme.vinaros.es (PGOU SharePoint + ZIP visor) +
+    sede espublico gestiona (tablón/transparencia) +
+    ICV WFS InventarioSuSuz (88 sectores SU/SUZ con polígonos EPSG:4326).
+    Geoportal municipal (geoportal.vinaros.es) es catálogo sin REST público.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

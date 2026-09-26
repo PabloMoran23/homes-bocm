@@ -1,0 +1,28 @@
+slug: aracena
+nombre: "Aracena"
+provincia: "Aracena, Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://aracena.sedelectronica.es"
+  adapter: municipio.adapters.aracena:AracenaAyuntamientoAdapter
+  config:
+    sede_base: "https://aracena.sedelectronica.es"
+    board_url: "https://aracena.sedelectronica.es/board/"
+    web_base: "https://www.aracena.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-aracena/1.0"
+    centroid: [37.8936, -6.5603]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + sección Urbanismo SAGA
+    Diputación de Huelva (PGOU, PMVS, ordenanzas) en www.aracena.es.
+    Consulta de expedientes requiere identificación; sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

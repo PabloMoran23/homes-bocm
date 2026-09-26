@@ -1,0 +1,30 @@
+slug: carataunas
+nombre: "Carataunas"
+provincia: "Carataunas (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.carataunas.es"
+  adapter: municipio.adapters.carataunas:CarataunasAyuntamientoAdapter
+  config:
+    sede_base: "https://carataunas.sedelectronica.es"
+    web_base: "https://carataunas.es"
+    board_url: "https://carataunas.sedelectronica.es/board/"
+    transparency_url: "https://carataunas.sedelectronica.es/transparency/1b67b490-e8f9-43f4-a647-84ff1ae9e025/"
+    pou_url: "https://carataunas.es/ayuntamiento/plan-de-ordenacion-urbana/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-carataunas/1.0"
+    centroid: [36.9283, -3.4042]
+  notes: |
+    Web SAGA Alhambra (Diputación Granada) + sede espublico gestiona.
+    PGOU aprobado BOJA 2025; planeamiento en transparencia sede (7.1, 53 docs).
+    Tablón sede operativo; web tablón con timeout en CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

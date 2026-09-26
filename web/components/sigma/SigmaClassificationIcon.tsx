@@ -4,7 +4,7 @@ import { sigmaObraIconConfig } from "@/lib/sigma-classification-icon";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 
 const BOX_CLASS: Record<"sm" | "md" | "hero", string> = {
-  sm: "h-8 w-8 min-h-8 min-w-8 rounded-lg",
+  sm: "h-8 w-8 min-h-8 min-w-8 rounded-md",
   md: "h-[3.25rem] w-[3.25rem] sm:h-[3.25rem] sm:w-[3.25rem]",
   hero: "h-10 w-10 min-h-10 min-w-10 sm:h-14 sm:w-14 md:h-[4.5rem] md:w-[4.5rem] lg:h-[5.5rem] lg:w-[5.5rem]",
 };
@@ -28,10 +28,10 @@ export function SigmaClassificationIcon({
 
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-xl ring-1 ring-inset ring-white/30 sm:rounded-2xl ${BOX_CLASS[size]} ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-lg ring-1 ring-inset ring-white/25 sm:rounded-xl ${BOX_CLASS[size]} ${className}`}
       style={{
         background: cfg.bg,
-        boxShadow: `0 8px 24px ${cfg.bg}44, 0 2px 6px rgba(15,23,42,0.12)`,
+        boxShadow: `inset 0 1px 0 rgba(255,252,247,0.22), 0 8px 20px ${cfg.bg}33, 0 1px 3px rgba(42,38,34,0.14)`,
       }}
       aria-hidden
     >

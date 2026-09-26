@@ -18,20 +18,20 @@ export const LICENCIA_MAPA_LABELS = {
 };
 
 export const LICENCIA_MAPA_COLORS = {
-  dr_residencial: "#d97706",
-  dr_actividad: "#7c3aed",
-  dr_otra: "#ca8a04",
-  lu_residencial: "#0f766e",
-  lu_actividad: "#2563eb",
-  lu_otra: "#0891b2",
-  funcionamiento_residencial: "#059669",
-  funcionamiento_actividad: "#4f46e5",
-  comunicacion_previa: "#ea580c",
-  primera_ocupacion: "#16a34a",
-  obra_local_vivienda: "#c026d3",
-  obra_edificio: "#78716c",
-  consulta: "#0d9488",
-  otra: "#475569",
+  dr_residencial: "#6b8f54",
+  dr_actividad: "#c07f6c",
+  dr_otra: "#c4853a",
+  lu_residencial: "#1f4f53",
+  lu_actividad: "#9a5c48",
+  lu_otra: "#4a7578",
+  funcionamiento_residencial: "#5f7a4a",
+  funcionamiento_actividad: "#b86f5e",
+  comunicacion_previa: "#7a5c58",
+  primera_ocupacion: "#7e9a62",
+  obra_local_vivienda: "#a67c3a",
+  obra_edificio: "#4a5556",
+  consulta: "#5a5850",
+  otra: "#7a7268",
 };
 
 /** Orden de leyenda del mapa (mismas series prioritarias). */

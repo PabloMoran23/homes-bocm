@@ -1,0 +1,28 @@
+slug: mislata
+nombre: "Mislata"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.mislata.es"
+  adapter: municipio.adapters.mislata:MislataAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mislata/1.0"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      layer_su: "ms:InventarioSuSuz"
+      layer_zon: "Planeamiento.Zonificacion"
+      ine_municipio: "46169"
+  notes: |
+    Drupal 9 portales (digital_value) + transparencia planeamientos PGOU/edictos.
+    Sede sedipualba (tablón RSS + catálogo trámites URB/OBS).
+    Geometría parcial vía ICV WFS (cod_ine_mun=46169).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

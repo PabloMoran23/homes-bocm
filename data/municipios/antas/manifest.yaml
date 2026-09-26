@@ -1,0 +1,31 @@
+slug: antas
+nombre: "Antas"
+provincia: "Antas (Almería)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://antas.sedelectronica.es"
+  adapter: municipio.adapters.antas:AntasAyuntamientoAdapter
+  config:
+    sede_base: "https://antas.sedelectronica.es"
+    web_base: "https://www.antas.es"
+    board_url: "https://antas.sedelectronica.es/board/"
+    urbanismo_url: "https://www.antas.es/urbanismo/"
+    ordenanzas_url: "https://www.antas.es/reglamentos/"
+    transparency_url: "https://antas.sedelectronica.es/transparency/666d54b8-d709-4596-94e1-242f69de5fc7/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-antas/1.0"
+    centroid: [37.2453, -1.9178]
+  notes: |
+    Fuentes: WordPress www.antas.es (urbanismo, noticias PBOM/PGOU, ordenanzas) +
+    sede espublico gestiona (tablón /board/, transparencia PBOM).
+    Sin visor GIS público enlazado a expedientes; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

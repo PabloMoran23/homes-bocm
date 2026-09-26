@@ -1,0 +1,32 @@
+slug: cigales
+nombre: "Cigales"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://cigales.sedelectronica.es"
+  adapter: municipio.adapters.cigales:CigalesAyuntamientoAdapter
+  config:
+    sede_base: "https://cigales.sedelectronica.es"
+    board_url: "https://cigales.sedelectronica.es/board/"
+    dossier_url: "https://cigales.sedelectronica.es/dossier/.0"
+    plai_municipio: 50
+    plai_provincia: 47
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=050"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Cigales"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cigales/1.0"
+    centroid: [41.748, -4.697]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board, trámites /dossier/.0),
+    web WordPress cigales.es (normativas urbanísticas, enlace PGOU en tramitación),
+    PLAU JCYL (municipio 050, Valladolid INE 47142) y capas IDECyL WFS (PGOU + 22 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
