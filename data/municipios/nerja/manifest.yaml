@@ -1,0 +1,34 @@
+slug: nerja
+nombre: "Nerja"
+provincia: "Nerja/Málaga"
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.nerja.es"
+  adapter: municipio.adapters.nerja:NerjaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-nerja/1.0"
+    web_base: "https://www.nerja.es"
+    sede_base: "https://sedeelectronica.nerja.es"
+    tablon_opc_id: "268"
+    tablon_page: "https://sedeelectronica.nerja.es/portal/noEstatica.do?opc_id=268&ent_id=1&idioma=1"
+    tablon_subsections:
+      - dep.urb
+      - DEP.AP
+      - DEP.TRAF
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=29901"
+    web_seeds:
+      - "https://www.nerja.es/urbanismo/"
+      - "https://www.nerja.es/urbanismo/pgom/"
+    centroid: [36.7485, -3.8745]
+  notes: |
+    WordPress municipal (urbanismo/PGOM) + sede Insuit (tablón electrónico JSON
+    tablonElectronico.do, opc_id 268). Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
