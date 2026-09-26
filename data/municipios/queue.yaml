@@ -7164,12 +7164,12 @@ municipios:
 - slug: castello-de-rugat
   nombre: Castelló de Rugat
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:44:35.302275+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/633
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236676706
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Castelló de Rugat
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T10:41:16.974298+00:00'
+updated_at: '2026-09-26T10:44:35.303413+00:00'
