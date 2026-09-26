@@ -1,0 +1,28 @@
+slug: buenavista-del-norte
+nombre: "Buenavista del Norte"
+provincia: "Buenavista del Norte"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.buenavistadelnorte.es"
+  adapter: municipio.adapters.buenavista_del_norte:BuenavistaDelNorteAyuntamientoAdapter
+  config:
+    wp_base: "https://www.buenavistadelnorte.es"
+    sede_base: "https://sede.buenavistadelnorte.es"
+    sitcan_package: planeamiento-urbanistico-de-buenavista-del-norte
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38010/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-buenavista-del-norte/1.0"
+    centroid: [28.3697, -16.8615]
+  notes: |
+    WordPress Divi (Oficina Técnica, noticias urbanismo) + SITCAN CKAN (PGO)
+    + GEOBDP Grafcan (doc 452, UTM28N). Sede tributaria para tasas de obra.
+    Expedientes administrativos en buenavistadelnorte.sedelectronica.es requieren Cl@ve.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

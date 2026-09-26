@@ -1,0 +1,36 @@
+slug: monover
+nombre: "Monòver"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.monovar.es"
+  adapter: municipio.adapters.monover:MonoverAyuntamientoAdapter
+  config:
+    sede_base: "https://monovar.sedelectronica.es"
+    board_url: "https://monovar.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-monover/1.0"
+    centroid: [38.8177, -0.8883]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "03090"
+      skip_wfs_scan: true
+    seed_pages:
+      - "https://www.monovar.es/urbanismo/"
+      - "https://www.monovar.es/plan-general-de-ordenacion-urbana-de-monovar/"
+      - "https://www.monovar.es/propuesta-plan-general-estructural-2019-2a-exposicion-publica/"
+      - "https://www.monovar.es/plan-especial-vertedero-de-inertes/"
+  notes: |
+    WordPress municipal (PGOU PDFs, formularios urbanismo) + sede espublico gestiona (tablón).
+    ICV InventarioSuSuz consultado (INE 03090) sin sectores publicados; geometría vía orquestador.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

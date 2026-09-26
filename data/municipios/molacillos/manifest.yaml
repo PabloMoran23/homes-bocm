@@ -1,0 +1,26 @@
+slug: molacillos
+nombre: "Molacillos"
+provincia: "Molacillos (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://molacillos.sedelectronica.es"
+  adapter: municipio.adapters.molacillos:MolacillosAyuntamientoAdapter
+  config:
+    sede_base: "https://molacillos.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-molacillos/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Molacillos"
+    centroid: [41.583, -5.659]
+  notes: |
+    Sede espublico gestiona (tablón + catálogo trámites) + PlanPublica JCYL (prov 49, mun 119)
+    + IDECyL WFS sectores ED-1/2/3 y PP-1 (c_mun=49119).
+    Web corporativa molacillos.es inactiva; sin visor urbanístico municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

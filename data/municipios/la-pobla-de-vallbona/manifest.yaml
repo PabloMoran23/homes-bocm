@@ -1,0 +1,27 @@
+slug: la-pobla-de-vallbona
+nombre: "La Pobla de Vallbona"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.lapobladevallbona.es"
+  adapter: municipio.adapters.la_pobla_de_vallbona:LaPoblaDeVallbonaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-pobla-de-vallbona/1.0"
+    web_base: "https://www.lapobladevallbona.es"
+    sede_base: "https://seu.lapobladevallbona.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      cod_ine_mun: "46202"
+  notes: |
+    Web TYPO3 (PGE, instrumentos aprobados PDF) + sede STA TAO (tablón PTS2_TABLON, catálogo CATSERV).
+    Geometría parcial vía ICV InventarioSuSuz WFS (49 sectores SU/SUZ, INE 46202).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

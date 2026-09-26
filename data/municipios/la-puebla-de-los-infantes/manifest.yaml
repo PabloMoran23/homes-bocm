@@ -1,0 +1,29 @@
+slug: la-puebla-de-los-infantes
+nombre: "La Puebla de los Infantes"
+provincia: "La Puebla de los Infantes (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.lapuebladelosinfantes.es"
+  adapter: municipio.adapters.la_puebla_de_los_infantes:LaPueblaDeLosInfantesAyuntamientoAdapter
+  config:
+    web_base: "https://www.lapuebladelosinfantes.es"
+    sede_base: "https://sede.lapuebladelosinfantes.es"
+    tablon_url: "https://sede.lapuebladelosinfantes.es/tablon-1.0/do/entradaPublica?ine=41078"
+    transparencia_url: "https://www.lapuebladelosinfantes.es/es/transparencia"
+    noticias_url: "https://www.lapuebladelosinfantes.es/es/actualidad/noticias/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-puebla-de-los-infantes/1.0"
+    centroid: [37.532, -5.183]
+  notes: |
+    Web OpenCMS + sede GSede INPRO (tablón tablon-1.0, INE 41078).
+    Tablón vacío; proyectos desde noticias/anuncios y enlaces transparencia ITA.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

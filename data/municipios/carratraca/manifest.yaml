@@ -1,0 +1,28 @@
+slug: carratraca
+nombre: "Carratraca"
+provincia: Málaga
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://carratraca.sedelectronica.es"
+  adapter: municipio.adapters.carratraca:CarratracaAyuntamientoAdapter
+  config:
+    sede_base: "https://carratraca.sedelectronica.es"
+    board_url: "https://carratraca.sedelectronica.es/board/"
+    web_base: "https://www.carratraca.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-carratraca/1.0"
+    centroid: [36.8533, -4.8156]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/), portal transparencia (sección 7 urbanismo),
+    formularios declaración responsable en web municipal, PGOU vía BOJA/SITUA/Diputación Málaga.
+    Web www.carratraca.es bloqueada (CloudFront 403) en CI; sede operativa.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

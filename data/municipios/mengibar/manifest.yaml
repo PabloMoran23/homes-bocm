@@ -1,0 +1,31 @@
+slug: mengibar
+nombre: "Mengíbar"
+provincia: "Mengíbar/Jaén"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://aytomengibar.com"
+  adapter: municipio.adapters.mengibar:MengibarAyuntamientoAdapter
+  config:
+    web_base: "https://aytomengibar.com"
+    sede_base: "https://aytomengibar.sedelectronica.es"
+    board_url: "https://aytomengibar.sedelectronica.es/board/"
+    pgom_url: "https://aytomengibar.com/pgom-plan-general-de-ordenacion-municipal-de-mengibar/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=23061"
+    wp_urbanismo_cat: 97
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mengibar/1.0"
+    centroid: [37.9689, -3.8089]
+  notes: |
+    Fuentes: WordPress aytomengibar.com (categoría Urbanismo + posts expediente/PGOM),
+    sede espublico gestiona (tablón, transparencia expediente 1520/2022),
+    PGOM (PDFs avance) y SITUADIFUSION Junta de Andalucía (INE 23061).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

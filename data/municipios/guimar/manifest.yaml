@@ -1,0 +1,28 @@
+slug: guimar
+nombre: "Güímar"
+provincia: "Güímar"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.guimar.es"
+  adapter: municipio.adapters.guimar:GuimarAyuntamientoAdapter
+  config:
+    web_base: "https://www.guimar.es"
+    sede_base: "https://guimar.sedelectronica.es"
+    board_url: "https://guimar.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-guimar
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38020/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-guimar/1.0"
+    centroid: [28.3150, -16.4120]
+  notes: |
+    Drupal 9 (ordenación del territorio /node/132, modelos solicitud) + sede espublico
+    (tablón /board) + SITCAN CKAN planeamiento-urbanistico-de-guimar + GEOBDP Grafcan (INE 38020).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
