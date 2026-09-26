@@ -1,0 +1,35 @@
+slug: cardenosa
+nombre: "Cardeñosa"
+provincia: "Cardeñosa (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.cardenosa.es"
+  adapter: municipio.adapters.cardenosa:CardenosaAyuntamientoAdapter
+  config:
+    web_base: "https://www.cardenosa.es"
+    sede_base: "https://cardenosa.sedelectronica.es"
+    board_url: "https://cardenosa.sedelectronica.es/board"
+    info_url: "https://cardenosa.sedelectronica.es/info"
+    rss_url: "https://www.cardenosa.es/rss.xml"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=05&municipio=049"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cardenosa/1.0"
+    insecure_ssl: true
+    centroid: [40.772, -4.714]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Cardeñosa
+    plai_provincia: 05
+    plai_municipio: 049
+  notes: |
+    Web plantilla Diputación de Ávila (RSS + fichas HTML/PDF en /docus/).
+    Sede espublico gestiona: tablón /board (anuncios recientes).
+    Geometría: IDECyL WFS PLAU CyL (1 NUM + 30 sectores).
+    PLAU JCYL (prov 05, mun 049) — revisión NNSS 2025.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,31 @@
+slug: albunol
+nombre: "Albuñol"
+provincia: "Albuñol/Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://albunol.sedelectronica.es"
+  adapter: municipio.adapters.albunol:AlbunolAyuntamientoAdapter
+  config:
+    sede_base: "https://albunol.sedelectronica.es"
+    board_url: "https://albunol.sedelectronica.es/board"
+    web_base: "https://www.albunol.es"
+    transparency_urbanismo_url: "https://albunol.sedelectronica.es/citizen-service/ade72156-e3c1-4d56-81f0-f39624e0fb3f"
+    atum_buscador_url: "https://atum.dipgra.es/atum/formulario_actuaciones/buscador.php?ent=6"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-albunol/1.0"
+    centroid: [36.7895, -3.1883]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Transparencia Obras y Urbanismo (licencias informativas).
+    ATUM Diputación Granada (buscador trámites, ent=6).
+    SITUA Junta Andalucía para PGOU regional (sin geometría por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

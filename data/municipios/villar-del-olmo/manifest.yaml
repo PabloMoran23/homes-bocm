@@ -1,0 +1,33 @@
+slug: villar-del-olmo
+nombre: "Villar del Olmo"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.villardelolmo.es"
+  adapter: municipio.adapters.villar_del_olmo:VillarDelOlmoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villar-del-olmo/1.0"
+    centroid: [40.3364, -3.2356]
+    sede_base: "https://villardelolmo.sedelectronica.es"
+    board_url: "https://villardelolmo.sedelectronica.es/board"
+    pgou_url: "https://www.villardelolmo.es/Pagina/plan-general-de-urbanismo"
+    urbanismo_url: "https://www.villardelolmo.es/servicios-al-ciudadano/territorio-y-medio-ambiente"
+    tramites_url: "https://villardelolmo.sedelectronica.es/dossier"
+    insecure_ssl: true
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "VILLAR DEL OLMO"
+  notes: |
+    Web Neosoft (villardelolmo.es): PGOU documento avance (36 PDFs), normativa NNSS/Eurovillas, formularios licencia.
+    Sede espublico gestiona (villardelolmo.sedelectronica.es): tablón /board, transparencia, catálogo trámites.
+    WFS SITCM sin ámbitos publicados aún (PGOU en elaboración).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

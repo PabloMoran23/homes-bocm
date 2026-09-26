@@ -1,0 +1,33 @@
+slug: lachar
+nombre: "Láchar"
+provincia: "Láchar (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.lachar.es"
+  adapter: municipio.adapters.lachar:LacharAyuntamientoAdapter
+  config:
+    web_base: "https://www.lachar.es"
+    sede_base: "https://lachar.sedelectronica.es"
+    board_url: "https://lachar.sedelectronica.es/board/"
+    poou_url: "https://www.lachar.es/ayuntamiento/plan-de-ordenacion-urbana/"
+    transp_urbanismo_url: "https://lachar.sedelectronica.es/transparency/4dea4596-b4ae-4c99-9b87-94184e7adb83/"
+    tramites_url: "https://www.lachar.es/ayuntamiento/tramites-e-impresos/"
+    dossier_url: "https://lachar.sedelectronica.es/dossier.1"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=18128"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lachar/1.0"
+    centroid: [37.1986, -3.8428]
+  notes: |
+    OpenCMS SAGA/Alhambra (Diputación Granada) + sede espublico gestiona.
+    Tablón /board/; transparencia urbanismo (secciones vacías); POOU informativo.
+    SITUA cid=18128 sin geometría REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

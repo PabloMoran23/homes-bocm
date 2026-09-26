@@ -1,0 +1,32 @@
+slug: narros-de-matalayegua
+nombre: "Narros de Matalayegua"
+provincia: "Narros de Matalayegua (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://narrosdematalayegua.sedelectronica.es"
+  adapter: municipio.adapters.narros_de_matalayegua:NarrosDeMatalayeguaAyuntamientoAdapter
+  config:
+    sede_base: "https://narrosdematalayegua.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 211
+    ine_code: "37212"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Narros de Matalayegua"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37212"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=211"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=211"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-narros-de-matalayegua/1.0"
+    insecure_ssl: true
+    centroid: [40.4219, -5.7756]
+  notes: |
+    Sin web corporativa. Sede espublico gestiona (certificado intermedio incompleto → insecure_ssl).
+    Planeamiento en PlanPublica JCYL (código municipio 211). Geometría municipal vía IDECyL WFS (instrumento NUM/DSU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

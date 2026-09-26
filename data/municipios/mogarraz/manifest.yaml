@@ -1,0 +1,27 @@
+slug: mogarraz
+nombre: "Mogarraz"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.mogarraz.es"
+  adapter: municipio.adapters.mogarraz:MogarrazAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mogarraz/1.0 (+urbanismo research)"
+    wp_base: "https://www.mogarraz.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=194"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=194"
+    wfs_municipio: "Mogarraz"
+  notes: |
+    WordPress Parabola (normas urbanísticas PDF en /normas-urbanisticas/).
+    PlanPublica JCyL (provincia 37, municipio 194, INE 37194).
+    IDECyL WFS urbanismo (instrumento NUM municipal).
+    Sede espublico mogarraz.sedelectronica.es sin resolución DNS desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

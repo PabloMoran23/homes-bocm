@@ -1,0 +1,28 @@
+slug: minas-de-riotinto-y-el-campillo
+nombre: "Minas de Riotinto y El Campillo"
+provincia: "Minas de Riotinto (Huelva)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.aytoriotinto.es"
+  adapter: municipio.adapters.minas_de_riotinto_y_el_campillo:MinasDeRiotintoYElCampilloAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytoriotinto.es"
+    sede_base: "https://minasderiotinto.sedelectronica.es"
+    board_url: "https://minasderiotinto.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-minas-de-riotinto-y-el-campillo/1.0"
+    centroid: [37.694, -6.596]
+  notes: |
+    Fuentes: Saga Suite aytoriotinto.es (urbanismo/PGOU) + sede espublico gestiona (tablón, transparencia).
+    Certificado SSL / WAF en web municipal (insecure_ssl).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

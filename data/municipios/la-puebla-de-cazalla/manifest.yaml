@@ -1,0 +1,32 @@
+slug: la-puebla-de-cazalla
+nombre: "La Puebla de Cazalla"
+provincia: "La Puebla de Cazalla (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lapuebladecazalla.sedelectronica.es"
+  adapter: municipio.adapters.la_puebla_de_cazalla:LaPueblaDeCazallaAyuntamientoAdapter
+  config:
+    sede_base: "https://lapuebladecazalla.sedelectronica.es"
+    web_base: "http://www.pueblacazalla.org/ayto"
+    transparencia_base: "https://transparencia.lapuebladecazalla.es"
+    board_url: "https://lapuebladecazalla.sedelectronica.es/board"
+    pgou_index_url: "http://www.pueblacazalla.org/ayto/index.php/la-puebla-de-cazalla/60-ayuntamiento/urbanismo/762-pgou-indice"
+    transp_urbanismo_url: "https://transparencia.lapuebladecazalla.es/es/transparencia/indicadores-de-transparencia/indicador/50.-INSTRUMENTOS-DE-PLANEAMIENTO-URBANISTICO-MUNICIPAL./"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-puebla-de-cazalla/1.0"
+    centroid: [37.2217, -5.3117]
+  notes: |
+    Joomla web (pueblacazalla.org/ayto) con PGOU aprobado 2020 + sede espublico gestiona
+    (tablón /board) + transparencia Diputación Sevilla (indicador 50 planeamiento).
+    Sin visor GIS ni SITUA enlazable.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

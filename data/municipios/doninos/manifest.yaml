@@ -1,0 +1,25 @@
+slug: doninos
+nombre: "Doñinos"
+provincia: Doñinos-Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://doninosdesalamanca.sedelectronica.es"
+  adapter: municipio.adapters.doninos:DoninosAyuntamientoAdapter
+  config:
+    sede_base: "https://doninosdesalamanca.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-doninos/1.0"
+    wfs_municipio: "Doñinos de Salamanca"
+  notes: |
+    Fuentes: tablón sede (/board), inicio (/info.0), catálogo trámites (/dossier.0),
+    archivo PLAI Junta CYL (provincia 37, municipio 117) e IDECyL WFS sectores/planes.
+    Web ayto-doninos.com (OpenCMS) inaccesible desde CI (timeout).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

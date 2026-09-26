@@ -1,0 +1,27 @@
+slug: penaranda-de-bracamonte
+nombre: "Peñaranda de Bracamonte"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://penarandadebracamonte.sedelectronica.es"
+  adapter: municipio.adapters.penaranda_de_bracamonte:PenarandaDeBracamonteAyuntamientoAdapter
+  config:
+    sede_base: "https://penarandadebracamonte.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-penaranda-de-bracamonte/1.0"
+    wfs_municipio: "Peñaranda de Bracamonte"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=224"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=224"
+  notes: |
+    Fuentes: tablón sede (/board), inicio (/info.0), catálogo trámites (/dossier.0),
+    archivo PLAI Junta CYL (provincia 37, municipio 224) e IDECyL WFS sectores/planes.
+    Web www.bracamonte.es inaccesible desde CI (timeout >60s).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,31 @@
+slug: jabugo
+nombre: "Jabugo"
+provincia: "Jabugo/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://jabugo.sedelectronica.es"
+  adapter: municipio.adapters.jabugo:JabugoAyuntamientoAdapter
+  config:
+    sede_base: "https://jabugo.sedelectronica.es"
+    web_base: "https://jabugo.es"
+    board_url: "https://jabugo.sedelectronica.es/board/"
+    transparency_url: "https://jabugo.sedelectronica.es/transparency"
+    citizen_urbanismo_url: "https://jabugo.sedelectronica.es/citizen-service/ff09163c-e59b-43c0-9540-e35e4a26c4c4"
+    infraestructura_url: "https://jabugo.es/area-de-infraestructura/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-jabugo/1.0"
+    centroid: [37.9153, -6.7302]
+  notes: |
+    Fuentes: sede espublico (tablón, transparencia urbanismo 97 docs, trámites) +
+    WordPress jabugo.es (área infraestructura/urbanismo) + PGOU CP-045/2022 (BOJA/SITUA).
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

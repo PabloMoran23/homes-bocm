@@ -1,0 +1,30 @@
+slug: miengo
+nombre: "Miengo"
+provincia: "Miengo, Cantabria"
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://www.aytomiengo.org"
+  adapter: municipio.adapters.miengo:MiengoAyuntamientoAdapter
+  config:
+    wp_base: "https://www.aytomiengo.org"
+    tablon_url: "https://www.aytomiengo.org/tablon-de-anuncios/"
+    urbanismo_url: "https://www.aytomiengo.org/urbanismo/"
+    sede_url: "https://sedemiengo.simplificacloud.com/"
+    aucan_url: "https://aplicacionesweb.cantabria.es/aucan/public/zona/costacentral/miengo"
+    cod_ine: "39044"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-miengo/1.0"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    centroid: [43.422, -3.965]
+  notes: |
+    Web WordPress Avada (tablón en página única + urbanismo/PGOU PDFs).
+    Sede Absis/SimplificaCloud (tramites; sin tablón scrapeable).
+    Geometría: SIUCAN WFS Cantabria (Urbanismo:Sectores, INE 39044).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
