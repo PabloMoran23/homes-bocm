@@ -1,0 +1,28 @@
+slug: guia-de-isora
+nombre: "Guía de Isora"
+provincia: "Guía de Isora"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.guiadeisora.org/corp"
+  adapter: municipio.adapters.guia_de_isora:GuiaDeIsoraAyuntamientoAdapter
+  config:
+    wp_base: "https://www.guiadeisora.org/corp"
+    sede_base: "http://guiadeisora.sedelectronica.es"
+    board_url: "http://guiadeisora.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-guia-de-isora
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38019/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-guia-de-isora/1.0"
+    centroid: [28.2092, -16.7799]
+  notes: |
+    WordPress FoundationPress (/corp) con PDFs de urbanismo + sede espublico gestiona (tablón)
+    + SITCAN CKAN (53 recursos, 15 instrumentos) + GEOBDP Grafcan INE 38019.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
