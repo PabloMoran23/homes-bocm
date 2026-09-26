@@ -1,0 +1,28 @@
+slug: albaida-del-aljarafe
+nombre: "Albaida del Aljarafe"
+provincia: Albaida del Aljarafe (Sevilla)
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://albaidadelaljarafe.sedelectronica.es"
+  adapter: municipio.adapters.albaida_del_aljarafe:AlbaidaDelAljarafeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-albaida-del-aljarafe/1.0"
+    insecure_ssl: true
+    web_base: "https://www.albaidadelaljarafe.es"
+    sede_base: "https://albaidadelaljarafe.sedelectronica.es"
+    ine_code: "41003"
+    tablon_url: "https://portal.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41003"
+    centroid: [37.4255, -6.1651]
+  notes: |
+    OpenCMS INPRO (web) + sede espublico gestiona (tablón, transparencia PGOM).
+    Tablón Diputación Sevilla INE 41003. LicytalPub CIF P4100300E.
+    PGOM aprobación inicial 2025 en transparencia fa19010b-…
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
