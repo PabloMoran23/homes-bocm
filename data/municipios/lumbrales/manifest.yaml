@@ -1,0 +1,32 @@
+slug: lumbrales
+nombre: "Lumbrales"
+provincia: "Lumbrales-Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://lumbrales.sedelectronica.es"
+  adapter: municipio.adapters.lumbrales:LumbralesAyuntamientoAdapter
+  config:
+    sede_base: "https://lumbrales.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 173
+    ine_code: "37173"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Lumbrales"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37173"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=173"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=173"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lumbrales/1.0 (+urbanismo research)"
+    centroid: [40.9361, -6.7236]
+  notes: |
+    Web corporativa Wix (www.lumbrales.es) sin listado urbanístico.
+    Sede espublico gestiona + PlanPublica JCyL (NS + estudios de detalle) + IDECyL WFS.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
