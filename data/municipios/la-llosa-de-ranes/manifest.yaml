@@ -1,0 +1,31 @@
+slug: la-llosa-de-ranes
+nombre: "La Llosa de Ranes"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.lallosaderanes.es"
+  adapter: municipio.adapters.la_llosa_de_ranes:LaLlosaDeRanesAyuntamientoAdapter
+  config:
+    web_base: "https://www.lallosaderanes.es"
+    sede_base: "https://lallosaderanes.sedelectronica.es"
+    board_url: "https://lallosaderanes.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-llosa-de-ranes/1.0"
+    centroid: [39.0166, -0.5335]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      ine_municipio: "46157"
+  notes: |
+    Web Drupal 10 portalesmunicipales (urbanisme, informació pública Narengs/PG, instàncies).
+    Sede espublico gestiona: tablón /board/.
+    ICV WFS InventarioSuSuz (INE 46157) para geometría de sectores/UE.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

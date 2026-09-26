@@ -1,0 +1,34 @@
+slug: batres
+nombre: "Batres"
+provincia: "Batres, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.batres.es"
+  adapter: municipio.adapters.batres:BatresAyuntamientoAdapter
+  config:
+    web_base: "https://www.batres.es"
+    sede_base: "https://batres.sedelectronica.es"
+    board_url: "https://batres.sedelectronica.es/board"
+    normas_url: "https://www.batres.es/ayuntamiento/normativa/normas-subsidiarias"
+    tramites_url: "https://www.batres.es/tramites/urbanismo"
+    docs_url: "https://www.batres.es/areas-municipales/urbanismo-e-infraestructuras/documentos-urbanisticos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-batres/1.0"
+    centroid: [40.2083, -3.9236]
+    geometry:
+      kind: sitcm_wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "BATRES"
+  notes: |
+    Joomla Gantry (batres.es) con NNSS y trámites PDF + sede espublico gestiona
+    (tablón /board, transparencia). Geometría partial vía WFS SIT sitcm:VPLA_V_AMBITO
+    (~19 ámbitos: APD, SAU, UE).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

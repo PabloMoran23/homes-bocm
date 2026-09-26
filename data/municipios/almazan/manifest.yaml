@@ -1,0 +1,30 @@
+slug: almazan
+nombre: "Almazán"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://almazan.es"
+  adapter: municipio.adapters.almazan:AlmazanAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almazan/1.0"
+    sede_base: "https://almazan.sedelectronica.es"
+    board_url: "https://almazan.sedelectronica.es/board/"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=42&municipio=006"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=42&municipio=006"
+    plai_municipio: 6
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Almazán"
+    centroid: [41.419, -2.531]
+  notes: |
+    WordPress almazan.es (PGOU, instancias) + sede espublico gestiona (tablón)
+    + PLAU/PLAI JCYL (provincia 42, municipio 006) + IDECyL WFS (42 features).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

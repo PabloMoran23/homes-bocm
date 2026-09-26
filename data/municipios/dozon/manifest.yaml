@@ -1,0 +1,26 @@
+slug: dozon
+nombre: "Dozón"
+provincia: "Pontevedra"
+comunidad_autonoma: galicia
+boletin_source_id: dog
+
+portal:
+  base_url: "https://dozon.sedelectronica.gal"
+  adapter: municipio.adapters.dozon:DozonAyuntamientoAdapter
+  config:
+    web_base: "https://www.dozon.gal/web"
+    sede_base: "https://dozon.sedelectronica.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-dozon/1.0"
+    centroid: [42.5686, -8.0479]
+  notes: |
+    WordPress corporativo (sin sección urbanismo) + sede espublico gestiona.
+    Tablón de anuncios vacío. Planeamiento: Plan Básico Autonómico (SIOTUGA INE 36016)
+    y Plan básico municipal en tramitación Xunta (DOG 2024-01-31).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,28 @@
+slug: frigiliana
+nombre: "Frigiliana"
+provincia: "Frigiliana-Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://frigiliana.es"
+  adapter: municipio.adapters.frigiliana:FrigilianaAyuntamientoAdapter
+  config:
+    web_base: "https://frigiliana.es"
+    sede_base: "https://frigiliana.sedelectronica.es"
+    board_url: "https://frigiliana.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-frigiliana/1.0"
+    centroid: [36.7871, -3.8951]
+  notes: |
+    WordPress frigiliana.es (PGOU/NNSS PDFs) + sede espublico gestiona (/board/, /dossier).
+    Formularios licencias en descarga-de-formularios-2. SITUA Junta para PGOU regional.
+    geometry_status: unavailable (PDFs sin georef, sin visor expediente↔polígono).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

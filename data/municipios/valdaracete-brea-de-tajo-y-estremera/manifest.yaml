@@ -1,0 +1,26 @@
+slug: valdaracete-brea-de-tajo-y-estremera
+nombre: "Valdaracete, Brea de Tajo y Estremera"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.valdaracete.org"
+  adapter: municipio.adapters.valdaracete_brea_de_tajo_y_estremera:ValdaraceteBreaDeTajoYEstremeraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdaracete-brea-de-tajo-y-estremera/1.0"
+    valdaracete_web: "https://www.valdaracete.org"
+    valdaracete_sede: "https://sedevaldaracete.eadministracion.es"
+    brea_wp: "https://breadetajo.es"
+    brea_sede: "https://sedebreadetajo.eadministracion.es"
+  notes: |
+    Slug compuesto BOCM (anuncio multi-municipio). Portales scrapeados: Valdaracete (Joomla)
+    y Brea de Tajo (WordPress + eAdmin). Estremera ya onboarded en slug `estremera`.
+    Geometría: SITCM WFS (idem.comunidad.madrid) ámbitos VALDARACETE y BREA DE TAJO.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

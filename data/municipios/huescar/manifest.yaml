@@ -1,0 +1,32 @@
+slug: huescar
+nombre: "Huéscar"
+provincia: "Huéscar-Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://aytohuescar.sedelectronica.es"
+  adapter: municipio.adapters.huescar:HuescarAyuntamientoAdapter
+  config:
+    sede_base: "https://aytohuescar.sedelectronica.es"
+    web_base: "https://www.aytohuescar.es"
+    board_url: "https://aytohuescar.sedelectronica.es/board/"
+    urbanismo_url: "https://www.aytohuescar.es/?s=contenido&opc=011&t=Area-de-Urbanismo"
+    citizen_service_url: "https://aytohuescar.sedelectronica.es/citizen-service/f28b394b-5d71-46f4-a071-8347659a6d5a"
+    atum_url: "https://atum.dipgra.es/atum/formulario_actuaciones/buscador.php?ent=098"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-huescar/1.0"
+    centroid: [37.8081, -2.5406]
+  notes: |
+    Fuentes: CMS propio www.aytohuescar.es (Área de Urbanismo, modelos PDF) +
+    sede espublico gestiona (tablón /board/, Obras y Urbanismo citizen-service) +
+    ATUM Diputación Granada (ent=098).
+    Sin visor GIS público enlazado a expedientes; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

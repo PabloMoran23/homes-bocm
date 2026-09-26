@@ -1,0 +1,31 @@
+slug: golmayo
+nombre: "Golmayo"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.golmayo.es"
+  adapter: municipio.adapters.golmayo:GolmayoAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.golmayo.es"
+    sede_base: "https://golmayo.sedelectronica.es"
+    board_url: "https://golmayo.sedelectronica.es/board"
+    dossier_url: "https://golmayo.sedelectronica.es/dossier"
+    plai_municipio: 95
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Golmayo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-golmayo/1.0"
+    centroid: [41.78, -2.45]
+  notes: |
+    Fuentes: Drupal 7 (golmayo.es), sede espublico gestiona (tablón /board,
+    trámites /dossier), PLAI JCYL (municipio 095, Soria 42) y capas IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

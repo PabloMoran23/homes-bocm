@@ -1,0 +1,36 @@
+slug: horcajo-de-la-sierra
+nombre: "Horcajo de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.horcajodelasierra-aoslos.es"
+  adapter: municipio.adapters.horcajo_de_la_sierra:HorcajoDeLaSierraAyuntamientoAdapter
+  config:
+    sede_base: "https://horcajodelasierra-aoslos.sedelectronica.es"
+    board_url: "https://horcajodelasierra-aoslos.sedelectronica.es/board"
+    pgou_url: "https://www.horcajodelasierra-aoslos.es/tu-ayuntamiento/normativa-municipal/plan-general-de-urbanismo"
+    ordenanzas_url: "https://www.horcajodelasierra-aoslos.es/tu-ayuntamiento/normativa-municipal/ordenanzas-municipales"
+    urbanismo_url: "https://www.horcajodelasierra-aoslos.es/ciudadanos/tramites-personales/urbanismo"
+    transparency_sede_url: "https://horcajodelasierra-aoslos.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-horcajo-de-la-sierra/1.0"
+    centroid: [41.065, -3.585]
+    geometry:
+      kind: sitcm_wfs_ref23
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      ambito_type_name: "sitcm:VPLA_V_AMBITO_REF_23"
+      ordenanza_type_name: "sitcm:VPLA_V_ORDENANZA_REF_23"
+      municipio_code: "070"
+      municipio_filter: "HORCAJO DE LA SIERRA-AOSLOS"
+  notes: |
+    Joomla Helix horcajodelasierra-aoslos.es (tablón municipal RSS, formularios urbanismo,
+    ordenanzas, PGOU con enlace SIT) + sede espublico gestiona (tablón /board vacío en CI).
+    Geometría partial vía WFS SIT refundido 2023 (CD_MUNICIPIO=070): UE-1 + ordenanzas CASCO ANTIGUO.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,32 @@
+slug: morinigo
+nombre: "Moríñigo"
+provincia: "Moríñigo (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://37206.sedelectronica.es"
+  adapter: municipio.adapters.morinigo:MorinigoAyuntamientoAdapter
+  config:
+    sede_base: "https://37206.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 206
+    ine_code: "37206"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Moríñigo"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37206"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=206"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=206"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-morinigo/1.0 (+urbanismo research)"
+    centroid: [40.969, -5.414]
+    tramite_pages: []
+  notes: |
+    Sin web corporativa activa. Sede espublico responde «Indeterminada»; planeamiento en PlanPublica/SiuCyL.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

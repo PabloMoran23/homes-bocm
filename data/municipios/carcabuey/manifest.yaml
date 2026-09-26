@@ -1,0 +1,27 @@
+slug: carcabuey
+nombre: "Carcabuey"
+provincia: "Carcabuey/Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://carcabuey.es"
+  adapter: municipio.adapters.carcabuey:CarcabueyAyuntamientoAdapter
+  config:
+    urbanismo_url: "https://carcabuey.es/urbanismo/"
+    sede_base: "https://sede.eprinsa.es/carcabuey"
+    tablon_url: "https://sede.eprinsa.es/carcabuey/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carcabuey/1.0"
+    centroid: [37.4394, -4.2728]
+  notes: |
+    Fuentes: página urbanismo (WordPress Divi) con memoria PGOU y planimetría PDF +
+    sede eprinsa/Diputación Córdoba. Tablón de edictos en SPA Ember sin API pública.
+    VITUA/SITUA (Junta) para cartografía regional; sin enlace expediente↔polígono.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
