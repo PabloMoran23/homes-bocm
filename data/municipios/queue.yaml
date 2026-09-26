@@ -7346,12 +7346,12 @@ municipios:
 - slug: cimanes-del-tejar
   nombre: Cimanes del Tejar
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:46:52.801600+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/646
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236790770
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Cimanes del Tejar, León
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T10:44:35.303413+00:00'
+updated_at: '2026-09-26T10:46:52.803069+00:00'
