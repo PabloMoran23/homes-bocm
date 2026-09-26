@@ -1,0 +1,33 @@
+slug: corullon
+nombre: "Corullón"
+provincia: "Corullón (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://corullon.sedelectronica.es"
+  adapter: municipio.adapters.corullon:CorullonAyuntamientoAdapter
+  config:
+    sede_base: "https://corullon.sedelectronica.es"
+    planpublica_provincia: 24
+    planpublica_municipio: 061
+    ine_code: "24059"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Corullón"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=24059"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=061"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=061"
+    dossier_url: "https://corullon.sedelectronica.es/dossier/.0"
+    info_url: "https://corullon.sedelectronica.es/info.0"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-corullon/1.0 (+urbanismo research)"
+    centroid: [42.581, -6.818]
+  notes: |
+    Sin web corporativa activa (dominios parking). Sede espublico + PlanPublica JCYL + WFS IDECyL.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
