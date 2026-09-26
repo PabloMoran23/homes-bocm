@@ -1,0 +1,35 @@
+slug: guardamar-de-la-safor
+nombre: "Guardamar de la Safor"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://guardamardelasafor.sedelectronica.es"
+  adapter: municipio.adapters.guardamar_de_la_safor:GuardamarDeLaSaforAyuntamientoAdapter
+  config:
+    sede_base: "https://guardamardelasafor.sedelectronica.es"
+    board_url: "https://guardamardelasafor.sedelectronica.es/board"
+    web_base: "https://guardamardelasafor.org"
+    urbanismo_url: "https://guardamardelasafor.org/es/serveis-municipals/urbanisme/"
+    transparency_url: "https://guardamardelasafor.sedelectronica.es/transparency"
+    reg_planeamiento_url: "https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/4%20VALENCIA/46140%20GUARDAMAR%20DE%20LA%20SAFOR/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-guardamar-de-la-safor/1.0"
+    centroid: [38.961, -0.155]
+    cod_ine_mun: "46140"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    WordPress guardamardelasafor.org (PDFs PGOU/planes parciales) + sede espublico /board.
+    ICV WFS zonificación (cod_ine_mun 46140, 5 polígonos exp. 20011225).
+    geometry_status: partial — zonificación PG sin geometría de licencias individuales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
