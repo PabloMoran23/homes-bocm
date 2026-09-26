@@ -1,0 +1,26 @@
+slug: el-sauzal
+nombre: "El Sauzal"
+provincia: "El Sauzal"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.elsauzal.es"
+  adapter: municipio.adapters.el_sauzal:ElSauzalAyuntamientoAdapter
+  config:
+    wp_base: "https://www.elsauzal.es"
+    sede_base: "https://elsauzal.sedelectronica.es"
+    sitcan_package: planeamiento-urbanistico-de-el-sauzal
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-sauzal/1.0"
+    centroid: [28.4789, -16.4131]
+  notes: |
+    WordPress Bones + sede espublico + SITCAN CKAN (11 instrumentos)
+    + GEOBDP Grafcan (polígonos UTM28N). PGOU y modificaciones en OTM/PGOU.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

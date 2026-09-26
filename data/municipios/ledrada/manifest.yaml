@@ -1,0 +1,32 @@
+slug: ledrada
+nombre: "Ledrada"
+provincia: "Ledrada (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ledrada.sedelectronica.es"
+  adapter: municipio.adapters.ledrada:LedradaAyuntamientoAdapter
+  config:
+    sede_base: "https://ledrada.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 171
+    ine_code: "37171"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Ledrada"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37171"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=171"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=171"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ledrada/1.0"
+    insecure_ssl: true
+    centroid: [40.47735, -5.72335]
+  notes: |
+    Sede espublico gestiona + PlanPublica/SiuCyL (NUM vigente 2020) + IDECyL WFS.
+    Web www.ledrada.es inaccesible desde CI. Tablón vacío (ago 2026).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

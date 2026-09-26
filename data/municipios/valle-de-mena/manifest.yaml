@@ -1,0 +1,33 @@
+slug: valle-de-mena
+nombre: "Valle de Mena"
+provincia: "Valle de Mena (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://valledemena.burgos.es"
+  adapter: municipio.adapters.valle_de_mena:ValleDeMenaAyuntamientoAdapter
+  config:
+    sede_base: "https://valledemena.sedelectronica.es"
+    planpublica_provincia: 09
+    planpublica_municipio: 410
+    ine_code: "09410"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Valle de Mena"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09410"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=410"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=410"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valle-de-mena/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [43.1606, -3.2817]
+  notes: |
+    Web Diputación Burgos (Drupal Toools) + www.valledemena.es (Drupal medina_theme).
+    Sede espublico gestiona + PlanPublica JCyL (NS históricas) + WFS IDECyL (118 sectores SUNC).
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

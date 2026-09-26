@@ -1,0 +1,29 @@
+slug: la-alberca
+nombre: "La Alberca"
+provincia: "La Alberca (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://laalberca.com"
+  adapter: municipio.adapters.la_alberca:LaAlbercaAyuntamientoAdapter
+  config:
+    wp_base: "https://laalberca.com"
+    sede_base: "https://laalberca.sedelectronica.es"
+    board_url: "https://laalberca.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-alberca/1.0"
+    centroid: [40.489, -6.117]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "La Alberca"
+  notes: |
+    Web WordPress (orientada a turismo; sin sección urbanismo dedicada).
+    Sede espublico gestiona: tablón /board (~10 anuncios).
+    Geometría: IDECyL WFS PLAU CyL (1 NUM + 3 planes parciales + 44 sectores).
+    Planeamiento documental Junta CYL: prov=37, mun=010 (INE 37010).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

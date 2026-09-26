@@ -1,0 +1,45 @@
+slug: villafranca-de-cordoba
+nombre: "Villafranca de Córdoba"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://villafrancadecordoba.es"
+  adapter: municipio.adapters.villafranca_de_cordoba:VillafrancaDeCordobaAyuntamientoAdapter
+  config:
+    wp_base: "https://villafrancadecordoba.es"
+    plan_base: "https://planurbanismo.villafrancadecordoba.es"
+    sede_base: "https://sede.eprinsa.es/vfranca"
+    tablon_url: "https://sede.eprinsa.es/vfranca/tablon-de-edictos"
+    wp_categories: [45]
+    wp_searches:
+      - sector
+      - edicto
+      - reparcelacion
+      - urbanizacion
+      - pgom
+      - pgou
+      - planeamiento
+    wp_max_pages: 3
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-villafranca-de-cordoba/1.0"
+    centroid: [37.9633, -4.5469]
+    seed_pages:
+      - "https://villafrancadecordoba.es/ayuntamiento-planeamiento_urbano_pgou/"
+      - "https://planurbanismo.villafrancadecordoba.es/"
+      - "https://planurbanismo.villafrancadecordoba.es/documentos/"
+      - "https://planurbanismo.villafrancadecordoba.es/descargas/"
+  notes: |
+    WordPress Divi: urbanismo (categoría 45) + noticias sector/reparcelación + portal PGOM-POU.
+    PDFs normativa PGOU/Normas Subsidiarias (2016) en página urbanismo.
+    Sede eprinsa (Diputación Córdoba): tablón Ember SPA sin API pública scrapeable.
+    Sin visor GIS municipal accesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

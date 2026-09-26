@@ -1,0 +1,31 @@
+slug: coria-del-rio
+nombre: "Coria del Río"
+provincia: "Coria del Río-Sevilla"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.coriadelrio.es"
+  adapter: municipio.adapters.coria_del_rio:CoriaDelRioAyuntamientoAdapter
+  config:
+    web_base: "https://www.coriadelrio.es"
+    sede_base: "https://sede.coriadelrio.es"
+    tablon_url: "https://sede.coriadelrio.es/tablon-1.0/do/entradaPublica?ine=41034"
+    pgom_url: "https://www.coriadelrio.es/es/ciudadania/page-00001/"
+    licytal_url: "https://sedeelectronicadipusevilla.es/LicytalSede/jsp/index.faces?cif=P4103400J"
+    formularios_url: "https://www.coriadelrio.es/es/ayuntamiento/formularios-disponibles/"
+    transparencia_normativa_url: "https://transparencia.coriadelrio.es/es/transparencia/indicadores-de-transparencia/indicador/Se-publica-la-Normativa-municipal-tanto-del-Ayuntamiento-como-de-los-Entes-instrumentales-Relacion-de-normativa-en-curso-Ordenanzas-y-texto-en-version-inicial-memorias-e-informes-de-elaboracion-de-las-normativas.-00019/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-coria-del-rio/1.0"
+    centroid: [37.2876, -6.0541]
+  notes: |
+    Web OpenCMS INPRO (coriadelrio.es) + sede GSede propia (sede.coriadelrio.es).
+    Tablón INPRO tablon-1.0 (INE 41034) + PGOM PDFs/NSSS + LicytalSede Diputación.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

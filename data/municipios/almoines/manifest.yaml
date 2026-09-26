@@ -1,0 +1,34 @@
+slug: almoines
+nombre: "Almoines"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.almoines.es"
+  adapter: municipio.adapters.almoines:AlmoinesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almoines/1.0"
+    api_base: "https://api.digitalvalue.es/almoines/collections"
+    sede_base: "https://almoines.sedelectronica.es"
+    board_url: "https://almoines.sedelectronica.es/board"
+    cod_ine_mun: "46012"
+    insecure_ssl: true
+    centroid_lat: 38.944
+    centroid_lon: -0.186
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    Web municipal Drupal 10 + DigitalValue (portalesmunicipales.es).
+    API REST: api.digitalvalue.es/almoines/collections/articulos.
+    Sede espublico gestiona: almoines.sedelectronica.es (tablón /board).
+    Geometría: ICV WFS InventarioSuSuz filtrado por INE 46012.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

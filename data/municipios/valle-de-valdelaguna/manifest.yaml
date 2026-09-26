@@ -1,0 +1,31 @@
+slug: valle-de-valdelaguna
+nombre: "Valle de Valdelaguna"
+provincia: "Valle de Valdelaguna (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.valledevaldelaguna.es"
+  adapter: municipio.adapters.valle_de_valdelaguna:ValleDeValdelagunaAyuntamientoAdapter
+  config:
+    sede_base: "https://valledevaldelaguna.sedelectronica.es"
+    planpublica_provincia: 9
+    planpublica_municipio: 414
+    ine_code: "09414"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Valle de Valdelaguna"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=414"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=414"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valle-de-valdelaguna/1.0"
+    centroid: [42.0719, -3.2287]
+    insecure_ssl: true
+  notes: |
+    Web Drupal Toools (Burgos) + sede espublico gestiona + PlanPublica JCyL + IDECyL WFS.
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
