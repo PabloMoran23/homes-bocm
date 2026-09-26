@@ -1,0 +1,30 @@
+slug: loja
+nombre: "Loja"
+provincia: "Loja (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "http://aytoloja.org"
+  adapter: municipio.adapters.loja:LojaAyuntamientoAdapter
+  config:
+    web_base: "http://aytoloja.org"
+    planeamiento_url: "http://aytoloja.org/ayuntamiento/planeamiento.htm"
+    ordenanzas_url: "http://aytoloja.org/ayuntamiento/ordenanzasyreglamentos.htm"
+    urbanismo_url: "http://aytoloja.org/cartadeservicios/urbanismo.htm"
+    sede_base: "https://loja.sedelectronica.es"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=18140"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-loja/1.0"
+    centroid: [37.1689, -4.1514]
+  notes: |
+    Fuentes: web estática aytoloja.org (planeamiento ~130 PDFs/ZIPs PGOU, PMUS, ordenanzas)
+    + carta de servicios urbanismo. Sede espublico inactiva. SITUA Junta de Andalucía (INE 18140).
+    Sin visor urbanístico municipal ni WFS enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

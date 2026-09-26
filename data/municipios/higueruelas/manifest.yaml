@@ -1,0 +1,38 @@
+slug: higueruelas
+nombre: "Higueruelas"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.higueruelas.es"
+  adapter: municipio.adapters.higueruelas:HigueruelasAyuntamientoAdapter
+  config:
+    web_base: "https://www.higueruelas.es"
+    sede_base: "https://higueruelas.sedelectronica.es"
+    board_url: "https://higueruelas.sedelectronica.es/board/"
+    dossier_url: "https://higueruelas.sedelectronica.es/dossier"
+    request_delay_s: 0.35
+    fetch_retries: 2
+    fetch_timeout_s: 30
+    web_fetch_retries: 1
+    web_fetch_timeout_s: 25
+    insecure_ssl: true
+    user_agent: "poc-bocm-higueruelas/1.0"
+    centroid: [39.7897, -0.9203]
+    cod_ine_mun: "46129"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Web Drupal portalesmunicipales (transparencia/planeamiento, noticia PGOU).
+    Sede espublico gestiona: tablón /board/ y catálogo /dossier.
+    PGOU aprobado 2025/2026; sin polígonos ICV publicados aún (cod_ine_mun 46129).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

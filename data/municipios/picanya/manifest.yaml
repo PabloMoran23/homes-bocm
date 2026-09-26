@@ -1,0 +1,39 @@
+slug: picanya
+nombre: "Picanya"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://picanya.sede.dival.es"
+  adapter: municipio.adapters.picanya:PicanyaAyuntamientoAdapter
+  config:
+    sede_base: "https://picanya.sede.dival.es"
+    web_base: "https://www.picanya.org"
+    transparencia_base: "https://transparencia.picanya.org"
+    tablon_rss: "https://picanya.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://picanya.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://picanya.sede.dival.es/catalogoservicios.aspx"
+    oficina_urbanisme_url: "https://www.picanya.org/administracio/oficina-virtual/urbanisme"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-picanya/1.0"
+    cod_ine_mun: "46195"
+    centroid: [39.435, -0.435]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      zon_type_name: "Planeamiento.Zonificacion"
+      suz_type_name: "ms:InventarioSuSuz"
+      zon_offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000]
+      suz_offsets: [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200, 3400, 3600, 3800, 4000]
+  notes: |
+    Sede Dival (Sedipualba): tablón RSS + catálogo trámites UR.*.
+    Web Digital Value (picanya.org): oficina virtual urbanismo.
+    Transparencia: transparencia.picanya.org (SPA Digital Value).
+    Geometría parcial: ICV GVA WFS Zonificacion + InventarioSuSuz (INE 46195).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

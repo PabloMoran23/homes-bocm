@@ -1,0 +1,26 @@
+slug: castellon
+nombre: "Forcall"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.forcall.es"
+  adapter: municipio.adapters.castellon:CastellonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castellon/1.0"
+    sede_base: "https://forcall.sedelectronica.es"
+    ine_code: "12061"
+    geometry:
+      wfs_base: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Cola slug castellon — municipio real Forcall (DOGV parseó «Castellón»).
+    Drupal 9 + sede espublico + registro GVA + ICV WFS cod_ine_mun=12061.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

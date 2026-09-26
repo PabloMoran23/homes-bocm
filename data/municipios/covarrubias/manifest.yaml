@@ -1,0 +1,27 @@
+slug: covarrubias
+nombre: "Covarrubias"
+provincia: "Covarrubias (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.covarrubias.es"
+  adapter: municipio.adapters.covarrubias:CovarrubiasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-covarrubias/1.0"
+    drupal_base: "https://www.covarrubias.es"
+    sede_base: "https://covarrubias.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 113
+    wfs_municipio: "Covarrubias"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools) + sede espublico gestiona + archivo PLAU JCyL (prov. 09, mun. 113)
+    e IDECyL WFS urbanismo (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

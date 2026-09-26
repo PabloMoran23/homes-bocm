@@ -1,0 +1,33 @@
+slug: la-roda-de-andalucia
+nombre: "La Roda de Andalucía"
+provincia: "La Roda de Andalucía (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.larodadeandalucia.es"
+  adapter: municipio.adapters.la_roda_de_andalucia:LaRodaDeAndaluciaAyuntamientoAdapter
+  config:
+    web_base: "https://www.larodadeandalucia.es"
+    sede_base: "https://sede.larodadeandalucia.es"
+    tablon_url: "https://sede.larodadeandalucia.es/tablon-1.0/do/entradaPublica?ine=41082"
+    planeamiento_url: "https://3web.dipusevilla.es/planeamiento/82nsADenlaces.htm/Urbanismo.htm"
+    planeamiento_base: "https://3web.dipusevilla.es/planeamiento/"
+    ordenanzas_url: "https://www.larodadeandalucia.es/es/municipio/Ordenanzas-Municipales/"
+    urbanismo_news_url: "https://www.larodadeandalucia.es/es/busqueda/?formCategoryFilter=/sites/larodadeandalucia/.categories/temas/urbanismo/&formTypeFilter=pm-noticia"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41082"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-roda-de-andalucia/1.0"
+    centroid: [37.2083, -4.7792]
+  notes: |
+    Web OpenCMS INPRO (larodadeandalucia.es) + GSede propia (sede.larodadeandalucia.es).
+    Tablón INPRO tablon-1.0 (INE 41082) + NNSS Diputación Sevilla (3web.dipusevilla.es).
+    Instrumento vigente: Normas Subsidiarias 2004; PBOM en elaboración.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

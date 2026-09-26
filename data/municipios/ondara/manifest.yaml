@@ -1,0 +1,33 @@
+slug: ondara
+nombre: "Ondara"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.ondara.org"
+  adapter: municipio.adapters.ondara:OndaraAyuntamientoAdapter
+  config:
+    sede_base: "https://ondara.sedelectronica.es"
+    board_url: "https://ondara.sedelectronica.es/board"
+    transparency_urbanismo_url: "https://ondara.sedelectronica.es/transparency/52540845-cbee-4e1c-9a3a-7c66289baf5e/"
+    urbanismo_url: "https://www.ondara.org/serveis-municipals/urbanisme-2/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ondara/1.0"
+    centroid: [38.8262, -0.0170]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+      ine_cod_mun: "03093"
+  notes: |
+    Fuentes: WordPress Divi ondara.org (urbanisme + PDFs) +
+    sede espublico gestiona (tablón /board + transparencia UUID) +
+    ICV GVA WFS zonificación (cod_ine_mun 03093).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

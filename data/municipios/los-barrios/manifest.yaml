@@ -1,0 +1,26 @@
+slug: los-barrios
+nombre: "Los Barrios"
+provincia: "Los Barrios, Cádiz"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://losbarrios.es"
+  adapter: municipio.adapters.los_barrios:LosBarriosAyuntamientoAdapter
+  config:
+    wp_base: "https://losbarrios.es"
+    sede_base: "https://losbarrios.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-barrios/1.0"
+    centroid: [36.1844, -5.4431]
+  notes: |
+    Fuentes: WordPress portal transparencia (REST API + crawl semillas urbanismo)
+    + SITUA Junta de Andalucía (referencia PGOU). Sede espublico no operativa
+    (página indeterminada). Sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

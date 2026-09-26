@@ -1,0 +1,32 @@
+slug: mojacar
+nombre: "Mojácar"
+provincia: "Mojácar, Almería"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://ayuntamientomojacar.sedelectronica.es"
+  adapter: municipio.adapters.mojacar:MojacarAyuntamientoAdapter
+  config:
+    sede_base: "https://ayuntamientomojacar.sedelectronica.es"
+    board_url: "https://ayuntamientomojacar.sedelectronica.es/board/"
+    web_base: "http://ayuntamiento.mojacar.es"
+    urbanismo_url: "http://ayuntamiento.mojacar.es/informacion/urbanismo"
+    pgou_visor_url: "https://palcos.tcasa.es/PGOUMojacar/"
+    cod_ine: "04057"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mojacar/1.0"
+    centroid: [37.1408, -1.8519]
+  notes: |
+    Sede espublico gestiona (tablón /board/, trámites /dossier).
+    Web corporativa Diputación Almería (cmsdipro): PGOU, convenios y proyectos urbanísticos.
+    Visor PGOU palcos.tcasa.es (GeoServer WMS; WFS deshabilitado).
+    Geometría parcial vía WFS Diputación Almería (sectores cod_ine 04057).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

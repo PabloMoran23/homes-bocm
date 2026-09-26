@@ -1,0 +1,27 @@
+slug: cardenajimeno
+nombre: "Cardeñajimeno"
+provincia: "Cardeñajimeno, Burgos"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://cardenajimeno.es"
+  adapter: municipio.adapters.cardenajimeno:CardenajimenoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cardenajimeno/1.0"
+    drupal_base: "https://cardenajimeno.es"
+    sede_base: "https://cardenajimeno.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 74
+    wfs_municipio: "Cardeñajimeno"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools Diputación Burgos) + sede espublico gestiona (tablón/transparencia)
+    + archivo PlanPublica JCyL (prov. 09, mun. 074, INE 09074) e IDECyL WFS urbanismo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,30 @@
+slug: herrera-de-duero
+nombre: "Herrera de Duero"
+provincia: Herrera de Duero/Valladolid
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://tudeladeduero.sedelectronica.es"
+  adapter: municipio.adapters.herrera_de_duero:HerreraDeDueroAyuntamientoAdapter
+  config:
+    sede_base: "https://tudeladeduero.sedelectronica.es"
+    board_url: "https://tudeladeduero.sedelectronica.es/board"
+    dossier_url: "https://tudeladeduero.sedelectronica.es/dossier"
+    plai_municipio: 175
+    plai_provincia: 47
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Tudela de Duero"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-herrera-de-duero/1.0 (+urbanismo research)"
+    centroid: [41.5867, -4.3758]
+  notes: |
+    Pedanía de Tudela de Duero (Valladolid). Portal gestionado por el ayuntamiento
+    matriz: sede espublico gestiona, PLAI JCYL (municipio 175) e IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
