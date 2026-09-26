@@ -1,0 +1,33 @@
+slug: canencia-de-la-sierra
+nombre: "Canencia de la Sierra"
+provincia: Canencia de la Sierra
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.canencia.es"
+  adapter: municipio.adapters.canencia:CanenciaAyuntamientoAdapter
+  config:
+    site_base: "https://www.canencia.es"
+    sede_base: "https://canencia.sedelectronica.es"
+    board_url: "https://canencia.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-canencia-de-la-sierra/1.0"
+    municipio: "Canencia de la Sierra"
+    id_prefix: "canencia-de-la-sierra"
+    centroid: [40.9089, -3.7428]
+    geometry:
+      kind: wfs
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "CANENCIA"
+  notes: |
+    Joomla (SP Page Builder + icagenda tablón) + sede espublico gestiona.
+    Planeamiento en normativa municipal; ámbitos SITCM vía WFS (geometría partial).
+    Alias BOCM: Canencia de la Sierra (slug canencia-de-la-sierra).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

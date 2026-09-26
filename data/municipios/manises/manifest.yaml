@@ -1,0 +1,32 @@
+slug: manises
+nombre: "Manises"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.manises.es"
+  adapter: municipio.adapters.manises:ManisesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-manises/1.0"
+    centroid: [39.4914, -0.4633]
+    api_base: "https://api.digitalvalue.es/manises/collections"
+    sede_base: "https://manises.sedipualba.es"
+    cod_ine_mun: "46159"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    Web Drupal 10 Portales + API Digital Value (articulos).
+    Sede sedipualba (tablón RSS + catálogo trámites URB*).
+    Páginas semilla Drupal: planeamiento estructural/pormenorizado, info pública PGE, transparencia.
+    Geometría parcial vía ICV WFS InventarioSuSuz + Zonificacion (cod_ine_mun=46159).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

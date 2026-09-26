@@ -1,0 +1,37 @@
+slug: chiva
+nombre: "Chiva"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://chiva.sedelectronica.es"
+  adapter: municipio.adapters.chiva:ChivaAyuntamientoAdapter
+  config:
+    sede_base: "https://chiva.sedelectronica.es"
+    board_url: "https://chiva.sedelectronica.es/board"
+    web_base: "https://www.chiva.es"
+    transparencia_normas_url: "https://www.chiva.es/transparencia/normas-urbanisticas"
+    transparencia_tramitacion_url: "https://www.chiva.es/transparencia/documentos-tramitacion"
+    urbanismo_url: "https://www.chiva.es/urbanismo"
+    impresos_url: "https://www.chiva.es/impresos"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-chiva/1.0"
+    centroid: [39.474, -0.717]
+    cod_ine_mun: "46100"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 10 portalesmunicipales (www.chiva.es) + sede espublico gestiona.
+    Tablón /board: anuncios municipales (sin urbanismo reciente en scrape estático).
+    Transparencia: normas urbanísticas (ZIP planos), documentos tramitación (PAM/PTM).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46100, Plan general).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

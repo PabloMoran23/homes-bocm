@@ -1,0 +1,32 @@
+slug: las-navas-de-la-concepcion
+nombre: "Las Navas de la Concepción"
+provincia: "Las Navas de la Concepción (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.lasnavasdelaconcepcion.es"
+  adapter: municipio.adapters.las_navas_de_la_concepcion:LasNavasDeLaConcepcionAyuntamientoAdapter
+  config:
+    wp_base: "https://www.lasnavasdelaconcepcion.es"
+    sede_base: "https://sedenavasdelaconcepcion.dipusevilla.es"
+    tablon_url: "https://sedenavasdelaconcepcion.dipusevilla.es/tablon-1.0/do/entradaPublica?ine=41066"
+    pgou_url: "https://www.lasnavasdelaconcepcion.es/es/ayuntamiento/pgou-"
+    normativa_url: "https://www.lasnavasdelaconcepcion.es/es/ayuntamiento/normativa"
+    transparencia_pgou_url: "https://www.lasnavasdelaconcepcion.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00048/"
+    nnss_3web_url: "http://3web.dipusevilla.es/planeamiento/66PG%20Las%20Navas/66NSLasNavas.html"
+    licytal_url: "https://portalag.dipusevilla.es/LicytalPub/jsp/pub/index.faces?cif=P4106600A"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-las-navas-de-la-concepcion/1.0"
+    centroid: [37.9329, -5.4652]
+  notes: |
+    Web OpenCMS INPRO (lasnavasdelaconcepcion.es) + sede GSede Diputación Sevilla.
+    Tablón INPRO tablon-1.0 (INE 41066) + PGOU/PBOM PDFs web + NNSS 3web DipSevilla.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

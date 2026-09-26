@@ -1,0 +1,27 @@
+slug: cabrerizos
+nombre: "Cabrerizos"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ayto-cabrerizos.com"
+  adapter: municipio.adapters.cabrerizos:CabrerizosAyuntamientoAdapter
+  config:
+    wp_base: "https://ayto-cabrerizos.com"
+    sede_base: "https://sedeelectronica.ayto-cabrerizos.com/eAdmin"
+    plai_municipio: 67
+    plai_provincia: 37
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cabrerizos/1.0"
+    wfs_municipio: "Cabrerizos"
+  notes: |
+    Fuentes: web WP Divi (urbanismo PDFs + formularios URB-*), PLAI JCYL (prov 37 mun 067),
+    IDECyL WFS sectores/NNSS. Sede eAdmin tablón HTTP 500 (GestDocRE caído).
+    cabrerizos.sedelectronica.es inactiva.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,30 @@
+slug: horcajuelo-de-la-sierra
+nombre: "Horcajuelo de la Sierra"
+provincia: "Horcajuelo de la Sierra, Madrid"
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://horcajuelodelasierra.es"
+  adapter: municipio.adapters.horcajuelo_de_la_sierra:HorcajueloDeLaSierraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-horcajuelo-de-la-sierra/1.0"
+    wp_base: "https://horcajuelodelasierra.es"
+    sede_base: "https://horcajuelodelasierra.sedelectronica.es"
+    eadmin_url: "https://sedehorcajuelodelasierra.eadministracion.es/PortalCiudadano/Menus/wfrBienvenida.aspx?param=MjgmMDcx"
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_ORDENANZA_REF_23"
+      municipio_filter: "HORCAJUELO DE LA SIERRA"
+      cd_municipio: "071"
+      visor_url: "https://idem.comunidad.madrid/cartografia/sitcm/html/visor.htm?municipio=071"
+  notes: |
+    WordPress Avada + transparencia (PDFs PGOU/NNSS 2023) + espublico sede (tablón)
+    + e-Administración licencias. Geometría partial vía WFS ORDENANZA_REF_23 (CD 071).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,32 @@
+slug: pesquera-de-duero
+nombre: "Pesquera de Duero"
+provincia: "Pesquera de Duero - Valladolid"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://pesqueradeduero.sedelectronica.es"
+  adapter: municipio.adapters.pesquera_de_duero:PesqueraDeDueroAyuntamientoAdapter
+  config:
+    sede_base: "https://pesqueradeduero.sedelectronica.es"
+    plai_municipio: 116
+    plai_provincia: 47
+    ine_code: "47116"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Pesquera de Duero"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47116"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=116"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=116"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pesquera-de-duero/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [41.5833, -4.0467]
+  notes: |
+    Sin web corporativa propia. Sede espublico gestiona + PlanPublica JCyL (NUM vigente)
+    + IDECyL WFS sectores. Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

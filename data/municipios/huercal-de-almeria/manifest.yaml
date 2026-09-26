@@ -1,0 +1,28 @@
+slug: huercal-de-almeria
+nombre: "Huércal de Almería"
+provincia: "Huércal de Almería (Almería)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://huercaldealmeria.sedelectronica.es"
+  adapter: municipio.adapters.huercal_de_almeria:HuercalDeAlmeriaAyuntamientoAdapter
+  config:
+    sede_base: "https://huercaldealmeria.sedelectronica.es"
+    board_url: "https://huercaldealmeria.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-huercal-de-almeria/1.0"
+    cod_ine: "04053"
+    centroid: [36.8857, -2.4436]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/), página Obras y Urbanismo,
+    WFS Diputación Almería (sectores SIU, cod_ine 04053), SITUA Junta.
+    Web ayuntamientohuercaldealmeria.com redirige a sede /info (500 en rutas legacy).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

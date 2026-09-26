@@ -1,0 +1,30 @@
+slug: ayllon
+nombre: "Ayllón"
+provincia: "Ayllón, Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.ayllon.es"
+  adapter: municipio.adapters.ayllon:AyllonAyuntamientoAdapter
+  config:
+    web_base: "https://www.ayllon.es"
+    sede_base: "https://ayllon.sedelectronica.es"
+    plai_municipio: 24
+    plai_provincia: 40
+    wfs_municipio: Ayllón
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ayllon/1.0"
+    insecure_ssl: true
+    centroid: [41.3989, -3.3758]
+  notes: |
+    Web Liferay (Segovia9 theme, Diputación Segovia) con sección urbanismo.
+    Sede espublico gestiona: tablón /board, transparencia urbanismo, dossier trámites.
+    PLAI JCYL prov. 40 mun. 024 (c_mun 40024): NUM y modificaciones.
+    Geometría: IDECyL WFS PLAU CyL (1 ámbito NUM + 24 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

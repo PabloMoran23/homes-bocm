@@ -1,0 +1,38 @@
+slug: bocairent
+nombre: "Bocairent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://bocairent.sede.dival.es"
+  adapter: municipio.adapters.bocairent:BocairentAyuntamientoAdapter
+  config:
+    sede_base: "https://bocairent.sede.dival.es"
+    web_base: "https://www.bocairent.es"
+    tablon_rss: "https://bocairent.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://bocairent.sede.dival.es/tablondeanuncios/default.aspx"
+    catalogo_url: "https://bocairent.sede.dival.es/catalogoservicios.aspx"
+    catastro_url: "https://www.bocairent.es/es/pagina/catastro"
+    impresos_url: "https://www.bocairent.es/es/pagina/descargar-impresos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bocairent/1.0"
+    centroid: [38.7667, -0.6083]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_names:
+        - Planeamiento.Zonificacion
+        - InventarioSuSuz
+      ine_municipio: "46072"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000, 18000]
+  notes: |
+    Drupal Digital Value (www.bocairent.es) + sede Dival tablón RSS.
+    Impresos urbanismo en /es/pagina/descargar-impresos.
+    Geometría parcial: ICV GVA WFS (Zonificacion + InventarioSuSuz, INE 46072).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

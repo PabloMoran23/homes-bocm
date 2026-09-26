@@ -1,0 +1,31 @@
+slug: borriana
+nombre: "Borriana"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://burriana.es"
+  adapter: municipio.adapters.borriana:BorrianaAyuntamientoAdapter
+  config:
+    sede_base: "https://burriana.sedelectronica.es"
+    board_url: "https://burriana.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-borriana/1.0"
+    centroid: [39.8894, -0.0849]
+    geometry:
+      dipcas_api: "https://dipcas.opendatasoft.com/api/explore/v2.1/catalog/datasets/planeamiento-urbanistico/records"
+      gva_wfs: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      cod_ine_mun: "12039"
+  notes: |
+    Alias ortográfico valenciano de Burriana (slug burriana, PR #351).
+    Mismo portal WordPress burriana.es + sede espublico + DipCAS/ICV WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ["Borriana", "Burriana"]

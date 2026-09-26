@@ -1,0 +1,31 @@
+slug: reduena
+nombre: "Redueña"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.reduena.com"
+  adapter: municipio.adapters.reduena:ReduenaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-reduena/1.0"
+    wp_base: "https://www.reduena.com"
+    sede_base: "https://reduena.sedelectronica.es"
+    board_url: "https://reduena.sedelectronica.es/board/"
+    transparency_url: "https://reduena.sedelectronica.es/transparency/"
+    centroid: [40.8162, -3.6036]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "REDUEÑA"
+  notes: |
+    WordPress www.reduena.com (Freepress) con urbanismo, normas subsidiarias y licencias.
+    Sede espublico gestiona (reduena.sedelectronica.es): tablón /board (vacío en sept 2026).
+    Geometría partial vía WFS SITCM (13 ámbitos UE/SAU con polígonos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,33 @@
+slug: valencia-de-don-juan
+nombre: "Valencia de Don Juan"
+provincia: "Valencia de Don Juan (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.valenciadedonjuan.es"
+  adapter: municipio.adapters.valencia_de_don_juan:ValenciaDeDonJuanAyuntamientoAdapter
+  config:
+    wp_base: "https://www.valenciadedonjuan.es"
+    sede_base: "https://valenciadedonjuan.sedelectronica.es"
+    planpublica_provincia: 24
+    planpublica_municipio: 188
+    ine_code: "24188"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Valencia de Don Juan"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=24188"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=188"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=188"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valencia-de-don-juan/1.0 (+urbanismo research)"
+    centroid: [41.2986, -5.5214]
+    insecure_ssl: true
+  notes: |
+    WordPress corporativo + sede espublico gestiona + PlanPublica/SiuCyL (PGOU vigente).
+    Geometría parcial vía IDECyL WFS (sectores/planes parciales). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
