@@ -1,0 +1,29 @@
+slug: novelda
+nombre: "Novelda"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.novelda.es"
+  adapter: municipio.adapters.novelda:NoveldaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-novelda/1.0"
+    web_base: "https://www.novelda.es"
+    sede_base: "https://sede.novelda.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      cod_ine_mun: "03104"
+      cod_ine_mun_alt: "03093"
+      mun_name: "Novelda"
+  notes: |
+    Web WordPress (concejalía urbanismo PDFs) + sede STA TAO (PTS_TABLON, PTS_CATSERV).
+    Geometría parcial vía ICV InventarioSuSuz WFS (47 sectores SU/SUZ).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,26 @@
+slug: murias-de-paredes
+nombre: "Murias de Paredes"
+provincia: "Murias de Paredes (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytomuriasdeparedes.es"
+  adapter: municipio.adapters.murias_de_paredes:MuriasDeParedesAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytomuriasdeparedes.es"
+    sede_base: "https://aytomuriasdeparedes.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-murias-de-paredes/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Murias de Paredes"
+    centroid: [42.8273, -6.2001]
+  notes: |
+    OpenCms (Diputación León) + sede espublico tablón + IDECyL WFS instrumentos/planes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

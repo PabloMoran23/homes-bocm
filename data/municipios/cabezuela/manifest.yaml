@@ -1,0 +1,30 @@
+slug: cabezuela
+nombre: "Cabezuela"
+provincia: "Cabezuela (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.cabezuela.es"
+  adapter: municipio.adapters.cabezuela:CabezuelaAyuntamientoAdapter
+  config:
+    web_base: "https://www.cabezuela.es"
+    sede_base: "https://cabezuela.sedelectronica.es"
+    board_url: "https://cabezuela.sedelectronica.es/board"
+    plai_municipio: 36
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Cabezuela"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cabezuela/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay Segovia9 + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 036) + galería NUM en /urbanismo.
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

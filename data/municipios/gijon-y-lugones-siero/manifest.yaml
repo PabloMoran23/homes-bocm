@@ -1,0 +1,30 @@
+slug: gijon-y-lugones-siero
+nombre: "Gijón y Lugones (Siero)"
+provincia: Gijón y Siero
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.ayto-siero.es"
+  adapter: municipio.adapters.gijon_y_lugones_siero:GijonYLugonesSieroAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gijon-y-lugones-siero/1.0"
+    centroid: [43.3926, -5.6605]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "66"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_municipio_id: "33066"
+  notes: |
+    Parroquia Gijón y Lugones dentro del concejo de Siero (Asturias).
+    WordPress ayto-siero.es — portal urbanismo, planes parciales/especiales, /descarga/ PDFs.
+    Sede SIAC sedeelectronica.ayto-siero.es — trámites licencias, tablón (vacío), info pública (vacía).
+    RPGUR Principado — ~300 instrumentos vigentes concejo SIERO (idConcejo=66).
+    Geometría parcial WFS visorrpgur (48 polígonos, id_municipio=33066).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

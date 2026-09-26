@@ -1,0 +1,31 @@
+slug: la-hoya
+nombre: "La Hoya"
+provincia: "La Hoya (Salamanca)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://lahoya.sedelectronica.es"
+  adapter: municipio.adapters.la_hoya:LaHoyaAyuntamientoAdapter
+  config:
+    sede_base: "https://lahoya.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 163
+    ine_code: "37163"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "La Hoya"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37163"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=163"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=163"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-hoya/1.0 (+urbanismo research)"
+    centroid: [40.408, -5.696]
+  notes: |
+    Sin web corporativa. Sede espublico gestiona + PlanPublica/SiuCyL (NUM vigente, 4 sectores SUR).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

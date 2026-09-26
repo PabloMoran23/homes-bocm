@@ -1,0 +1,27 @@
+slug: cabrillanes
+nombre: "Cabrillanes"
+provincia: "Cabrillanes (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytocabrillanes.es"
+  adapter: municipio.adapters.cabrillanes:CabrillanesAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytocabrillanes.es"
+    sede_base: "https://aytocabrillanes.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cabrillanes/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Cabrillanes"
+    centroid: [42.9447, -6.1458]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (tablón, transparencia urbanismo ~330 docs) + IDECyL WFS sectores (provincia 24, muni 022).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

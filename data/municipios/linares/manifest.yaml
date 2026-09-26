@@ -1,0 +1,32 @@
+slug: linares
+nombre: "Linares"
+provincia: "Linares (Jaén)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://linares.sedelectronica.es"
+  adapter: municipio.adapters.linares:LinaresAyuntamientoAdapter
+  config:
+    sede_base: "https://linares.sedelectronica.es"
+    web_base: "https://www.ciudaddelinares.es"
+    board_url: "https://linares.sedelectronica.es/board"
+    urbanismo_docs_url: "https://www.ciudaddelinares.es/areas-municipales/documentacion/urbanismo-y-medio-ambiente"
+    instancias_url: "https://www.ciudaddelinares.es/tramites/descarga-instancias"
+    ordenanzas_url: "https://www.ciudaddelinares.es/normativa/ordenanzas-reglamentos"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-linares/1.0"
+    centroid: [38.0952, -3.6360]
+  notes: |
+    Fuentes: Drupal ciudaddelinares.es (documentación urbanismo, instancias, ordenanzas) +
+    sede espublico gestiona (tablón /board/, trámites /dossier).
+    Geoportal industrial (eMap400/Flash) sin API REST; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

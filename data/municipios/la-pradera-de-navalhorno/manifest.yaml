@@ -1,0 +1,28 @@
+slug: la-pradera-de-navalhorno
+nombre: "La Pradera de Navalhorno"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://servicios.jcyl.es/PlanPublica"
+  adapter: municipio.adapters.la_pradera_de_navalhorno:LaPraderaDeNavalhornoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-pradera-de-navalhorno/1.0"
+    plai_provincia: 40
+    plai_municipio: 181
+    municipio_matriz: "Real Sitio de San Ildefonso"
+    locality_filter: "pradera|navalhorno"
+    centroid: [40.9015, -4.0082]
+  notes: |
+    Localidad (entidad singular) dentro de Real Sitio de San Ildefonso (INE 40181).
+    Sin web ni sede propia. Adapter filtra PlanPublica del municipio matriz.
+    geometry_status: unavailable.
+
+licencias:
+  enabled: true
+  notes: Sin tablón ni catálogo público; lista vacía aceptada.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

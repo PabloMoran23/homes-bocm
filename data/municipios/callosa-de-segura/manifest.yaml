@@ -1,0 +1,31 @@
+slug: callosa-de-segura
+nombre: "Callosa de Segura"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.callosadesegura.es"
+  adapter: municipio.adapters.callosa_de_segura:CallosaDeSeguraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-callosa-de-segura/1.0"
+    web_base: "https://www.callosadesegura.es"
+    sede_base: "https://callosadesegura.sedelectronica.es"
+    board_url: "https://callosadesegura.sedelectronica.es/board//"
+    pgou_url: "https://www.callosadesegura.es/el-ayuntamiento/concejalias/obras-y-servicios/plan-general-ordenacion-urbana/"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      ine_cod_mun: "03009"
+  notes: |
+    WordPress municipal (callosadesegura.es) con PGOU en PDFs estáticos.
+    Sede electrónica espublico gestiona: tablón /board y transparencia.
+    e-trámites WordPress para licencias (sin histórico de concesiones).
+    Geometría parcial vía ICV GVA WFS (Planeamiento.Zonificacion).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

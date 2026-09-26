@@ -1,0 +1,28 @@
+slug: muro-de-alcoy
+nombre: "Muro de Alcoy"
+provincia: "Muro de Alcoy, Alicante"
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.vilademuro.net"
+  adapter: municipio.adapters.muro_de_alcoy:MuroDeAlcoyAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-muro-de-alcoy/1.0"
+    sede_base: "https://vilademuro.sedelectronica.es"
+    board_url: "https://vilademuro.sedelectronica.es/board"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "03092"
+  notes: |
+    Web municipal WordPress (vilademuro.net) con documentación PGOU en Planejament.
+    Tablón de anuncios espublico gestiona (vilademuro.sedelectronica.es/board).
+    Geometría de ámbitos vía ICV WFS InventarioSuSuz (cod_ine_mun 03092).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

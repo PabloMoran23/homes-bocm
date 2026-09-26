@@ -1,0 +1,28 @@
+slug: fuente-de-piedra
+nombre: "Fuente de Piedra"
+provincia: Málaga
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://fuentedepiedra.sedelectronica.es"
+  adapter: municipio.adapters.fuente_de_piedra:FuenteDePiedraAyuntamientoAdapter
+  config:
+    sede_base: "https://fuentedepiedra.sedelectronica.es"
+    board_url: "https://fuentedepiedra.sedelectronica.es/board/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-fuente-de-piedra/1.0"
+    centroid: [37.135, -4.73]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/).
+    Web www.fuentedepiedra.es (Diputación Málaga); 403 CloudFront desde CI.
+    PGOU aprobado 2011 (BOJA 246/2011); modificación ámbito urbano 2022 (BOJA 133/2022).
+    SITUA/VITUA Junta de Andalucía sin enlace por expediente del tablón.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,26 @@
+slug: fresno-del-torote
+nombre: "Fresno del Torote"
+provincia: Fresno del Torote, Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://fresnodetorote.org"
+  adapter: municipio.adapters.fresno_del_torote:FresnoDelToroteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fresno-del-torote/1.0"
+    wp_base: "https://fresnodetorote.org"
+    sede_base: "https://sede.fresnodetorote.es"
+    wfs_municipio: "FRESNO DE TOROTE"
+    centroid: [40.623, -3.399]
+  notes: |
+    WordPress Elementor (fresnodetorote.org) con ordenanzas y noticias urbanismo/obras.
+    Sede Maggioli ATM (sede.fresnodetorote.es) — SPA Angular sin tablón scrapeable.
+    Geometría partial vía WFS SITCM IDEM (28 polígonos de ámbitos de planeamiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

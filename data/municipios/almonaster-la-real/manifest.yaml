@@ -1,0 +1,27 @@
+slug: almonaster-la-real
+nombre: "Almonaster la Real"
+provincia: "Almonaster la Real/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.almonasterlareal.es"
+  adapter: municipio.adapters.almonaster_la_real:AlmonasterLaRealAyuntamientoAdapter
+  config:
+    web_base: "https://www.almonasterlareal.es"
+    sede_base: "https://almonasterlareal.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-almonaster-la-real/1.0"
+    centroid: [37.8725, -6.7856]
+  notes: |
+    Fuentes: web municipal SAGA (Diputación Huelva) con galerías ZIP/PDF de PGOU
+    (LOUA, Ordenación Estructural SNU). Sede almonasterlareal.sedelectronica.es
+    inaccesible desde el agente (timeout). Sin visor urbanístico ni WFS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
