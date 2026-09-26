@@ -1,0 +1,36 @@
+slug: albal
+nombre: "Albal"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://albal.sede.dival.es"
+  adapter: municipio.adapters.albal:AlbalAyuntamientoAdapter
+  config:
+    sede_base: "https://albal.sede.dival.es"
+    web_base: "https://albal.es"
+    tablon_rss: "https://albal.sede.dival.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://albal.sede.dival.es/tablondeanuncios/"
+    catalogo_url: "https://albal.sede.dival.es/catalogoservicios.aspx"
+    planeamiento_url: "https://albal.es/es/areas-y-servicios-2/urbanismo-y-medio-ambiente/planeamiento-y-gestion/"
+    proyectos_url: "https://albal.es/es/areas-y-servicios-2/urbanismo-y-medio-ambiente/proyectos-municipales/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-albal/1.0"
+    centroid: [39.3997, -0.4186]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_names:
+        - "Planeamiento.Zonificacion"
+        - "ms:InventarioSuSuz"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000, 12000, 14000, 16000, 18000, 20000]
+  notes: |
+    WordPress albal.es (planeamiento + proyectos municipales) + sede Dival tablón RSS.
+    Geometría parcial: ICV GVA WFS Zonificacion + InventarioSuSuz (INE 46007).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

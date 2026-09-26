@@ -1,0 +1,33 @@
+slug: bembibre
+nombre: "Bembibre"
+provincia: "Bembibre (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytobembibre.sedelectronica.es"
+  adapter: municipio.adapters.bembibre:BembibreAyuntamientoAdapter
+  config:
+    sede_base: "https://aytobembibre.sedelectronica.es"
+    planpublica_provincia: 24
+    planpublica_municipio: 14
+    ine_code: "24014"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Bembibre"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=24014"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=014"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=014"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bembibre/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [42.6154, -6.4170]
+  notes: |
+    Sede espublico gestiona + PlanPublica/SiuCyL (PGOU vigente, 15 docs PLAU).
+    Web corporativa aytobembibre.es con timeout/SSL en CI; geometría vía IDECyL WFS.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

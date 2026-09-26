@@ -1,0 +1,39 @@
+slug: portell-de-morella
+nombre: "Portell de Morella"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.portelldemorella.es"
+  adapter: municipio.adapters.portell_de_morella:PortellDeMorellaAyuntamientoAdapter
+  config:
+    web_base: "https://www.portelldemorella.es"
+    sede_base: "https://portelldemorella.sedelectronica.es"
+    board_url: "https://portelldemorella.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-portell-de-morella/1.0"
+    centroid: [40.5183, -0.2650]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "12091"
+    noticias_list_urls:
+      - "https://www.portelldemorella.es/es/noticias-0"
+      - "https://www.portelldemorella.es/es/noticias-1"
+    transparency_folders:
+      - url: "https://portelldemorella.sedelectronica.es/transparency"
+        titulo: "7. URBANISMO, OBRAS PÚBLICAS Y MEDIO AMBIENTE"
+        nota: "9 documentos en portal transparencia (carga AJAX Wicket)"
+  notes: |
+    Fuentes: Drupal 9 (noticias obras urbanas) + sede espublico gestiona (tablón/transparencia)
+    + PGOU (aprobación provisional 2013, sin geometría ICV).
+    ICV WFS InventarioSuSuz sin features para cod_ine_mun=12091.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

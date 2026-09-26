@@ -1,0 +1,33 @@
+slug: nava-del-rey
+nombre: "Nava del Rey"
+provincia: "Nava del Rey (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ayto-navadelrey.com"
+  adapter: municipio.adapters.nava_del_rey:NavaDelReyAyuntamientoAdapter
+  config:
+    sede_base: "https://navadelrey.sedelectronica.es"
+    web_base: "https://ayto-navadelrey.com"
+    planpublica_provincia: 47
+    planpublica_municipio: 102
+    ine_code: "47102"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Nava del Rey"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47102"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=102"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=102"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-nava-del-rey/1.0"
+    insecure_ssl: true
+    centroid: [41.3286, -4.97]
+  notes: |
+    Web WordPress (ayto-navadelrey.com) + sede espublico gestiona + PlanPublica JCYL + IDECyL WFS.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

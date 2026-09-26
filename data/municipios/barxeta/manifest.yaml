@@ -1,0 +1,35 @@
+slug: barxeta
+nombre: "Barxeta"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://barxeta.sedelectronica.es"
+  adapter: municipio.adapters.barxeta:BarxetaAyuntamientoAdapter
+  config:
+    sede_base: "https://barxeta.sedelectronica.es"
+    board_url: "https://barxeta.sedelectronica.es/board"
+    web_base: "https://www.barxeta.es"
+    pgou_url: "https://www.barxeta.es/ca/pagina/pla-general-dordenacio-urbana"
+    transparency_url: "https://barxeta.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-barxeta/1.0"
+    centroid: [39.0222, -0.4167]
+    cod_ine_mun: "46045"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal Digital Value portales (www.barxeta.es) + sede espublico gestiona.
+    PGOU suspendido R070913 (catálogo, normativa, memoria PDF).
+    Tablón /board: anuncios genéricos; parcelas afectadas obras forestales.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46045, Plan general).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

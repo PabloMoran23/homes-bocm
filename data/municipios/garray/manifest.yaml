@@ -1,0 +1,32 @@
+slug: garray
+nombre: "Garray"
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.garray.es"
+  adapter: municipio.adapters.garray:GarrayAyuntamientoAdapter
+  config:
+    drupal_base: "https://www.garray.es"
+    sede_base: "https://garray.sedelectronica.es"
+    board_url: "https://garray.sedelectronica.es/board"
+    dossier_url: "https://garray.sedelectronica.es/dossier"
+    plai_municipio: 101
+    plai_provincia: 42
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Garray"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-garray/1.0"
+    centroid: [41.905, -2.449]
+  notes: |
+    Fuentes: Drupal 7 (archivos planeamiento, modificaciones NUM, estudios de detalle),
+    sede espublico gestiona (tablón /board, trámites /dossier), PLAI JCYL (municipio 101,
+    Soria 42) y capas IDECyL WFS (12 sectores + 1 PP + 1 NUM).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

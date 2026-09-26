@@ -1,0 +1,32 @@
+slug: onda
+nombre: "Onda"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.onda.es"
+  adapter: municipio.adapters.onda:OndaAyuntamientoAdapter
+  config:
+    sede_base: "https://seu.onda.es"
+    urbanismo_url: "https://www.onda.es/ond/web_php/index.php?contenido=subapartados_woden&id_boto=158"
+    sat_url: "https://www.onda.es/ond/web_php/index.php?contenido=subapartados_woden&id_boto=167"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-onda/1.0"
+    centroid: [39.9625, -0.2633]
+    geometry:
+      dipcas_api: "https://dipcas.opendatasoft.com/api/explore/v2.1/catalog/datasets/planeamiento-urbanistico/records"
+      icv_wfs: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      icv_type: "InventarioSuSuz"
+      cod_ine_mun: "12084"
+  notes: |
+    CMS Woden/Insyde (www.onda.es) urbanismo PDFs + SAT trámites +
+    sede OpenSEA (seu.onda.es, login) + ICV WFS InventarioSuSuz (45 SUZ) +
+    DipCAS planeamiento Castellón (368 polígonos cod_mun=12084).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

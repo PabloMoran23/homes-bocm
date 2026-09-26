@@ -1,0 +1,28 @@
+slug: los-balbases
+nombre: "Los Balbases"
+provincia: Los Balbases (Burgos)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://losbalbases.es"
+  adapter: municipio.adapters.los_balbases:LosBalbasesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-balbases/1.0"
+    drupal_base: "https://losbalbases.es"
+    sede_base: "https://losbalbases.sedelectronica.es"
+    plan_provincia: 9
+    plan_municipio: 34
+    ine_code: "09034"
+    wfs_municipio: "Los Balbases"
+    insecure_ssl: true
+  notes: |
+    Drupal 10 (tema Toools, Diputación Burgos) + sede espublico gestiona + PlanPublica JCyL
+    (prov. 09, mun. 034) e IDECyL WFS urbanismo (c_mun 09034).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

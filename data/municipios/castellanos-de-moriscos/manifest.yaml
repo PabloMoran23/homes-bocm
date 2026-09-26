@@ -1,0 +1,27 @@
+slug: castellanos-de-moriscos
+nombre: "Castellanos de Moriscos"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "http://castellanosdemoriscos.es"
+  adapter: municipio.adapters.castellanos_de_moriscos:CastellanosDeMoriscosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castellanos-de-moriscos/1.0"
+    sede_base: "https://castellanosdemoriscos.sedelectronica.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=084"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=084"
+    wfs_municipio: "Castellanos de Moriscos"
+    insecure_ssl: true
+  notes: |
+    Web municipal WordPress (castellanosdemoriscos.es) + sede espublico gestiona
+    (castellanosdemoriscos.sedelectronica.es) + PlanPublica JCyl (mun=084, prov=37)
+    + IDECyL WFS urbanismo (sectores + NUM).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

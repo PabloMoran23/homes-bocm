@@ -1,0 +1,26 @@
+slug: mansilla-mayor
+nombre: "Mansilla Mayor"
+provincia: "Mansilla Mayor (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytomansillamayor.es"
+  adapter: municipio.adapters.mansilla_mayor:MansillaMayorAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytomansillamayor.es"
+    sede_base: "https://aytomansillamayor.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mansilla-mayor/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Mansilla Mayor"
+    centroid: [42.536, -5.445]
+  notes: |
+    OpenCms (Diputación León) + sede espublico tablón + IDECyL WFS sectores (PLAU mun 095).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

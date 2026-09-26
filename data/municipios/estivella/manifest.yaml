@@ -1,0 +1,30 @@
+slug: estivella
+nombre: "Estivella"
+provincia: "Estivella, Valencia"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.estivella.es"
+  adapter: municipio.adapters.estivella:EstivellaAyuntamientoAdapter
+  config:
+    web_base: "https://www.estivella.es"
+    sede_base: "https://estivella.sedelectronica.es"
+    board_url: "https://estivella.sedelectronica.es/board"
+    request_delay_s: 0.35
+    fetch_timeout_s: 25
+    insecure_ssl: true
+    user_agent: "poc-bocm-estivella/1.0"
+    centroid: [39.528, -0.349]
+    cod_ine_mun: "46115"
+  notes: |
+    Fuentes: Drupal 10 Portales (planes locales PDF, normas subsidiarias) +
+    tablón sede espublico gestiona. ICV WFS sin capas para cod_ine_mun 46115
+    (municipio sin planeamiento detallado en ICV). Sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

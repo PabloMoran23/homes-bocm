@@ -1,0 +1,27 @@
+slug: bollullos-par-del-condado
+nombre: "Bollullos Par del Condado"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.bollullospardelcondado.es"
+  adapter: municipio.adapters.bollullos_par_del_condado:BollullosParDelCondadoAyuntamientoAdapter
+  config:
+    web_base: "https://www.bollullospardelcondado.es"
+    sede_base: "https://sede.bollullospardelcondado.es"
+    urbanismo_url: "https://www.bollullospardelcondado.es/servicios/urbanismo"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bollullos-par-del-condado/1.0"
+    centroid: [37.3389, -6.5386]
+  notes: |
+    Fuentes: October CMS (PDFs urbanismo/PGOU en /storage/app/media/) + noticias sitemap +
+    sede SWAL (sin tablón público scrapeable). SITUA Junta de Andalucía para PGOU regional.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

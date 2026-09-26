@@ -1,0 +1,29 @@
+slug: benissa
+nombre: "Benissa"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.benissa.es"
+  adapter: municipio.adapters.benissa:BenissaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benissa/1.0"
+    sede_base: "https://benissa.sedelectronica.es"
+    board_url: "https://benissa.sedelectronica.es/board"
+    transparency_url: "https://benissa.sedelectronica.es/transparency"
+    insecure_ssl: true
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      cod_ine_mun: "03018"
+  notes: |
+    Web WordPress (turismo) + sede espublico gestiona (tablón + transparencia 328 docs urbanismo).
+    ICV GVA WFS Planeamiento.Zonificacion (cod_ine_mun=03018) para geometría PGOU/sectores.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

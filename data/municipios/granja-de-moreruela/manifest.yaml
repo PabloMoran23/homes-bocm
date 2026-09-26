@@ -1,0 +1,26 @@
+slug: granja-de-moreruela
+nombre: "Granja de Moreruela"
+provincia: "Granja de Moreruela-Zamora"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://granjademoreruela.sedelectronica.es"
+  adapter: municipio.adapters.granja_de_moreruela:GranjaDeMoreruelaAyuntamientoAdapter
+  config:
+    sede_base: "https://granjademoreruela.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-granja-de-moreruela/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Granja de Moreruela"
+    centroid: [41.813, -5.750]
+  notes: |
+    Sede espublico gestiona (tablón vacío) + PlanPublica JCyL (DSU 1988, c_mun=49091)
+    + IDECyL WFS instrumento de ámbito con MultiPolygon.
+    Sin web corporativa municipal accesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
