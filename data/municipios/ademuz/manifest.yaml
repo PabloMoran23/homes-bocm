@@ -1,0 +1,37 @@
+slug: ademuz
+nombre: "Ademuz"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://ademuz.sedelectronica.es"
+  adapter: municipio.adapters.ademuz:AdemuzAyuntamientoAdapter
+  config:
+    sede_base: "https://ademuz.sedelectronica.es"
+    board_url: "https://ademuz.sedelectronica.es/board"
+    web_base: "https://www.ademuz.es"
+    transparency_url: "https://ademuz.sedelectronica.es/transparency"
+    pgou_url: "https://www.ademuz.es/es/noticia-pagina/plan-general-ordenacion-urbana"
+    descargas_url: "https://www.ademuz.es/es/pagina/descargas-e-impresos"
+    pgou_drive_url: "https://drive.google.com/drive/folders/11-LvX-ZdNqcgV4F9E_Ljv21eQIWOVhfh?usp=sharing"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ademuz/1.0"
+    centroid: [40.0627, -1.2853]
+    cod_ine_mun: "46001"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 10 portalesmunicipales (www.ademuz.es) + sede espublico gestiona.
+    PGOU en tramitación (PGE/POP) en noticia Drupal + Google Drive.
+    Tablón /board casi vacío (sin licencias urbanísticas publicadas).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46001, 1 instrumento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
