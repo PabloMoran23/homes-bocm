@@ -4018,7 +4018,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/405
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -4928,7 +4928,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/471
   notes: ''
   boletin_source_id: boja
   comunidad_autonoma: andalucia
@@ -5586,7 +5586,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/519
   notes: ''
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
@@ -5600,7 +5600,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/520
   notes: ''
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
@@ -5614,7 +5614,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/521
   notes: ''
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
@@ -5628,7 +5628,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/522
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -5642,7 +5642,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/523
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -5656,7 +5656,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/524
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -6846,7 +6846,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/610
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -7126,7 +7126,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/630
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -7252,7 +7252,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/639
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -7462,7 +7462,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/654
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -7686,7 +7686,7 @@ municipios:
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/670
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T11:13:39.695527+00:00'
+updated_at: '2026-09-26T11:15:42.854285+00:00'
