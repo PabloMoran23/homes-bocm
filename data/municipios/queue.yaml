@@ -3566,12 +3566,12 @@ municipios:
 - slug: lucena-del-puerto
   nombre: Lucena del Puerto
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T09:49:23.926403+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/373
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36233906246
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Lucena del Puerto
@@ -3818,12 +3818,12 @@ municipios:
 - slug: pezuela-de-las-torres
   nombre: Pezuela de las Torres
   bocm_count: 3
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T09:52:23.328011+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/391
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36234053360
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
   provincia: Pezuela de las Torres, Madrid
@@ -4070,12 +4070,12 @@ municipios:
 - slug: albaida
   nombre: Albaida
   bocm_count: 2
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T09:55:32.395079+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/409
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36234206448
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Albaida
@@ -4742,12 +4742,12 @@ municipios:
 - slug: fuentes-de-onoro
   nombre: Fuentes de Oñoro
   bocm_count: 2
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:16:14.863366+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/457
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36235255749
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Fuentes de Oñoro (Salamanca)
@@ -5876,12 +5876,12 @@ municipios:
 - slug: valverde
   nombre: Valverde
   bocm_count: 2
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:29:05.207943+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/540
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36235896405
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Valverde (El Hierro)
@@ -6506,12 +6506,12 @@ municipios:
 - slug: astorga
   nombre: Astorga
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:36:44.930296+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/586
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236289232
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Astorga-León
@@ -6884,12 +6884,12 @@ municipios:
 - slug: bunol
   nombre: Buñol
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:41:16.972874+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/613
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236510488
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Buñol
@@ -7164,12 +7164,12 @@ municipios:
 - slug: castello-de-rugat
   nombre: Castelló de Rugat
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:44:35.302275+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/633
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236676706
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Castelló de Rugat
@@ -7346,12 +7346,12 @@ municipios:
 - slug: cimanes-del-tejar
   nombre: Cimanes del Tejar
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:46:52.801600+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/646
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236790770
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Cimanes del Tejar, León
@@ -7570,12 +7570,12 @@ municipios:
 - slug: el-fresno
   nombre: El Fresno
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:49:48.013354+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/662
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36236935423
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: El Fresno (Ávila)
@@ -7906,12 +7906,12 @@ municipios:
 - slug: frigiliana
   nombre: Frigiliana
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:53:43.992965+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/686
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36237130661
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Frigiliana-Málaga
@@ -8060,12 +8060,12 @@ municipios:
 - slug: gijon-xixon
   nombre: Gijón/Xixón
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-09-21T00:15:24.601472+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/698
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: bopa
   comunidad_autonoma: asturias
   provincia: Gijón/Xixón
@@ -8158,12 +8158,12 @@ municipios:
 - slug: guardamar-de-la-safor
   nombre: Guardamar de la Safor
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:56:33.307301+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/705
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36237264969
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Guardamar de la Safor
@@ -8396,12 +8396,12 @@ municipios:
 - slug: juzbado
   nombre: Juzbado
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:59:12.447407+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/722
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36237381463
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Juzbado-Salamanca
@@ -8620,11 +8620,11 @@ municipios:
 - slug: la-torre
   nombre: La Torre
   bocm_count: 1
-  status: done
-  attempts: 1
-  last_run: '2026-09-20T22:06:07.042898+00:00'
+  status: pending
+  attempts: 0
+  last_run: null
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/738
+  pr_url: null
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -8648,12 +8648,12 @@ municipios:
 - slug: lachar
   nombre: Láchar
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-25T00:06:12.055127+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/740
+  notes: Mergeado por automation merge-babysitter
   boletin_source_id: boja
   comunidad_autonoma: andalucia
   provincia: Láchar (Granada)
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-20T22:06:07.043910+00:00'
+updated_at: '2026-09-26T10:59:12.448500+00:00'
