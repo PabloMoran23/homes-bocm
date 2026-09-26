@@ -1,0 +1,33 @@
+slug: fresnedillas-de-la-oliva
+nombre: "Fresnedillas de la Oliva"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://www.fresnedillasdelaoliva.es"
+  adapter: municipio.adapters.fresnedillas_de_la_oliva:FresnedillasDeLaOlivaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fresnedillas-de-la-oliva/1.0"
+    wp_base: "https://www.fresnedillasdelaoliva.es"
+    sede_base: "https://fresnedillasdelaoliva.sedelectronica.es"
+    board_url: "https://fresnedillasdelaoliva.sedelectronica.es/board"
+    transparency_url: "https://fresnedillasdelaoliva.sedelectronica.es/transparency/"
+    urbanismo_url: "https://fresnedillasdelaoliva.sedelectronica.es/citizen-service/ba9ebb99-227d-4ca4-897c-de1ef7994bb4"
+    centroid: [40.4872, -4.1715]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "FRESNEDILLAS DE LA OLIVA"
+  notes: |
+    WordPress fresnedillasdelaoliva.es (ayuntamiento, plenos, transparencia).
+    Sede espublico gestiona (fresnedillasdelaoliva.sedelectronica.es): tablón /board,
+    transparencia /transparency, trámites /dossier, área URBANISMO (citizen-service).
+    Geometría partial vía WFS SITCM IDEM (33 polígonos UA/SAU).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

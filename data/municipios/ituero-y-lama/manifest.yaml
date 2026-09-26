@@ -1,0 +1,30 @@
+slug: ituero-y-lama
+nombre: "Ituero y Lama"
+provincia: "Ituero y Lama (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.dipsegovia.es/web/ayuntamiento-de-ituero-y-lama"
+  adapter: municipio.adapters.ituero_y_lama:ItueroYLamaAyuntamientoAdapter
+  config:
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-ituero-y-lama"
+    sede_base: "https://itueroylama.sedelectronica.es"
+    board_url: "https://itueroylama.sedelectronica.es/board"
+    plai_municipio: 108
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Ituero y Lama"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ituero-y-lama/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 108).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

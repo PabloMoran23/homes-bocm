@@ -1,0 +1,34 @@
+slug: utiel
+nombre: "Utiel"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://utiel.sedelectronica.es"
+  adapter: municipio.adapters.utiel:UtielAyuntamientoAdapter
+  config:
+    sede_base: "https://utiel.sedelectronica.es"
+    board_url: "https://utiel.sedelectronica.es/board"
+    web_base: "https://www.utiel.es"
+    pgou_url: "https://www.utiel.es/es/pagina/plan-general-ordenacion-urbana"
+    urbanismo_url: "https://www.utiel.es/es/pagina/urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-utiel/1.0"
+    centroid: [39.5663, -1.2057]
+    cod_ine_mun: "46245"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+  notes: |
+    Web Drupal Digital Value (utiel.es) + sede espublico gestiona (/board).
+    PGOU 1986 y modificaciones puntuales en página web municipal.
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46245, fid 8525).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

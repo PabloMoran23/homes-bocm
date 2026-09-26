@@ -1,0 +1,31 @@
+slug: algarrobo
+nombre: "Algarrobo"
+provincia: "Algarrobo, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.algarrobo.es"
+  adapter: municipio.adapters.algarrobo:AlgarroboAyuntamientoAdapter
+  config:
+    web_base: "https://www.algarrobo.es"
+    sede_base: "https://algarrobo.sedelectronica.es"
+    board_url: "https://algarrobo.sedelectronica.es/board/"
+    urbanismo_url: "https://www.algarrobo.es/index.php/ayuntamiento/urbanismo"
+    urbanismo_rss: "https://www.algarrobo.es/index.php/ayuntamiento/urbanismo?format=feed&type=rss"
+    transparency_url: "https://algarrobo.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-algarrobo/1.0"
+    centroid: [36.7337, -4.1004]
+  notes: |
+    Fuentes: web Joomla Helix (urbanismo RSS + PDFs), sede espublico gestiona
+    (tablón /board/, transparencia), SITUA consulta regional.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

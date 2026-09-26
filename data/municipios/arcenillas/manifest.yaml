@@ -1,0 +1,32 @@
+slug: arcenillas
+nombre: "Arcenillas"
+provincia: "Arcenillas, Zamora"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://arcenillas.es"
+  adapter: municipio.adapters.arcenillas:ArcenillasAyuntamientoAdapter
+  config:
+    sede_base: "https://arcenillas.sedelectronica.es"
+    planpublica_provincia: 49
+    planpublica_municipio: 010
+    ine_code: "49010"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Arcenillas"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=49010"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=49&municipio=010"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=49&municipio=010"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arcenillas/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [41.4815, -5.6980]
+  notes: |
+    Web WordPress (Salient) + sede espublico gestiona + PlanPublica/SiuCyL (DSU vigente).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

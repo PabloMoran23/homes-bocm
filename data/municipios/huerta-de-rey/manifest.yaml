@@ -1,0 +1,32 @@
+slug: huerta-de-rey
+nombre: "Huerta de Rey"
+provincia: "Huerta de Rey (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.huertaderey.es"
+  adapter: municipio.adapters.huerta_de_rey:HuertaDeReyAyuntamientoAdapter
+  config:
+    web_base: "https://www.huertaderey.es"
+    sede_base: "https://huertaderey.sedelectronica.es"
+    board_url: "https://huertaderey.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=174"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=174"
+    obras_url: "https://huertaderey.sedelectronica.es/citizen-service/d9f26e4d-e46d-4a6c-8a50-f5e2d15e1ca1"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-huerta-de-rey/1.0"
+    centroid: [41.9478, -3.3756]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Huerta de Rey"
+  notes: |
+    Web corporativa Drupal 10 (tema Toools): noticias con aprobaciones urbanísticas.
+    Sede espublico gestiona: tablón /board, trámites OBRAS (obra mayor/menor).
+    PLAU CyL: archivo planeamiento (provincia 09, municipio 174; INE 09177).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento NUM + 9 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

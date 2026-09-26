@@ -1,0 +1,31 @@
+slug: la-torre
+nombre: "La Torre"
+provincia: "La Torre (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.latorre.es"
+  adapter: municipio.adapters.la_torre:LaTorreAyuntamientoAdapter
+  config:
+    web_base: "https://www.latorre.es"
+    sede_base: "https://latorre.sedelectronica.es"
+    board_url: "https://latorre.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=05&municipio=247"
+    plau_provincia: 5
+    plau_municipio: 247
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-torre/1.0"
+    centroid: [40.635, -5.015]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "La Torre"
+  notes: |
+    Web plantilla Diputación de Ávila (normas urbanísticas enlazan a PLAU CyL).
+    Sede espublico gestiona: tablón /board (vacío en prueba).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento SPG sin sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

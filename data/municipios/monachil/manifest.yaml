@@ -1,0 +1,24 @@
+slug: monachil
+nombre: "Monachil"
+provincia: Monachil (Granada)
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://monachil.es"
+  adapter: municipio.adapters.monachil:MonachilAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-monachil/1.0"
+    sede_base: "https://monachil.sedelectronica.es"
+    geovistas_wfs: "https://app.geovistas.es/maps/wmsc/1695"
+    insecure_ssl: true
+  notes: |
+    Web WordPress (urbanismo, noticias REST) + sede espublico gestiona (tablón, transparencia).
+    Visor RNNSS e inventario en GeoVistas (WMS/WFS MapServer).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

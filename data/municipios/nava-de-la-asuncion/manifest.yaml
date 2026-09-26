@@ -1,0 +1,31 @@
+slug: nava-de-la-asuncion
+nombre: "Nava de la Asunción"
+provincia: "Nava de la Asunción (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://navadelaasuncion.org"
+  adapter: municipio.adapters.nava_de_la_asuncion:NavaDeLaAsuncionAyuntamientoAdapter
+  config:
+    web_base: "https://navadelaasuncion.org"
+    sede_base: "https://navadelasuncion.sedelectronica.es"
+    board_url: "https://navadelasuncion.sedelectronica.es/board"
+    plan_provincia: "40"
+    plan_municipio: "138"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "40138"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-nava-de-la-asuncion/1.0"
+    insecure_ssl: true
+  notes: |
+    WordPress navadelaasuncion.org (sin sección urbanismo dedicada).
+    Sede espublico gestiona (navadelasuncion.sedelectronica.es) devuelve "Sede Indeterminada".
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 138).
+    Geometría: IDECyL WFS PLAU CyL + visor SIUR (c_mun 40138).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

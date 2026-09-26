@@ -1,0 +1,28 @@
+slug: casavieja
+nombre: "Casavieja"
+provincia: "Casavieja (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ayuntamientodecasavieja.es"
+  adapter: municipio.adapters.casavieja:CasaviejaAyuntamientoAdapter
+  config:
+    wp_base: "https://ayuntamientodecasavieja.es"
+    sede_base: "https://casavieja.sedelectronica.es"
+    board_url: "https://casavieja.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-casavieja/1.0"
+    centroid: [40.3289, -4.7614]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Casavieja
+  notes: |
+    Web WordPress (urbanismo, plano, bandos).
+    Sede espublico gestiona: tablón /board (licencias urbanísticas y anuncios).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos + sectores, c_mun 05054).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

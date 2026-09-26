@@ -1,0 +1,31 @@
+slug: el-real-sitio-de-san-ildefonso
+nombre: "El Real Sitio de San Ildefonso"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.lagranja-valsain.com"
+  adapter: municipio.adapters.el_real_sitio_de_san_ildefonso:ElRealSitioDeSanIldefonsoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-real-sitio-de-san-ildefonso/1.0"
+    web_base: "https://www.lagranja-valsain.com"
+    sede_base: "https://realsitiodesanildefonso.sedelectronica.es"
+    board_url: "https://realsitiodesanildefonso.sedelectronica.es/board"
+    dossier_url: "https://realsitiodesanildefonso.sedelectronica.es/dossier"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=40&municipio=165"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=40&municipio=165"
+    wfs_municipio: "Real Sitio de San Ildefonso"
+    insecure_ssl: true
+  notes: |
+    WordPress lagranja-valsain.com (concejalía urbanismo + formularios PDF).
+    Sede espublico gestiona: tablón /board, catálogo /dossier.
+    Planeamiento en PlanPublica JCyL (prov=40, mun=165, INE 40165).
+    Geometría sectores PGOU vía IDECyL WFS urbanismo (partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,29 @@
+slug: camponaraya
+nombre: "Camponaraya"
+provincia: "Camponaraya (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://camponaraya.es"
+  adapter: municipio.adapters.camponaraya:CamponarayaAyuntamientoAdapter
+  config:
+    web_base: "https://camponaraya.es"
+    sede_base: "https://camponaraya.sedelectronica.es"
+    board_url: "https://camponaraya.sedelectronica.es/board"
+    dossier_url: "https://camponaraya.sedelectronica.es/dossier"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-camponaraya/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Camponaraya
+    insecure_ssl: true
+  notes: |
+    Web corporativa CMS PSI (tablón, normativa PDFs, noticias).
+    Sede espublico: tablón /board y trámites /dossier.
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, sectores, planes parciales).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

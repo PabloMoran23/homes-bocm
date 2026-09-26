@@ -1,0 +1,30 @@
+slug: aspe
+nombre: "Aspe"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://aspe.es"
+  adapter: municipio.adapters.aspe:AspeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aspe/1.0"
+    web_base: "https://aspe.es"
+    sede_base: "https://sede.aspe.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      cod_ine_mun: "03009"
+      offsets: [0, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000]
+  notes: |
+    WordPress The7 (aspe.es) con CPT anuncio-electronico y anuncio-tablon (wp-sitemap).
+    Sede STA (sede.aspe.es): catálogo CATSERV con trámites URB-* (licencias/DR).
+    Tablón STA (PTS2_TABLON) usa widget AJAX sin dataset embebido — no scrapeable.
+    Geometría parcial vía ICV WFS Planeamiento.Zonificacion (INE 03009).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

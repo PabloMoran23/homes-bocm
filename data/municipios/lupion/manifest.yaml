@@ -1,0 +1,30 @@
+slug: lupion
+nombre: "Lupión"
+provincia: Jaén
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lupion.sedelectronica.es"
+  adapter: municipio.adapters.lupion:LupionAyuntamientoAdapter
+  config:
+    sede_base: "https://lupion.sedelectronica.es"
+    web_base: "https://www.lupion.es"
+    board_url: "https://lupion.sedelectronica.es/board/"
+    dossier_url: "https://lupion.sedelectronica.es/dossier"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-lupion/1.0"
+    centroid: [37.983, -3.567]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board/) + catálogo trámites (/dossier).
+    Web www.lupion.es orientada a turismo; sin sección urbanismo.
+    Planeamiento consultable en SITUADIFUSION (Junta de Andalucía, INE 23062).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

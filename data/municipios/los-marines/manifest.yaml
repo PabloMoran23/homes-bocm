@@ -1,0 +1,31 @@
+slug: los-marines
+nombre: "Los Marines"
+provincia: "Los Marines/Huelva"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sede.losmarines.es"
+  adapter: municipio.adapters.los_marines:LosMarinesAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.losmarines.es"
+    web_base: "https://www.losmarines.es"
+    tablon_url: "https://sede.losmarines.es/moad/Gtablon_web-moad/index.htm?codOrganismo=048_TA"
+    pgou_url: "https://www.losmarines.es/es/areas-tematicas/urbanismo/pgou/"
+    urbanismo_url: "https://www.losmarines.es/es/areas-tematicas/urbanismo/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=21048"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-los-marines/1.0"
+    centroid: [37.8883, -6.6181]
+  notes: |
+    Fuentes: web SAGA/OpenCMS (PGOU PDFs) + sede GSede (Gtablon tablón)
+    + SITUA Junta de Andalucía (planeamiento general aprobado INE 21048).
+    Sin visor urbanístico municipal ni WFS enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

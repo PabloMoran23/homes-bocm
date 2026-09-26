@@ -1,0 +1,30 @@
+slug: morella
+nombre: "Morella"
+provincia: Morella
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://morella.sedelectronica.es"
+  adapter: municipio.adapters.morella:MorellaAyuntamientoAdapter
+  config:
+    sede_base: "https://morella.sedelectronica.es"
+    board_url: "https://morella.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-morella/1.0"
+    ine_code: "12080"
+    centroid: [40.619, -0.097]
+    gva_pgou_index: "https://mediambient.gva.es/auto/urbanismo/Textos_consolidados/2.%20Textos%20consolidados,%20Orden%2010-2022/12080%20Morella/"
+    icv_wfs_base: "https://terramapas.icv.gva.es/0702_Planeamiento"
+  notes: |
+    Sede espublico (tablón), textos consolidados PGOU en mediambient.gva.es (12080 Morella),
+    ICV WFS InventarioSuSuz + Planeamiento.Zonificacion. Web www.morella.net con Cloudflare
+    (no scrapeable en CI); normativa urbanística enlaza a transparencia/sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

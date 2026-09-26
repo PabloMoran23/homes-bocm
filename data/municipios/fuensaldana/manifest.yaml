@@ -1,0 +1,33 @@
+slug: fuensaldana
+nombre: "Fuensaldaña"
+provincia: "Fuensaldaña, Valladolid"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://fuensaldana.sedelectronica.es"
+  adapter: municipio.adapters.fuensaldana:FuensaldanaAyuntamientoAdapter
+  config:
+    sede_base: "https://fuensaldana.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 120
+    ine_code: "47120"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Fuensaldaña"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47120"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=120"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=120"
+    dossier_url: "https://fuensaldana.sedelectronica.es/dossier"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-fuensaldana/1.0"
+    centroid: [41.7125, -4.6975]
+  notes: |
+    Sin web corporativa. Sede espublico gestiona (Wicket) + IDECyL WFS (25 polígonos)
+    + PlanPublica (provincia 47, municipio 120). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

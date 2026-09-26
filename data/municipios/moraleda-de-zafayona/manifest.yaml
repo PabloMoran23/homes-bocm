@@ -1,0 +1,33 @@
+slug: moraleda-de-zafayona
+nombre: "Moraleda de Zafayona"
+provincia: "Moraleda de Zafayona (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.moraledadezafayona.es"
+  adapter: municipio.adapters.moraleda_de_zafayona:MoraledaDeZafayonaAyuntamientoAdapter
+  config:
+    web_base: "https://www.moraledadezafayona.es"
+    sede_base: "https://moraledadezafayona.sedelectronica.es"
+    board_url: "https://moraledadezafayona.sedelectronica.es/board/"
+    poou_url: "https://www.moraledadezafayona.es/ayuntamiento/plan-de-ordenacion-urbana/"
+    transp_urbanismo_url: "https://moraledadezafayona.sedelectronica.es/transparency/6adbe577-24f5-4e83-bcf9-c858e67a1d87/"
+    tramites_url: "https://www.moraledadezafayona.es/ayuntamiento/tramites-e-impresos/"
+    dossier_url: "https://moraledadezafayona.sedelectronica.es/dossier.2"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=18143"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-moraleda-de-zafayona/1.0"
+    centroid: [37.1665, -3.9670]
+  notes: |
+    OpenCMS SAGA/Alhambra (Diputación Granada) + sede espublico gestiona.
+    Tablón /board/; transparencia urbanismo enlazada desde POOU; galería PDF PGOU 2021.
+    SITUA cid=18143 sin geometría REST enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

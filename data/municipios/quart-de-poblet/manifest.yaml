@@ -1,0 +1,31 @@
+slug: quart-de-poblet
+nombre: "Quart de Poblet"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://quartdepoblet.es"
+  adapter: municipio.adapters.quart_de_poblet:QuartDePobletAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-quart-de-poblet/1.0"
+    centroid: [39.4814, -0.4394]
+    api_base: "https://api.digitalvalue.es/quartdepoblet/collections"
+    sede_base: "https://quartdepoblet.sedipualba.es"
+    geometry:
+      kind: wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+      cod_ine_mun: "46104"
+  notes: |
+    Web corporativa Digital Value (quartdepoblet.es) + API articulos.
+    Sede sedipualba (tablón RSS + catálogo trámites URBA).
+    Geometría parcial vía ICV WFS InventarioSuSuz + Zonificacion (cod_ine_mun=46104).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,30 @@
+slug: la-vall-duixo
+nombre: "La Vall d'Uixó"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.lavallduixo.es"
+  adapter: municipio.adapters.la_vall_duixo:LaVallDuixoAyuntamientoAdapter
+  config:
+    web_base: "https://www.lavallduixo.es"
+    sede_base: "https://sede.lavallduixo.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-la-vall-duixo/1.0"
+    centroid: [39.8237, -0.2283]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      ine_municipio: "12126"
+  notes: |
+    Drupal web (PGOU/planes parciales PDFs) + sede STA TAO (tablón + catálogo urbanismo PTS_PC_004)
+    + ICV WFS InventarioSuSuz (sectores SU/SUZ con polígonos EPSG:4326).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

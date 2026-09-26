@@ -1,0 +1,33 @@
+slug: la-rinconada
+nombre: "La Rinconada"
+provincia: "La Rinconada (Sevilla)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://larinconada.sedelectronica.es"
+  adapter: municipio.adapters.la_rinconada:LaRinconadaAyuntamientoAdapter
+  config:
+    sede_base: "https://larinconada.sedelectronica.es"
+    board_url: "https://larinconada.sedelectronica.es/board"
+    transparency_url: "https://larinconada.sedelectronica.es/transparency"
+    transparencia_base: "http://transparencia.larinconada.es"
+    wp_base: "https://www.larinconada.es"
+    pgou_zip_url: "http://larinconada.es/contenidos/pgou/pgou-la-rinconada.zip"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-la-rinconada/1.0"
+    centroid: [37.4861, -5.9809]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón /board + transparencia) + portal transparencia
+    OpenCMS Diputación Sevilla (PGOU, convenios, normativa). PGOU ZIP en web municipal.
+    Licencias: trámites sede (sin listado histórico público). Sin visor GIS municipal accesible;
+    SITUA Junta (planeamiento escaneado). urbanolarinconada.com bloqueado (Cloudflare).
+  geometry_status: partial
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

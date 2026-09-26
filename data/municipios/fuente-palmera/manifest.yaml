@@ -1,0 +1,35 @@
+slug: fuente-palmera
+nombre: "Fuente Palmera"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://fuentepalmera.es"
+  adapter: municipio.adapters.fuente_palmera:FuentePalmeraAyuntamientoAdapter
+  config:
+    wp_base: "https://fuentepalmera.es"
+    sede_base: "https://sede.eprinsa.es/ftepalm"
+    urbanismo_url: "https://fuentepalmera.es/urbanismo/"
+    tablon_url: "https://sede.eprinsa.es/ftepalm/tablon-de-edictos"
+    wp_categories: [47]
+    wp_max_pages: 5
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-fuente-palmera/1.0"
+    centroid: [37.7050, -5.0999]
+    seed_pages:
+      - "https://fuentepalmera.es/urbanismo/"
+      - "https://fuentepalmera.es/agenda-urbana/"
+      - "https://fuentepalmera.es/bases-y-anuncios/"
+  notes: |
+    WordPress Divi (ePrinsa): urbanismo con PDFs (modificación puntual NNSS 2025) + modelos licencias.
+    WP REST categoría 47 (urbanismo) y búsqueda planeamiento/modificación puntual.
+    Sede eprinsa (Diputación Córdoba): tablón Ember SPA sin API pública scrapeable.
+    SITUA Junta de Andalucía para PGOU regional; sin visor GIS municipal por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

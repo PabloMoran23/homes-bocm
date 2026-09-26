@@ -1,0 +1,28 @@
+slug: la-matanza-de-acentejo
+nombre: "La Matanza de Acentejo"
+provincia: La Matanza de Acentejo
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.matanceros.es"
+  adapter: municipio.adapters.la_matanza_de_acentejo:LaMatanzaDeAcentejoAyuntamientoAdapter
+  config:
+    wp_base: "https://www.matanceros.es"
+    sede_base: "https://matanceros.sedelectronica.es"
+    board_url: "https://matanceros.sedelectronica.es/board/"
+    sitcan_package: planeamiento-urbanistico-de-la-matanza-de-acentejo
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38025/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-matanza-de-acentejo/1.0"
+    centroid: [28.4490, -16.4490]
+  notes: |
+    WordPress matanceros.es (tablón, transparencia, oficina técnica) + sede espublico gestiona
+    (/board) + SITCAN CKAN planeamiento-urbanistico-de-la-matanza-de-acentejo + GEOBDP Grafcan (INE 38025).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

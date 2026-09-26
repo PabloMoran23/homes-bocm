@@ -1,0 +1,30 @@
+slug: los-huertos
+nombre: "Los Huertos"
+provincia: "Los Huertos-Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.loshuertos.es"
+  adapter: municipio.adapters.los_huertos:LosHuertosAyuntamientoAdapter
+  config:
+    web_base: "https://www.loshuertos.es"
+    sede_base: "https://loshuertos.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-huertos/1.0"
+    plai_municipio: 103
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Los Huertos"
+    insecure_ssl: true
+  notes: |
+    Web Liferay (Diputación Segovia, tema Segovia11) en www.loshuertos.es.
+    Sede espublico gestiona (loshuertos.sedelectronica.es) con tablón /board.
+    Planeamiento: PLAI JCYL prov=40 mun=103 (INE 40103).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento NUM + 5 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

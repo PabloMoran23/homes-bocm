@@ -1,0 +1,29 @@
+slug: mogan
+nombre: "Mogán"
+provincia: Mogán, Gran Canaria
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.mogan.es"
+  adapter: municipio.adapters.mogan:MoganAyuntamientoAdapter
+  config:
+    web_base: "https://www.mogan.es"
+    sede_base: "https://mogan.sedelectronica.es"
+    oat_base: "https://oat.mogan.es:8448/ventanilla"
+    sitcan_package: planeamiento-urbanistico-de-mogan
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35012/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mogan/1.0"
+    centroid: [27.8859, -15.7236]
+  notes: |
+    Portal municipal (WAF 403 en CI) + OAT sede (timeout intermitente) + espublico indeterminada.
+    SITCAN CKAN planeamiento-urbanistico-de-mogan + GEOBDP Grafcan INE 35012.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
