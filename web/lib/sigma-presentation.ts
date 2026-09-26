@@ -73,7 +73,7 @@ export function isSigmaLocationDenom(text: string | null | undefined): boolean {
 function figureKindFromAbrev(tfig?: string | null, figEtiq?: string | null): string | null {
   const ab = tfig?.trim().toUpperCase();
   const MAP: Record<string, string> = {
-    MPG: "Modificación del Plan General de Madrid",
+    MPG: "Modificación del Plan General",
     MP: "Modificación puntual del Plan General",
     ED: "Estudio de detalle",
     PP: "Plan parcial",
@@ -165,12 +165,12 @@ export function buildSigmaProjectLead(input: SigmaPresentationInput): string {
   if (resumen && resumen.length > 24) {
     sentences.push(resumen.length > 360 ? `${resumen.slice(0, 357).trim()}…` : resumen);
   } else if (tipo && planRef) {
-    sentences.push(`${tipo} en el marco del plan urbanístico ${planRef} de Madrid.`);
+    sentences.push(`${tipo} en el marco del plan urbanístico ${planRef}.`);
   } else if (tipo) {
-    sentences.push(`${tipo} tramitado en la ciudad de Madrid.`);
+    sentences.push(`${tipo} tramitado por el ayuntamiento.`);
   } else {
     sentences.push(
-      "Actuación de planeamiento o gestión urbanística registrada por el Ayuntamiento de Madrid.",
+      "Actuación de planeamiento o gestión urbanística registrada por el ayuntamiento.",
     );
   }
 

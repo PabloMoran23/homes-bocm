@@ -2,11 +2,20 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from municipio.completeness import (
+    band_for,
+    freshness,
+    geometry_status_from_research,
+    merge_fill,
+    scan_jsonl,
+    score_from_fill,
+)
 from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, list_manifest_slugs
 from municipio.queue import (
     QUEUE_PATH,
@@ -92,8 +101,8 @@ def _count_jsonl(path: Path) -> int:
     return n
 
 
-def _entry_activity_at(entry: Any, manifest_mtime: str | None, git_at: str | None) -> str | None:
-    candidates = [entry.last_run, git_at, manifest_mtime]
+def _entry_activity_at(entry: Any, *extra: str | None) -> str | None:
+    candidates = [entry.last_run, *extra]
     parsed: list[datetime] = []
     for raw in candidates:
         if not raw:
@@ -107,11 +116,27 @@ def _entry_activity_at(entry: Any, manifest_mtime: str | None, git_at: str | Non
     return max(parsed).isoformat()
 
 
+def _load_db_scraper_stats() -> dict[str, dict[str, Any]]:
+    db_dir = POC_ROOT / "db"
+    if str(db_dir) not in sys.path:
+        sys.path.insert(0, str(db_dir))
+    try:
+        from ingest import fetch_municipio_scraper_stats
+    except Exception:
+        return {}
+    try:
+        return fetch_municipio_scraper_stats()
+    except Exception as exc:
+        print(f"aviso export-admin: sin stats DB ({exc})", flush=True)
+        return {}
+
+
 def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, Any]:
     queue_raw = _load_yaml(QUEUE_PATH) if QUEUE_PATH.is_file() else {}
     entries = _parse_entries(queue_raw)
     manifest_slugs = set(list_manifest_slugs())
     open_prs = open_pr_by_slug()
+    db_stats = _load_db_scraper_stats()
     rows: list[dict[str, Any]] = []
 
     for entry in entries:
@@ -119,6 +144,7 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
         manifest_path = MUNICIPIOS_DIR / slug / "manifest.yaml"
         research_path = MUNICIPIOS_DIR / slug / "RESEARCH.md"
         output_dir = POC_ROOT / "output" / "municipios" / slug
+        db_row = db_stats.get(slug) or {}
 
         has_manifest = manifest_path.is_file()
         has_research = research_path.is_file()
@@ -162,6 +188,48 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
                 proyectos_rows = _count_jsonl(output_dir / "proyectos.jsonl")
                 licencias_rows = _count_jsonl(output_dir / "licencias.jsonl")
 
+        jsonl_stats = scan_jsonl(output_dir / "proyectos.jsonl")
+        last_output_at = jsonl_stats.get("updated_at") if jsonl_stats else _iso_mtime(output_dir / "proyectos.jsonl")
+        last_ingest_at = db_row.get("last_ingest_at")
+
+        if not proyectos_rows and db_row.get("proyectos"):
+            proyectos_rows = int(db_row["proyectos"])
+            with_coords = int(db_row.get("with_coords") or 0)
+            with_geometry = int(db_row.get("with_geometry") or 0)
+        if not licencias_rows and db_row.get("licencias"):
+            licencias_rows = int(db_row["licencias"])
+
+        fill = merge_fill(
+            jsonl_stats.get("fill") if jsonl_stats else None,
+            db_row.get("fill") if db_row else None,
+        )
+        n_for_score = int(jsonl_stats["rows"]) if jsonl_stats else proyectos_rows
+        score = score_from_fill(fill) if n_for_score else 0
+        band = band_for(score, n=n_for_score)
+        has_adapter = adapter_path is not None
+        freshness_label, age_days = freshness(
+            last_ingest_at=last_ingest_at,
+            last_output_at=last_output_at,
+            status=entry.status,
+            has_adapter=has_adapter,
+        )
+        if jsonl_stats:
+            data_source = "mixed" if db_row else "jsonl"
+            with_pdf = int(jsonl_stats.get("with_pdf") or 0)
+            with_expediente = int(jsonl_stats.get("with_expediente") or 0)
+            if jsonl_stats.get("with_coords") is not None:
+                with_coords = int(jsonl_stats["with_coords"])
+            if jsonl_stats.get("with_geometry") is not None:
+                with_geometry = int(jsonl_stats["with_geometry"])
+        elif db_row:
+            data_source = "db"
+            with_pdf = int(db_row.get("with_pdf") or 0)
+            with_expediente = int(db_row.get("with_expediente") or 0)
+        else:
+            data_source = "none"
+            with_pdf = 0
+            with_expediente = 0
+
         ccaa_id = entry.comunidad_autonoma or "comunidad-madrid"
         open_pr = open_prs.get(slug)
         blocked_reason: str | None = None
@@ -189,7 +257,7 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
                 "notes": entry.notes,
                 "hasManifest": has_manifest,
                 "hasResearch": has_research,
-                "hasAdapter": adapter_path is not None,
+                "hasAdapter": has_adapter,
                 "adapterRef": adapter_ref,
                 "adapterPath": str(adapter_path.relative_to(POC_ROOT)) if adapter_path else None,
                 "portalUrl": portal_url,
@@ -197,13 +265,26 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
                 "mergedAt": git_manifest.get("at"),
                 "mergeCommit": git_manifest.get("sha"),
                 "mergeSubject": git_manifest.get("subject"),
-                "activityAt": _entry_activity_at(entry, manifest_mtime, git_manifest.get("at")),
+                "activityAt": _entry_activity_at(
+                    entry, git_manifest.get("at"), manifest_mtime, last_ingest_at, last_output_at
+                ),
                 "proyectosRows": proyectos_rows,
                 "licenciasRows": licencias_rows,
                 "withCoords": with_coords,
                 "withGeometry": with_geometry,
                 "parityOverall": parity_overall,
                 "boletinCounts": entry.boletin_counts or {},
+                "lastIngestAt": last_ingest_at,
+                "lastOutputAt": last_output_at,
+                "ingestAgeDays": age_days,
+                "freshness": freshness_label,
+                "completenessScore": score,
+                "completenessBand": band,
+                "fill": fill,
+                "withPdf": with_pdf,
+                "withExpediente": with_expediente,
+                "geometryStatus": geometry_status_from_research(research_path),
+                "dataSource": data_source,
             }
         )
 
@@ -213,6 +294,13 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
     with_adapter = sum(1 for r in rows if r["hasAdapter"])
     with_parity_ok = sum(1 for r in rows if r["parityOverall"] == "ok")
     with_geometry_count = sum(1 for r in rows if (r["withGeometry"] or 0) > 0)
+    adapters = [r for r in rows if r["hasAdapter"]]
+    by_band = Counter(r["completenessBand"] for r in adapters)
+    by_freshness = Counter(r["freshness"] for r in adapters)
+    scored = [r for r in adapters if r["proyectosRows"] > 0]
+    avg_score = (
+        round(sum(r["completenessScore"] for r in scored) / len(scored), 1) if scored else 0.0
+    )
 
     next_raw = pick_next()
     next_row = None
@@ -225,6 +313,7 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
         "queueUpdatedAt": queue_raw.get("updated_at"),
         "queueDescription": queue_raw.get("description"),
         "minBocmCount": queue_raw.get("min_bocm_count"),
+        "dbAvailable": bool(db_stats),
         "summary": {
             "total": len(rows),
             "byStatus": dict(sorted(by_status.items())),
@@ -237,6 +326,30 @@ def build_municipio_admin_payload(*, include_pending: bool = True) -> dict[str, 
             "parityOk": with_parity_ok,
             "withPortalGeometry": with_geometry_count,
             "openPrs": len(open_prs),
+            "live": {
+                "fresh": by_freshness.get("fresh", 0),
+                "due": by_freshness.get("due", 0),
+                "never": by_freshness.get("never", 0),
+                "error": by_freshness.get("error", 0),
+                "withLastIngest": sum(1 for r in rows if r["lastIngestAt"]),
+                "totalProyectos": sum(int(r["proyectosRows"] or 0) for r in rows),
+                "totalLicencias": sum(int(r["licenciasRows"] or 0) for r in rows),
+            },
+            "completeness": {
+                "avgScore": avg_score,
+                "byBand": {
+                    "rico": by_band.get("rico", 0),
+                    "medio": by_band.get("medio", 0),
+                    "basico": by_band.get("basico", 0),
+                    "fino": by_band.get("fino", 0),
+                    "sin_datos": by_band.get("sin_datos", 0),
+                },
+                "withPdf": sum(1 for r in adapters if (r["withPdf"] or 0) > 0),
+                "withGeometry": with_geometry_count,
+                "withCoords": sum(1 for r in adapters if (r["withCoords"] or 0) > 0),
+                "withExpediente": sum(1 for r in adapters if (r["withExpediente"] or 0) > 0),
+                "scoredAdapters": len(scored),
+            },
         },
         "next": next_row,
         "openPrsBySlug": open_prs,

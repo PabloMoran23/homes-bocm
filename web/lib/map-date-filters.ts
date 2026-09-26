@@ -6,6 +6,20 @@ export type MapDateRange = {
   toMs: number | null;
 };
 
+function isoLocalDate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Último año, para el formulario previo al mapa. */
+export function defaultMapDateRange(now = new Date()): { from: string; to: string } {
+  const from = new Date(now);
+  from.setFullYear(from.getFullYear() - 1);
+  return { from: isoLocalDate(from), to: isoLocalDate(now) };
+}
+
 export function mapDateRangeFromInputs(from: string, to: string): MapDateRange {
   return {
     fromMs: from ? parseDateInputStartUtc(from) : null,

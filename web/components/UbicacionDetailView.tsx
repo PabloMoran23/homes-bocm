@@ -207,7 +207,7 @@ export function UbicacionDetailView({
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
       <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-        <DetailBreadcrumbLink href="/explore">Mapa Madrid</DetailBreadcrumbLink>
+        <DetailBreadcrumbLink href="/explore">Mapa</DetailBreadcrumbLink>
         <span className="text-slate-300">/</span>
         <span className="text-slate-900">{inv.direccion || `NDP ${ndp}`}</span>
       </nav>

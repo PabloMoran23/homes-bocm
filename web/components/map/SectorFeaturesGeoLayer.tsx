@@ -36,12 +36,14 @@ export function SectorFeaturesGeoLayer({
   popupOptions,
   layerKey,
   appearance = "default",
+  hoverPopup = true,
 }: {
   geojson: SectorFeatureCollection;
   popupOptions?: FeaturePopupOptions | null;
   layerKey: string;
   /** `focus`: el velo pinta el borde; esta capa solo sirve de hit-area. */
   appearance?: "default" | "focus";
+  hoverPopup?: boolean;
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
@@ -74,13 +76,29 @@ export function SectorFeaturesGeoLayer({
       }}
       onEachFeature={(feature, layer) => {
         const props = feature.properties as SectorFeatureProperties | undefined;
-        const pop = featurePopupHtml(props, popupOptions ?? undefined);
-        bindMapHoverPopup(layer, pop, {
-          className: isSigmaFeature(props)
-            ? "homes-map-popup homes-map-popup-sigma"
-            : "homes-map-popup",
-          maxWidth: isSigmaFeature(props) ? 360 : 320,
-        });
+        if (hoverPopup) {
+          const pop = featurePopupHtml(props, popupOptions ?? undefined);
+          bindMapHoverPopup(layer, pop, {
+            className: isSigmaFeature(props)
+              ? "homes-map-popup homes-map-popup-sigma"
+              : "homes-map-popup",
+            maxWidth: isSigmaFeature(props) ? 360 : 320,
+          });
+        }
+        if (appearance === "focus" && "setStyle" in layer) {
+          const path = layer as L.Path;
+          path.on("mouseover", () => {
+            path.setStyle({
+              stroke: false,
+              fill: true,
+              fillColor: "#9a5c48",
+              fillOpacity: 0.42,
+            });
+          });
+          path.on("mouseout", () => {
+            path.setStyle(FOCUS_HITAREA);
+          });
+        }
       }}
     />
   );

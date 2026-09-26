@@ -8,6 +8,7 @@ import { getSigmaClasificacionForGrupos } from "@/lib/load-sigma-clasificacion";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
 import { getSigmaProgramaForGrupo } from "@/lib/load-sigma-programas";
 import { loadProjectById } from "@/lib/load-project";
+import { loadProyectoInfoExtra } from "@/lib/load-proyecto-info-extra";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
 import { proyectoBreadcrumbJsonLd } from "@/lib/json-ld";
 import { getProyectoPageDescription, getProyectoPageTitle } from "@/lib/proyecto-seo";
@@ -46,9 +47,12 @@ export default async function ProyectoPage({ params }: PageProps) {
 
   const project = await loadProjectById(id);
   if (project) {
-    const programaCtx = project.sigmaExpediente
-      ? await getSigmaProgramaForGrupo(String(project.sigmaExpediente))
-      : null;
+    const [programaCtx, infoExtra] = await Promise.all([
+      project.sigmaExpediente
+        ? getSigmaProgramaForGrupo(String(project.sigmaExpediente))
+        : Promise.resolve(null),
+      loadProyectoInfoExtra(id, project.id, project.sigmaExpediente),
+    ]);
     const clasificacionByExpediente = await clasificacionProgramaMiembros(programaCtx?.programa);
     return (
       <>
@@ -59,6 +63,7 @@ export default async function ProyectoPage({ params }: PageProps) {
           programa={programaCtx?.programa ?? null}
           programaRef={programaCtx?.ref ?? null}
           clasificacionByExpediente={clasificacionByExpediente}
+          infoExtra={infoExtra}
         />
       </>
     );
@@ -67,9 +72,10 @@ export default async function ProyectoPage({ params }: PageProps) {
   const ficha = await loadSigmaFichaBySlug(id);
   if (!ficha) notFound();
 
-  const [metric, programaCtx] = await Promise.all([
+  const [metric, programaCtx, infoExtra] = await Promise.all([
     getSigmaMetricForGrupo(ficha.expedienteGrupo),
     getSigmaProgramaForGrupo(ficha.expedienteGrupo),
+    loadProyectoInfoExtra(id, ficha.expedienteGrupo),
   ]);
   const clasificacionByExpediente = await clasificacionProgramaMiembros(programaCtx?.programa);
   return (
@@ -82,6 +88,7 @@ export default async function ProyectoPage({ params }: PageProps) {
         programa={programaCtx?.programa ?? null}
         programaRef={programaCtx?.ref ?? null}
         clasificacionByExpediente={clasificacionByExpediente}
+        infoExtra={infoExtra}
       />
     </>
   );

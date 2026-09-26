@@ -100,7 +100,7 @@ export function proyectoBreadcrumbJsonLd(id: string, title: string): JsonLdNode 
   const path = `/proyecto/${encodeURIComponent(id)}`;
   return breadcrumbJsonLd(path, [
     { name: "Inicio", path: "/" },
-    { name: "Mapa Madrid", path: "/explore" },
+    { name: "Mapa", path: "/explore" },
     { name: title.length > 120 ? `${title.slice(0, 117)}…` : title },
   ]);
 }

@@ -271,6 +271,109 @@ def fetch_last_ingest_at(*, conn=None) -> dict[str, datetime]:
         return out
 
 
+def fetch_municipio_scraper_stats(*, conn=None) -> dict[str, dict[str, Any]]:
+    """Agregados live por municipio (proyectos/licencias + relleno de campos)."""
+    if not available() and conn is None:
+        return {}
+    try:
+        with _owned_conn(conn) as c, c.cursor() as cur:
+            cur.execute(
+                f"""
+                SELECT
+                  municipio_slug,
+                  COUNT(*)::int AS n,
+                  COUNT(*) FILTER (WHERE fecha_aprob IS NOT NULL)::int AS with_fecha,
+                  COUNT(*) FILTER (WHERE NULLIF(TRIM(COALESCE(enlace, '')), '') IS NOT NULL)::int AS with_url,
+                  COUNT(*) FILTER (WHERE lat IS NOT NULL AND lng IS NOT NULL)::int AS with_coords,
+                  COUNT(*) FILTER (WHERE has_geometry IS TRUE)::int AS with_geometry,
+                  COUNT(*) FILTER (
+                    WHERE NULLIF(TRIM(COALESCE(bocm_pdf_url, '')), '') IS NOT NULL
+                       OR (
+                            jsonb_typeof(COALESCE(documentacion_urls, '[]'::jsonb)) = 'array'
+                            AND jsonb_array_length(documentacion_urls) > 0
+                          )
+                  )::int AS with_pdf,
+                  COUNT(*) FILTER (
+                    WHERE NULLIF(TRIM(COALESCE(expediente_grupo, '')), '') IS NOT NULL
+                       OR NULLIF(TRIM(COALESCE(exp_numero_original, '')), '') IS NOT NULL
+                       OR NULLIF(TRIM(COALESCE(raw_features_json->>'expte', '')), '') IS NOT NULL
+                       OR NULLIF(TRIM(COALESCE(raw_features_json->>'expediente', '')), '') IS NOT NULL
+                  )::int AS with_expediente,
+                  COUNT(*) FILTER (
+                    WHERE NULLIF(TRIM(COALESCE(tipo_legal, tipo_figura, tipo_obra, '')), '') IS NOT NULL
+                  )::int AS with_tipo,
+                  COUNT(*) FILTER (
+                    WHERE NULLIF(TRIM(COALESCE(resumen_contenido, '')), '') IS NOT NULL
+                      AND resumen_contenido IS DISTINCT FROM denominacion
+                  )::int AS with_resumen,
+                  COUNT(*) FILTER (
+                    WHERE num_viviendas_max IS NOT NULL OR sup_total_m2 IS NOT NULL
+                  )::int AS with_metrics,
+                  COUNT(*) FILTER (
+                    WHERE visor_fetched_at IS NOT NULL
+                       OR COALESCE(nti_documentos_total, 0) > 0
+                       OR (
+                            jsonb_typeof(COALESCE(tramitacion, '[]'::jsonb)) = 'array'
+                            AND jsonb_array_length(tramitacion) > 0
+                          )
+                  )::int AS with_visor
+                FROM {SCHEMA}.proyecto
+                WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
+                GROUP BY municipio_slug
+                """
+            )
+            proyectos = {str(row[0]): row for row in cur.fetchall() if row[0]}
+            cur.execute(
+                f"""
+                SELECT municipio_slug, COUNT(*)::int
+                FROM {SCHEMA}.licencia
+                WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
+                GROUP BY municipio_slug
+                """
+            )
+            licencias = {str(slug): int(n) for slug, n in cur.fetchall() if slug}
+    except Exception:
+        return {}
+
+    ingest = fetch_last_ingest_at(conn=conn)
+    slugs = set(proyectos) | set(licencias) | set(ingest)
+    out: dict[str, dict[str, Any]] = {}
+    for slug in slugs:
+        row = proyectos.get(slug)
+        n = int(row[1]) if row else 0
+
+        def _rate(idx: int) -> float:
+            if not row or n <= 0:
+                return 0.0
+            return round(int(row[idx]) / n, 4)
+
+        ts = ingest.get(slug)
+        out[slug] = {
+            "last_ingest_at": ts.isoformat() if ts else None,
+            "proyectos": n,
+            "licencias": int(licencias.get(slug) or 0),
+            "fill": {
+                "titulo": 1.0 if n else 0.0,
+                "fecha": _rate(2),
+                "url": _rate(3),
+                "coords": _rate(4),
+                "geometry": _rate(5),
+                "pdf": _rate(6),
+                "expediente": _rate(7),
+                "tipo": _rate(8),
+                "resumen": _rate(9),
+                "metrics": _rate(10),
+                "visor": _rate(11),
+            },
+            "with_coords": int(row[4]) if row else 0,
+            "with_geometry": int(row[5]) if row else 0,
+            "with_pdf": int(row[6]) if row else 0,
+            "with_expediente": int(row[7]) if row else 0,
+            "source": "db",
+        }
+    return out
+
+
 def save_municipio_from_manifest(manifest: Any, *, conn=None) -> str:
     portal = getattr(manifest, "portal", None)
     return save_municipio(
@@ -464,7 +567,9 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "bocm_municipio": _blank(rec.get("bocm_municipio")) or nombre,
         "bocm_tipo_instrumento": _blank(rec.get("bocm_tipo_instrumento")) or _blank(tipo),
         "bocm_resumen": _blank(rec.get("bocm_resumen")) or _blank(titulo[:800] if titulo else ""),
-        "bocm_es_relevante": rec.get("bocm_es_relevante") if rec.get("bocm_es_relevante") is not None else True,
+        "bocm_es_relevante": (
+            True if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
+        ),
         "bocm_sigma_match_type": _blank(rec.get("bocm_sigma_match_type")),
         "bocm_sigma_match_score": _float(rec.get("bocm_sigma_match_score")),
         "municipio": nombre,
@@ -544,6 +649,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           expediente_grupo = COALESCE(EXCLUDED.expediente_grupo, {SCHEMA}.proyecto.expediente_grupo),
           exp_numero_original = COALESCE(EXCLUDED.exp_numero_original, {SCHEMA}.proyecto.exp_numero_original),
           sigma_layer_kind = COALESCE(EXCLUDED.sigma_layer_kind, {SCHEMA}.proyecto.sigma_layer_kind),
+          fecha_aprob = COALESCE(EXCLUDED.fecha_aprob, {SCHEMA}.proyecto.fecha_aprob),
           infopublica_inicio = COALESCE(EXCLUDED.infopublica_inicio, {SCHEMA}.proyecto.infopublica_inicio),
           infopublica_fin = COALESCE(EXCLUDED.infopublica_fin, {SCHEMA}.proyecto.infopublica_fin),
           figura_codigo = COALESCE(EXCLUDED.figura_codigo, {SCHEMA}.proyecto.figura_codigo),

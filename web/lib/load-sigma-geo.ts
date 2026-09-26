@@ -28,6 +28,18 @@ function filterFeaturesForExpediente(
   });
 }
 
+/** Carga el polígono guardado en el dominio, por id de proyecto o expediente. */
+export async function fetchProyectoMapaFeature(
+  id: string,
+  signal?: AbortSignal,
+): Promise<SectorFeatureCollection | null> {
+  const res = await fetch(`/api/dominio/proyecto-geo?id=${encodeURIComponent(id)}`, { signal });
+  if (!res.ok) return null;
+  const data = (await res.json()) as SectorFeatureCollection;
+  if (!data?.features?.length) return null;
+  return data;
+}
+
 /** Carga polígono(s) SIGMA del expediente (capa específica + fallback ámbitos). */
 export async function fetchSigmaGeoForExpediente(
   expedienteGrupo: string,

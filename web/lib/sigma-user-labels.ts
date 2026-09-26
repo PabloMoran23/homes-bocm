@@ -34,7 +34,7 @@ export function sigmaTipoActuacion(
 
   const key = raw.join(" ").toUpperCase();
   const FIGURA: Record<string, string> = {
-    MPG: "Modificación del Plan General de Madrid",
+    MPG: "Modificación del Plan General",
     "MODIFICACIÓN PUNTUAL DEL PGOU": "Modificación puntual del Plan General",
     "MODIFICACION PUNTUAL DEL PGOU": "Modificación puntual del Plan General",
     "MOD. PUNTUAL PGOU": "Modificación puntual del Plan General",
@@ -294,7 +294,7 @@ export const SIGMA_METRICS_EMPTY_COPY =
   "Todavía no hemos extraído cifras de viviendas o superficie de los PDFs de este expediente. Puedes ver el estado y la tramitación en las otras pestañas.";
 
 export const SIGMA_AYTO_INTRO =
-  "Datos del registro urbanístico del Ayuntamiento de Madrid: qué se tramita, en qué fase está y qué documentos hay disponibles.";
+  "Datos del registro urbanístico del ayuntamiento: qué se tramita, en qué fase está y qué documentos hay disponibles.";
 
 export const SIGMA_TRAMITACION_INTRO =
   "Hitos publicados en el seguimiento del Ayuntamiento (fechas y órganos que intervienen).";

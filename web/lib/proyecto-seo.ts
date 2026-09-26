@@ -46,7 +46,7 @@ export async function getProyectoPageDescription(id: string): Promise<string | u
   if (resumen) {
     return resumen.length > 160 ? `${resumen.slice(0, 157).trim()}…` : resumen;
   }
-  return ["Proyecto urbanístico en Madrid", sigmaFaseShortLabel(ficha.catalog?.FAS_TX_DENOM)]
+  return ["Proyecto urbanístico", sigmaFaseShortLabel(ficha.catalog?.FAS_TX_DENOM)]
     .filter(Boolean)
     .join(" · ");
 }

@@ -4,13 +4,20 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
+import {
+  ProyectoInfoLead,
+  ProyectoInfoTabPanel,
+  proyectoInfoTabs,
+  proyectoNombrePopular,
+  type ProyectoInfoTabId,
+} from "@/components/project-detail/ProyectoInfoExtraPanel";
 import { RelatedBoletines } from "@/components/project-detail/RelatedBoletines";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
 import { SigmaProgramaPanel } from "@/components/sigma/SigmaProgramaPanel";
 import { SigmaUserResumen } from "@/components/sigma/SigmaUserResumen";
+import { fetchProyectoMapaFeature } from "@/lib/load-sigma-geo";
 import { filterSectorGeoJsonForProjects } from "@/lib/filter-sector-geo";
 import {
-  coordSourceLabel,
   hasValue,
   projectHeadline,
   relevanciaBadgeClass,
@@ -33,6 +40,7 @@ import {
   lookupSigmaNtiGrupo,
   type SigmaNtiLinkedBundle,
 } from "@/lib/sigma-nti-linked";
+import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import type { Project } from "@/lib/types";
 import type { MapPoint } from "./ProjectsMap";
@@ -49,7 +57,7 @@ const ProjectsMap = dynamic(
   },
 );
 
-type TabId = "resumen" | "ayto" | "documentos" | "boletin" | "relacionados";
+type TabId = "resumen" | ProyectoInfoTabId | "ayto" | "documentos" | "boletin" | "relacionados";
 
 const TABS: { id: TabId; label: string; show: (p: Project) => boolean }[] = [
   { id: "resumen", label: "Resumen", show: () => true },
@@ -64,7 +72,7 @@ const TABS: { id: TabId; label: string; show: (p: Project) => boolean }[] = [
           (p.sigmaVisorDocumentacionUrls?.length ?? 0) > 0,
       ),
   },
-  { id: "boletin", label: "Datos BOCM", show: () => true },
+  { id: "boletin", label: "Datos BOCM", show: (p) => Boolean(p.bocmDate || p.pdfUrl) },
   {
     id: "relacionados",
     label: "Relacionados",
@@ -123,15 +131,18 @@ export function ProjectDetailView({
   programa = null,
   programaRef = null,
   clasificacionByExpediente = {},
+  infoExtra = null,
 }: {
   project: Project;
   programa?: SigmaPrograma | null;
   programaRef?: SigmaProgramaExpedienteRef | null;
   clasificacionByExpediente?: Record<string, SigmaClassification | null>;
+  infoExtra?: ProyectoInfoExtra | null;
 }) {
   const [sectorGeoJson, setSectorGeoJson] = useState<SectorFeatureCollection | null>(null);
+  const [proyectoGeo, setProyectoGeo] = useState<SectorFeatureCollection | null>(null);
   const [ntiBundle, setNtiBundle] = useState<SigmaNtiLinkedBundle | null>(null);
-  const [tab, setTab] = useState<TabId>("resumen");
+  const [tab, setTab] = useState<TabId>(infoExtra ? "datos" : "resumen");
 
   useEffect(() => {
     let cancelled = false;
@@ -151,6 +162,18 @@ export function ProjectDetailView({
   }, []);
 
   useEffect(() => {
+    const id = p.sigmaExpediente || p.id;
+    if (!id) return;
+    const ac = new AbortController();
+    fetchProyectoMapaFeature(String(id), ac.signal)
+      .then((geo) => {
+        if (!ac.signal.aborted && geo) setProyectoGeo(geo);
+      })
+      .catch(() => {});
+    return () => ac.abort();
+  }, [p.id, p.sigmaExpediente]);
+
+  useEffect(() => {
     if (!p.sigmaExpediente) return;
     let cancelled = false;
     loadSigmaNtiLinkedBundle().then((b) => {
@@ -166,12 +189,13 @@ export function ProjectDetailView({
     [ntiBundle, p.sigmaExpediente],
   );
 
-  const sectorGeo = useMemo(
-    () => filterSectorGeoJsonForProjects(sectorGeoJson, [p]),
-    [sectorGeoJson, p],
-  );
+  const sectorGeo = useMemo(() => {
+    if (proyectoGeo?.features?.length) return proyectoGeo;
+    return filterSectorGeoJsonForProjects(sectorGeoJson, [p]);
+  }, [proyectoGeo, sectorGeoJson, p]);
 
   const mapPoints: MapPoint[] = useMemo(() => {
+    if (sectorGeo?.features?.length) return [];
     if (p.lat == null || p.lng == null) return [];
     return [
       {
@@ -181,7 +205,7 @@ export function ProjectDetailView({
         lng: p.lng,
       },
     ];
-  }, [p]);
+  }, [p, sectorGeo]);
 
   const categorias = useMemo(() => {
     if (!hasValue(p.categoriasTematicas)) return [];
@@ -195,7 +219,17 @@ export function ProjectDetailView({
   const docTotal = ntiLinked?.stats.total ?? p.sigmaVisorNtiDocumentosTotal ?? 0;
   const docLocal = ntiLinked?.stats.downloaded ?? 0;
 
-  const visibleTabs = TABS.filter((t) => t.show(p));
+  const infoTabs = infoExtra ? proyectoInfoTabs(infoExtra) : [];
+  const hasInfoCronologia = infoTabs.some((item) => item.id === "cronologia");
+  const visibleTabs = [
+    ...infoTabs,
+    ...TABS.filter((item) => item.show(p)).filter((item) => {
+      if (!infoExtra) return true;
+      if (item.id === "resumen") return false;
+      if (item.id === "ayto" && hasInfoCronologia) return false;
+      return true;
+    }),
+  ];
   const activeTab = visibleTabs.some((t) => t.id === tab) ? tab : visibleTabs[0]?.id ?? "resumen";
 
   const bocmVsSigma =
@@ -207,7 +241,7 @@ export function ProjectDetailView({
     <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
       <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
-          ← Mapa Madrid
+          ← Mapa
         </Link>
         {p.sigmaExpediente ? (
           <>
@@ -227,7 +261,7 @@ export function ProjectDetailView({
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-[var(--portal-paper)]/90 px-3 py-0.5 text-xs font-semibold text-[var(--portal-accent)] ring-1 ring-[var(--portal-accent)]/20">
-              {p.territorioLabel}
+              {hasValue(p.municipio) ? p.municipio : p.territorioLabel}
             </span>
             <span
               className={`rounded-full px-3 py-0.5 text-xs font-semibold ring-1 ${relevanciaBadgeClass(p.esRelevante)}`}
@@ -247,16 +281,23 @@ export function ProjectDetailView({
           </div>
 
           <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            {visorH1 || headline}
+            {(infoExtra && proyectoNombrePopular(infoExtra)) || visorH1 || headline}
           </h1>
-          {visorH2 ? <p className="mt-1 text-base text-slate-600">{visorH2}</p> : null}
-          {!visorH2 && (hasValue(p.municipio) || hasValue(p.nombreSector)) ? (
+          {infoExtra ? (
+            <p className="mt-2 text-sm text-slate-600">
+              {[hasValue(p.sigmaFase) ? p.sigmaFase : null, p.sigmaExpediente ? `Expediente ${p.sigmaExpediente}` : null]
+                .filter(Boolean)
+                .join(" · ")}
+            </p>
+          ) : visorH2 ? (
+            <p className="mt-1 text-base text-slate-600">{visorH2}</p>
+          ) : hasValue(p.municipio) || hasValue(p.nombreSector) ? (
             <p className="mt-2 text-base text-slate-600">
               {[p.municipio, p.nombreSector].filter(hasValue).join(" · ")}
             </p>
           ) : null}
 
-          {p.sigmaExpediente ? (
+          {!infoExtra && p.sigmaExpediente ? (
             <p className="mt-3 font-mono text-sm font-medium text-[var(--portal-accent)]">
               Expediente {p.sigmaExpediente}
             </p>
@@ -273,7 +314,7 @@ export function ProjectDetailView({
                 PDF BOCM
               </a>
             ) : null}
-            {p.sigmaExpediente ? (
+            {p.sigmaExpediente && !infoExtra ? (
               <Link
                 href={sigmaFichaPath(p.sigmaExpediente)}
                 className="inline-flex items-center rounded-lg border border-sky-300 bg-white/90 px-4 py-2.5 text-sm font-semibold text-sky-950 hover:bg-sky-50"
@@ -291,7 +332,7 @@ export function ProjectDetailView({
                 Ayuntamiento
               </a>
             ) : null}
-            {p.sigmaEnlace && p.sigmaEnlace !== p.sigmaVisorUrl ? (
+            {p.sigmaEnlace && p.sigmaEnlace !== p.sigmaVisorUrl && !infoExtra ? (
               <a
                 href={p.sigmaEnlace}
                 target="_blank"
@@ -304,7 +345,7 @@ export function ProjectDetailView({
           </div>
         </div>
 
-        {programa && p.sigmaExpediente ? (
+        {!infoExtra && programa && p.sigmaExpediente ? (
           <div className="mt-6 border-t border-slate-200/80 pt-6">
             <SigmaProgramaPanel
               programa={programa}
@@ -328,6 +369,7 @@ export function ProjectDetailView({
           </div>
         ) : null}
 
+        {!infoExtra ? (
         <div className="grid gap-px border-t border-slate-200/80 bg-slate-200/50 sm:grid-cols-2 lg:grid-cols-4">
           <KpiCard label="Boletín" value={p.bocmDate || "—"} sub={p.artNum ? `Art. ${p.artNum}` : undefined} />
           {hasValue(p.estadoTramitacion) ? (
@@ -352,10 +394,29 @@ export function ProjectDetailView({
             />
           ) : null}
         </div>
+        ) : null}
       </header>
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      {infoExtra ? (
+        <div className="mb-6 grid items-stretch gap-3 lg:grid-cols-[minmax(0,1fr)_13.5rem]">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <ProjectsMap
+              points={mapPoints}
+              sectorGeoJson={sectorGeo}
+              variant="detail"
+              heightClassName="h-[min(42vh,380px)]"
+              sectorCountLabel="ámbito"
+              hoverPopup={false}
+            />
+            <p className="border-t border-slate-100 px-3 py-2 text-xs text-slate-500">Ámbito del proyecto</p>
+          </div>
+          <ProyectoInfoLead info={infoExtra} stacked />
+        </div>
+      ) : null}
+
+      <div className={infoExtra ? "min-w-0" : "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {/* Sidebar */}
+        {infoExtra ? null : (
         <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <ProjectsMap
@@ -364,14 +425,8 @@ export function ProjectDetailView({
               dataScope="full"
               variant="detail"
               heightClassName="min-h-[220px] h-[min(32vh,320px)]"
+              hoverPopup={false}
             />
-            <p className="border-t border-slate-100 px-3 py-2 text-[11px] text-slate-500">
-              {p.lat != null
-                ? coordSourceLabel(p.coordSource)
-                : sectorGeo?.features?.length
-                  ? "Geometría de sector"
-                  : "Sin ubicación"}
-            </p>
           </div>
 
           {bocmVsSigma ? (
@@ -399,6 +454,7 @@ export function ProjectDetailView({
             </p>
           ) : null}
         </aside>
+        )}
 
         {/* Main panel */}
         <div className="min-w-0">
@@ -425,6 +481,60 @@ export function ProjectDetailView({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            {infoExtra && (activeTab === "relato" || activeTab === "datos" || activeTab === "cronologia" || activeTab === "prensa") ? (
+              <div className="space-y-8">
+                <ProyectoInfoTabPanel
+                  info={infoExtra}
+                  tab={activeTab}
+                  tramitacion={activeTab === "cronologia" ? p.sigmaVisorTramitacion : null}
+                />
+                {activeTab === "datos" && programa && p.sigmaExpediente ? (
+                  <SigmaProgramaPanel
+                    programa={programa}
+                    expedienteActual={p.sigmaExpediente}
+                    refActual={programaRef}
+                    clasificacionByExpediente={clasificacionByExpediente}
+                    tramitacionByExpediente={
+                      p.sigmaVisorTramitacion?.length
+                        ? { [p.sigmaExpediente]: p.sigmaVisorTramitacion }
+                        : undefined
+                    }
+                    expedientesByGrupo={{
+                      [p.sigmaExpediente]: {
+                        expediente_grupo: p.sigmaExpediente,
+                        exp_numero_original: p.sigmaExpediente,
+                        fecha_aprob: p.sigmaFechaAprobacion ?? null,
+                        denominacion: p.sigmaDenominacion ?? null,
+                      },
+                    }}
+                  />
+                ) : null}
+                {activeTab === "datos" && p.sigmaExpediente ? (
+                  <details className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <summary className="cursor-pointer text-sm font-semibold text-slate-800">
+                      Ficha del ayuntamiento
+                    </summary>
+                    <div className="mt-4">
+                      <SigmaUserResumen
+                        fields={{
+                          expedienteGrupo: p.sigmaExpediente,
+                          denominacion: p.sigmaDenominacion,
+                          fase: p.sigmaFase,
+                          figEtiq: p.sigmaTipoFigura,
+                          tfigAbrev: p.sigmaFiguraCodigo,
+                          organo: p.sigmaOrganoTramitador,
+                          infopubIniYmd: p.sigmaInfopublicaInicio,
+                          infopubFinYmd: p.sigmaInfopublicaFin,
+                          source: p.sigmaCatalogSource,
+                          layerKind: p.sigmaSigmaLayerKind,
+                        }}
+                      />
+                    </div>
+                  </details>
+                ) : null}
+              </div>
+            ) : null}
+
             {activeTab === "resumen" && (
               <div className="space-y-6">
                 {hasValue(p.resumen) ? (
@@ -434,7 +544,7 @@ export function ProjectDetailView({
                       {p.resumen}
                     </p>
                   </div>
-                ) : (
+                ) : infoExtra ? null : (
                   <p className="text-sm text-slate-500">Sin resumen generado.</p>
                 )}
                 {p.sigmaDenominacion && p.sigmaDenominacion !== visorH1 ? (

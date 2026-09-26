@@ -6,6 +6,13 @@ import { useEffect, useMemo, useState } from "react";
 import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { SigmaMetricsPanel } from "@/components/detail/SigmaMetricsCards";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
+import {
+  ProyectoInfoLead,
+  ProyectoInfoTabPanel,
+  proyectoInfoTabs,
+  proyectoNombrePopular,
+  type ProyectoInfoTabId,
+} from "@/components/project-detail/ProyectoInfoExtraPanel";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
 import { SigmaProgramaPanel } from "@/components/sigma/SigmaProgramaPanel";
 import { SigmaProjectHero } from "@/components/sigma/SigmaProjectHero";
@@ -20,7 +27,7 @@ import {
 import { projectPath } from "@/lib/project-display";
 import type { SigmaPresentationInput } from "@/lib/sigma-presentation";
 import { sigmaPickDisplayHeadline } from "@/lib/sigma-presentation";
-import { fetchSigmaGeoForExpediente } from "@/lib/load-sigma-geo";
+import { fetchProyectoMapaFeature, fetchSigmaGeoForExpediente } from "@/lib/load-sigma-geo";
 import { sigmaFichaPath, sigmaFichaSlug } from "@/lib/sigma-ficha-path";
 import {
   bocmAnunciosTabLabel,
@@ -31,6 +38,7 @@ import {
 } from "@/lib/sigma-user-labels";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaPrograma, SigmaProgramaExpedienteRef } from "@/lib/sigma-programa";
+import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import {
   loadSigmaNtiLinkedBundle,
@@ -52,7 +60,7 @@ const ProjectsMap = dynamic(
   },
 );
 
-type TabId = "resumen" | "tramitacion" | "documentos" | "bocm";
+type TabId = "resumen" | ProyectoInfoTabId | "tramitacion" | "documentos" | "bocm";
 
 export function SigmaExpedienteDetailView({
   ficha,
@@ -60,25 +68,28 @@ export function SigmaExpedienteDetailView({
   programa = null,
   programaRef = null,
   clasificacionByExpediente = {},
+  infoExtra = null,
 }: {
   ficha: SigmaFicha;
   metric?: SigmaExpedienteMetric | null;
   programa?: SigmaPrograma | null;
   programaRef?: SigmaProgramaExpedienteRef | null;
   clasificacionByExpediente?: Record<string, SigmaClassification | null>;
+  infoExtra?: ProyectoInfoExtra | null;
 }) {
   const [ntiBundle, setNtiBundle] = useState<SigmaNtiLinkedBundle | null>(null);
-  const [tab, setTab] = useState<TabId>("resumen");
+  const [tab, setTab] = useState<TabId>(infoExtra ? "datos" : "resumen");
   const [sigmaGeo, setSigmaGeo] = useState<SectorFeatureCollection | null>(null);
 
   const c = ficha.catalog;
   const tramCount = ficha.tramitacion.length;
+  const popular = infoExtra ? proyectoNombrePopular(infoExtra) : null;
   const presentation: SigmaPresentationInput = {
     expedienteGrupo: ficha.expedienteGrupo,
     source: c?.source,
-    denominacion: c?.EXP_TX_DENOM,
-    visorH1: ficha.visorCabecera?.h1,
-    visorH2: ficha.visorCabecera?.h2,
+    denominacion: popular || c?.EXP_TX_DENOM,
+    visorH1: popular || ficha.visorCabecera?.h1,
+    visorH2: popular ? null : ficha.visorCabecera?.h2,
     fase: c?.FAS_TX_DENOM,
     figEtiq: c?.FIG_TX_ETIQ,
     tfigAbrev: c?.TFIG_TX_ABREV,
@@ -117,11 +128,13 @@ export function SigmaExpedienteDetailView({
     const ac = new AbortController();
     let cancelled = false;
     (async () => {
-      const geo = await fetchSigmaGeoForExpediente(ficha.expedienteGrupo, {
-        layerKind: c?.sigma_layer_kind,
-        source: c?.source,
-        signal: ac.signal,
-      });
+      const geo =
+        (await fetchProyectoMapaFeature(ficha.expedienteGrupo, ac.signal)) ??
+        (await fetchSigmaGeoForExpediente(ficha.expedienteGrupo, {
+          layerKind: c?.sigma_layer_kind,
+          source: c?.source,
+          signal: ac.signal,
+        }));
       if (!cancelled) setSigmaGeo(geo);
     })();
     return () => {
@@ -130,9 +143,14 @@ export function SigmaExpedienteDetailView({
     };
   }, [c?.sigma_layer_kind, c?.source, ficha.expedienteGrupo]);
 
+  const infoTabs = infoExtra ? proyectoInfoTabs(infoExtra) : [];
+  const hasInfoCronologia = infoTabs.some((item) => item.id === "cronologia");
   const tabs: { id: TabId; label: string }[] = [
-    { id: "resumen", label: "Resumen" },
-    ...(tramCount > 0 ? [{ id: "tramitacion" as const, label: "Cronología" }] : []),
+    ...infoTabs,
+    ...(!infoExtra ? [{ id: "resumen" as const, label: "Resumen" }] : []),
+    ...(tramCount > 0 && !hasInfoCronologia
+      ? [{ id: "tramitacion" as const, label: "Cronología" }]
+      : []),
     ...(docTotal > 0 || (ficha.documentacionUrls?.length ?? 0) > 0
       ? [{ id: "documentos" as const, label: SIGMA_DOCUMENTOS_TAB_LABEL }]
       : []),
@@ -157,7 +175,7 @@ export function SigmaExpedienteDetailView({
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
       <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-        <DetailBreadcrumbLink href="/explore">Mapa Madrid</DetailBreadcrumbLink>
+        <DetailBreadcrumbLink href="/explore">Mapa</DetailBreadcrumbLink>
         <span className="text-slate-300">/</span>
         <span className="truncate text-slate-700">{breadcrumbTitle}</span>
       </nav>
@@ -170,7 +188,7 @@ export function SigmaExpedienteDetailView({
         bocmCount={ficha.bocmProyectos.length}
       />
 
-      {programa ? (
+      {!infoExtra && programa ? (
         <div className="mt-6">
           <SigmaProgramaPanel
             programa={programa}
@@ -190,7 +208,31 @@ export function SigmaExpedienteDetailView({
         </div>
       ) : null}
 
-      <div className="mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      {infoExtra ? (
+        <div className="mt-6 grid items-stretch gap-3 lg:grid-cols-[minmax(0,1fr)_13.5rem]">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            {sigmaGeo ? (
+              <ProjectsMap
+                points={[]}
+                sectorGeoJson={sigmaGeo}
+                variant="detail"
+                heightClassName="h-[min(42vh,380px)]"
+                sectorCountLabel="ámbito"
+                hoverPopup={false}
+              />
+            ) : (
+              <div className="flex h-[min(42vh,380px)] items-center justify-center text-sm text-slate-500">
+                Cargando ámbito…
+              </div>
+            )}
+            <p className="border-t border-slate-100 px-3 py-2 text-xs text-slate-500">Ámbito del proyecto</p>
+          </div>
+          <ProyectoInfoLead info={infoExtra} stacked />
+        </div>
+      ) : null}
+
+      <div className={infoExtra ? "mt-6 min-w-0" : "mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
+        {infoExtra ? null : (
         <aside className="min-w-0 space-y-5 lg:sticky lg:top-6 lg:self-start">
           {sigmaGeo ? (
             <div className="overflow-hidden rounded-xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] shadow-sm">
@@ -203,6 +245,7 @@ export function SigmaExpedienteDetailView({
                 variant="detail"
                 heightClassName="min-h-[220px] h-[min(32vh,320px)]"
                 sectorCountLabel="ámbito"
+                hoverPopup={false}
               />
               <p className="border-t border-slate-100 px-3 py-2 text-[11px] text-slate-500">
                 Polígono aproximado del planeamiento urbanístico.
@@ -226,9 +269,10 @@ export function SigmaExpedienteDetailView({
             href={`/explore?sigma=${encodeURIComponent(sigmaFichaSlug(ficha.expedienteGrupo))}`}
             className="block rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm font-semibold text-[var(--portal-accent)] hover:bg-slate-100"
           >
-            Ver en el mapa de Madrid
+            Ver en el mapa
           </Link>
         </aside>
+        )}
 
         <div className="min-w-0">
           <div
@@ -254,6 +298,58 @@ export function SigmaExpedienteDetailView({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            {infoExtra && (activeTab === "relato" || activeTab === "datos" || activeTab === "cronologia" || activeTab === "prensa") ? (
+              <div className="space-y-8">
+                <ProyectoInfoTabPanel
+                  info={infoExtra}
+                  tab={activeTab}
+                  tramitacion={activeTab === "cronologia" ? ficha.tramitacion : null}
+                />
+                {activeTab === "datos" && programa ? (
+                  <SigmaProgramaPanel
+                    programa={programa}
+                    expedienteActual={ficha.expedienteGrupo}
+                    refActual={programaRef}
+                    clasificacionByExpediente={clasificacionByExpediente}
+                    tramitacionByExpediente={{ [ficha.expedienteGrupo]: ficha.tramitacion }}
+                    expedientesByGrupo={{
+                      [ficha.expedienteGrupo]: {
+                        expediente_grupo: ficha.expedienteGrupo,
+                        exp_numero_original: ficha.catalog?.EXP_TX_NUMERO ?? null,
+                        fecha_aprob: ficha.catalog?.FEX_DT_APROB ?? null,
+                        denominacion: ficha.catalog?.EXP_TX_DENOM ?? null,
+                      },
+                    }}
+                  />
+                ) : null}
+                {activeTab === "datos" ? (
+                  <details className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+                    <summary className="cursor-pointer text-sm font-semibold text-slate-800">
+                      Ficha del ayuntamiento
+                    </summary>
+                    <div className="mt-4 space-y-6">
+                      <SigmaAtAGlance
+                        presentation={presentation}
+                        resumenContenido={ficha.resumenContenido}
+                        visorFicha={ficha.visorFicha}
+                        metric={metricProp ?? null}
+                        lastTramDate={lastTram?.fecha}
+                      />
+                      {ficha.visorFicha ? (
+                        <SigmaVisorFichaPanel ficha={ficha.visorFicha} compact hideResumen />
+                      ) : null}
+                      <SigmaInfoPublicaBanner fields={resumenFields} />
+                      <SigmaTechnicalDetails
+                        fields={resumenFields}
+                        visorFicha={ficha.visorFicha}
+                        clasificacion={ficha.clasificacion}
+                      />
+                    </div>
+                  </details>
+                ) : null}
+              </div>
+            ) : null}
+
             {activeTab === "resumen" && (
               <div className="space-y-6">
                 <SigmaAtAGlance
@@ -323,7 +419,7 @@ export function SigmaExpedienteDetailView({
       </div>
 
       <p className="mt-8 text-center text-xs text-slate-400">
-        Fuente: Ayuntamiento de Madrid ·{" "}
+        Fuente: registro municipal ·{" "}
         <Link href={sigmaFichaPath(ficha.expedienteGrupo)} className="hover:text-slate-600">
           enlace permanente
         </Link>

@@ -77,7 +77,7 @@ export function filterPointFeaturesInView<
 }
 
 /** Evita filtrar con bounds degenerados (mapa aún sin tamaño real). */
-function boundsLookValid(box: MapBounds): boolean {
+export function boundsLookValid(box: MapBounds): boolean {
   const latSpan = box.north - box.south;
   const lngSpan = box.east - box.west;
   return latSpan > 0.002 && lngSpan > 0.002;

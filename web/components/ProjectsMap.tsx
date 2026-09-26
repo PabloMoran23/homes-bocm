@@ -43,6 +43,21 @@ function radiusForCount(n: number) {
   return Math.min(10 + Math.sqrt(n) * 2.4, 36);
 }
 
+function fitDetailView(
+  map: L.Map,
+  points: MapPoint[],
+  sectorGeoJson?: SectorFeatureCollection | null,
+) {
+  const bounds = collectMapBounds(points, sectorGeoJson);
+  if (!bounds) return;
+  const nSectors = sectorGeoJson?.features?.length ?? 0;
+  const { padding, maxZoom } = detailFitOptions(points, sectorGeoJson);
+  map.fitBounds(bounds, { padding, maxZoom, animate: false });
+  if (nSectors === 1 && points.length === 0) {
+    const closer = Math.min(map.getZoom() + 1, maxZoom);
+    if (closer > map.getZoom()) map.setZoom(closer, { animate: false });
+  }
+}
 function detailFitOptions(
   points: MapPoint[],
   sectorGeoJson?: SectorFeatureCollection | null,
@@ -51,12 +66,12 @@ function detailFitOptions(
   const nPoints = points.length;
   if (nSectors >= 1 && nPoints === 0) {
     return {
-      padding: nSectors === 1 ? [24, 24] : [36, 36],
-      maxZoom: nSectors === 1 ? 18 : 15,
+      padding: nSectors === 1 ? [28, 28] : [36, 36],
+      maxZoom: 16,
     };
   }
   if (nSectors <= 1 && nPoints <= 1) {
-    return { padding: [32, 32], maxZoom: 17 };
+    return { padding: [32, 32], maxZoom: 14 };
   }
   return { padding: [40, 40], maxZoom: 14 };
 }
@@ -74,14 +89,13 @@ function FitBounds({
   const sectorKey = sectorGeoJson?.features?.length ?? 0;
 
   const fit = useCallback(() => {
-    const bounds = collectMapBounds(points, sectorGeoJson);
-    if (!bounds) return;
-
     if (variant === "detail") {
-      const { padding, maxZoom } = detailFitOptions(points, sectorGeoJson);
-      map.fitBounds(bounds, { padding, maxZoom, animate: false });
+      fitDetailView(map, points, sectorGeoJson);
       return;
     }
+
+    const bounds = collectMapBounds(points, sectorGeoJson);
+    if (!bounds) return;
 
     if (points.length === 1 && !(sectorGeoJson?.features?.length)) {
       const p = points[0];
@@ -122,12 +136,13 @@ function MapResizeFix({
   const sectorKey = sectorGeoJson?.features?.length ?? 0;
 
   const fit = useCallback(() => {
+    if (variant === "detail") {
+      fitDetailView(map, points, sectorGeoJson);
+      return;
+    }
     const bounds = collectMapBounds(points, sectorGeoJson);
     if (!bounds) return;
-    if (variant === "detail") {
-      const { padding, maxZoom } = detailFitOptions(points, sectorGeoJson);
-      map.fitBounds(bounds, { padding, maxZoom, animate: false });
-    } else if (points.length === 1 && !(sectorGeoJson?.features?.length)) {
+    if (points.length === 1 && !(sectorGeoJson?.features?.length)) {
       map.setView([points[0].lat, points[0].lng], 11, { animate: false });
     } else {
       map.fitBounds(bounds, { padding: [52, 52], maxZoom: 11, animate: false });
@@ -169,6 +184,7 @@ export function ProjectsMap({
   heightClassName = "h-[min(56vh,580px)]",
   sectorCountLabel = "sectores",
   sigmaPopupOptions = null,
+  hoverPopup = true,
 }: {
   points: MapPoint[];
   sectorGeoJson?: SectorFeatureCollection | null;
@@ -178,6 +194,8 @@ export function ProjectsMap({
   /** Etiqueta en cabecera del mapa (p. ej. «expedientes IP»). */
   sectorCountLabel?: string;
   sigmaPopupOptions?: FeaturePopupOptions | null;
+  /** En la ficha de proyecto el polígono no abre bocadillo. */
+  hoverPopup?: boolean;
 }) {
   const nMunicipios = points.length;
   const totalAnuncios = points.reduce((acc, p) => acc + p.count, 0);
@@ -189,7 +207,9 @@ export function ProjectsMap({
     () => polygonFeaturesOf(sectorGeoJson?.features as never),
     [sectorGeoJson],
   );
+  const displayPoints = focusPolygons.length > 0 ? [] : points;
   const useFocusMask = isDetail && focusPolygons.length > 0 && focusPolygons.length <= 8;
+  const mapKey = `${focusPolygons.length}:${displayPoints.length}:${sectorGeoJson?.features?.[0]?.geometry?.type ?? ""}`;
 
   const sectorLayerKey = `sectors-${nSectors}-${dataScope}-${variant}`;
 
@@ -282,6 +302,7 @@ export function ProjectsMap({
           ) : (
             <>
               <MapContainer
+                key={mapKey}
                 center={MADRID_CENTER}
                 zoom={DEFAULT_ZOOM}
                 minZoom={HOMES_MAP_MIN_ZOOM}
@@ -301,14 +322,15 @@ export function ProjectsMap({
                     popupOptions={sigmaPopupOptions ?? undefined}
                     layerKey={sectorLayerKey}
                     appearance={useFocusMask ? "focus" : "default"}
+                    hoverPopup={hoverPopup}
                   />
                 ) : null}
-                <FitBounds points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
-                <MapResizeFix points={points} sectorGeoJson={sectorGeoJson} variant={variant} />
+                <FitBounds points={displayPoints} sectorGeoJson={sectorGeoJson} variant={variant} />
+                <MapResizeFix points={displayPoints} sectorGeoJson={sectorGeoJson} variant={variant} />
                 <ZoomControl position="topright" />
                 <ScaleControl position="bottomleft" imperial={false} />
                 {isDetail
-                  ? points.map((pt) => (
+                  ? displayPoints.map((pt) => (
                       <Marker
                         key={`${pt.lat}-${pt.lng}`}
                         position={[pt.lat, pt.lng]}
@@ -322,7 +344,7 @@ export function ProjectsMap({
                         </Popup>
                       </Marker>
                     ))
-                  : points.map((pt) => {
+                  : displayPoints.map((pt) => {
                       const r = radiusForCount(pt.count);
                       return (
                         <Fragment key={pt.municipio}>

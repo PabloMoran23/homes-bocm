@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 import { normSearch } from "@/lib/madrid";
@@ -46,23 +46,28 @@ import {
   type UbicacionesMapGeoJson,
 } from "@/lib/madrid-ubicaciones-map";
 import {
+  featureCollectionBounds,
   type CmPortalGeoJson,
   type CmPortalMapMeta,
   type CmPortalProyectoProps,
 } from "@/lib/cm-portal-geo";
+import { PortalOtrosProyectos } from "@/components/map/PortalOtrosProyectos";
 import { isCmMapScope } from "@/lib/map-scope";
 import { fetchDominioJson, fetchDominioOrStatic } from "@/lib/dominio-fetch";
 import {
   bboxFetchKey,
-  MAP_CM_PORTAL_API,
+  cmPortalFetchKey,
+  mapCmPortalQuery,
   mapSigmaQuery,
   mapUbicacionesQuery,
   SEARCH_UBICACIONES_API,
+  shouldCmPortalBBox,
   shouldLoadSigmaPolygons,
   SIGMA_LAYER_STATIC,
   SIGMA_MAP_CARDS_API,
   sigmaPolygonLimit,
 } from "@/lib/map-live-urls";
+import { MapMunicipioGate } from "@/components/map/MapMunicipioGate";
 import { MapProjectSpotlightCard } from "@/components/MapProjectSpotlightCard";
 import { buildMapProjectSpotlightItem } from "@/lib/map-project-spotlight";
 import type { SigmaMapCardSlice } from "@/lib/map-project-spotlight";
@@ -169,6 +174,9 @@ export function ExploreMadridApp() {
   const [portalPolygonGeo, setPortalPolygonGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
     null,
   );
+  const [portalApproxGeo, setPortalApproxGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
+    null,
+  );
   const [portalMapMeta, setPortalMapMeta] = useState<CmPortalMapMeta | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [sigmaData, setSigmaData] = useState<MadridSigmaDataset | null>(null);
@@ -188,10 +196,11 @@ export function ExploreMadridApp() {
 
   /** En escritorio el panel lateral arranca abierto (solo al montar, sin forzar al redimensionar). */
   useEffect(() => {
+    if (cmMapScope) return;
     if (window.matchMedia("(min-width: 640px)").matches) {
       setPanelOpen(true);
     }
-  }, []);
+  }, [cmMapScope]);
 
   useEffect(() => {
     if (!sigmaFromUrl || cmMapScope) return;
@@ -211,6 +220,8 @@ export function ExploreMadridApp() {
   const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const liveBounds = useDebouncedValue(mapBounds, 450);
+  /** Portal CM: más debounce y clave cuantizada → menos RPC al arrastrar. */
+  const portalBoundsDebounced = useDebouncedValue(mapBounds, 850);
   const [dataReady, setDataReady] = useState({ ubic: true, search: true, portal: !cmMapScope });
   const [ubicLoading, setUbicLoading] = useState(false);
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
@@ -219,6 +230,20 @@ export function ExploreMadridApp() {
   const [sigmaMapOnlyWithPortal, setSigmaMapOnlyWithPortal] = useState(false);
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
+  const [gateOpen, setGateOpen] = useState(cmMapScope);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalErr, setPortalErr] = useState<string | null>(null);
+  const [portalQuery, setPortalQuery] = useState<{
+    slug: string;
+    nombre: string;
+    from: string;
+    to: string;
+    west: number | null;
+    south: number | null;
+    east: number | null;
+    north: number | null;
+    token: number;
+  } | null>(null);
 
   const dateRange = useMemo(
     () => mapDateRangeFromInputs(dateFrom, dateTo),
@@ -317,44 +342,92 @@ export function ExploreMadridApp() {
     };
   }, [q]);
 
+  const portalFetchKey = useMemo(() => {
+    if (!portalQuery) return null;
+    const bounds = shouldCmPortalBBox(portalBoundsDebounced) ? portalBoundsDebounced : null;
+    return cmPortalFetchKey({
+      slug: portalQuery.slug,
+      from: portalQuery.from,
+      to: portalQuery.to,
+      bounds,
+    });
+  }, [portalQuery, portalBoundsDebounced]);
+
+  const portalFetchGen = useRef(0);
+  const portalMapLoadedRef = useRef(false);
+
   useEffect(() => {
-    if (!cmMapScope) return;
-    let cancelled = false;
+    portalMapLoadedRef.current = false;
+  }, [portalQuery?.slug, portalQuery?.token]);
+
+  useEffect(() => {
+    if (!cmMapScope || !portalQuery || portalFetchKey == null) return;
+    const bounds = shouldCmPortalBBox(portalBoundsDebounced) ? portalBoundsDebounced : null;
+    const isBboxPan = Boolean(bounds);
+    const showBlockingLoad = !isBboxPan || !portalMapLoadedRef.current;
+    if (showBlockingLoad) setPortalLoading(true);
+    setPortalErr(null);
+    const url = mapCmPortalQuery({
+      slug: portalQuery.slug,
+      from: portalQuery.from,
+      to: portalQuery.to,
+      bounds,
+    });
+    const gen = ++portalFetchGen.current;
+    const ac = new AbortController();
     (async () => {
       try {
-        const payload = await fetchDominioJson<{
+        const res = await fetch(url, { signal: ac.signal });
+        if (!res.ok) throw new Error("portal");
+        const payload = (await res.json()) as {
           points?: CmPortalGeoJson<CmPortalProyectoProps>;
           polygons?: CmPortalGeoJson<CmPortalProyectoProps>;
+          approx?: CmPortalGeoJson<CmPortalProyectoProps>;
           meta?: CmPortalMapMeta;
-        }>(MAP_CM_PORTAL_API, "/data/cm-portal-meta.json");
-        if (cancelled) return;
-        if (payload?.points) setPortalGeo(payload.points);
-        if (payload?.polygons) setPortalPolygonGeo(payload.polygons);
-        if (payload?.meta) setPortalMapMeta(payload.meta);
-        if (!payload?.points) {
-          const ptsRes = await fetch("/data/cm-portal-proyectos.geojson");
-          if (ptsRes.ok) setPortalGeo((await ptsRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
-          const polysRes = await fetch("/data/cm-portal-proyectos-poligonos.geojson");
-          if (polysRes.ok) {
-            setPortalPolygonGeo((await polysRes.json()) as CmPortalGeoJson<CmPortalProyectoProps>);
-          }
+        };
+        if (ac.signal.aborted || gen !== portalFetchGen.current) return;
+        setPortalPolygonGeo(payload.polygons ?? { type: "FeatureCollection", features: [] });
+        if (!isBboxPan) {
+          setPortalGeo(payload.points ?? { type: "FeatureCollection", features: [] });
+          setPortalApproxGeo(payload.approx ?? { type: "FeatureCollection", features: [] });
+          setPortalMapMeta(payload.meta ?? null);
+        } else {
+          setPortalMapMeta((prev) => ({
+            ...(prev ?? {}),
+            ...(payload.meta ?? {}),
+            recorteEnVista: true,
+          }));
         }
+        portalMapLoadedRef.current = true;
         setDataReady((prev) => ({ ...prev, portal: true }));
-      } catch {
-        if (!cancelled) {
-          setErr("No hemos podido cargar los portales municipales de la Comunidad de Madrid.");
-        }
+      } catch (e) {
+        if (ac.signal.aborted || gen !== portalFetchGen.current) return;
+        if (e instanceof DOMException && e.name === "AbortError") return;
+        setPortalErr("No hemos podido cargar los proyectos de este municipio.");
+        setDataReady((prev) => ({ ...prev, portal: true }));
+      } finally {
+        if (!ac.signal.aborted && gen === portalFetchGen.current) setPortalLoading(false);
       }
     })();
     return () => {
-      cancelled = true;
+      ac.abort();
     };
-  }, [cmMapScope]);
+  }, [cmMapScope, portalQuery, portalFetchKey, portalBoundsDebounced]);
+
+  useEffect(() => {
+    if (!cmMapScope || !portalQuery || gateOpen) return;
+    if (dateFrom && dateTo && dateFrom > dateTo) return;
+    if (dateFrom === portalQuery.from && dateTo === portalQuery.to) return;
+    setPortalQuery((current) =>
+      current ? { ...current, from: dateFrom, to: dateTo } : current,
+    );
+  }, [cmMapScope, portalQuery, gateOpen, dateFrom, dateTo]);
 
   const sigmaFetchKey = bboxFetchKey(liveBounds, liveBounds?.zoom, mapMode);
 
   /** Catálogo SIGMA (listado) una vez; geometría en vivo por zoom/bbox. */
   useEffect(() => {
+    if (cmMapScope) return;
     if (!showSigma || sigmaData) return;
     let cancelled = false;
     (async () => {
@@ -367,9 +440,10 @@ export function ExploreMadridApp() {
     return () => {
       cancelled = true;
     };
-  }, [showSigma, sigmaData]);
+  }, [showSigma, sigmaData, cmMapScope]);
 
   useEffect(() => {
+    if (cmMapScope) return;
     if (!showSigma) return;
     if (!shouldLoadSigmaPolygons(liveBounds?.zoom, liveBounds)) return;
     let cancelled = false;
@@ -401,10 +475,11 @@ export function ExploreMadridApp() {
     return () => {
       cancelled = true;
     };
-  }, [showSigma, mapMode, sigmaFetchKey]);
+  }, [showSigma, mapMode, sigmaFetchKey, cmMapScope]);
 
   /** Popups SIGMA: BOCM + métricas + clasificación + tarjetas de mapa. */
   useEffect(() => {
+    if (cmMapScope) return;
     if (!showSigma) return;
     if (bocmByExp && metricsBundle && clasificacionIndex && mapCardsByExp) return;
     let cancelled = false;
@@ -445,7 +520,7 @@ export function ExploreMadridApp() {
     return () => {
       cancelled = true;
     };
-  }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex, mapCardsByExp]);
+  }, [showSigma, bocmByExp, metricsBundle, clasificacionIndex, mapCardsByExp, cmMapScope]);
 
   const suggestions = useMemo(() => searchIndex.slice(0, 10), [searchIndex]);
 
@@ -699,6 +774,40 @@ export function ExploreMadridApp() {
     }
   }, []);
 
+  const listFrame =
+    portalQuery &&
+    portalQuery.west != null &&
+    portalQuery.south != null &&
+    portalQuery.east != null &&
+    portalQuery.north != null
+      ? {
+          west: portalQuery.west,
+          south: portalQuery.south,
+          east: portalQuery.east,
+          north: portalQuery.north,
+          token: portalQuery.token,
+        }
+      : null;
+  const polygonFrame = useMemo(() => {
+    if (!portalQuery) return null;
+    const bounds = featureCollectionBounds(portalPolygonGeo);
+    if (!bounds) return null;
+    return { ...bounds, token: portalQuery.token + 1, tight: true };
+  }, [portalPolygonGeo, portalQuery]);
+  const focusFrame = polygonFrame ?? listFrame;
+  const portalHasPolygons = (portalPolygonGeo?.features?.length ?? 0) > 0;
+  const portalApproxForMap = useMemo(() => {
+    if (portalHasPolygons || !portalApproxGeo?.features?.length) return null;
+    return { ...portalApproxGeo, features: portalApproxGeo.features.slice(0, 16) };
+  }, [portalApproxGeo, portalHasPolygons]);
+
+  const portalEmpty =
+    cmMapScope &&
+    !gateOpen &&
+    !portalLoading &&
+    dataReady.portal &&
+    (portalMapMeta?.proyectosEnRango ?? 0) === 0;
+
   if (err) {
     return (
       <Div className="flex flex-1 items-center justify-center p-6">
@@ -717,6 +826,7 @@ export function ExploreMadridApp() {
           sigmaGeojson={showSigma ? sigmaGeoFiltered : null}
           portalGeojson={cmMapScope && showSigma ? portalGeo : null}
           portalPolygonGeojson={cmMapScope && showSigma ? portalPolygonGeo : null}
+          portalApproxGeojson={cmMapScope && showSigma ? portalApproxForMap : null}
           highlightNdp={highlightNdp}
           onSelectNdp={goUbicacion}
           sigmaPopupOptions={sigmaPopupOptions}
@@ -724,11 +834,14 @@ export function ExploreMadridApp() {
           showSigma={showSigma}
           showPortal={cmMapScope && showSigma && dataReady.portal}
           mapScope={cmMapScope ? "cm" : "madrid"}
+          focusFrame={focusFrame}
           onBoundsChange={onBoundsChange}
           statsHint={
-            cmMapScope && !dataReady.portal
-              ? "Cargando portales CM…"
-              : mapStatsHint
+            cmMapScope && portalLoading
+              ? `Cargando ${portalQuery?.nombre ?? "el municipio"}…`
+              : cmMapScope && !portalQuery
+                ? "Elige un municipio para ver sus proyectos."
+                : mapStatsHint
           }
           className="h-full w-full"
           fitToData={false}
@@ -745,12 +858,42 @@ export function ExploreMadridApp() {
             onClose={() => setSelectedSigmaGrupo(null)}
           />
         ) : null}
-        {cmMapScope && !dataReady.portal ? (
-          <Div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-slate-100/80 md:bg-slate-100/60">
-            <p className="rounded-lg bg-white/90 px-4 py-2 text-sm text-slate-600 shadow-sm">
-              Cargando portales CM…
-            </p>
-          </Div>
+        {cmMapScope && portalQuery && !gateOpen && portalHasPolygons && (portalMapMeta?.proyectosAproxTotal ?? 0) > 0 ? (
+          <PortalOtrosProyectos
+            nombre={portalQuery.nombre}
+            features={portalApproxGeo?.features ?? []}
+            total={portalMapMeta?.proyectosAproxTotal ?? portalApproxGeo?.features.length ?? 0}
+          />
+        ) : null}
+        {cmMapScope && portalQuery && !gateOpen && !portalHasPolygons && (portalMapMeta?.proyectosAprox ?? 0) > 0 ? (
+          <p className="absolute bottom-16 left-1/2 z-[1100] w-[min(100%-1.5rem,32rem)] -translate-x-1/2 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-center text-xs leading-relaxed text-slate-600 shadow-lg">
+            No tenemos la coordenada exacta. Estas banderas son proyectos de {portalQuery.nombre},
+            colocados desde el centro del municipio para que se puedan leer.
+            {(portalMapMeta?.proyectosAproxTotal ?? 0) > (portalMapMeta?.proyectosAprox ?? 0)
+              ? ` Mostramos ${(portalMapMeta?.proyectosAprox ?? 0).toLocaleString("es-ES")} de ${(portalMapMeta?.proyectosAproxTotal ?? 0).toLocaleString("es-ES")}.`
+              : ""}
+          </p>
+        ) : null}
+        {cmMapScope && portalQuery && !gateOpen && (portalErr || portalEmpty || portalMapMeta?.truncated) ? (
+          <p className="absolute bottom-16 left-1/2 z-[1100] w-[min(100%-1.5rem,28rem)] -translate-x-1/2 rounded-lg border border-slate-200 bg-white/95 px-3 py-2 text-center text-sm text-slate-700 shadow-lg">
+            {portalErr
+              ? portalErr
+              : portalEmpty
+                ? dateFrom || dateTo
+                  ? `No hay proyectos con actividad en esas fechas en ${portalQuery.nombre}.${
+                      portalMapMeta?.proyectosSinFecha
+                        ? ` Hay ${portalMapMeta.proyectosSinFecha.toLocaleString("es-ES")} sin fecha, fuera de este recorte.`
+                        : ""
+                    }`
+                  : `No hay proyectos en ${portalQuery.nombre}.`
+                : portalMapMeta?.truncated
+                  ? portalMapMeta.recorteEnVista
+                    ? `En esta zona mostramos los ${(portalMapMeta.limiteMapa ?? 500).toLocaleString("es-ES")} proyectos con actividad más reciente.`
+                    : `Mostramos los ${(portalMapMeta.limiteMapa ?? 500).toLocaleString("es-ES")} más recientes de todo el municipio. Acerca el mapa para ver más de cada zona.`
+                  : dateFrom || dateTo
+                    ? "Mostramos una parte de los proyectos de este periodo."
+                    : `Mostramos las ${(portalMapMeta?.proyectosPoligonos ?? 0).toLocaleString("es-ES")} parcelas con actividad más reciente.`}
+          </p>
         ) : null}
       </div>
 
@@ -762,7 +905,57 @@ export function ExploreMadridApp() {
         layerLoading={layerLoading}
       />
 
-      {!panelOpen ? (
+      {cmMapScope && portalQuery && !gateOpen ? (
+        <div className="pointer-events-none absolute inset-x-3 top-16 z-[1100] flex justify-center sm:top-[4.5rem]">
+          <div className="pointer-events-auto flex max-w-full items-center gap-2 rounded-full border border-white/90 bg-white/95 px-3 py-1.5 text-xs shadow-lg sm:text-sm">
+            <span className="truncate font-semibold text-slate-800">{portalQuery.nombre}</span>
+            <span className="shrink-0 text-slate-500">
+              {portalQuery.from || portalQuery.to
+                ? `${portalQuery.from || "…"} – ${portalQuery.to || "…"}`
+                : "Todas las fechas"}
+            </span>
+            <button
+              type="button"
+              onClick={() => setGateOpen(true)}
+              className="shrink-0 font-semibold text-[var(--portal-accent)] hover:underline"
+            >
+              Cambiar
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {cmMapScope ? (
+        <MapMunicipioGate
+          open={gateOpen}
+          initialSlug={portalQuery?.slug}
+          initialFrom={portalQuery?.from}
+          initialTo={portalQuery?.to}
+          onConfirm={({ municipio, from, to }) => {
+            setDateFrom(from);
+            setDateTo(to);
+            setPortalGeo(null);
+            setPortalPolygonGeo(null);
+            setPortalApproxGeo(null);
+            setPortalMapMeta(null);
+            setDataReady((prev) => ({ ...prev, portal: false }));
+            setPortalQuery({
+              slug: municipio.slug,
+              nombre: municipio.nombre,
+              from,
+              to,
+              west: municipio.west,
+              south: municipio.south,
+              east: municipio.east,
+              north: municipio.north,
+              token: Date.now(),
+            });
+            setGateOpen(false);
+          }}
+        />
+      ) : null}
+
+      {!panelOpen && !gateOpen ? (
         <button
           type="button"
           onClick={() => setPanelOpen(true)}
@@ -787,13 +980,19 @@ export function ExploreMadridApp() {
         <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-4 py-3">
           <div className="min-w-0">
             <h2 className="text-lg font-bold tracking-tight text-slate-900">
-              {cmMapScope ? "Comunidad de Madrid" : "Madrid"}
+              {cmMapScope ? portalQuery?.nombre ?? "Elige un municipio" : "Madrid"}
             </h2>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600">
               {cmMapScope
                 ? portalMapMeta
-                  ? `${portalMapMeta.proyectosEnMapa?.toLocaleString("es-ES") ?? "—"} proyectos con polígono o ubicación real en mapa · ${portalMapMeta.proyectosSinUbicacion?.toLocaleString("es-ES") ?? "—"} sin geometría (solo listado, no se dibujan).`
-                  : "Vista CM: solo proyectos con polígono SITCM o coordenada real. Sin cogollos en centroide municipal."
+                  ? `${(portalMapMeta.proyectosEnRango ?? 0).toLocaleString("es-ES")} proyectos${
+                      dateFrom || dateTo ? " con actividad en estas fechas" : ""
+                    }${
+                      portalHasPolygons
+                        ? ` · ${(portalMapMeta.proyectosPoligonos ?? 0).toLocaleString("es-ES")} con parcela en el mapa.`
+                        : ` · ${(portalMapMeta.proyectosAprox ?? 0).toLocaleString("es-ES")} sin coordenada exacta, en banderas.`
+                    }`
+                  : "Elige un municipio. La fecha es un filtro opcional."
                 : "Activa capas arriba del mapa. Busca aquí; pulsa un ámbito de planeamiento para ver qué implica."}
             </p>
           </div>
@@ -915,11 +1114,12 @@ export function ExploreMadridApp() {
 
           <fieldset className="space-y-2 border-t border-slate-100 pt-3">
             <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-              Fecha
+              Última actividad
             </legend>
             <p className="text-xs leading-relaxed text-slate-500">
-              Última licencia del edificio o última actividad del proyecto. Sin fecha no aparece si
-              filtras.
+              {cmMapScope
+                ? "Opcional. Es el último movimiento que tenemos, no el día en que empezó el expediente. Si lo dejas vacío, se ve el municipio entero."
+                : "Última licencia del edificio o última actividad del proyecto. Sin fecha no aparece si filtras."}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <label className="block space-y-1 text-xs text-slate-600">
@@ -941,6 +1141,9 @@ export function ExploreMadridApp() {
                 />
               </label>
             </div>
+            {dateFrom && dateTo && dateFrom > dateTo ? (
+              <p className="text-xs text-amber-800">La fecha inicial tiene que ser anterior a la final.</p>
+            ) : null}
             {dateFilterActive ? (
               <button
                 type="button"

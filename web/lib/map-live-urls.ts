@@ -1,7 +1,8 @@
-import type { MapBounds } from "@/lib/map-viewport";
+import { boundsLookValid, type MapBounds } from "@/lib/map-viewport";
 
 export const MAP_SIGMA_API = "/api/dominio/map-sigma";
 export const MAP_CM_PORTAL_API = "/api/dominio/map-cm-portal";
+export const MAP_CM_MUNICIPIOS_API = "/api/dominio/map-cm-municipios";
 export const MAP_UBICACIONES_API = "/api/dominio/map-ubicaciones";
 export const SEARCH_UBICACIONES_API = "/api/dominio/search-ubicaciones";
 export const SIGMA_METRICS_API = "/api/dominio/madrid-sigma-metrics";
@@ -95,6 +96,53 @@ export function mapSigmaQuery(opts: {
     params.set("north", String(bounds.north));
   }
   return `${MAP_SIGMA_API}?${params.toString()}`;
+}
+
+export const CM_PORTAL_MAP_LIMIT = 500;
+/** Por debajo de este zoom mostramos los N más recientes de todo el municipio. */
+export const CM_PORTAL_BBOX_MIN_ZOOM = 11;
+
+export function shouldCmPortalBBox(bounds: MapBounds | null): boolean {
+  if (!bounds) return false;
+  if (!boundsLookValid(bounds)) return false;
+  return Math.round(bounds.zoom ?? 11) >= CM_PORTAL_BBOX_MIN_ZOOM;
+}
+
+/** Clave estable para no refetch en cada tick de bounds (solo cambia al cruzar cuantización). */
+export function cmPortalFetchKey(opts: {
+  slug: string;
+  from?: string;
+  to?: string;
+  bounds?: MapBounds | null;
+}): string {
+  const from = opts.from ?? "";
+  const to = opts.to ?? "";
+  if (!opts.bounds || !shouldCmPortalBBox(opts.bounds)) {
+    return `${opts.slug}:${from}:${to}:all`;
+  }
+  const zoom = Math.round(opts.bounds.zoom ?? 11);
+  const q = quantizeBounds(opts.bounds, zoom);
+  return `${opts.slug}:${from}:${to}:${q.west}:${q.south}:${q.east}:${q.north}`;
+}
+
+export function mapCmPortalQuery(opts: {
+  slug: string;
+  from?: string;
+  to?: string;
+  bounds?: MapBounds | null;
+}): string {
+  const params = new URLSearchParams({ municipio: opts.slug });
+  if (opts.from) params.set("from", opts.from);
+  if (opts.to) params.set("to", opts.to);
+  if (opts.bounds && shouldCmPortalBBox(opts.bounds)) {
+    const zoom = Math.round(opts.bounds.zoom ?? 11);
+    const q = quantizeBounds(opts.bounds, zoom);
+    params.set("minLng", String(q.west));
+    params.set("minLat", String(q.south));
+    params.set("maxLng", String(q.east));
+    params.set("maxLat", String(q.north));
+  }
+  return `${MAP_CM_PORTAL_API}?${params.toString()}`;
 }
 
 export function mapUbicacionesQuery(bounds: MapBounds, limit?: number): string {

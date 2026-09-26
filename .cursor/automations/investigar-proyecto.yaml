@@ -1,0 +1,24 @@
+name: Investigar proyecto importante
+description: >
+  Cada día toma el siguiente proyecto importante sin ficha extra, investiga
+  terreno, obras, actores y prensa, y guarda el relato y los datos en Supabase.
+
+trigger:
+  - type: cron
+    schedule: "0 8 * * *"
+
+repository:
+  github: PabloMoran23/homes-bocm
+  branch: main
+
+tools:
+  - memories
+
+model: default
+
+# El prompt operativo está en .cursor/prompts/investigar-proyecto.md
+# Hay que pegarlo en Instructions de la UI. La UI no lee este path sola.
+instructions_file: .cursor/prompts/investigar-proyecto.md
+
+sandbox:
+  install_command: pip install psycopg2-binary

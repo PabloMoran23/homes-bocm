@@ -11,6 +11,7 @@ import L from "leaflet";
 import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { LicenciasClusterLayer } from "@/components/map/LicenciasClusterLayer";
+import { PortalApproxFlagsLayer } from "@/components/map/PortalApproxFlagsLayer";
 import { PortalProyectosClusterLayer } from "@/components/map/PortalProyectosClusterLayer";
 import { PortalProyectosPolygonLayer } from "@/components/map/PortalProyectosPolygonLayer";
 import { SigmaPolygonsLayer } from "@/components/map/SigmaPolygonsLayer";
@@ -156,6 +157,44 @@ function fitLayerBounds(
   fitBoundsForContainer(map, bounds, FIT_PRESETS[view][mode], view);
 }
 
+export type MapFocusFrame = {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+  /** Cambia al elegir otro municipio para repetir el vuelo. */
+  token: number;
+  /** Encuadra el recuadro real, sin abrirlo a un kilómetro. */
+  tight?: boolean;
+};
+
+function FlyToFrame({ frame }: { frame: MapFocusFrame | null }) {
+  const map = useMap();
+  const seen = useRef<number | null>(null);
+  useEffect(() => {
+    if (!frame || seen.current === frame.token) return;
+    if (![frame.west, frame.south, frame.east, frame.north].every((n) => Number.isFinite(n))) return;
+    seen.current = frame.token;
+    let { west, south, east, north } = frame;
+    if (!frame.tight) {
+      if (east - west < 0.012) {
+        const mid = (east + west) / 2;
+        west = mid - 0.01;
+        east = mid + 0.01;
+      }
+      if (north - south < 0.008) {
+        const mid = (north + south) / 2;
+        south = mid - 0.006;
+        north = mid + 0.006;
+      }
+    }
+    const bounds = L.latLngBounds([south, west], [north, east]);
+    if (!bounds.isValid()) return;
+    map.flyToBounds(bounds, { padding: [56, 56], maxZoom: frame.tight ? 18 : 17, duration: 1.55 });
+  }, [map, frame]);
+  return null;
+}
+
 function UnifiedFitBounds({
   ubicaciones,
   sigma,
@@ -164,6 +203,7 @@ function UnifiedFitBounds({
   fitToData = true,
   initialView = "city",
   mapScope = "madrid",
+  holdCamera = false,
 }: {
   ubicaciones: UbicacionesMapGeoJson | null;
   sigma: SectorFeatureCollection | null;
@@ -172,6 +212,8 @@ function UnifiedFitBounds({
   fitToData?: boolean;
   initialView?: MapInitialView;
   mapScope?: MapScope;
+  /** El vuelo al municipio manda: no reencuadrar al llegar los datos. */
+  holdCamera?: boolean;
 }) {
   const map = useMap();
   const lastFitKey = useRef("");
@@ -179,6 +221,10 @@ function UnifiedFitBounds({
   const fixedExploreZoomDone = useRef(false);
 
   useEffect(() => {
+    if (holdCamera) {
+      fixedExploreZoomDone.current = true;
+      return;
+    }
     const hasUbic = Boolean(ubicaciones?.features?.length);
     const hasSigma = Boolean(sigma?.features?.length);
     const hasPortal = Boolean(portal?.features?.length);
@@ -249,7 +295,7 @@ function UnifiedFitBounds({
       return;
     }
     frameMadridCity(map, initialView);
-  }, [map, ubicaciones, sigma, portal, portalPolygons, fitToData, initialView, mapScope]);
+  }, [map, ubicaciones, sigma, portal, portalPolygons, fitToData, initialView, mapScope, holdCamera]);
 
   useEffect(() => {
     if (!fitToData && (initialView === "preview" || initialView === "explore")) return;
@@ -341,8 +387,10 @@ export function MadridUnifiedMap({
   onSelectSigmaExpediente,
   portalGeojson = null,
   portalPolygonGeojson = null,
+  portalApproxGeojson = null,
   showPortal = false,
   mapScope = "madrid",
+  focusFrame = null,
 }: {
   ubicacionesGeojson: UbicacionesMapGeoJson | null;
   sigmaGeojson: SectorFeatureCollection | null;
@@ -381,8 +429,12 @@ export function MadridUnifiedMap({
   /** Proyectos de portales municipales CM (modo `mapScope=cm`). */
   portalGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   portalPolygonGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
+  /** Proyectos sin coordenada real, dibujados como banderas desde el centro. */
+  portalApproxGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   showPortal?: boolean;
   mapScope?: MapScope;
+  /** Vuelo animado hasta el municipio elegido. */
+  focusFrame?: MapFocusFrame | null;
 }) {
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
@@ -547,6 +599,7 @@ export function MadridUnifiedMap({
               geojson={portalPolygonGeojson}
               visible={showPortal}
             />
+            <PortalApproxFlagsLayer geojson={portalApproxGeojson ?? null} visible={showPortal} />
             {landingTour ? null : (
               <UnifiedFitBounds
                 ubicaciones={ubicacionesGeojson}
@@ -556,8 +609,10 @@ export function MadridUnifiedMap({
                 fitToData={fitToData}
                 initialView={initialView}
                 mapScope={mapScope}
+                holdCamera={Boolean(focusFrame)}
               />
             )}
+            <FlyToFrame frame={focusFrame} />
             <FlyToNdp geojson={ubicacionesGeojson} ndp={highlightNdp} />
             {interactive ? <ZoomControl position="topright" /> : null}
             {interactive ? <ScaleControl position="bottomleft" imperial={false} /> : null}

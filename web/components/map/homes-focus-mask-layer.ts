@@ -2,7 +2,6 @@ import L from "leaflet";
 import type { Feature } from "geojson";
 import {
   FOCUS_BOUNDARY_ACCENT,
-  FOCUS_BOUNDARY_COLOR,
   FOCUS_MASK_PANE,
   FOCUS_MASK_PANE_Z,
   FOCUS_VEIL_COLOR,
@@ -219,15 +218,13 @@ export class HomesFocusMask extends L.Layer {
     addPolygonRings(ctx, map, this._features);
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
-    ctx.strokeStyle = FOCUS_BOUNDARY_ACCENT;
-    ctx.lineWidth = 2.6;
     ctx.setLineDash([]);
-    ctx.globalAlpha = 0.2 * progress;
+    ctx.strokeStyle = "#fffaf3";
+    ctx.lineWidth = 7;
+    ctx.globalAlpha = progress;
     ctx.stroke();
-    ctx.strokeStyle = FOCUS_BOUNDARY_COLOR;
-    ctx.lineWidth = 1.4;
-    ctx.setLineDash([7, 5.5]);
-    ctx.globalAlpha = 0.78 * progress;
+    ctx.strokeStyle = FOCUS_BOUNDARY_ACCENT;
+    ctx.lineWidth = 3.5;
     ctx.stroke();
     ctx.restore();
   }

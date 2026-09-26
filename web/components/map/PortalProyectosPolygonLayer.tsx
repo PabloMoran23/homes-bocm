@@ -11,10 +11,20 @@ import {
 import { bindMapHoverPopup } from "@/lib/map-hover-popup";
 
 const POLYGON_STYLE: L.PathOptions = {
-  color: "#6d28d9",
-  weight: 1.5,
-  fillColor: "#8b5cf6",
-  fillOpacity: 0.22,
+  color: "#1f4f53",
+  weight: 2,
+  fillColor: "#1f4f53",
+  fillOpacity: 0.28,
+};
+
+const INVESTIGADO_PANE = "portalInvestigado";
+
+const INVESTIGADO_STYLE: L.PathOptions = {
+  color: "#9a3412",
+  weight: 3,
+  fillColor: "#ea580c",
+  fillOpacity: 0.45,
+  pane: INVESTIGADO_PANE,
 };
 
 export function PortalProyectosPolygonLayer({
@@ -36,14 +46,45 @@ export function PortalProyectosPolygonLayer({
       return;
     }
 
-    const layer = L.geoJSON(geojson as unknown as GeoJSON.FeatureCollection, {
-      style: POLYGON_STYLE,
+    const polygons = {
+      ...geojson,
+      features: geojson.features
+        .filter((feature) => {
+          const type = feature.geometry?.type;
+          return type === "Polygon" || type === "MultiPolygon";
+        })
+        .sort((a, b) => Number(Boolean(a.properties?.investigado)) - Number(Boolean(b.properties?.investigado))),
+    };
+    if (!polygons.features.length) {
+      if (layerRef.current) {
+        map.removeLayer(layerRef.current);
+        layerRef.current = null;
+      }
+      return;
+    }
+    if (!map.getPane(INVESTIGADO_PANE)) {
+      const pane = map.createPane(INVESTIGADO_PANE);
+      pane.style.zIndex = "450";
+    }
+    const layer = L.geoJSON(polygons as unknown as GeoJSON.FeatureCollection, {
+      style: (feature) =>
+        (feature?.properties as CmPortalProyectoProps | undefined)?.investigado
+          ? INVESTIGADO_STYLE
+          : POLYGON_STYLE,
       onEachFeature(feature, lyr) {
         const p = feature.properties as CmPortalProyectoProps;
         bindMapHoverPopup(lyr, portalProyectoPopupHtml(p), { maxWidth: 300 });
       },
     });
     map.addLayer(layer);
+    layer.eachLayer((lyr) => {
+      const props = (lyr as L.GeoJSON & { feature?: GeoJSON.Feature }).feature?.properties as
+        | CmPortalProyectoProps
+        | undefined;
+      if (props?.investigado && "bringToFront" in lyr) {
+        (lyr as L.Path).bringToFront();
+      }
+    });
     layerRef.current = layer;
 
     return () => {
