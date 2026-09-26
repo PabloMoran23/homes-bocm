@@ -1,0 +1,29 @@
+slug: galende
+nombre: "Galende"
+provincia: "Galende (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://aytogalende.net"
+  adapter: municipio.adapters.galende:GalendeAyuntamientoAdapter
+  config:
+    web_base: "https://aytogalende.net"
+    sede_base: "https://galende.sedelectronica.es"
+    urbanismo_url: "https://aytogalende.net/index.php/home/informacion-publica"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-galende/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Galende"
+    centroid: [42.203, -6.722]
+  notes: |
+    Web Joomla (SP Page Builder) con listado de expedientes urbanísticos.
+    Sede espublico gestiona (tablón + transparencia).
+    PlanPublica Junta CYL provincia 49 / municipio 085.
+    IDECyL WFS sectores e instrumentos con polígonos WGS84.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
