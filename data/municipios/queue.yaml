@@ -5876,12 +5876,12 @@ municipios:
 - slug: valverde
   nombre: Valverde
   bocm_count: 2
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-09-26T10:29:05.207943+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/540
+  notes: Post-merge GitHub Actions (Municipio post-merge) run 36235896405
   boletin_source_id: boc_canarias
   comunidad_autonoma: canarias
   provincia: Valverde (El Hierro)
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-26T10:16:14.864510+00:00'
+updated_at: '2026-09-26T10:29:05.209378+00:00'
