@@ -1,0 +1,30 @@
+slug: navas-de-oro
+nombre: "Navas de Oro"
+provincia: "Navas de Oro (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.navasdeoro.es"
+  adapter: municipio.adapters.navas_de_oro:NavasDeOroAyuntamientoAdapter
+  config:
+    web_base: "https://www.navasdeoro.es"
+    sede_base: "https://navasdeoro.sedelectronica.es"
+    board_url: "https://navasdeoro.sedelectronica.es/board"
+    plai_municipio: 145
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Navas de Oro"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navas-de-oro/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay DipSegovia (Segovia11) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 145) + galería NUM en /urbanismo.
+    Geometría: IDECyL WFS PLAU CyL (instrumento municipal + 20 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
