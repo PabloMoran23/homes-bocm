@@ -35,6 +35,21 @@ POLY = {
 
 
 class MadridIngestMappingTest(unittest.TestCase):
+    def test_invalid_calendar_date_is_dropped(self) -> None:
+        mapped = portal_proyecto_row(
+            {
+                "id": "loja-proy-86dd9fb2aaa655",
+                "titulo": "Ordenanza",
+                "fecha": "2020-13-01",
+                "fuente": "ayuntamiento",
+            },
+            slug="loja",
+            nombre="Loja",
+        )
+        self.assertIsNotNone(mapped)
+        self.assertIsNone(mapped["fecha_aprob"])
+        self.assertIsNone(mapped["bocm_pub_date"])
+
     def test_sigma_fields_pass_through(self) -> None:
         mapped = portal_proyecto_row(
             {

@@ -7,7 +7,7 @@ from municipio import licencias_runner, proyectos_runner, validate
 from municipio.enrich_geometry import enrich_manifest
 from municipio.geocode import geocode_manifest
 from municipio.manifest import MunicipioManifest, load_manifest
-from municipio.sync_supabase import sync_manifest
+from municipio.sync_supabase import defer_manifest, sync_manifest
 
 Step = str  # licencias_backfill | licencias_update | proyectos_backfill | proyectos_update | enrich_geometry | geocode | sync_supabase | validate | all
 
@@ -59,9 +59,21 @@ def _steps_for(step: Step) -> list[str]:
     raise ValueError(f"Paso desconocido: {step}")
 
 
+def _is_timeout(exc: BaseException) -> bool:
+    text = f"{type(exc).__name__} {exc}".lower()
+    return "timeout" in text or "timed out" in text
+
+
 def run(manifest: MunicipioManifest, step: Step = "all") -> dict[str, Any]:
     results: dict[str, Any] = {"slug": manifest.slug, "steps": {}}
+    timed_out = False
     for name in _steps_for(step):
+        if name == "sync_supabase" and timed_out:
+            results["steps"][name] = {
+                "status": "deferred",
+                "reason": "timeout; se reintenta al día siguiente",
+            }
+            continue
         if name == "validate":
             path = validate.write_parity_report(manifest)
             results["steps"]["validate"] = {
@@ -73,6 +85,14 @@ def run(manifest: MunicipioManifest, step: Step = "all") -> dict[str, Any]:
             results["steps"][name] = RUNNERS[name](manifest)
         except Exception as e:
             results["steps"][name] = {"error": str(e), "type": type(e).__name__}
+            if _is_timeout(e):
+                timed_out = True
+    if timed_out:
+        results["retry"] = "next_day"
+        try:
+            defer_manifest(manifest)
+        except Exception as exc:
+            results["defer_error"] = str(exc)
     return results
 
 

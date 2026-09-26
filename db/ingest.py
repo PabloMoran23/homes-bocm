@@ -134,6 +134,23 @@ def _latlng(rec: dict[str, Any]) -> tuple[float | None, float | None]:
     return lat, _float(lng)
 
 
+def _iso_date(value: Any) -> str | None:
+    """YYYY-MM-DD real, o None si el texto no es una fecha de calendario.
+
+    Portales a veces meten un número de documento (2020_13-896) en el campo
+    fecha y acaba como 2020-13-01, que Postgres rechaza y aborta el sync entero.
+    """
+    text = _blank(value)
+    if not text:
+        return None
+    head = text[:10]
+    try:
+        datetime.strptime(head, "%Y-%m-%d")
+    except ValueError:
+        return None
+    return head
+
+
 @contextmanager
 def _owned_conn(conn) -> Iterator[Any]:
     if conn is not None:
@@ -209,6 +226,15 @@ def save_municipio(row: dict[str, Any], *, conn=None) -> str:
             ),
         )
     return slug
+
+
+def clear_last_ingest_at(slug: str, *, conn=None) -> None:
+    """Quita la marca de ingest para que el cron diario vuelva a coger el municipio."""
+    with _owned_conn(conn) as c, c.cursor() as cur:
+        cur.execute(
+            f"UPDATE {SCHEMA}.municipio SET last_ingest_at = NULL, updated_at = %s WHERE slug = %s",
+            (_now(), slug),
+        )
 
 
 def touch_last_ingest_at(slug: str, *, conn=None) -> None:
@@ -348,7 +374,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     titulo = str(rec.get("titulo") or rec.get("denominacion") or "").strip()
     tipo = str(rec.get("tipo") or rec.get("tipo_figura") or rec.get("figura_codigo") or "").strip()
     fecha = _blank(rec.get("fecha") or rec.get("fecha_aprob"))
-    pub_date = fecha[:10] if fecha and len(fecha) >= 10 else None
+    pub_date = _iso_date(fecha)
     lat, lng = _latlng(rec)
     url = _blank(rec.get("url") or rec.get("enlace") or rec.get("visor_url"))
     docs: list[str] = []
@@ -388,8 +414,8 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "enlace": url,
         "catalog_source": catalog_source,
         "sigma_layer_kind": _blank(rec.get("sigma_layer_kind")),
-        "infopublica_inicio": _blank(rec.get("infopublica_inicio")),
-        "infopublica_fin": _blank(rec.get("infopublica_fin")),
+        "infopublica_inicio": _iso_date(rec.get("infopublica_inicio")),
+        "infopublica_fin": _iso_date(rec.get("infopublica_fin")),
         "figura_codigo": _blank(rec.get("figura_codigo")),
         "tipo_figura": _blank(rec.get("tipo_figura")),
         "organo_tramitador": _blank(rec.get("organo_tramitador")),
@@ -431,7 +457,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         ),
         "bocm_primary_id": _blank(rec.get("bocm_primary_id")),
         "bocm_source_id": _blank(rec.get("bocm_source_id")) or ("sigma" if fuente == "sigma" else "ayuntamiento-portal"),
-        "bocm_pub_date": _blank(rec.get("bocm_pub_date")) or pub_date,
+        "bocm_pub_date": _iso_date(rec.get("bocm_pub_date")) or pub_date,
         "bocm_art_num": _blank(rec.get("bocm_art_num")),
         "bocm_title": _blank(rec.get("bocm_title")) or _blank(titulo),
         "bocm_pdf_url": _blank(rec.get("bocm_pdf_url")) or (docs[0] if docs else None),
@@ -583,8 +609,8 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
         tuples = []
         for rec, key in zip(ready, keys):
             lat, lng = _latlng(rec)
-            fecha = _blank(rec.get("fecha_concesion") or rec.get("fecha"))
-            anio = int(fecha[:4]) if fecha and len(fecha) >= 4 and fecha[:4].isdigit() else None
+            fecha = _iso_date(rec.get("fecha_concesion") or rec.get("fecha"))
+            anio = int(fecha[:4]) if fecha else None
             slug = _blank(rec.get("municipio_slug"))
             tuples.append(
                 (
@@ -592,7 +618,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     key,
                     rec.get("inmueble_id"),
                     anio if anio is not None else _int(rec.get("anio_dataset")),
-                    _blank(rec.get("fecha_alta")),
+                    _iso_date(rec.get("fecha_alta")),
                     fecha,
                     _blank(rec.get("procedimiento")),
                     _blank(rec.get("tipo") or rec.get("tipo_expediente")),
@@ -1030,7 +1056,10 @@ class IngestSession:
 
     def __exit__(self, exc_type, exc, tb) -> None:
         try:
-            if self.run_id is not None:
+            if exc is not None and self.conn is not None:
+                # Si no, el siguiente SQL ve la transacción abortada y tapa el error real.
+                self.conn.rollback()
+            if self.run_id is not None and self.conn is not None:
                 finish_ingest_run(
                     self.run_id,
                     status="error" if exc else "ok",
@@ -1038,8 +1067,15 @@ class IngestSession:
                     error=str(exc) if exc else None,
                     conn=self.conn,
                 )
-            if self.conn is not None:
                 self.conn.commit()
+            elif self.conn is not None:
+                self.conn.commit()
+        except Exception:
+            if self.conn is not None:
+                try:
+                    self.conn.rollback()
+                except Exception:
+                    pass
         finally:
             if self.conn is not None:
                 self.conn.close()
