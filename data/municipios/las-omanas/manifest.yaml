@@ -1,0 +1,29 @@
+slug: las-omanas
+nombre: "Las Omañas"
+provincia: "Las Omañas-León"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytolasomanas.es"
+  adapter: municipio.adapters.las_omanas:LasOmanasAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytolasomanas.es"
+    sede_base: "https://aytolasomanas.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-las-omanas/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Las Omañas"
+    wfs_c_mun: "24104"
+    centroid: [42.73, -5.88]
+  notes: |
+    OpenCms (Diputación León / es.samdipuleon.templates) + sede espublico gestiona
+    (tablón, transparencia) + IDECyL WFS instrumentos (c_mun=24104) + PlanPublica CYL
+    (provincia 24, municipio 104).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

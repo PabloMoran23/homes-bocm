@@ -1,0 +1,32 @@
+slug: juzcar
+nombre: "Júzcar"
+provincia: "Júzcar-Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sede.malaga.es/juzcar"
+  adapter: municipio.adapters.juzcar:JuzcarAyuntamientoAdapter
+  config:
+    sede_malaga_base: "https://sede.malaga.es/juzcar"
+    sede_legacy_base: "https://juzcar.sedelectronica.es"
+    board_url: "https://juzcar.sedelectronica.es/board/"
+    web_base: "https://www.juzcar.es"
+    registro_urbanistico_url: "https://www.juzcar.es/14513/registros-instrumentos-urbanisticos"
+    boja_pgou_url: "https://www.juntadeandalucia.es/boja/2020/224/57"
+    situa_pgou_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/planeamientoGeneralCompartir.jsf?bXVuaWNpcGlvc1NlbGVjY2lvbmFkb3M9MjkwODkmbXVuaWNpcGlvc1NlbGVjY2lvbj1KJUMzJUJBemNhciZjb2RpZ29zTXVuaWNpcGlvcz0yOTA4OSZjb2RGaWd1cmE9MjkwODkmamFfaWQ2OmpfaWQzNT1qX2lkNjpqX2lkMzU="
+    request_delay_s: 0.35
+    sede_timeout_s: 15
+    user_agent: "poc-bocm-juzcar/1.0"
+    centroid: [36.6236, -5.1667]
+  notes: |
+    Sede Diputación Málaga (sede.malaga.es/juzcar) timeout en CI; espublico legacy inactiva.
+    Web juzcar.es bloqueada WAF. Fuentes operativas: BOJA PGOU 2020 + SITUA (INE 29089).
+    Registro municipal instrumentos urbanísticos documentado como referencia oficial.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

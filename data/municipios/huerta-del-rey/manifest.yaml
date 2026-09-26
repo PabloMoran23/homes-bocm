@@ -1,0 +1,30 @@
+slug: huerta-del-rey
+nombre: "Huerta del Rey"
+provincia: "Huerta del Rey (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.huertaderey.es"
+  adapter: municipio.adapters.huerta_del_rey:HuertaDelReyAyuntamientoAdapter
+  config:
+    web_base: "https://www.huertaderey.es"
+    sede_base: "https://huertaderey.sedelectronica.es"
+    board_url: "https://huertaderey.sedelectronica.es/board"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=174"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=174"
+    obras_url: "https://huertaderey.sedelectronica.es/citizen-service/d9f26e4d-e46d-4a6c-8a50-f5e2d15e1ca1"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-huerta-del-rey/1.0"
+    centroid: [41.9478, -3.3756]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Huerta de Rey"
+  notes: |
+    Variante BOCYL «Huerta del Rey» = municipio oficial Huerta de Rey (INE 09174).
+    Web Drupal 10 + sede espublico + PLAU CyL (prov 09, mun 174) + IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

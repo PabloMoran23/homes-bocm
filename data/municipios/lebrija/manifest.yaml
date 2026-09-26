@@ -1,0 +1,35 @@
+slug: lebrija
+nombre: "Lebrija"
+provincia: "Lebrija-Sevilla"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://transparencia.lebrija.es"
+  adapter: municipio.adapters.lebrija:LebrijaAyuntamientoAdapter
+  config:
+    web_base: "https://www.lebrija.es"
+    sede_base: "https://sede.lebrija.es"
+    transparencia_base: "https://transparencia.lebrija.es"
+    tablon_url: "https://sede.lebrija.es/tablon-1.0/do/entradaPublica?ine=41064"
+    transparencia_indicators:
+      - "https://transparencia.lebrija.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00008/"
+      - "https://transparencia.lebrija.es/es/transparencia/indicadores-de-transparencia/indicador/Modificaciones-aprobadas-del-PGOU-y-los-Planes-parciales-aprobados-00008/"
+      - "https://transparencia.lebrija.es/es/transparencia/indicadores-de-transparencia/indicador/Convenios-urbanisticos-del-Ayuntamiento-y-de-las-actuaciones-urbanisticas-en-ejecucion-00008/"
+      - "https://transparencia.lebrija.es/es/transparencia/indicadores-de-transparencia/indicador/Usos-y-destinos-del-suelo-00008/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41064"
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 poc-bocm-lebrija/1.0"
+    insecure_ssl: true
+    centroid: [36.9206, -6.0759]
+  notes: |
+    Web OpenCMS INPRO (lebrija.es) + sede GSede + portal transparencia Comentta.
+    Tablón INPRO ine=41064 vacío; PGOU/modificaciones/convenios vía transparencia PDFs.
+  geometry_status: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

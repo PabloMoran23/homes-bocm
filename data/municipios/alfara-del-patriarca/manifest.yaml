@@ -1,0 +1,33 @@
+slug: alfara-del-patriarca
+nombre: "Alfara del Patriarca"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://alfaradelpatriarca.sedelectronica.es"
+  adapter: municipio.adapters.alfara_del_patriarca:AlfaraDelPatriarcaAyuntamientoAdapter
+  config:
+    sede_base: "https://alfaradelpatriarca.sedelectronica.es"
+    board_url: "https://alfaradelpatriarca.sedelectronica.es/board"
+    web_base: "https://www.alfaradelpatriarca.es"
+    urbanismo_url: "https://www.alfaradelpatriarca.es/es/pagina/urbanismo"
+    transparency_url: "https://alfaradelpatriarca.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alfara-del-patriarca/1.0"
+    cod_ine_mun: "46025"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+  notes: |
+    Sede espublico gestiona: tablón /board, transparencia (sección urbanismo).
+    Web alfaradelpatriarca.es: página urbanismo (PGOU, ARR-2, San Diego).
+    ICV WFS zonificación cod_ine_mun 46025 (3 instrumentos, geometría partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

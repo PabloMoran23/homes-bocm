@@ -1,0 +1,31 @@
+slug: el-viso
+nombre: "El Viso"
+provincia: "El Viso, Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://elviso.sedelectronica.es"
+  adapter: municipio.adapters.el_viso:ElVisoAyuntamientoAdapter
+  config:
+    wp_base: "https://ayto-elviso.com"
+    sede_base: "https://elviso.sedelectronica.es"
+    board_url: "https://elviso.sedelectronica.es/board"
+    modelos_url: "https://ayto-elviso.com/modelos-de-solicitudes-varias/"
+    wp_bandos_category: 4
+    wp_max_pages: 5
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-el-viso/1.0"
+    centroid: [38.4811, -5.1473]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board), bandos WordPress (categoría bandos)
+    y modelos de solicitud urbanística en ayto-elviso.com.
+    SITUA (Junta de Andalucía) como referencia de planeamiento regional.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

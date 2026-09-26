@@ -1,0 +1,28 @@
+slug: madrigalejo-del-monte
+nombre: "Madrigalejo del Monte"
+provincia: "Madrigalejo del Monte (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.madrigalejodelmonte.es"
+  adapter: municipio.adapters.madrigalejo_del_monte:MadrigalejoDelMonteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-madrigalejo-del-monte/1.0"
+    web_base: "https://www.madrigalejodelmonte.es"
+    sede_base: "https://madrigalejodelmonte.sedelectronica.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=197"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Madrigalejo del Monte"
+    insecure_ssl: true
+    centroid: [42.1522, -3.7270]
+  notes: |
+    Drupal 10 (tema Toools) + sede espublico gestiona + PlanPublica PLAU JCyL (prov. 09, mun. 197)
+    e IDECyL WFS urbanismo (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

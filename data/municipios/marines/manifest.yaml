@@ -1,0 +1,30 @@
+slug: marines
+nombre: "Marines"
+provincia: "Marines, Valencia"
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.marines.es"
+  adapter: municipio.adapters.marines:MarinesAyuntamientoAdapter
+  config:
+    web_base: "https://www.marines.es"
+    sede_base: "https://marines.sedelectronica.es"
+    board_url: "https://marines.sedelectronica.es/board/"
+    dossier_url: "https://marines.sedelectronica.es/dossier/.0"
+    request_delay_s: 0.5
+    insecure_ssl: true
+    user_agent: "poc-bocm-marines/1.0"
+    centroid: [39.8878, -0.1836]
+  notes: |
+    Fuentes: sede espublico gestiona (tablón + catálogo trámites) +
+    documentos PDF publicados en www.marines.es (UER-3a, PAI).
+    Web Drupal portalesmunicipales con timeouts intermitentes en CI.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

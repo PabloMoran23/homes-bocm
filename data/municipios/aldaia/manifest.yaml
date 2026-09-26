@@ -1,0 +1,27 @@
+slug: aldaia
+nombre: "Aldaia"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://aldaia.es"
+  adapter: municipio.adapters.aldaia:AldaiaAyuntamientoAdapter
+  config:
+    wp_base: "https://aldaia.es"
+    transp_base: "https://transparencia.aldaia.es"
+    citaprevia_url: "https://citaprevia.aldaia.eu/frontend.php"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-aldaia/1.0"
+    cod_ine_mun: "46005"
+    centroid: [39.465, -0.461]
+  notes: |
+    WordPress aldaia.es (urbanismo) + Drupal transparencia.aldaia.es (PGOU, EATE, plan parcial, ordenanzas).
+    Sede aldaia.sedelectronica.es inactiva («seleccione su sede»); sin tablón público.
+    Geometría unavailable: municipio ausente en ICV WFS Planeamiento.Zonificacion.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,27 @@
+slug: lliria
+nombre: "Llíria"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://sede.lliria.es"
+  adapter: municipio.adapters.lliria:LliriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lliria/1.0"
+    web_base: "https://www.lliria.es"
+    sede_base: "https://sede.lliria.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "InventarioSuSuz"
+      cod_ine_mun: "46146"
+  notes: |
+    Web Drupal www.lliria.es (timeout intermitente en CI) + sede STA TAO (tablón PTS_TABLON, catálogo CATSERV).
+    Geometría parcial vía ICV InventarioSuSuz WFS (7 sectores SU/SUZ, INE 46146).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

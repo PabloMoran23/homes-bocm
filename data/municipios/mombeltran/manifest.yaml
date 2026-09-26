@@ -1,0 +1,27 @@
+slug: mombeltran
+nombre: "Mombeltrán"
+provincia: "Mombeltrán, Ávila"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.mombeltran.es"
+  adapter: municipio.adapters.mombeltran:MombeltranAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mombeltran/1.0"
+    web_base: "https://www.mombeltran.es"
+    sede_base: "https://mombeltran.sedelectronica.es"
+    board_url: "https://mombeltran.sedelectronica.es/board"
+    plau_provincia: 5
+    plau_municipio: 132
+    wfs_municipio: "Mombeltrán"
+  notes: |
+    Web corporativa estática (.shtml) + sede espublico gestiona + PlanPublica JCyL
+    (prov 05 / mun 132) + SiuCyL/IDECyL WFS. Tablón sede vacío; licencias solo trámites informativos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

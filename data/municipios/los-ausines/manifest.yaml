@@ -1,0 +1,33 @@
+slug: los-ausines
+nombre: "Los Ausines"
+provincia: "Los Ausines (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.losausines.es"
+  adapter: municipio.adapters.los_ausines:LosAusinesAyuntamientoAdapter
+  config:
+    web_base: "https://www.losausines.es"
+    sede_base: "https://losausines.sedelectronica.es"
+    planpublica_provincia: 09
+    planpublica_municipio: 030
+    ine_code: "09030"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Los Ausines"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=09030"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=09&municipio=030"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=09&municipio=030"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-los-ausines/1.0 (+urbanismo research)"
+    centroid: [42.3358, -3.3889]
+  notes: |
+    Drupal www.losausines.es + sede espublico gestiona (tablón /board) +
+    PlanPublica/SiuCyL (NS vigente, estudio detalle San Juan) + WFS IDECyL (19 sectores).
+    Ver RESEARCH.md para endpoints y estrategia de scraping.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

@@ -1,0 +1,27 @@
+slug: berja
+nombre: "Berja"
+provincia: "Berja, Almería"
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.dipalme.org/Servicios/cmsdipro/index.nsf/index.xsp?p=Berja"
+  adapter: municipio.adapters.berja:BerjaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-berja/1.0"
+    max_noticias_pages: 5
+    fetch_retries: 3
+  notes: |
+    Sede CMSDIP-PRO de la Diputación de Almería (p=Berja, no SedeBerja).
+    Tablón: tablon_view_entidad_rol.xsp; histórico tablonhp_view.xsp.
+    Noticias obras públicas: noticias_view_entidad_categoria (OBRAS PÚBLICAS).
+    Normas/planeamiento: tablon_view_entidad_categoria1?cat=Normas.
+    Geometría sectores: WFS Diputación app.dipalme.org (cod_ine 04029).
+    www.berja.es inaccesible desde CI (timeout); usar dipalme.org.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

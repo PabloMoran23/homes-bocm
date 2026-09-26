@@ -1,0 +1,25 @@
+slug: muelas-del-pan
+nombre: "Muelas del Pan"
+provincia: "Muelas del Pan (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.ayto-muelasdelpan.com"
+  adapter: municipio.adapters.muelas_del_pan:MuelasDelPanAyuntamientoAdapter
+  config:
+    sede_base: "https://ayto-muelasdelpan.sedelectronica.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-muelas-del-pan/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Muelas del Pan"
+    centroid: [41.591, -6.032]
+  notes: |
+    Web corporativa (tablón histórico) + sede espublico gestiona + PlanPublica JCyL (c_mun=49135)
+    + IDECyL WFS sectores/planes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

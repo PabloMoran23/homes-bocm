@@ -1,0 +1,29 @@
+slug: carrascal-de-barregas
+nombre: "Carrascal de Barregas"
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://carrascaldebarregas.com"
+  adapter: municipio.adapters.carrascal_de_barregas:CarrascalDeBarregasAyuntamientoAdapter
+  config:
+    web_base: "https://carrascaldebarregas.com"
+    sede_base: "https://carrascaldebarregas.sedelectronica.es"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_c_mun: "37087"
+    plan_provincia: "37"
+    plan_municipio: "087"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-carrascal-de-barregas/1.0"
+    centroid: [40.9512, -5.4418]
+  notes: |
+    WordPress Divi (carrascaldebarregas.com) + sede espublico gestiona (tablón + catálogo)
+    + PlanPublica JCyL (provincia 37, municipio 087) + IDECyL WFS sectores/planes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

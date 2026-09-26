@@ -1,0 +1,33 @@
+slug: tamames
+nombre: "Tamames"
+provincia: "Tamames-Salamanca"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://tamames.sedelectronica.es"
+  adapter: municipio.adapters.tamames:TamamesAyuntamientoAdapter
+  config:
+    sede_base: "https://tamames.sedelectronica.es"
+    planpublica_provincia: 37
+    planpublica_municipio: 316
+    ine_code: "37316"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Tamames"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=37316"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=37&municipio=316"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=37&municipio=316"
+    dossier_url: "https://tamames.sedelectronica.es/dossier/.0"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tamames/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [40.695, -6.053]
+  notes: |
+    Sin web corporativa propia. Sede espublico gestiona + PlanPublica/SiuCyL (NUM vigente + 3 modificaciones).
+    WFS IDECyL: 1 instrumento municipal + 11 sectores SU-NC. Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

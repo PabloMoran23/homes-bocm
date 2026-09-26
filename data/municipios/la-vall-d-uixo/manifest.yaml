@@ -1,0 +1,29 @@
+slug: la-vall-d-uixo
+nombre: "La Vall d'Uixó"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.lavallduixo.es"
+  adapter: municipio.adapters.la_vall_d_uixo:LaVallDUixoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-vall-d-uixo/1.0"
+    sede_insecure_ssl: true
+    cod_ine_mun: "12125"
+    web_base: "https://www.lavallduixo.es"
+    sede_base: "https://sede.lavallduixo.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 9 (TOOOLS) con sección Planeamiento urbanístico y planes parciales.
+    Sede STA (sede.lavallduixo.es): tablón PTS2_TABLON + catálogo de trámites.
+    ICV WFS Zonificacion (cod_ine_mun=12125) para geometría parcial.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

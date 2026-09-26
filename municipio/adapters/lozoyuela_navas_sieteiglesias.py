@@ -149,6 +149,7 @@ class LozoyuelaNavasSieteiglesiasAyuntamientoAdapter(AyuntamientoAdapter):
         self.seed_pages = [str(u) for u in (self.config.get("seed_pages") or DEFAULT_SEED_PAGES)]
         self.wp_api = str(self.config.get("wp_api_base") or f"{WP_BASE}/wp-json/wp/v2").rstrip("/")
         self.wfs_municipio = str(self.config.get("wfs_municipio") or WFS_MUNICIPIO)
+        self.municipio = str(self.config.get("municipio_name") or MUNICIPIO)
         self._ssl_ctx = ssl.create_default_context()
         if self.config.get("insecure_ssl", True):
             self._ssl_ctx.check_hostname = False
@@ -242,8 +243,8 @@ class LozoyuelaNavasSieteiglesiasAyuntamientoAdapter(AyuntamientoAdapter):
                 rows.append(
                     {
                         "id": _stable_id("proy", pdf),
-                        "municipio": MUNICIPIO,
-                        "titulo": f"{MUNICIPIO}: {name}",
+                        "municipio": self.municipio,
+                        "titulo": f"{self.municipio}: {name}",
                         "fecha": _fecha_from_blob(pdf) or _fecha_from_blob(name),
                         "tipo": _planeamiento_tipo(name),
                         "url": page_url,
@@ -381,7 +382,7 @@ class LozoyuelaNavasSieteiglesiasAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         rec: dict[str, Any] = {
             "id": _stable_id("proy", row.get("expediente") or row["url"]),
-            "municipio": MUNICIPIO,
+            "municipio": self.municipio,
             "titulo": row["titulo"][:500],
             "fecha": row.get("fecha"),
             "tipo": _proyecto_tipo(blob),
@@ -397,7 +398,7 @@ class LozoyuelaNavasSieteiglesiasAyuntamientoAdapter(AyuntamientoAdapter):
         key = str(row.get("wp_id") or row["url"])
         rec: dict[str, Any] = {
             "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
+            "municipio": self.municipio,
             "titulo": row["titulo"][:500],
             "fecha": row.get("fecha"),
             "tipo": row.get("tipo") or "urbanismo",
