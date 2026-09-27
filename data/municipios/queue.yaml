@@ -9726,11 +9726,11 @@ municipios:
 - slug: paiporta
   nombre: Paiporta
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-27T16:03:08.886257+00:00'
+  last_run: '2026-09-27T16:26:54.471078+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/819
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-27T16:03:08.887848+00:00'
+updated_at: '2026-09-27T16:26:54.471978+00:00'
