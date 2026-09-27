@@ -1,0 +1,25 @@
+slug: pajara
+nombre: "Pájara"
+provincia: Pájara/Fuerteventura
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://www.pajara.es"
+  adapter: municipio.adapters.pajara:PajaraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pajara/1.0"
+    sede_base: "https://sede.pajara.es"
+    sitcan_package: planeamiento-urbanistico-de-pajara
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35015/"
+  notes: |
+    WordPress (tema inventiaplus) + WP File Download en planeamiento.
+    Sede propia sede.pajara.es (eAdmin tablón de anuncios).
+    Planeamiento sistematizado GobCan: SITCAN CKAN + visor GEOBDP Grafcan (INE 35015).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
