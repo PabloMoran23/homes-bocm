@@ -1,0 +1,26 @@
+slug: palacios-del-sil
+nombre: "Palacios del Sil"
+provincia: Palacios del Sil (León)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.palaciosdelsil.es"
+  adapter: municipio.adapters.palacios_del_sil:PalaciosDelSilAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-palacios-del-sil/1.0"
+    sede_base: "https://palaciosdelsil.sedelectronica.es"
+    plan_provincia: "24"
+    plan_municipio: "105"
+    wfs_municipio: "Palacios del Sil"
+    insecure_ssl: true
+  notes: |
+    WordPress Invicta (trámites urbanismo/medio ambiente) +
+    sede espublico tablón + PlanPublica JCyL (León 105) + IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
