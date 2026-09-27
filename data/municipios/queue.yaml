@@ -9768,11 +9768,11 @@ municipios:
 - slug: palazuelos-de-eresma
   nombre: Palazuelos de Eresma
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-27T22:06:40.510808+00:00'
+  last_run: '2026-09-27T22:12:11.361568+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/822
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-27T22:06:40.512870+00:00'
+updated_at: '2026-09-27T22:12:11.362484+00:00'
