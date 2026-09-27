@@ -23,6 +23,7 @@ import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
 import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
 import { buildMadridDistritos } from "./build-madrid-distritos.mjs";
 import { buildMadridLicenciasFilterRows } from "./build-madrid-licencias-filter-rows.mjs";
+import { buildMadridPresentacion } from "./build-madrid-presentacion.mjs";
 import { buildMadridSigmaFilterRows } from "./build-madrid-sigma-filter-rows.mjs";
 import {
   sanitizeSigmaExpedienteMetric,
@@ -141,6 +142,12 @@ async function runMadridPostBuild(opts = {}) {
     buildMadridLicenciasFilterRows({ outDir });
   } catch (err) {
     console.warn("Licencias filter-rows:", err?.message || err);
+  }
+
+  try {
+    buildMadridPresentacion({ outDir });
+  } catch (err) {
+    console.warn("Presentación Madrid:", err?.message || err);
   }
 
   const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");

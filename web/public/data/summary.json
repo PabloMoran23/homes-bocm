@@ -1,0 +1,562 @@
+{
+  "generatedAt": "2026-06-19T07:19:57.338Z",
+  "total": 16314,
+  "buildScope": "full",
+  "totalRelevant": 9406,
+  "totalNotRelevant": 4485,
+  "totalRelevanceUnknown": 2423,
+  "withCoords": 5090,
+  "coordsDesdeSigmaPolygon": {
+    "ip": 0,
+    "ad": 261,
+    "total": 261
+  },
+  "dateRange": {
+    "min": "2013",
+    "max": "2026"
+  },
+  "byMunicipio": [
+    {
+      "name": "Madrid",
+      "count": 953
+    },
+    {
+      "name": "Pozuelo de Alarcón",
+      "count": 173
+    },
+    {
+      "name": "Torrejón de Ardoz",
+      "count": 149
+    },
+    {
+      "name": "Móstoles",
+      "count": 132
+    },
+    {
+      "name": "Alcalá de Henares",
+      "count": 130
+    },
+    {
+      "name": "Alcobendas",
+      "count": 96
+    },
+    {
+      "name": "Getafe",
+      "count": 93
+    },
+    {
+      "name": "Fuenlabrada",
+      "count": 76
+    },
+    {
+      "name": "Las Rozas de Madrid",
+      "count": 61
+    },
+    {
+      "name": "Rivas-Vaciamadrid",
+      "count": 58
+    },
+    {
+      "name": "Boadilla del Monte",
+      "count": 56
+    },
+    {
+      "name": "Villaviciosa de Odón",
+      "count": 51
+    },
+    {
+      "name": "Meco",
+      "count": 51
+    },
+    {
+      "name": "San Fernando de Henares",
+      "count": 51
+    },
+    {
+      "name": "Alcorcón",
+      "count": 49
+    },
+    {
+      "name": "Pinto",
+      "count": 49
+    },
+    {
+      "name": "Villalbilla",
+      "count": 46
+    },
+    {
+      "name": "Tres Cantos",
+      "count": 45
+    },
+    {
+      "name": "Aranjuez",
+      "count": 44
+    },
+    {
+      "name": "Colmenar Viejo",
+      "count": 43
+    },
+    {
+      "name": "Pelabravo",
+      "count": 43
+    },
+    {
+      "name": "Villanueva de la Cañada",
+      "count": 43
+    },
+    {
+      "name": "Brunete",
+      "count": 42
+    },
+    {
+      "name": "Coín",
+      "count": 41
+    },
+    {
+      "name": "El Boalo",
+      "count": 39
+    },
+    {
+      "name": "Ciempozuelos",
+      "count": 38
+    },
+    {
+      "name": "San Sebastián de los Reyes",
+      "count": 38
+    },
+    {
+      "name": "Leganés",
+      "count": 38
+    },
+    {
+      "name": "Navalcarnero",
+      "count": 37
+    },
+    {
+      "name": "Valladolid",
+      "count": 35
+    },
+    {
+      "name": "Majadahonda",
+      "count": 34
+    },
+    {
+      "name": "Collado Villalba",
+      "count": 34
+    },
+    {
+      "name": "Torrelodones",
+      "count": 34
+    },
+    {
+      "name": "San Agustín del Guadalix",
+      "count": 32
+    },
+    {
+      "name": "Galapagar",
+      "count": 31
+    },
+    {
+      "name": "Villanueva del Pardillo",
+      "count": 30
+    },
+    {
+      "name": "Cártama",
+      "count": 30
+    },
+    {
+      "name": "Arganda del Rey",
+      "count": 29
+    },
+    {
+      "name": "Griñón",
+      "count": 28
+    },
+    {
+      "name": "Valdemoro",
+      "count": 28
+    },
+    {
+      "name": "Cubas de la Sagra",
+      "count": 26
+    },
+    {
+      "name": "Fuente el Saz de Jarama",
+      "count": 25
+    },
+    {
+      "name": "Parla",
+      "count": 25
+    },
+    {
+      "name": "Paracuellos de Jarama",
+      "count": 25
+    },
+    {
+      "name": "Mijas",
+      "count": 25
+    },
+    {
+      "name": "Coslada",
+      "count": 24
+    },
+    {
+      "name": "Algete",
+      "count": 23
+    },
+    {
+      "name": "Hoyo de Manzanares",
+      "count": 23
+    },
+    {
+      "name": "Humanes de Madrid",
+      "count": 22
+    },
+    {
+      "name": "San Martín de la Vega",
+      "count": 21
+    }
+  ],
+  "byTipo": [
+    {
+      "name": "Sin clasificar",
+      "count": 10682
+    },
+    {
+      "name": "Plan Especial",
+      "count": 793
+    },
+    {
+      "name": "Otro",
+      "count": 537
+    },
+    {
+      "name": "Estudio de Detalle",
+      "count": 504
+    },
+    {
+      "name": "Modificación PGOU",
+      "count": 371
+    },
+    {
+      "name": "Plan Parcial",
+      "count": 315
+    },
+    {
+      "name": "Proyecto de Urbanización",
+      "count": 227
+    },
+    {
+      "name": "Normas Subsidiarias",
+      "count": 226
+    },
+    {
+      "name": "Plan General de Ordenación Urbana (PGOU)",
+      "count": 72
+    },
+    {
+      "name": "Modificación Puntual del Plan General de Ordenación Urbana",
+      "count": 67
+    },
+    {
+      "name": "Licencia de obra",
+      "count": 64
+    },
+    {
+      "name": "Normas Subsidiarias de Planeamiento Municipal",
+      "count": 59
+    },
+    {
+      "name": "Autorización de uso excepcional de suelo rústico y licencia urbanística",
+      "count": 52
+    },
+    {
+      "name": "Proyecto de Reparcelación",
+      "count": 52
+    },
+    {
+      "name": "Plan General de Ordenación Urbana",
+      "count": 51
+    },
+    {
+      "name": "Autorización de uso excepcional de suelo rústico",
+      "count": 48
+    },
+    {
+      "name": "Licencia de Obra",
+      "count": 46
+    },
+    {
+      "name": "Proyecto de urbanización",
+      "count": 38
+    },
+    {
+      "name": "Plan Especial de Control Urbanístico Ambiental de Usos",
+      "count": 34
+    },
+    {
+      "name": "PGOU",
+      "count": 33
+    },
+    {
+      "name": "Modificación Puntual",
+      "count": 33
+    },
+    {
+      "name": "Plan Especial de Infraestructuras",
+      "count": 33
+    },
+    {
+      "name": "Junta de Compensación",
+      "count": 32
+    },
+    {
+      "name": "Convenio Urbanístico",
+      "count": 31
+    },
+    {
+      "name": "Plan Parcial / Plan Especial",
+      "count": 30
+    },
+    {
+      "name": "Convenio urbanístico",
+      "count": 29
+    },
+    {
+      "name": "Modificación Puntual del PGOU",
+      "count": 27
+    },
+    {
+      "name": "Normas Subsidiarias de Planeamiento",
+      "count": 26
+    },
+    {
+      "name": "Proyecto de reparcelación",
+      "count": 25
+    },
+    {
+      "name": "Plan General de Ordenación Urbanística (PGOU)",
+      "count": 24
+    }
+  ],
+  "byYear": [
+    {
+      "year": "2013",
+      "count": 302
+    },
+    {
+      "year": "2014",
+      "count": 679
+    },
+    {
+      "year": "2015",
+      "count": 471
+    },
+    {
+      "year": "2016",
+      "count": 374
+    },
+    {
+      "year": "2017",
+      "count": 370
+    },
+    {
+      "year": "2018",
+      "count": 1222
+    },
+    {
+      "year": "2019",
+      "count": 377
+    },
+    {
+      "year": "2020",
+      "count": 1305
+    },
+    {
+      "year": "2021",
+      "count": 1364
+    },
+    {
+      "year": "2022",
+      "count": 2766
+    },
+    {
+      "year": "2023",
+      "count": 1806
+    },
+    {
+      "year": "2024",
+      "count": 1752
+    },
+    {
+      "year": "2025",
+      "count": 2925
+    },
+    {
+      "year": "2026",
+      "count": 601
+    }
+  ],
+  "byTerritorio": [
+    {
+      "name": "Comunidad de Madrid",
+      "count": 7445
+    },
+    {
+      "name": "Andalucía",
+      "count": 3926
+    },
+    {
+      "name": "Comunitat Valenciana",
+      "count": 1575
+    },
+    {
+      "name": "Castilla y León",
+      "count": 1543
+    },
+    {
+      "name": "Canarias",
+      "count": 1017
+    },
+    {
+      "name": "Catalunya",
+      "count": 450
+    },
+    {
+      "name": "Principado de Asturias",
+      "count": 274
+    },
+    {
+      "name": "Galicia",
+      "count": 45
+    },
+    {
+      "name": "Euskadi",
+      "count": 19
+    },
+    {
+      "name": "Región de Murcia",
+      "count": 9
+    },
+    {
+      "name": "Illes Balears",
+      "count": 8
+    },
+    {
+      "name": "Cantabria",
+      "count": 2
+    },
+    {
+      "name": "Castilla-La Mancha",
+      "count": 1
+    }
+  ],
+  "byTerritorioRelevant": [
+    {
+      "name": "Comunidad de Madrid",
+      "count": 5067
+    },
+    {
+      "name": "Andalucía",
+      "count": 1429
+    },
+    {
+      "name": "Castilla y León",
+      "count": 1046
+    },
+    {
+      "name": "Comunitat Valenciana",
+      "count": 1019
+    },
+    {
+      "name": "Canarias",
+      "count": 621
+    },
+    {
+      "name": "Principado de Asturias",
+      "count": 202
+    },
+    {
+      "name": "Galicia",
+      "count": 9
+    },
+    {
+      "name": "Euskadi",
+      "count": 5
+    },
+    {
+      "name": "Illes Balears",
+      "count": 4
+    },
+    {
+      "name": "Cantabria",
+      "count": 2
+    },
+    {
+      "name": "Castilla-La Mancha",
+      "count": 1
+    },
+    {
+      "name": "Región de Murcia",
+      "count": 1
+    }
+  ],
+  "bySource": [
+    {
+      "name": "bocm",
+      "count": 7445
+    },
+    {
+      "name": "boja",
+      "count": 3926
+    },
+    {
+      "name": "dogv",
+      "count": 1575
+    },
+    {
+      "name": "bocyl",
+      "count": 1543
+    },
+    {
+      "name": "boc_canarias",
+      "count": 1017
+    },
+    {
+      "name": "dogc",
+      "count": 450
+    },
+    {
+      "name": "bopa",
+      "count": 274
+    },
+    {
+      "name": "dog",
+      "count": 45
+    },
+    {
+      "name": "bopv",
+      "count": 19
+    },
+    {
+      "name": "borm",
+      "count": 9
+    },
+    {
+      "name": "boib",
+      "count": 8
+    },
+    {
+      "name": "boc_cantabria",
+      "count": 2
+    },
+    {
+      "name": "docm",
+      "count": 1
+    }
+  ],
+  "portal": {
+    "name": "Homes · Urbanismo",
+    "tagline": "Proyectos urbanísticos en tu zona"
+  }
+}

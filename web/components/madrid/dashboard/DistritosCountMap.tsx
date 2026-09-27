@@ -45,12 +45,14 @@ export function DistritosCountMap({
   title,
   items,
   valueLabel = "licencias",
+  subtitle,
 }: {
   title: string;
   items: MadridDashboardCount[];
   mapPoints?: MadridDashboardDistritoPoint[];
   centroids?: Record<string, MadridDashboardDistritoCentroid>;
   valueLabel?: string;
+  subtitle?: string;
 }) {
   const { ready, mapKey } = useLeafletMount();
   const [geo, setGeo] = useState<GeoJSON.FeatureCollection | null>(null);
@@ -102,7 +104,7 @@ export function DistritosCountMap({
       subtitle={
         geoError
           ? "Límites de distrito no disponibles"
-          : `${matchedCount} distritos · color según ${valueLabel}`
+          : (subtitle ?? `${matchedCount} distritos · color según ${valueLabel}`)
       }
       height={380}
     >
