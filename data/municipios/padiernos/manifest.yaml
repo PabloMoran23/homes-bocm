@@ -1,0 +1,35 @@
+slug: padiernos
+nombre: "Padiernos"
+provincia: "Padiernos (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.padiernos.es"
+  adapter: municipio.adapters.padiernos:PadiernosAyuntamientoAdapter
+  config:
+    web_base: "https://www.padiernos.es"
+    sede_base: "https://padiernos.sedelectronica.es"
+    board_url: "https://padiernos.sedelectronica.es/board"
+    info_url: "https://padiernos.sedelectronica.es/info"
+    rss_url: "https://www.padiernos.es/rss.xml"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=05&municipio=176"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-padiernos/1.0"
+    insecure_ssl: true
+    centroid: [40.63, -4.84]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Padiernos
+    plai_provincia: 05
+    plai_municipio: 176
+  notes: |
+    Web plantilla Diputación de Ávila (RSS + fichas HTML/PDF en /docus/).
+    Sede espublico gestiona: tablón /board (anuncios recientes).
+    Geometría: IDECyL WFS PLAU CyL (sectores UA.1, etc.).
+    PLAU JCYL (prov 05, mun 176, c_mun 05176).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
