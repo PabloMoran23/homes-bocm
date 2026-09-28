@@ -1,0 +1,35 @@
+slug: patones-de-abajo
+nombre: "Patones de Abajo"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://patones.net/site/ayto"
+  adapter: municipio.adapters.patones_de_abajo:PatonesDeAbajoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-patones-de-abajo/1.0"
+    sede_base: "https://patones.sedelectronica.es"
+    board_url: "https://patones.sedelectronica.es/board"
+    transparency_url: "https://patones.sedelectronica.es/transparency"
+    urbanismo_url: "https://patones.net/site/ayto/arquitecto-municipal/"
+    nnss_url: "https://patones.net/site/ayto/normas-subsidiarias/"
+    centroid: [40.855461, -3.483181]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "PATONES"
+  notes: |
+    Entidad local / núcleo con sede del Ayuntamiento de Patones (INE 28107).
+    Mismo portal que slug `patones` (WordPress + sede espublico + WFS SITCM).
+    Ver data/municipios/patones/RESEARCH.md para detalle de fuentes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - "Patones de Abajo"
+    - "Patones"
