@@ -9908,11 +9908,11 @@ municipios:
 - slug: perales-de-tajuna-y-tielmes
   nombre: Perales de Tajuña y Tielmes
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-28T18:07:59.570090+00:00'
+  last_run: '2026-09-28T18:14:10.494955+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/832
   notes: ''
   boletin_source_id: bocm
   comunidad_autonoma: comunidad-madrid
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-28T18:07:59.572007+00:00'
+updated_at: '2026-09-28T18:14:10.495976+00:00'
