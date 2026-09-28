@@ -9936,11 +9936,11 @@ municipios:
 - slug: piedrahita
   nombre: Piedrahíta
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-28T22:13:09.660811+00:00'
+  last_run: '2026-09-28T22:15:49.767511+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/834
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-28T22:13:09.662759+00:00'
+updated_at: '2026-09-28T22:15:49.768439+00:00'
