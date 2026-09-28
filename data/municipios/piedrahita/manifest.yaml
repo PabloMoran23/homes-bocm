@@ -1,0 +1,35 @@
+slug: piedrahita
+nombre: "Piedrahíta"
+provincia: "Piedrahíta, Ávila"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytopiedrahita.com"
+  adapter: municipio.adapters.piedrahita:PiedrahitaAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytopiedrahita.com"
+    tablon_url: "https://www.aytopiedrahita.com/tablon-de-anuncios/"
+    sede_base: "https://aytopiedrahita.sedelectronica.es"
+    board_url: "https://aytopiedrahita.sedelectronica.es/board"
+    dossier_url: "https://aytopiedrahita.sedelectronica.es/dossier"
+    transparency_url: "https://aytopiedrahita.sedelectronica.es/transparency"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=05180"
+    plau_provincia: 5
+    plau_municipio: 180
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-piedrahita/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Piedrahíta"
+  notes: |
+    Web corporativa WordPress Avada (aytopiedrahita.com) con tablón de anuncios en PDF.
+    Sede espublico gestiona en aytopiedrahita.sedelectronica.es (piedrahita.sedelectronica.es sin configurar).
+    Planeamiento: PlanPublica JCyL (prov. 05, muni. 180) + IDECyL WFS PLAU CyL.
+    Visor SIUR: idecyl.jcyl.es/siur/index.html?id=05180
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
