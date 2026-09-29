@@ -9950,11 +9950,11 @@ municipios:
 - slug: pilar-de-la-horadada
   nombre: Pilar de la Horadada
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-09-29T00:10:47.480512+00:00'
+  last_run: '2026-09-29T00:20:16.591852+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/835
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-09-29T00:10:47.482444+00:00'
+updated_at: '2026-09-29T00:20:16.592765+00:00'
