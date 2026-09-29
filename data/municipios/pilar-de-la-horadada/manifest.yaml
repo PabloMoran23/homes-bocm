@@ -1,0 +1,30 @@
+slug: pilar-de-la-horadada
+nombre: "Pilar de la Horadada"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://sede.pilardelahoradada.org"
+  adapter: municipio.adapters.pilar_de_la_horadada:PilarDeLaHoradadaAyuntamientoAdapter
+  config:
+    web_base: "https://www.pilardelahoradada.org"
+    sede_base: "https://sede.pilardelahoradada.org"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pilar-de-la-horadada/1.0"
+    centroid: [37.8659, -0.7925]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "03902"
+  notes: |
+    Sede STA T-Systems (PTS2_TABLON + CATSERV catálogo). Consulta de expedientes requiere Cl@ve/certificado.
+    Web municipal (urbanismo/PGOU) + registro planeamiento GVA (mediambient.gva.es).
+    Geometría: ICV WFS InventarioSuSuz filtrado cod_ine_mun=03902 + visor GVA.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
