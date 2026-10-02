@@ -1,0 +1,30 @@
+slug: olmedo-de-las-fuentes
+nombre: "Olmedo de las Fuentes"
+provincia: Olmedo de las Fuentes
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://olmedadelasfuentes.es"
+  adapter: municipio.adapters.olmedo_de_las_fuentes:OlmedoDeLasFuentesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olmedo-de-las-fuentes/1.0"
+    sede_base: "https://olmedadelasfuentes.sedelectronica.es"
+    board_url: "https://olmedadelasfuentes.sedelectronica.es/board"
+    transparency_url: "https://olmedadelasfuentes.sedelectronica.es/transparency"
+    insecure_ssl: true
+    centroid: [40.4119, -3.2056]
+    geometry:
+      wfs_url: "https://idem.comunidad.madrid/geoserver3/ows"
+      type_name: "sitcm:VPLA_V_AMBITO"
+      municipio_filter: "OLMEDA DE LAS FUENTES"
+  notes: |
+    Entrada BOCM «Olmedo de las Fuentes» (typo); mismo ayuntamiento que Olmeda de las Fuentes.
+    CMS olmedadelasfuentes.es + sede espublico gestiona + WFS SITCM (véase olmeda-de-las-fuentes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
