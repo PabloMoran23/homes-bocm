@@ -1,0 +1,27 @@
+slug: paredes-de-nava
+nombre: "Paredes de Nava"
+provincia: "Paredes de Nava (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://paredesdenava.es"
+  adapter: municipio.adapters.paredes_de_nava:ParedesDeNavaAyuntamientoAdapter
+  config:
+    web_base: "https://paredesdenava.es"
+    sede_base: "https://paredesdenava.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-paredes-de-nava/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Paredes de Nava"
+    centroid: [42.153, -4.692]
+  notes: |
+    WordPress (Diputación Palencia) + sede espublico tablón/catálogo
+    + PlanPublica JCyL (provincia 34, municipio 123) + IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
