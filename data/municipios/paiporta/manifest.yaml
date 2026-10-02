@@ -1,0 +1,28 @@
+slug: paiporta
+nombre: "Paiporta"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.paiporta.es"
+  adapter: municipio.adapters.paiporta:PaiportaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-paiporta/1.0"
+    cod_ine_mun: "46186"
+    fetch_web_seeds: false
+    sede_base: "https://paiporta.sedipualba.es"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal (paiporta.es) + sede sedipualba (tablón RSS + trámites URB área 959) +
+    ICV WFS InventarioSuSuz (cod_ine_mun 46186). Web corporativa puede bloquear IPs cloud (HTTPS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
