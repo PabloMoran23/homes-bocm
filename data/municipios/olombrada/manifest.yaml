@@ -1,0 +1,27 @@
+slug: olombrada
+nombre: "Olombrada"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.olombrada.es"
+  adapter: municipio.adapters.olombrada:OlombradaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olombrada/1.0"
+    dipsegovia_base: "https://www.dipsegovia.es/web/ayuntamiento-de-olombrada"
+    sede_base: "https://olombrada.sedelectronica.es"
+    plai_municipio: 149
+    plai_provincia: 40
+    wfs_municipio: "Olombrada"
+    insecure_ssl: true
+  notes: |
+    Liferay Segovia16 (olombrada.es) + DipSegovia + sede espublico gestiona + PLAI JCYL (mun 149)
+    + geometría sectores IDECyL WFS (urbanismo:plau_cyl_sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
