@@ -51,9 +51,9 @@ RE_FECHA_DMY_DASH = re.compile(r"(\d{1,2})-(\d{1,2})-(\d{4})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 
 
-def _stable_id(kind: str, key: str) -> str:
+def _stable_id(prefix: str, kind: str, key: str) -> str:
     h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
-    return f"{ID_PREFIX}-{kind}-{h}"
+    return f"{prefix}-{kind}-{h}"
 
 
 def _parse_fecha_dmy(text: str) -> str | None:
@@ -146,6 +146,11 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
         self.wfs_type = str(geom_cfg.get("type_name") or WFS_TYPE)
         self.wfs_municipio = str(geom_cfg.get("municipio_filter") or WFS_MUNICIPIO)
         self._wfs_cache: dict[str, dict[str, Any]] | None = None
+        self.id_prefix = str(self.config.get("id_prefix") or slug or ID_PREFIX)
+        self.municipio_nombre = str(self.config.get("municipio_nombre") or MUNICIPIO)
+
+    def _row_id(self, kind: str, key: str) -> str:
+        return _stable_id(self.id_prefix, kind, key)
 
     def _fetch(
         self,
@@ -462,8 +467,8 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("doc_cve") or row.get("expte") or row["url"]
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", str(key)),
-            "municipio": MUNICIPIO,
+            "id": self._row_id("proy", str(key)),
+            "municipio": self.municipio_nombre,
             "titulo": row["titulo"],
             "fecha": row.get("fecha"),
             "tipo": _proyecto_tipo(row["titulo"]),
@@ -484,7 +489,7 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("doc_cve") or row.get("expte") or row["url"]
         return {
-            "id": _stable_id("lic", str(key)),
+            "id": self._row_id("lic", str(key)),
             "fecha_concesion": row.get("fecha"),
             "tipo": "edicto licencia",
             "distrito": None,
@@ -500,7 +505,7 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
         if not RE_LICENCIA.search(row.get("titulo") or ""):
             return None
         return {
-            "id": _stable_id("lic", row["url"]),
+            "id": self._row_id("lic", row["url"]),
             "fecha_concesion": None,
             "tipo": "trámite licencia",
             "distrito": None,
@@ -518,8 +523,8 @@ class ParacuellosDeJaramaAyuntamientoAdapter(AyuntamientoAdapter):
         if title.strip().lower() != "planeamiento":
             return None
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", row["url"]),
-            "municipio": MUNICIPIO,
+            "id": self._row_id("proy", row["url"]),
+            "municipio": self.municipio_nombre,
             "titulo": f"Trámite: {title}",
             "fecha": None,
             "tipo": "planeamiento",
