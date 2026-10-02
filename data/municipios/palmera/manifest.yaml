@@ -1,0 +1,32 @@
+slug: palmera
+nombre: "Palmera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.palmera.es"
+  adapter: municipio.adapters.palmera:PalmeraAyuntamientoAdapter
+  config:
+    web_base: "https://www.palmera.es"
+    sede_base: "https://palmera.sedelectronica.es"
+    board_url: "https://palmera.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-palmera/1.0"
+    insecure_ssl: true
+    centroid: [38.9389, -0.3667]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      ine_municipio: "46198"
+  notes: |
+    Web Drupal portalesmunicipales (urbanisme, instàncies, anuncios).
+    Sede espublico gestiona: tablón /board y transparencia (sección urbanismo).
+    ICV WFS InventarioSuSuz (INE 46198) — 7 ámbitos SU/SUZ.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
