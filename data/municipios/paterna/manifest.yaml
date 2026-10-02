@@ -1,0 +1,32 @@
+slug: paterna
+nombre: "Paterna"
+provincia: Paterna
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://sede.paterna.es"
+  adapter: municipio.adapters.paterna:PaternaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-paterna/1.0"
+    insecure_ssl: true
+    cod_ine_mun: "46190"
+    icv_wfs_start: 7000
+    icv_wfs_max_start: 11000
+    centroid: [39.5036, -0.4401]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    OpenSIAC sede.paterna.es — tablón edictos (infopublica_search + índice edictos=1).
+    ICV terramapas WFS InventarioSuSuz/Zonificacion filtrado cod_ine_mun=46190.
+    Visor GVA spaicv0702_plan_zonificacion. Sin histórico de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
