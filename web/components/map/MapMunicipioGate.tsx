@@ -79,7 +79,7 @@ export function MapMunicipioGate({
     const pool = nq
       ? municipios.filter((m) => norm(m.nombre).includes(nq) || norm(m.slug).includes(nq))
       : municipios;
-    return nq ? sortMunicipiosByCount(pool).slice(0, 12) : sortMunicipiosByCount(pool);
+    return pool.slice(0, 12);
   }, [municipios, q]);
 
   if (!open) return null;
@@ -143,6 +143,9 @@ export function MapMunicipioGate({
               </button>
             </li>
           ))}
+          {!q.trim() && municipios.length > 12 ? (
+            <li className="px-3 py-2 text-xs text-slate-500">Escribe para buscar entre los {municipios.length} municipios.</li>
+          ) : null}
           {!loading && matches.length === 0 ? (
             <li className="px-3 py-2 text-sm text-slate-500">Ningún municipio con ese nombre.</li>
           ) : null}

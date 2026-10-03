@@ -1,0 +1,807 @@
+{
+  "date": "2026-10-03",
+  "methodology": {
+    "http": "curl --compressed, three sequential requests per endpoint after change; cache-busting query parameter for explicit CDN MISS samples. Earlier baseline allowed up to three concurrent independent endpoints. Real network, no throttling. Small samples, not a load test.",
+    "sql": "Candidate and reference ran in a rolled-back transaction against the same data. Reference exposed the original municipality predicate to the optimizer; it was otherwise unchanged. JSON equivalence ignores generatedAt only. Production migration applied after all seven cases passed.",
+    "browser": "Wall-clock automation to visible project counter; local and production origins are not directly comparable."
+  },
+  "before_http": {
+    "explore": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.027172,
+        "time_connect": 0.032536,
+        "time_appconnect": 0.078037,
+        "time_starttransfer": 0.173537,
+        "time_total": 0.1759,
+        "size_download": 6085,
+        "cache": "HIT",
+        "age": "88",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 27594
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002626,
+        "time_connect": 0.007964,
+        "time_appconnect": 0.049616,
+        "time_starttransfer": 0.102973,
+        "time_total": 0.105732,
+        "size_download": 6085,
+        "cache": "HIT",
+        "age": "88",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 27594
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002839,
+        "time_connect": 0.005992,
+        "time_appconnect": 0.051421,
+        "time_starttransfer": 0.107669,
+        "time_total": 0.109309,
+        "size_download": 6085,
+        "cache": "HIT",
+        "age": "89",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 27594
+      }
+    ],
+    "landing": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.027296,
+        "time_connect": 0.032739,
+        "time_appconnect": 0.078047,
+        "time_starttransfer": 0.495193,
+        "time_total": 0.514021,
+        "size_download": 139262,
+        "cache": "PRERENDER",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 429836
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002718,
+        "time_connect": 0.006567,
+        "time_appconnect": 0.047686,
+        "time_starttransfer": 0.125813,
+        "time_total": 0.144594,
+        "size_download": 139262,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 429836
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002608,
+        "time_connect": 0.005502,
+        "time_appconnect": 0.04867,
+        "time_starttransfer": 0.112143,
+        "time_total": 0.131184,
+        "size_download": 139262,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 429836
+      }
+    ],
+    "municipios": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.026056,
+        "time_connect": 0.02935,
+        "time_appconnect": 0.072573,
+        "time_starttransfer": 0.163532,
+        "time_total": 0.166721,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "62",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002716,
+        "time_connect": 0.00598,
+        "time_appconnect": 0.050794,
+        "time_starttransfer": 0.107503,
+        "time_total": 0.109767,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "62",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.004239,
+        "time_connect": 0.007316,
+        "time_appconnect": 0.047305,
+        "time_starttransfer": 0.105002,
+        "time_total": 0.10912,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "62",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      }
+    ],
+    "madrid": [
+      {
+        "http_code": 500,
+        "time_namelookup": 0.002919,
+        "time_connect": 0.005853,
+        "time_appconnect": 0.053997,
+        "time_starttransfer": 27.15285,
+        "time_total": 27.154413,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      },
+      {
+        "http_code": 500,
+        "time_namelookup": 0.002853,
+        "time_connect": 0.006265,
+        "time_appconnect": 0.05094,
+        "time_starttransfer": 32.281069,
+        "time_total": 32.283209,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      },
+      {
+        "http_code": 500,
+        "time_namelookup": 0.003388,
+        "time_connect": 0.006657,
+        "time_appconnect": 0.049021,
+        "time_starttransfer": 26.008998,
+        "time_total": 26.010964,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      }
+    ],
+    "benidorm": [
+      {
+        "http_code": 500,
+        "time_namelookup": 0.003626,
+        "time_connect": 0.006867,
+        "time_appconnect": 0.074479,
+        "time_starttransfer": 30.848048,
+        "time_total": 30.861771,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      },
+      {
+        "http_code": 500,
+        "time_namelookup": 0.002917,
+        "time_connect": 0.006463,
+        "time_appconnect": 0.048325,
+        "time_starttransfer": 28.4971,
+        "time_total": 28.497356,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      },
+      {
+        "http_code": 500,
+        "time_namelookup": 0.003112,
+        "time_connect": 0.006623,
+        "time_appconnect": 0.049259,
+        "time_starttransfer": 26.082734,
+        "time_total": 26.083069,
+        "size_download": 56,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": null,
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 56
+      }
+    ],
+    "worker": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002621,
+        "time_connect": 0.005958,
+        "time_appconnect": 0.051073,
+        "time_starttransfer": 0.078444,
+        "time_total": 0.081447,
+        "size_download": 6155,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 18592
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003444,
+        "time_connect": 0.006981,
+        "time_appconnect": 0.049988,
+        "time_starttransfer": 0.078559,
+        "time_total": 0.08095,
+        "size_download": 6155,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 18592
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.00319,
+        "time_connect": 0.0077,
+        "time_appconnect": 0.050606,
+        "time_starttransfer": 0.077094,
+        "time_total": 0.079488,
+        "size_download": 6155,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 18592
+      }
+    ],
+    "shared": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002928,
+        "time_connect": 0.006494,
+        "time_appconnect": 0.048395,
+        "time_starttransfer": 0.075607,
+        "time_total": 0.095002,
+        "size_download": 135439,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 482036
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003054,
+        "time_connect": 0.006196,
+        "time_appconnect": 0.053462,
+        "time_starttransfer": 0.080455,
+        "time_total": 0.099756,
+        "size_download": 135439,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 482036
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.004008,
+        "time_connect": 0.007482,
+        "time_appconnect": 0.054379,
+        "time_starttransfer": 0.08295,
+        "time_total": 0.102004,
+        "size_download": 135439,
+        "cache": "HIT",
+        "age": "70",
+        "encoding": "br",
+        "cache_control": "public, max-age=0, must-revalidate",
+        "decoded": 482036
+      }
+    ],
+    "planet": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.006042,
+        "time_connect": 0.009137,
+        "time_appconnect": 0.054371,
+        "time_starttransfer": 0.063016,
+        "time_total": 0.064865,
+        "size_download": 1798,
+        "cache": null,
+        "age": "15598",
+        "encoding": "gzip",
+        "cache_control": "public, max-age=86400",
+        "decoded": 19254
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.001822,
+        "time_connect": 0.005098,
+        "time_appconnect": 0.046267,
+        "time_starttransfer": 0.055064,
+        "time_total": 0.055583,
+        "size_download": 1798,
+        "cache": null,
+        "age": "15598",
+        "encoding": "gzip",
+        "cache_control": "public, max-age=86400",
+        "decoded": 19254
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.001838,
+        "time_connect": 0.004976,
+        "time_appconnect": 0.048264,
+        "time_starttransfer": 0.061185,
+        "time_total": 0.06316,
+        "size_download": 1798,
+        "cache": null,
+        "age": "15598",
+        "encoding": "gzip",
+        "cache_control": "public, max-age=86400",
+        "decoded": 19254
+      }
+    ]
+  },
+  "before_bbox": {
+    "bbox_madrid": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002376,
+        "time_connect": 0.006177,
+        "time_appconnect": 0.050117,
+        "time_starttransfer": 6.143314,
+        "time_total": 6.397363,
+        "size_download": 78547,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003195,
+        "time_connect": 0.006239,
+        "time_appconnect": 0.054752,
+        "time_starttransfer": 0.138947,
+        "time_total": 0.144754,
+        "size_download": 78312,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003269,
+        "time_connect": 0.006747,
+        "time_appconnect": 0.04924,
+        "time_starttransfer": 0.122657,
+        "time_total": 0.133228,
+        "size_download": 78312,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      }
+    ]
+  },
+  "after_http": {
+    "municipios": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.048708,
+        "time_connect": 0.052204,
+        "time_appconnect": 0.097648,
+        "time_starttransfer": 0.214988,
+        "time_total": 0.217093,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "849",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003014,
+        "time_connect": 0.006808,
+        "time_appconnect": 0.049871,
+        "time_starttransfer": 0.127226,
+        "time_total": 0.128941,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "849",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002721,
+        "time_connect": 0.005832,
+        "time_appconnect": 0.048442,
+        "time_starttransfer": 0.106495,
+        "time_total": 0.111734,
+        "size_download": 27865,
+        "cache": "HIT",
+        "age": "849",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 86963
+      }
+    ],
+    "madrid": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003429,
+        "time_connect": 0.006854,
+        "time_appconnect": 0.050095,
+        "time_starttransfer": 7.61863,
+        "time_total": 7.867823,
+        "size_download": 84152,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 457839
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003132,
+        "time_connect": 0.006632,
+        "time_appconnect": 0.048671,
+        "time_starttransfer": 0.108341,
+        "time_total": 0.124853,
+        "size_download": 83870,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 457839
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.002832,
+        "time_connect": 0.006297,
+        "time_appconnect": 0.049002,
+        "time_starttransfer": 0.109619,
+        "time_total": 0.128431,
+        "size_download": 83870,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 457839
+      }
+    ],
+    "benidorm": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003546,
+        "time_connect": 0.006739,
+        "time_appconnect": 0.052227,
+        "time_starttransfer": 1.077131,
+        "time_total": 1.163994,
+        "size_download": 13352,
+        "cache": "MISS",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 218803
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003413,
+        "time_connect": 0.006933,
+        "time_appconnect": 0.050436,
+        "time_starttransfer": 0.124818,
+        "time_total": 0.127854,
+        "size_download": 13350,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 218803
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003025,
+        "time_connect": 0.00598,
+        "time_appconnect": 0.048108,
+        "time_starttransfer": 0.110291,
+        "time_total": 0.112775,
+        "size_download": 13350,
+        "cache": "HIT",
+        "age": "0",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 218803
+      }
+    ],
+    "bbox_madrid": [
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003025,
+        "time_connect": 0.006392,
+        "time_appconnect": 0.050069,
+        "time_starttransfer": 0.121667,
+        "time_total": 0.128845,
+        "size_download": 78312,
+        "cache": "HIT",
+        "age": "629",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003082,
+        "time_connect": 0.006122,
+        "time_appconnect": 0.048286,
+        "time_starttransfer": 0.10845,
+        "time_total": 0.117228,
+        "size_download": 78312,
+        "cache": "HIT",
+        "age": "629",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      },
+      {
+        "http_code": 200,
+        "time_namelookup": 0.003167,
+        "time_connect": 0.006114,
+        "time_appconnect": 0.049084,
+        "time_starttransfer": 0.106505,
+        "time_total": 0.115743,
+        "size_download": 78312,
+        "cache": "HIT",
+        "age": "629",
+        "encoding": "br",
+        "cache_control": "public",
+        "decoded": 411119
+      }
+    ]
+  },
+  "after_cdn_miss": [
+    {
+      "name": "madrid",
+      "http_code": 200,
+      "time_starttransfer": 8.169784,
+      "time_total": 8.424122,
+      "cache": "MISS",
+      "size_download": 84043
+    },
+    {
+      "name": "madrid",
+      "http_code": 200,
+      "time_starttransfer": 1.829285,
+      "time_total": 2.079271,
+      "cache": "MISS",
+      "size_download": 84020
+    },
+    {
+      "name": "madrid",
+      "http_code": 200,
+      "time_starttransfer": 1.706864,
+      "time_total": 1.958023,
+      "cache": "MISS",
+      "size_download": 84045
+    },
+    {
+      "name": "benidorm",
+      "http_code": 200,
+      "time_starttransfer": 1.746698,
+      "time_total": 1.831145,
+      "cache": "MISS",
+      "size_download": 13352
+    },
+    {
+      "name": "benidorm",
+      "http_code": 200,
+      "time_starttransfer": 1.23341,
+      "time_total": 1.320744,
+      "cache": "MISS",
+      "size_download": 13352
+    },
+    {
+      "name": "benidorm",
+      "http_code": 200,
+      "time_starttransfer": 1.018883,
+      "time_total": 1.10697,
+      "cache": "MISS",
+      "size_download": 13351
+    },
+    {
+      "name": "bbox_madrid",
+      "http_code": 200,
+      "time_starttransfer": 3.387264,
+      "time_total": 3.640996,
+      "cache": "MISS",
+      "size_download": 78522
+    },
+    {
+      "name": "bbox_madrid",
+      "http_code": 200,
+      "time_starttransfer": 1.476333,
+      "time_total": 1.72986,
+      "cache": "MISS",
+      "size_download": 78462
+    },
+    {
+      "name": "bbox_madrid",
+      "http_code": 200,
+      "time_starttransfer": 1.520379,
+      "time_total": 1.780445,
+      "cache": "MISS",
+      "size_download": 78521
+    }
+  ],
+  "sql_equivalence": [
+    {
+      "args": [
+        "madrid",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 5615.4,
+      "candidate_ms": 810.0,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 501,
+        "approx": 80
+      }
+    },
+    {
+      "args": [
+        "benidorm",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 515.9,
+      "candidate_ms": 257.0,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 175,
+        "approx": 80
+      }
+    },
+    {
+      "args": [
+        "madrid",
+        null,
+        null,
+        -3.888,
+        40.352,
+        -3.52,
+        40.504
+      ],
+      "reference_ms": 812.8,
+      "candidate_ms": 661.2,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 501,
+        "approx": 0
+      }
+    },
+    {
+      "args": [
+        "madrid",
+        "2025-01-01",
+        "2026-10-03",
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 251.5,
+      "candidate_ms": 267.5,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 68,
+        "approx": 80
+      }
+    },
+    {
+      "args": [
+        "benidorm",
+        null,
+        "2024-12-31",
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 277.0,
+      "candidate_ms": 218.1,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 140,
+        "approx": 80
+      }
+    },
+    {
+      "args": [
+        "municipio-inexistente",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 44.8,
+      "candidate_ms": 31.6,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 0,
+        "approx": 0
+      }
+    },
+    {
+      "args": [
+        "madrid",
+        "2026-10-03",
+        "2025-01-01",
+        null,
+        null,
+        null,
+        null
+      ],
+      "reference_ms": 28.8,
+      "candidate_ms": 29.1,
+      "equal": true,
+      "counts": {
+        "points": 0,
+        "polygons": 0,
+        "approx": 0
+      }
+    }
+  ],
+  "browser_before": {
+    "date": "2026-10-03",
+    "environment": "Codex in-app desktop browser; warm cache; unthrottled",
+    "reload_to_controls_and_municipios_ms": 956,
+    "select_madrid_to_visible_count_ms": 3012,
+    "visible_count": 167,
+    "limitations": "Automation wall-clock incl. command overhead. Not LCP, full tile-render time or CPU profile. One sample each."
+  },
+  "browser_local_after": {
+    "selection_to_167_projects_ms": 742,
+    "note": "Warm local production build using live Supabase. Not a production browser comparison."
+  }
+}

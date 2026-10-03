@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
+import { usePortalMapData } from "@/lib/use-portal-map-data";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 import { normSearch } from "@/lib/madrid";
@@ -47,21 +48,15 @@ import {
 } from "@/lib/madrid-ubicaciones-map";
 import {
   featureCollectionBounds,
-  type CmPortalGeoJson,
-  type CmPortalMapMeta,
-  type CmPortalProyectoProps,
 } from "@/lib/cm-portal-geo";
 import { PortalOtrosProyectos } from "@/components/map/PortalOtrosProyectos";
 import { isCmMapScope } from "@/lib/map-scope";
 import { fetchDominioJson, fetchDominioOrStatic } from "@/lib/dominio-fetch";
 import {
   bboxFetchKey,
-  cmPortalFetchKey,
-  mapCmPortalQuery,
   mapSigmaQuery,
   mapUbicacionesQuery,
   SEARCH_UBICACIONES_API,
-  shouldCmPortalBBox,
   shouldLoadSigmaPolygons,
   SIGMA_LAYER_STATIC,
   SIGMA_MAP_CARDS_API,
@@ -170,14 +165,6 @@ export function ExploreMadridApp() {
   const searchParams = useSearchParams();
   const sigmaFromUrl = searchParams.get("sigma")?.trim() || null;
   const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
-  const [portalGeo, setPortalGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(null);
-  const [portalPolygonGeo, setPortalPolygonGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
-    null,
-  );
-  const [portalApproxGeo, setPortalApproxGeo] = useState<CmPortalGeoJson<CmPortalProyectoProps> | null>(
-    null,
-  );
-  const [portalMapMeta, setPortalMapMeta] = useState<CmPortalMapMeta | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [sigmaData, setSigmaData] = useState<MadridSigmaDataset | null>(null);
   const [ambitosGeo, setAmbitosGeo] = useState<SectorFeatureCollection | null>(null);
@@ -220,9 +207,9 @@ export function ExploreMadridApp() {
   const [showSigma, setShowSigma] = useState(true);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const liveBounds = useDebouncedValue(mapBounds, 450);
-  /** Portal CM: más debounce y clave cuantizada → menos RPC al arrastrar. */
-  const portalBoundsDebounced = useDebouncedValue(mapBounds, 850);
-  const [dataReady, setDataReady] = useState({ ubic: true, search: true, portal: !cmMapScope });
+  /** One debounce after moveend; the hook deduplicates quantized URLs. */
+  const portalBoundsDebounced = useDebouncedValue(mapBounds, 250);
+  const [dataReady, setDataReady] = useState({ ubic: true, search: true });
   const [ubicLoading, setUbicLoading] = useState(false);
   const [mapMode, setMapMode] = useState<SigmaMapMode>("ambitos");
   const [layerLoading, setLayerLoading] = useState(false);
@@ -231,8 +218,6 @@ export function ExploreMadridApp() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [gateOpen, setGateOpen] = useState(cmMapScope);
-  const [portalLoading, setPortalLoading] = useState(false);
-  const [portalErr, setPortalErr] = useState<string | null>(null);
   const [portalQuery, setPortalQuery] = useState<{
     slug: string;
     nombre: string;
@@ -342,77 +327,13 @@ export function ExploreMadridApp() {
     };
   }, [q]);
 
-  const portalFetchKey = useMemo(() => {
-    if (!portalQuery) return null;
-    const bounds = shouldCmPortalBBox(portalBoundsDebounced) ? portalBoundsDebounced : null;
-    return cmPortalFetchKey({
-      slug: portalQuery.slug,
-      from: portalQuery.from,
-      to: portalQuery.to,
-      bounds,
-    });
-  }, [portalQuery, portalBoundsDebounced]);
-
-  const portalFetchGen = useRef(0);
-  const portalMapLoadedRef = useRef(false);
-
-  useEffect(() => {
-    portalMapLoadedRef.current = false;
-  }, [portalQuery?.slug, portalQuery?.token]);
-
-  useEffect(() => {
-    if (!cmMapScope || !portalQuery || portalFetchKey == null) return;
-    const bounds = shouldCmPortalBBox(portalBoundsDebounced) ? portalBoundsDebounced : null;
-    const isBboxPan = Boolean(bounds);
-    const showBlockingLoad = !isBboxPan || !portalMapLoadedRef.current;
-    if (showBlockingLoad) setPortalLoading(true);
-    setPortalErr(null);
-    const url = mapCmPortalQuery({
-      slug: portalQuery.slug,
-      from: portalQuery.from,
-      to: portalQuery.to,
-      bounds,
-    });
-    const gen = ++portalFetchGen.current;
-    const ac = new AbortController();
-    (async () => {
-      try {
-        const res = await fetch(url, { signal: ac.signal });
-        if (!res.ok) throw new Error("portal");
-        const payload = (await res.json()) as {
-          points?: CmPortalGeoJson<CmPortalProyectoProps>;
-          polygons?: CmPortalGeoJson<CmPortalProyectoProps>;
-          approx?: CmPortalGeoJson<CmPortalProyectoProps>;
-          meta?: CmPortalMapMeta;
-        };
-        if (ac.signal.aborted || gen !== portalFetchGen.current) return;
-        setPortalPolygonGeo(payload.polygons ?? { type: "FeatureCollection", features: [] });
-        if (!isBboxPan) {
-          setPortalGeo(payload.points ?? { type: "FeatureCollection", features: [] });
-          setPortalApproxGeo(payload.approx ?? { type: "FeatureCollection", features: [] });
-          setPortalMapMeta(payload.meta ?? null);
-        } else {
-          setPortalMapMeta((prev) => ({
-            ...(prev ?? {}),
-            ...(payload.meta ?? {}),
-            recorteEnVista: true,
-          }));
-        }
-        portalMapLoadedRef.current = true;
-        setDataReady((prev) => ({ ...prev, portal: true }));
-      } catch (e) {
-        if (ac.signal.aborted || gen !== portalFetchGen.current) return;
-        if (e instanceof DOMException && e.name === "AbortError") return;
-        setPortalErr("No hemos podido cargar los proyectos de este municipio.");
-        setDataReady((prev) => ({ ...prev, portal: true }));
-      } finally {
-        if (!ac.signal.aborted && gen === portalFetchGen.current) setPortalLoading(false);
-      }
-    })();
-    return () => {
-      ac.abort();
-    };
-  }, [cmMapScope, portalQuery, portalFetchKey, portalBoundsDebounced]);
+  const portal = usePortalMapData(cmMapScope, portalQuery, mapBounds ? portalBoundsDebounced : null);
+  const portalGeo = portal.points;
+  const portalPolygonGeo = portal.polygons;
+  const portalApproxGeo = portal.approx;
+  const portalMapMeta = portal.meta;
+  const portalLoading = portal.loading;
+  const portalErr = portal.error;
 
   useEffect(() => {
     if (!cmMapScope || !portalQuery || gateOpen) return;
@@ -794,7 +715,8 @@ export function ExploreMadridApp() {
     if (!bounds) return null;
     return { ...bounds, token: portalQuery.token + 1, tight: true };
   }, [portalPolygonGeo, portalQuery]);
-  const focusFrame = polygonFrame ?? listFrame;
+  // One camera movement per selection; arriving polygons must not trigger another flight.
+  const focusFrame = listFrame ?? polygonFrame;
   const portalHasPolygons = (portalPolygonGeo?.features?.length ?? 0) > 0;
   const portalApproxForMap = useMemo(() => {
     if (portalHasPolygons || !portalApproxGeo?.features?.length) return null;
@@ -805,7 +727,7 @@ export function ExploreMadridApp() {
     cmMapScope &&
     !gateOpen &&
     !portalLoading &&
-    dataReady.portal &&
+    portal.ready &&
     (portalMapMeta?.proyectosEnRango ?? 0) === 0;
 
   if (err) {
@@ -832,7 +754,7 @@ export function ExploreMadridApp() {
           sigmaPopupOptions={sigmaPopupOptions}
           showUbicaciones={showUbicaciones && dataReady.ubic}
           showSigma={showSigma}
-          showPortal={cmMapScope && showSigma && dataReady.portal}
+          showPortal={cmMapScope && showSigma && portal.ready}
           mapScope={cmMapScope ? "cm" : "madrid"}
           focusFrame={focusFrame}
           onBoundsChange={onBoundsChange}
@@ -934,11 +856,7 @@ export function ExploreMadridApp() {
           onConfirm={({ municipio, from, to }) => {
             setDateFrom(from);
             setDateTo(to);
-            setPortalGeo(null);
-            setPortalPolygonGeo(null);
-            setPortalApproxGeo(null);
-            setPortalMapMeta(null);
-            setDataReady((prev) => ({ ...prev, portal: false }));
+            if (municipio.slug !== portalQuery?.slug) setMapBounds(null);
             setPortalQuery({
               slug: municipio.slug,
               nombre: municipio.nombre,

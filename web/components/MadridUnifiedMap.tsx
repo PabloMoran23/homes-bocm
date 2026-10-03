@@ -190,7 +190,7 @@ function FlyToFrame({ frame }: { frame: MapFocusFrame | null }) {
     }
     const bounds = L.latLngBounds([south, west], [north, east]);
     if (!bounds.isValid()) return;
-    map.flyToBounds(bounds, { padding: [56, 56], maxZoom: frame.tight ? 18 : 17, duration: 1.55 });
+    map.flyToBounds(bounds, { padding: [56, 56], maxZoom: frame.tight ? 18 : 17, duration: 0.55 });
   }, [map, frame]);
   return null;
 }
