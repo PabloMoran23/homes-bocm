@@ -4,14 +4,30 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 from unittest import TestCase
+from unittest.mock import patch
 
-from municipio.schedule import due_plan
+from municipio.schedule import due_plan, run_due
 
 
 NOW = datetime(2026, 8, 19, 12, 0, tzinfo=UTC)
 
 
 class DuePlanTest(TestCase):
+    def test_failed_refresh_remains_partial_and_next_municipio_runs(self) -> None:
+        plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, now=NOW)
+        error = "https://example.org/urbanismo: timeout after 3 attempts"
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule.load_manifest"
+        ), patch("municipio.schedule.run", side_effect=[
+            {"steps": {"proyectos_update": {"error": error, "type": "TimeoutError"}}},
+            {"steps": {"proyectos_update": {"rows": 1}}},
+        ]):
+            result = run_due()
+        self.assertEqual(result["status"], "partial")
+        self.assertEqual((result["ok"], result["failed"]), (1, 1))
+        self.assertEqual(result["results"][0]["steps"]["proyectos_update"]["error"], error)
+        self.assertTrue(result["results"][1]["ok"])
+
     def test_never_ingested_comes_first(self) -> None:
         plan = due_plan(
             interval_days=15,

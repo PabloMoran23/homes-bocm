@@ -14,6 +14,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text
 
 WEB_BASE = "https://www.oviedo.es"
 TRANSPARENCIA_BASE = "https://transparencia.oviedo.es"
@@ -170,11 +171,7 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         req = urllib.request.Request(url, data=data, headers=headers)
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            raw = resp.read()
-        if encoding == "iso-8859-1":
-            return raw.decode("iso-8859-1", errors="replace")
-        return raw.decode("utf-8", errors="replace")
+        return fetch_text(req, encoding=encoding)
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))

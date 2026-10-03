@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.http import fetch_text
 
 WP_BASE = "https://aytoleon.es"
 SEDE_BASE = "https://sede.aytoleon.es/eAdmin"
@@ -194,10 +195,7 @@ class LeonAyuntamientoAdapter(AyuntamientoAdapter):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         req = urllib.request.Request(url, data=data, headers=headers)
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            raw = resp.read()
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return raw.decode(charset, errors="replace")
+        return fetch_text(req)
 
     def _parse_tablon_html(self, html: str) -> dict[str, dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}
