@@ -56,3 +56,4 @@ public/data/*.json
 !public/data/madrid-sigma-map-cards.json
 !public/data/madrid-presentacion.json
 !public/data/summary.json
+!public/data/sitemap-projects.json
