@@ -9,18 +9,19 @@ import { DASHBOARD } from "@/lib/ui-labels";
 
 const navLinks = [
   { href: "/explore", label: "Explorar" },
+  { href: "/proyectos", label: "Proyectos" },
   { href: "/madrid/estadisticas", label: DASHBOARD },
   { href: "/boletin", label: "Tu zona" },
 ] as const;
 
 function isNavActive(pathname: string, href: string) {
   if (pathname === href) return true;
+  if (href === "/proyectos" && (pathname.startsWith("/proyectos/") || pathname.startsWith("/proyecto/"))) return true;
   if (href === "/boletin" && pathname.startsWith("/boletin")) return true;
   if (
     href === "/explore" &&
     (pathname.startsWith("/explore") ||
-      pathname.startsWith("/ubicacion") ||
-      pathname.startsWith("/proyecto"))
+      pathname.startsWith("/ubicacion"))
   ) {
     return true;
   }

@@ -1,0 +1,170 @@
+.heading {
+  padding: 24px 0 34px;
+}
+.heading h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(38px, 4.5vw, 60px);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  color: #273d39;
+  margin: 0;
+  font-weight: 400;
+}
+.heading em {
+  color: #6c8174;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid #d9dacc;
+  padding: 24px 0;
+}
+.toolbar > span {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #52675d;
+}
+.toolbar input {
+  width: 300px;
+  background: #faf8f1;
+  border: 1px solid #d9dacc;
+  border-radius: 4px;
+  padding: 12px 14px;
+  font-size: 12px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: stretch;
+}
+.card {
+  min-width: 0;
+  border: 1px solid #d9ded2;
+  background: #faf7ef;
+  border-radius: 5px;
+  overflow: hidden;
+  transition:
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px #253a3312;
+}
+.provinceLink {
+  display: block;
+  color: #273d39;
+  text-decoration: none;
+}
+.provinceLink:focus-visible {
+  outline: 3px solid #1f4f53;
+  outline-offset: -3px;
+}
+.miniMap {
+  height: 130px;
+  background: #e8e9dd;
+  position: relative;
+  overflow: hidden;
+}
+.mapHost {
+  position: absolute;
+  inset: 0;
+}
+.mapHost canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.miniMap img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mapState {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  color: #6b7b6e;
+}
+.cardText {
+  padding: 14px 16px 16px;
+}
+.cardText h2 {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 600;
+  margin: 0 0 7px;
+  overflow-wrap: anywhere;
+}
+.cardText p {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #667365;
+  margin: 0;
+}
+.matches {
+  list-style: none;
+  padding: 0 10px 12px;
+  font-size: 12px;
+  color: #1f4f53;
+}
+.matches a {
+  display: block;
+  padding: 5px 0;
+  text-decoration: underline;
+}
+.attribution {
+  font-size: 10px;
+  color: #6b766a;
+  margin: 26px 0 0;
+}
+.attribution a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+@media (max-width: 640px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .toolbar input {
+    width: 100%;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .miniMap {
+    height: 120px;
+  }
+  .cardText {
+    padding: 12px;
+  }
+  .cardText h2 {
+    font-size: 15px;
+  }
+  .cardText p {
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

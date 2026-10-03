@@ -28,6 +28,7 @@ export const PUBLIC_ROUTE_PREFIXES = [
   "/boletin",
   "/ubicacion",
   "/proyecto",
+  "/proyectos",
   "/madrid/estadisticas",
   "/estadisticas",
   "/en-desarrollo",

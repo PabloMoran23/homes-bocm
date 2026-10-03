@@ -11,6 +11,7 @@ const PUBLIC_PAGES: {
   priority: number;
 }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/proyectos", changeFrequency: "weekly", priority: 0.9 },
   { path: "/explore", changeFrequency: "weekly", priority: 0.9 },
   { path: "/boletin", changeFrequency: "weekly", priority: 0.9 },
   { path: "/madrid/estadisticas", changeFrequency: "weekly", priority: 0.8 },

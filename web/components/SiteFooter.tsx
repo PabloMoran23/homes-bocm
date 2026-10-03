@@ -11,6 +11,7 @@ const FULL_BLEED_PREFIXES = ["/explore", "/boletin"];
 
 const FOOTER_LINKS = [
   { href: "/explore", label: "Explorar" },
+  { href: "/proyectos", label: "Proyectos por municipio" },
   { href: "/madrid/estadisticas", label: DASHBOARD },
   { href: "/boletin", label: "Tu zona" },
 ] as const;
