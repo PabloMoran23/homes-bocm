@@ -803,5 +803,28 @@
   "browser_local_after": {
     "selection_to_167_projects_ms": 742,
     "note": "Warm local production build using live Supabase. Not a production browser comparison."
+  },
+  "browser_production_after": {
+    "commit": "e106a2f0",
+    "cache": "warm; full page reloaded before each selection",
+    "selection_to_167_projects_ms": [
+      732,
+      806,
+      799
+    ],
+    "median_ms": 799,
+    "baseline_single_sample_ms": 3012,
+    "note": "Automation wall-clock to counter, not complete tile render or Web Vitals. First cold request exceeded the browser tool wait limit and was excluded from this warm-cache comparison; cold HTTP measurements are reported separately."
+  },
+  "municipios_covering_index": {
+    "before_ms": 991.6,
+    "after_ms": [
+      235.8,
+      98.6,
+      100.5
+    ],
+    "equal": true,
+    "rows": 671,
+    "equivalence_note": "Compared municipality records sorted by slug; ordering of tied count/name entries is unspecified in the SQL."
   }
 }

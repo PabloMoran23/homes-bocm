@@ -16,7 +16,8 @@ function load(filename) {
   if (modules.has(filename)) return modules.get(filename).exports;
   const record = { exports: {} }; modules.set(filename, record);
   const code = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+    fileName: filename,
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
   const localRequire = (name) => name.startsWith('@/')
     ? load(path.join(root, name.slice(2) + '.ts')) : requireDependency(name);
@@ -86,6 +87,25 @@ async function main() {
   await reply(requests[5], { ...full, meta: { truncated: false } });
   assert.equal(output.error, null);
   await act(async () => renderer.unmount());
+  const { MapMunicipioGate } = load(path.join(root, 'components/map/MapMunicipioGate.tsx'));
+  requests.length = 0;
+  await act(async () => { renderer = create(React.createElement(MapMunicipioGate, { open: true, onConfirm: () => {} })); });
+  await reply(requests[0], null, false);
+  assert.equal(requests.length, 2, 'picker automatically retries a transient failure once');
+  await reply(requests[1], null, false);
+  const retryButton = renderer.root.findAllByType('button').find((b) => b.props.children === 'Reintentar');
+  assert.ok(retryButton, 'picker offers recovery after both requests fail');
+  await act(async () => retryButton.props.onClick());
+  assert.equal(requests.length, 3);
+  const municipios = Array.from({ length: 20 }, (_, i) => ({ slug: `town-${i}`, nombre: `Municipio ${i}`, n: 100 - i, west: null, south: null, east: null, north: null }));
+  await reply(requests[2], { municipios });
+  assert.equal(renderer.root.findAllByType('button').length, 13, 'only 12 suggestions and submit are mounted');
+  const search = renderer.root.findAllByType('input').find((i) => i.props.type === 'search');
+  assert.equal(search.props.disabled, false);
+  await act(async () => search.props.onChange({ target: { value: '19' } }));
+  assert.equal(renderer.root.findAllByType('button').length, 2, 'search still reaches municipalities outside initial suggestions');
+  await act(async () => renderer.unmount());
+  console.log('PASS: picker recovery, limited suggestions and full-list search.');
   console.log('PASS: in-flight pan, URL deduplication, independent data, stale response, cache, zoom out, date isolation and errors.');
 }
 main().catch((error) => { console.error(error); process.exitCode = 1; });

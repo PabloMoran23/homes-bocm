@@ -37,6 +37,7 @@ export function MapMunicipioGate({
   const [municipios, setMunicipios] = useState<CmMunicipioOption[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
   const [q, setQ] = useState("");
   const [slug, setSlug] = useState(initialSlug ?? "");
   const [from, setFrom] = useState(initialFrom ?? "");
@@ -51,27 +52,38 @@ export function MapMunicipioGate({
 
   useEffect(() => {
     if (!open || municipios.length > 0) return;
-    let cancelled = false;
+    const ac = new AbortController();
     setLoading(true);
+    setLoadErr(null);
     (async () => {
       try {
-        const res = await fetch(MAP_CM_MUNICIPIOS_API);
-        if (!res.ok) throw new Error("municipios");
-        const body = (await res.json()) as { municipios?: CmMunicipioOption[] };
-        if (!cancelled) {
+        const load = async () => {
+          const res = await fetch(MAP_CM_MUNICIPIOS_API, { signal: ac.signal });
+          if (!res.ok) throw new Error("municipios");
+          return (await res.json()) as { municipios?: CmMunicipioOption[] };
+        };
+        // A transient failure just after a deploy must not permanently disable the picker.
+        let body: { municipios?: CmMunicipioOption[] };
+        try {
+          body = await load();
+        } catch (error) {
+          if (ac.signal.aborted) throw error;
+          body = await load();
+        }
+        if (!ac.signal.aborted) {
           const rows = Array.isArray(body.municipios) ? body.municipios : [];
           setMunicipios(sortMunicipiosByCount(rows));
         }
       } catch {
-        if (!cancelled) setLoadErr("No hemos podido cargar la lista de municipios.");
+        if (!ac.signal.aborted) setLoadErr("No hemos podido cargar la lista de municipios.");
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!ac.signal.aborted) setLoading(false);
       }
     })();
     return () => {
-      cancelled = true;
+      ac.abort();
     };
-  }, [open, municipios.length]);
+  }, [open, municipios.length, retry]);
 
   const selected = municipios.find((m) => m.slug === slug) ?? null;
   const matches = useMemo(() => {
@@ -114,7 +126,14 @@ export function MapMunicipioGate({
           />
         </label>
 
-        {loadErr ? <p className="mt-2 text-sm text-amber-800">{loadErr}</p> : null}
+        {loadErr ? (
+          <div className="mt-2 text-sm text-amber-800">
+            <p>{loadErr}</p>
+            <button type="button" className="mt-1 font-semibold underline" onClick={() => setRetry((n) => n + 1)}>
+              Reintentar
+            </button>
+          </div>
+        ) : null}
 
         {selected ? (
           <p className="mt-2 text-sm text-slate-800">
