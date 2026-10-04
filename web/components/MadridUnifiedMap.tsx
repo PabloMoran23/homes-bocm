@@ -33,6 +33,7 @@ import { PROYECTOS } from "@/lib/ui-labels";
 import { useLeafletMount } from "@/lib/use-leaflet-mount";
 import { usePreferCanvas } from "@/lib/use-prefer-canvas";
 import { capZoomForContainer, fixedZoomForContainer } from "@/lib/map-visual-scale";
+import { PerspectiveMapCanvas } from "@/components/map/PerspectiveMapCanvas";
 import { HomesBasemapLayer } from "@/components/map/HomesBasemapLayer";
 import { HOMES_MAP_MAX_ZOOM, HOMES_MAP_MIN_ZOOM } from "@/lib/map-tiles";
 
@@ -166,6 +167,10 @@ export type MapFocusFrame = {
   token: number;
   /** Encuadra el recuadro real, sin abrirlo a un kilómetro. */
   tight?: boolean;
+  /** Limit automatic framing without constraining manual zoom. */
+  maxZoom?: number;
+  padding?: number;
+  zoom?: number;
 };
 
 function FlyToFrame({ frame }: { frame: MapFocusFrame | null }) {
@@ -190,7 +195,7 @@ function FlyToFrame({ frame }: { frame: MapFocusFrame | null }) {
     }
     const bounds = L.latLngBounds([south, west], [north, east]);
     if (!bounds.isValid()) return;
-    map.flyToBounds(bounds, { padding: [56, 56], maxZoom: frame.tight ? 18 : 17, duration: 0.55 });
+    map.flyToBounds(bounds, { padding: [frame.padding ?? 56, frame.padding ?? 56], maxZoom: frame.maxZoom ?? (frame.tight ? 18 : 17), duration: 0.55 });
   }, [map, frame]);
   return null;
 }
@@ -367,6 +372,7 @@ export function MadridUnifiedMap({
   highlightNdp,
   onSelectNdp,
   sigmaPopupOptions,
+  sigmaClassificationIndex,
   showUbicaciones = true,
   showSigma = true,
   onBoundsChange,
@@ -385,6 +391,13 @@ export function MadridUnifiedMap({
   sigmaCardSelection = false,
   selectedSigmaExpediente = null,
   onSelectSigmaExpediente,
+  onSelectPortalProject,
+  onSelectLicense,
+  selectedLicenseNdp = null,
+  selectedPortalProjectId = null,
+  showExplorationHints = false,
+  municipalityBoundary = null,
+  portalHints = null,
   portalGeojson = null,
   portalPolygonGeojson = null,
   portalApproxGeojson = null,
@@ -397,6 +410,7 @@ export function MadridUnifiedMap({
   highlightNdp: string | null;
   onSelectNdp: (ndp: string) => void;
   sigmaPopupOptions?: FeaturePopupOptions | null;
+  sigmaClassificationIndex?: Readonly<Record<string, Pick<import("@/lib/sigma-classification").SigmaClassification, "tipoObra" | "categoriaProyecto">>> | null;
   showUbicaciones?: boolean;
   showSigma?: boolean;
   onBoundsChange?: (bounds: MapBounds) => void;
@@ -426,7 +440,14 @@ export function MadridUnifiedMap({
   sigmaCardSelection?: boolean;
   selectedSigmaExpediente?: string | null;
   onSelectSigmaExpediente?: (expedienteGrupo: string | null) => void;
+  onSelectPortalProject?: (project: CmPortalProyectoProps | null) => void;
+  selectedPortalProjectId?: string | null;
+  onSelectLicense?: (license: import("@/lib/ubicacion").UbicacionMapProperties | null) => void;
+  selectedLicenseNdp?: string | null;
   /** Proyectos de portales municipales CM (modo `mapScope=cm`). */
+  showExplorationHints?: boolean;
+  municipalityBoundary?: import("@/lib/map-municipality-placement").MunicipalityGeometry | null;
+  portalHints?: CmPortalGeoJson<import("@/lib/cm-portal-geo").CmPortalHintProps> | null;
   portalGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   portalPolygonGeojson?: CmPortalGeoJson<CmPortalProyectoProps> | null;
   /** Proyectos sin coordenada real, dibujados como banderas desde el centro. */
@@ -529,7 +550,37 @@ export function MadridUnifiedMap({
 
         {legend}
 
-        {mapReady ? (
+        {mapReady && interactive ? (
+          <PerspectiveMapCanvas
+            ubicacionesGeojson={ubicacionesGeojson}
+            sigmaGeojson={sigmaGeojson}
+            showExplorationHints={showExplorationHints}
+            municipalityBoundary={municipalityBoundary}
+            portalHints={portalHints}
+            portalGeojson={portalGeojson}
+            portalPolygonGeojson={portalPolygonGeojson}
+            portalApproxGeojson={portalApproxGeojson}
+            showUbicaciones={showUbicaciones}
+            showSigma={showSigma}
+            showPortal={showPortal}
+            highlightNdp={highlightNdp}
+            onSelectNdp={onSelectNdp}
+            sigmaPopupOptions={sigmaPopupOptions}
+            sigmaClassificationIndex={sigmaClassificationIndex}
+            sigmaCardSelection={sigmaCardSelection}
+            selectedSigmaExpediente={selectedSigmaExpediente}
+            onSelectSigmaExpediente={onSelectSigmaExpediente}
+            onSelectPortalProject={onSelectPortalProject}
+            onSelectLicense={onSelectLicense}
+            selectedLicenseNdp={selectedLicenseNdp}
+            selectedPortalProjectId={selectedPortalProjectId}
+            onBoundsChange={onBoundsChange}
+            initialView={initialView}
+            fitToData={fitToData}
+            mapScope={mapScope}
+            focusFrame={focusFrame}
+          />
+        ) : mapReady ? (
           <MapContainer
             key={mapKey}
             center={mapCenter}
@@ -635,6 +686,7 @@ export function MadridUnifiedMap({
                 © OSM
               </a>
               {" · OpenFreeMap"}
+              {municipalityBoundary ? <a href="https://api-features.ign.es/collections/administrativeunit?f=html" target="_blank" rel="noopener noreferrer" className="underline decoration-slate-300/80"> · Límites © IGN</a> : null}
             </span>
           </div>
         ) : (

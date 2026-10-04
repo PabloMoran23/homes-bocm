@@ -1,5 +1,5 @@
 import { dominioError, dominioJson, rpcDominio } from "@/lib/dominio-cache";
-import type { CmPortalGeoJson, CmPortalMapMeta, CmPortalProyectoProps } from "@/lib/cm-portal-geo";
+import type { CmPortalGeoJson, CmPortalMapMeta, CmPortalProyectoProps, CmPortalHintProps } from "@/lib/cm-portal-geo";
 
 export const revalidate = 900;
 
@@ -9,6 +9,7 @@ type Payload = {
   polygons?: CmPortalGeoJson<CmPortalProyectoProps>;
   approx?: CmPortalGeoJson<CmPortalProyectoProps>;
   meta?: CmPortalMapMeta;
+  hints?: CmPortalGeoJson<CmPortalHintProps>;
 };
 
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -41,7 +42,7 @@ export async function GET(req: Request) {
     return dominioError("Elige un municipio y un rango de fechas válido", 400);
   }
 
-  const { data, error, missing } = await rpcDominio<Payload>("map_cm_portal_municipio", {
+  const { data, error, missing } = await rpcDominio<Payload>("map_cm_portal_view_100", {
     p_slug: slug,
     p_from: from || null,
     p_to: to || null,

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MapProjectDetailCard } from "@/components/MapProjectDetailCard";
 import { SigmaClassificationIcon } from "@/components/sigma/SigmaClassificationIcon";
 import type { MapProjectSpotlightItem } from "@/lib/map-project-spotlight";
 import { PORTAL_TAG_TONE } from "@/lib/portal-tones";
@@ -85,10 +86,9 @@ export function MapProjectSpotlightCard({
   const interactive = variant === "explore";
   const linked = Boolean(item?.href);
 
-  const placementStyle =
-    variant === "explore"
-      ? MAP_SPOTLIGHT_PLACEMENT_CLASS["bottom-right"]
-      : MAP_SPOTLIGHT_PLACEMENT_CLASS[placement];
+  if (interactive) return <MapProjectDetailCard item={item} visible={visible} onClose={onClose} />;
+
+  const placementStyle = MAP_SPOTLIGHT_PLACEMENT_CLASS[placement];
 
   return (
     <div

@@ -21,6 +21,9 @@ export type CmPortalMapMeta = {
   proyectosSinFecha?: number;
   truncated?: boolean;
   recorteEnVista?: boolean;
+  autoFrame?: { west: number; south: number; east: number; north: number } | null;
+  initialFrameMode?: "municipio" | "proyectos";
+  proyectosConUbicacion?: number;
   limiteMapa?: number;
   licenciasEnMapa?: number;
 };
@@ -29,6 +32,8 @@ export type CmMunicipioOption = {
   slug: string;
   nombre: string;
   n: number;
+  centerLng?: number | null;
+  centerLat?: number | null;
   west: number | null;
   south: number | null;
   east: number | null;
@@ -39,6 +44,12 @@ export type CmPortalProyectoProps = {
   id: string;
   municipio: string;
   titulo: string;
+  resumen?: string | null;
+  fase?: string | null;
+  numViviendas?: number | null;
+  supM2?: number | null;
+  categoriaProyecto?: string | null;
+  tipoObra?: string | null;
   /** Nombre que entiende la gente, si hay ficha de investigación. */
   nombrePopular?: string | null;
   /** Tiene ficha de investigación: se dibuja encima y con ese nombre. */
@@ -136,3 +147,5 @@ function escapeHtml(s: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
+
+export type CmPortalHintProps = { west: number; east: number; south: number; north: number };

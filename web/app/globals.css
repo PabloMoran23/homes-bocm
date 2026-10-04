@@ -39,7 +39,7 @@ body::before {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42  0 0 0 0 0.38  0 0 0 0 0.3  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-body > * {
+body > :not(header) {
   position: relative;
   z-index: 1;
 }
@@ -211,4 +211,46 @@ body > * {
 
 .homes-focus-mask-canvas {
   pointer-events: none;
+}
+
+/* Native perspective map controls share the paper palette of the map shell. */
+.homes-map-shell .homes-perspective-map .maplibregl-ctrl-top-right,
+.homes-map-shell .homes-perspective-map .maplibregl-ctrl-bottom-left {
+  display: block;
+}
+.homes-perspective-map .maplibregl-ctrl-group {
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(247, 243, 235, 0.96);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+}
+.homes-perspective-map .maplibregl-ctrl-group button {
+  width: 34px;
+  height: 34px;
+}
+.homes-perspective-map .maplibregl-ctrl-scale {
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 6px;
+  background: rgba(247, 243, 235, 0.94);
+  color: #6a6158;
+  font-size: 10px;
+}
+.homes-perspective-map .maplibregl-popup-content {
+  border-radius: 12px;
+  background: #f7f3eb;
+  color: #2a2622;
+  padding: 14px 18px;
+}
+
+/* Preserve room for municipality results when a phone is held horizontally. */
+@media (max-height: 560px) and (max-width: 1023px) {
+  .map-municipality-heading { padding-top: 12px; padding-bottom: 12px; }
+  .map-municipality-heading h2 { font-size: 20px; }
+  .map-municipality-heading h2 + p { display: none; }
+  .map-municipality-heading > label { margin-top: 10px; }
+}
+
+@media (min-width: 480px) and (max-width: 1023px) and (max-height: 560px) {
+  .map-catalog-panel > header { padding-top: 8px; padding-bottom: 8px; }
+  .map-project-detail-card { left: auto; width: min(390px, calc(100% - 24px)); max-height: calc(100% - 24px); }
 }

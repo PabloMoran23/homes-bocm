@@ -1,3 +1,6 @@
+import { actuacionDesdeMapProps, ubicacionPath } from "@/lib/ubicacion";
+import { normalizarActuacionEdificio } from "@/lib/actuacion-edificio";
+import { LICENCIA_MAPA_CONFIG } from "@/lib/licencia-mapa-config";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaObraIconKey } from "@/lib/sigma-classification-icon";
@@ -22,6 +25,10 @@ export type MapProjectSpotlightItem = {
   supM2: number | null;
   fase: string | null;
   expedienteGrupo: string;
+  badgeIcon?: { bg: string; svg: string };
+  extraMetrics?: Array<{ label: string; value: string }>;
+  dateMetricLabel?: string;
+  approx?: boolean;
 };
 
 export type SigmaMapCardSlice = {
@@ -212,6 +219,10 @@ export function spotlightResumenForCard(
 
 export function buildMapProjectSpotlightItem(input: {
   expedienteGrupo: string;
+  badgeIcon?: { bg: string; svg: string };
+  extraMetrics?: Array<{ label: string; value: string }>;
+  dateMetricLabel?: string;
+  approx?: boolean;
   catalog?: {
     EXP_TX_DENOM?: string | null;
     FAS_TX_DENOM?: string | null;
@@ -255,5 +266,50 @@ export function buildMapProjectSpotlightItem(input: {
         : null,
     fase: input.catalog?.FAS_TX_DENOM ? String(input.catalog.FAS_TX_DENOM) : null,
     expedienteGrupo: grupo,
+  };
+}
+
+/** Portal map cards use the same project classification as the detail page. */
+export function buildPortalMapSpotlightItem(
+  project: import("@/lib/cm-portal-geo").CmPortalProyectoProps,
+  classification?: Pick<SigmaClassification, "tipoObra" | "categoriaProyecto"> | null,
+): MapProjectSpotlightItem {
+  const clas = classification ?? { tipoObra: project.tipoObra ?? null, categoriaProyecto: project.categoriaProyecto ?? null };
+  const date = project.fecha && /^\d{4}-\d{2}-\d{2}$/.test(project.fecha)
+    ? new Date(`${project.fecha}T12:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : project.fecha || "";
+  const title = project.nombrePopular?.trim() || project.titulo || project.id;
+  return {
+    approx: project.approx === true,
+    id: project.id, href: `/proyecto/${encodeURIComponent(project.id)}`,
+    tag: project.tipo || "Proyecto urbanístico",
+    categoryLabel: clas.tipoObra || clas.categoriaProyecto ? spotlightCategoryLabel(clas) : project.tipo || "Proyecto urbanístico",
+    categoriaProyecto: clas.categoriaProyecto, tipoObra: clas.tipoObra,
+    iconKey: spotlightIconKey(clas), locationLine: project.municipio || null,
+    resumen: project.resumen?.trim() || "", dek: project.resumen?.trim() || "",
+    title, dateLabel: date, fase: project.fase || null,
+    numViviendas: project.numViviendas != null && project.numViviendas > 0 ? project.numViviendas : null,
+    supM2: project.supM2 != null && project.supM2 > 0 ? Math.round(project.supM2) : null,
+    expedienteGrupo: /^\d+[/\-]\d+[/\-]\d+$/.test(project.id) ? project.id : "",
+  };
+}
+
+
+/** One map marker represents a building and its most recent license. */
+export function buildLicenseMapSpotlightItem(p: import("@/lib/ubicacion").UbicacionMapProperties): MapProjectSpotlightItem {
+  const config = LICENCIA_MAPA_CONFIG[normalizarActuacionEdificio(actuacionDesdeMapProps(p)).mapaCategoria];
+  const date = p.ultimaLicenciaFecha?.slice(0, 10);
+  return {
+    id: `license-${p.ndp}`, href: ubicacionPath(p.ndp), tag: "Licencia", categoryLabel: config.label,
+    categoriaProyecto: null, tipoObra: null, iconKey: "edificio",
+    title: p.direccion?.trim() || "Edificio en Madrid",
+    locationLine: [p.distrito, p.barrio].filter(Boolean).join(" · ") || "Madrid",
+    resumen: [p.ultimaLicenciaObjeto?.trim() || p.actuacionQueLabel?.trim(), p.ultimaLicenciaUso?.trim() ? `Uso: ${p.ultimaLicenciaUso.trim()}` : null, p.ultimaLicenciaProcedimiento?.trim() ? `Procedimiento: ${p.ultimaLicenciaProcedimiento.trim()}` : null].filter(Boolean).join(" · "),
+    dek: "", dateLabel: date && /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(`${date}T12:00:00`).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" }) : date || "",
+    dateMetricLabel: "Última licencia", fase: null, expedienteGrupo: "", supM2: null, numViviendas: null,
+    badgeIcon: config,
+    extraMetrics: [
+      ...(p.licencias > 0 ? [{ label: "Licencias en edificio", value: p.licencias.toLocaleString("es-ES") }] : []),
+      ...(p.sigma > 0 ? [{ label: "Proyectos vinculados", value: p.sigma.toLocaleString("es-ES") }] : []),
+    ],
   };
 }

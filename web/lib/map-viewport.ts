@@ -8,6 +8,9 @@ export type MapBounds = {
   north: number;
   east: number;
   zoom?: number;
+  /** Initial camera identity and subsequent user gestures, for the native map. */
+  cameraToken?: number | null;
+  interaction?: number;
 };
 
 export const VIEWPORT_PAD = 0.08;

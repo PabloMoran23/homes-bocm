@@ -44,7 +44,7 @@ function unit(seed: number): number {
   return x - Math.floor(x);
 }
 
-function flagHtml(p: CmPortalProyectoProps): string {
+export function flagHtml(p: CmPortalProyectoProps): string {
   const title = escapeHtml(p.titulo || p.id);
   const fecha = escapeHtml(formatFecha(p.fecha));
   const href = `/proyecto/${encodeURIComponent(p.id)}`;

@@ -1,4 +1,4 @@
-import { boundsLookValid, type MapBounds } from "@/lib/map-viewport";
+import { type MapBounds } from "@/lib/map-viewport";
 
 export const MAP_SIGMA_API = "/api/dominio/map-sigma";
 export const MAP_CM_PORTAL_API = "/api/dominio/map-cm-portal";
@@ -38,9 +38,7 @@ export function sigmaPolygonLimit(zoom: number | undefined): number {
   const z = Math.round(zoom ?? 11);
   if (z <= 9) return 40;
   if (z <= 11) return 80;
-  if (z <= 12) return 120;
-  if (z <= 14) return 180;
-  return 220;
+  return 100;
 }
 
 export function ubicacionesPointLimit(zoom: number | undefined): number {
@@ -98,14 +96,24 @@ export function mapSigmaQuery(opts: {
   return `${MAP_SIGMA_API}?${params.toString()}`;
 }
 
-export const CM_PORTAL_MAP_LIMIT = 500;
-/** Por debajo de este zoom mostramos los N más recientes de todo el municipio. */
-export const CM_PORTAL_BBOX_MIN_ZOOM = 11;
+export const CM_PORTAL_MAP_LIMIT = 100;
 
 export function shouldCmPortalBBox(bounds: MapBounds | null): boolean {
-  if (!bounds) return false;
-  if (!boundsLookValid(bounds)) return false;
-  return Math.round(bounds.zoom ?? 11) >= CM_PORTAL_BBOX_MIN_ZOOM;
+  return !!bounds && [bounds.west, bounds.south, bounds.east, bounds.north].every(Number.isFinite)
+    && bounds.east > bounds.west && bounds.north > bounds.south;
+}
+
+/** Fine, outward rounding keeps close-up views valid and cacheable. */
+export function quantizePortalBounds(bounds: MapBounds): MapBounds {
+  const span = Math.min(bounds.east - bounds.west, bounds.north - bounds.south);
+  const step = Math.min(0.002, Math.max(0.00001, span / 40));
+  const stableStep = 10 ** Math.floor(Math.log10(step));
+  return { ...bounds,
+    west: Math.floor(bounds.west / stableStep) * stableStep,
+    south: Math.floor(bounds.south / stableStep) * stableStep,
+    east: Math.ceil(bounds.east / stableStep) * stableStep,
+    north: Math.ceil(bounds.north / stableStep) * stableStep,
+  };
 }
 
 /** Clave estable para no refetch en cada tick de bounds (solo cambia al cruzar cuantización). */
@@ -120,8 +128,7 @@ export function cmPortalFetchKey(opts: {
   if (!opts.bounds || !shouldCmPortalBBox(opts.bounds)) {
     return `${opts.slug}:${from}:${to}:all`;
   }
-  const zoom = Math.round(opts.bounds.zoom ?? 11);
-  const q = quantizeBounds(opts.bounds, zoom);
+  const q = quantizePortalBounds(opts.bounds);
   return `${opts.slug}:${from}:${to}:${q.west}:${q.south}:${q.east}:${q.north}`;
 }
 
@@ -131,16 +138,16 @@ export function mapCmPortalQuery(opts: {
   to?: string;
   bounds?: MapBounds | null;
 }): string {
-  const params = new URLSearchParams({ municipio: opts.slug });
+  const params = new URLSearchParams({ municipio: opts.slug, limit: String(CM_PORTAL_MAP_LIMIT), view: "aproximados-v1" });
   if (opts.from) params.set("from", opts.from);
   if (opts.to) params.set("to", opts.to);
   if (opts.bounds && shouldCmPortalBBox(opts.bounds)) {
-    const zoom = Math.round(opts.bounds.zoom ?? 11);
-    const q = quantizeBounds(opts.bounds, zoom);
+    const q = quantizePortalBounds(opts.bounds);
     params.set("minLng", String(q.west));
     params.set("minLat", String(q.south));
     params.set("maxLng", String(q.east));
     params.set("maxLat", String(q.north));
+    params.set("level", String(Math.round(opts.bounds.zoom ?? 13)));
   }
   return `${MAP_CM_PORTAL_API}?${params.toString()}`;
 }
