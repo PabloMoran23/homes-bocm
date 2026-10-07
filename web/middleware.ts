@@ -4,7 +4,6 @@ import {
   getEdition,
   isDevOnlyRoute,
   isPublicApiRoute,
-  isPublicRoute,
 } from "@/lib/edition";
 import {
   ADMIN_COOKIE,
@@ -106,12 +105,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isPublicRoute(pathname)) return NextResponse.next();
-
-  const url = request.nextUrl.clone();
-  url.pathname = "/en-desarrollo";
-  url.searchParams.set("from", pathname);
-  return NextResponse.redirect(url);
+  // Let the router return the existing 404 page for unknown URLs.
+  return NextResponse.next();
 }
 
 export const config = {
