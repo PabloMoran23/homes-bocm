@@ -685,13 +685,13 @@ export function MadridUnifiedMap({
               >
                 © OSM
               </a>
-              {" · OpenFreeMap"}
+              <a href="https://openmaptiles.org/" target="_blank" rel="noopener noreferrer"> · © OpenMapTiles</a>
               {municipalityBoundary ? <a href="https://api-features.ign.es/collections/administrativeunit?f=html" target="_blank" rel="noopener noreferrer" className="underline decoration-slate-300/80"> · Límites © IGN</a> : null}
             </span>
           </div>
         ) : (
           <div className="pointer-events-none absolute bottom-2 right-2 z-[1000] text-right text-[9px] text-slate-400/90">
-            © OSM · OpenFreeMap
+            © OSM · © OpenMapTiles
           </div>
         )}
       </div>

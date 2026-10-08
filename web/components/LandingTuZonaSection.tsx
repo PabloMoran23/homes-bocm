@@ -1,113 +1,12 @@
-"use client";
-
 import { LandingAddressForm } from "@/components/LandingAddressForm";
+import { LandingAreaMap } from "@/components/LandingAreaMap";
 
-const BENEFITS = [
-  {
-    title: "Obras y reformas en edificios de al lado",
-    detail: "Permisos de obra, cambios de uso y actuaciones en un radio de 300 m a 1,2 km.",
-  },
-  {
-    title: "Planes que pueden cambiar tu barrio",
-    detail: "Tramitaciones con ámbito cerca de tu parcela o edificio.",
-  },
-  {
-    title: "Todo en orden, con distancias y fechas",
-    detail: "Cronología clara y enlaces a cada caso.",
-  },
-] as const;
-
-function PreviewCard() {
-  return (
-    <div
-      className="relative overflow-hidden rounded-2xl border border-[var(--portal-paper-deep)] bg-[var(--portal-paper)] p-5 shadow-lg shadow-[var(--portal-ink)]/5 ring-1 ring-[var(--portal-ink)]/[0.04] sm:p-6"
-      aria-hidden
-    >
-      <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[var(--portal-ochre)]/15 blur-2xl" />
-      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--portal-accent)]">
-        Ejemplo · 500 m · último año
-      </p>
-      <p className="mt-2 font-semibold text-slate-900">Calle Mayor, 12 — Centro</p>
-      <p className="mt-1 text-sm text-slate-600">
-        En el último año, en 500 m a la redonda:{" "}
-        <span className="font-medium text-slate-800">4 obras</span> y{" "}
-        <span className="font-medium text-slate-800">2 planes</span> en tramitación.
-      </p>
-      <ul className="mt-4 space-y-3 border-t border-slate-100 pt-4 text-sm">
-        <li className="flex gap-3">
-          <span className="mt-0.5 shrink-0 rounded bg-[#f4e8d2] px-1.5 py-0.5 text-[10px] font-bold uppercase text-[#8a5a1e]">
-            Obra
-          </span>
-          <span className="text-slate-700">Rehabilitación · a 120 m</span>
-        </li>
-        <li className="flex gap-3">
-          <span className="mt-0.5 shrink-0 rounded bg-[var(--portal-accent-soft)] px-1.5 py-0.5 text-[10px] font-bold uppercase text-[var(--portal-accent)]">
-            Plan
-          </span>
-          <span className="text-slate-700">Reforma del barrio · te afecta directamente</span>
-        </li>
-      </ul>
-      <div className="mt-4 flex h-28 items-center justify-center rounded-xl border border-dashed border-[var(--portal-paper-deep)] bg-gradient-to-br from-[var(--portal-accent-soft)]/70 to-[var(--portal-paper)] text-xs text-[var(--portal-ink)]/50">
-        Mapa del radio y actividad reciente
-      </div>
+export function LandingTuZonaSection() {
+  return <section className="landing-area-section" aria-labelledby="landing-tu-zona-heading">
+    <div className="landing-area-copy"><p className="landing-eyebrow">Análisis de proximidad · Madrid</p><h2 id="landing-tu-zona-heading">El contexto de<br />tu próxima operación.</h2><p>Consulta las obras y el planeamiento alrededor de una dirección. Una primera lectura del entorno para estudiar un activo, preparar una visita o ampliar una investigación.</p>
+      <div className="landing-area-benefits"><span><b>01</b> Localiza una dirección</span><span><b>02</b> Delimita el área de estudio</span><span><b>03</b> Consulta las actuaciones y sus fuentes</span></div>
+      <LandingAddressForm submitLabel="Consultar entorno" showSecondaryLink={false} />
     </div>
-  );
-}
-
-export function LandingTuZonaSection({ isPublic = true }: { isPublic?: boolean }) {
-  return (
-    <section
-      className="border-y border-[var(--portal-paper-deep)] bg-gradient-to-b from-[var(--portal-paper)] via-[var(--surface)] to-[var(--portal-accent-soft)]/35"
-      aria-labelledby="landing-tu-zona-heading"
-    >
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center lg:gap-12">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--portal-accent)]">
-              Tu zona
-            </p>
-            <h2
-              id="landing-tu-zona-heading"
-              className="mt-3 text-3xl font-semibold tracking-tight text-[var(--portal-ink)] [text-wrap:balance] sm:text-4xl"
-            >
-              ¿Qué ha pasado cerca de{" "}
-              <span className="text-[var(--portal-accent)]">casa</span>?
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
-              {isPublic ? (
-                <>
-                  Pon tu calle en Madrid y te mostramos obras, permisos y planes en un radio a tu
-                  alrededor — gratis y sin registrarte.
-                </>
-              ) : (
-                <>
-                  Genera un informe con lo que se ha movido cerca de ti: obras, planes y
-                  distancias en una sola lectura.
-                </>
-              )}
-            </p>
-
-            <ul className="mt-6 space-y-3">
-              {BENEFITS.map((b) => (
-                <li key={b.title} className="flex gap-3 text-sm">
-                  <span
-                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--portal-accent)]"
-                    aria-hidden
-                  />
-                  <span>
-                    <span className="font-semibold text-slate-900">{b.title}</span>
-                    <span className="text-slate-600"> — {b.detail}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <LandingAddressForm />
-          </div>
-
-          <PreviewCard />
-        </div>
-      </div>
-    </section>
-  );
+    <LandingAreaMap />
+  </section>;
 }

@@ -111,8 +111,8 @@ export function NavBar() {
           <span className="min-w-0 truncate">
             <span className="text-[var(--portal-accent)]">Homes</span>
             <span className="text-[var(--portal-ink)]/35"> · </span>
-            <span className="hidden sm:inline">Urbanismo Madrid</span>
-            <span className="sm:hidden">Madrid</span>
+            <span className="hidden sm:inline">Urbanismo</span>
+            <span className="sm:hidden">Urbanismo</span>
           </span>
         </Link>
 

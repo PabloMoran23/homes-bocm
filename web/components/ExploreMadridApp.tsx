@@ -51,12 +51,14 @@ import {
 } from "@/lib/madrid-ubicaciones-map";
 import {
   featureCollectionBounds,
+  type CmMunicipioOption,
   type CmPortalProyectoProps,
 } from "@/lib/cm-portal-geo";
 import { MapCatalogPanel } from "@/components/map/MapCatalogPanel";
 import { isCmMapScope } from "@/lib/map-scope";
 import { fetchDominioJson, fetchDominioOrStatic } from "@/lib/dominio-fetch";
 import {
+  MAP_CM_MUNICIPIOS_API,
   bboxFetchKey,
   mapSigmaQuery,
   mapUbicacionesQuery,
@@ -66,7 +68,7 @@ import {
   SIGMA_MAP_CARDS_API,
   sigmaPolygonLimit,
 } from "@/lib/map-live-urls";
-import { MapMunicipioGate } from "@/components/map/MapMunicipioGate";
+import { MapMunicipioGate, type MapMunicipioSelection } from "@/components/map/MapMunicipioGate";
 import { MapProjectSpotlightCard } from "@/components/MapProjectSpotlightCard";
 import { buildLicenseMapSpotlightItem, buildPortalMapSpotlightItem, buildMapProjectSpotlightItem } from "@/lib/map-project-spotlight";
 import type { SigmaMapCardSlice } from "@/lib/map-project-spotlight";
@@ -164,9 +166,10 @@ function Div({ className, children }: { className?: string; children: React.Reac
 }
 
 export function ExploreMadridApp() {
-  const cmMapScope = isCmMapScope();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const municipioFromUrl = searchParams.get("municipio")?.trim() || null;
+  const cmMapScope = isCmMapScope() || Boolean(municipioFromUrl);
   const sigmaFromUrl = searchParams.get("sigma")?.trim() || null;
   const [ubicGeo, setUbicGeo] = useState<UbicacionesMapGeoJson | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
@@ -193,11 +196,7 @@ export function ExploreMadridApp() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  useEffect(() => {
-    if (!sigmaFromUrl || cmMapScope) return;
-    setSelectedSigmaGrupo(sigmaFichaGrupoFromSlug(sigmaFromUrl));
-    setShowSigma(true);
-  }, [sigmaFromUrl, cmMapScope]);
+
 
   const [q, setQ] = useState("");
   const [catalogQuery, setCatalogQuery] = useState("");
@@ -238,6 +237,48 @@ export function ExploreMadridApp() {
     token: number;
     initialFrame: ReturnType<typeof portalDensityCamera>;
   } | null>(null);
+
+  const selectMunicipio = useCallback(({ municipio, from, to }: MapMunicipioSelection) => {
+    setDateFrom(from);
+    setDateTo(to);
+    setMapBounds(null);
+    setPortalQuery({
+      slug: municipio.slug,
+      nombre: municipio.nombre,
+      from,
+      to,
+      west: municipio.west,
+      south: municipio.south,
+      east: municipio.east,
+      north: municipio.north,
+      token: Date.now(),
+      initialFrame: portalDensityCamera(municipio),
+    });
+    setSelectedLicense(null);
+    if (municipio.slug !== "madrid") { setShowUbicaciones(false); setShowSigma(true); }
+    setCatalogQuery("");
+    setCatalogCategory("");
+    setGateOpen(false);
+  }, []);
+
+  useEffect(() => {
+    if (!municipioFromUrl) return;
+    const controller = new AbortController();
+    void fetch(MAP_CM_MUNICIPIOS_API, { signal: controller.signal })
+      .then(response => { if (!response.ok) throw new Error("municipios"); return response.json(); })
+      .then((data: { municipios?: CmMunicipioOption[] }) => {
+        const municipio = data.municipios?.find(item => item.slug === municipioFromUrl);
+        if (municipio) selectMunicipio({ municipio, from: "", to: "" });
+      })
+      .catch(() => { /* The existing selector offers retry if the catalog is unavailable. */ });
+    return () => controller.abort();
+  }, [municipioFromUrl, selectMunicipio]);
+
+  useEffect(() => {
+    if (!sigmaFromUrl || cmMapScope) return;
+    setSelectedSigmaGrupo(sigmaFichaGrupoFromSlug(sigmaFromUrl));
+    setShowSigma(true);
+  }, [sigmaFromUrl, cmMapScope]);
 
   const dateRange = useMemo(
     () => mapDateRangeFromInputs(dateFrom, dateTo),
@@ -934,28 +975,7 @@ export function ExploreMadridApp() {
           initialSlug={portalQuery?.slug}
           initialFrom={portalQuery?.from}
           initialTo={portalQuery?.to}
-          onConfirm={({ municipio, from, to }) => {
-            setDateFrom(from);
-            setDateTo(to);
-            if (municipio.slug !== portalQuery?.slug) setMapBounds(null);
-            setPortalQuery({
-              slug: municipio.slug,
-              nombre: municipio.nombre,
-              from,
-              to,
-              west: municipio.west,
-              south: municipio.south,
-              east: municipio.east,
-              north: municipio.north,
-              token: Date.now(),
-              initialFrame: portalDensityCamera(municipio),
-            });
-            setSelectedLicense(null);
-            if (municipio.slug !== "madrid") { setShowUbicaciones(false); setShowSigma(true); }
-            setCatalogQuery("");
-            setCatalogCategory("");
-            setGateOpen(false);
-          }}
+          onConfirm={selectMunicipio}
         />
       ) : null}
 

@@ -3,7 +3,7 @@ export const HOMES_MAP_TILE_URL =
   "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
 export const HOMES_MAP_ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> · <a href="https://openfreemap.org">OpenFreeMap</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> · <a href="https://openmaptiles.org/">© OpenMapTiles</a>';
 
 /** Leaflet.markercluster exige maxZoom en el mapa; las teselas ráster lo aportaban solas. */
 export const HOMES_MAP_MIN_ZOOM = 5;

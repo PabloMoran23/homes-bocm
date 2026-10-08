@@ -118,7 +118,7 @@ export function ProvinceAtlas({ provinces }: { provinces: AtlasProvince[] }) {
         <p role="status">No encontramos ese lugar. Prueba con otro nombre.</p>
       )}
       <p className={styles.attribution}>
-        Cartografía: <a href="https://openfreemap.org/">OpenFreeMap</a> ·{" "}
+        Cartografía: {" "}
         <a href="https://openmaptiles.org/">© OpenMapTiles</a> ·{" "}
         <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap</a>
       </p>

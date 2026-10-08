@@ -425,12 +425,12 @@ export function ProjectsMap({
                   </a>
                   {" · "}
                   <a
-                    href="https://openfreemap.org"
+                    href="https://openmaptiles.org/"
                     className="underline decoration-slate-300/80 underline-offset-2 hover:text-slate-600"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    OpenFreeMap
+                    © OpenMapTiles
                   </a>
                 </span>
               </div>

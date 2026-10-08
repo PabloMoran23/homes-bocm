@@ -254,3 +254,131 @@ body > :not(header) {
   .map-catalog-panel > header { padding-top: 8px; padding-bottom: 8px; }
   .map-project-detail-card { left: auto; width: min(390px, calc(100% - 24px)); max-height: calc(100% - 24px); }
 }
+
+/* A place-first entrance, with cartography extending behind the search. */
+.landing-search-hero { position: relative; isolation: isolate; min-height: min(790px, calc(100svh - 56px)); display: flex; align-items: center; justify-content: center; background: #e9eee7; padding: 100px 24px 155px; }
+.landing-search-map { position: absolute; inset: 0; z-index: -3; overflow: hidden; pointer-events: none; }
+.landing-search-map > div { filter: blur(3px) saturate(.65); transform: scale(1.025); }
+.landing-search-wash { position: absolute; inset: 0; z-index: -2; background: radial-gradient(ellipse at 50% 40%, rgba(249,248,240,.9) 0%, rgba(249,248,240,.72) 28%, rgba(249,248,240,.18) 75%), linear-gradient(0deg, var(--portal-paper), transparent 25%); }
+.landing-search-content { width: 100%; max-width: 700px; text-align: center; }
+.landing-search-content h1 { font-size: clamp(48px, 6.5vw, 88px); line-height: 1.04; letter-spacing: -.065em; font-weight: 500; color: var(--portal-ink); }
+.landing-municipio-search { position: relative; max-width: 580px; margin: 38px auto 0; text-align: center; }
+.landing-search-field { display: flex; align-items: center; gap: 15px; padding: 9px 10px 9px 22px; background: #fff; border: 1px solid #d4dcd3; border-radius: 14px; box-shadow: 0 12px 40px #253c3810; color: var(--portal-accent); }
+.landing-search-field:focus-within { outline: 2px solid var(--portal-accent); outline-offset: 3px; }
+.landing-search-field input { min-width: 0; flex: 1; height: 46px; outline: none; font-size: 16px; color: var(--portal-ink); }
+.landing-search-field input::placeholder { color: #78827b; }
+.landing-search-field > button { flex-shrink: 0; width: 46px; height: 46px; border-radius: 9px; background: var(--portal-accent); color: white; font-size: 24px; cursor: pointer; }
+.landing-search-field > button:disabled { opacity: .4; }
+.landing-search-results { position: absolute; top: 76px; left: 0; right: 0; z-index: 50; overflow: hidden; border: 1px solid #d4dcd3; border-radius: 12px; background: white; box-shadow: 0 20px 60px #253c3820; text-align: left; color: var(--portal-ink); }
+.landing-search-caption { position: absolute; bottom: 28px; left: 32px; right: 32px; display: flex; justify-content: space-between; font-size: 11px; color: #63756b; }
+@media (max-width: 640px) {
+  .landing-search-hero { padding: 80px 20px 145px; min-height: 660px; }
+  .landing-search-field { gap: 10px; padding-left: 15px; }
+  .landing-search-field input { font-size: 16px; }
+  .landing-search-caption { left: 20px; right: 20px; }
+  .landing-search-caption span:last-child { display: none; }
+}
+.landing-map-credit { position: absolute; bottom: 7px; right: 20px; color: #63756b; font-size: 9px; }
+
+/* Editorial landing: research, proximity and professional workflows. */
+.landing-search-content { max-width: 950px; }
+.landing-search-content h1 { font-size: clamp(42px, 5.8vw, 76px); letter-spacing: -.055em; }
+.landing-hero-description { margin: 24px auto 0; max-width: 580px; color: #52645c; font-size: 17px; line-height: 1.65; }
+.landing-search-hero { padding-top: 80px; padding-bottom: 100px; }
+.landing-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--portal-accent); margin-bottom: 20px; }
+.landing-section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 36px; margin-bottom: 42px; }
+.landing-section-heading h2, .landing-area-copy h2, .landing-analysis h2 { font-size: clamp(32px, 3.5vw, 46px); line-height: 1.12; letter-spacing: -.045em; font-weight: 500; }
+.landing-section-heading > p { max-width: 325px; color: #637068; font-size: 14px; line-height: 1.75; }
+.landing-editorial, .landing-business { max-width: 1152px; margin: auto; padding: 85px 24px; }
+.landing-news-grid { display: grid; grid-template-columns: 1.15fr 1fr; column-gap: 48px; border-top: 1px solid #bec9bf; }
+.landing-news-grid article { min-width: 0; padding: 25px 0; }
+.landing-news-lead { grid-row: span 2; border-right: 1px solid #d9dfd5; padding-right: 48px !important; }
+.landing-news-brief + .landing-news-brief { border-top: 1px solid #d9dfd5; }
+.landing-news-meta { display: flex; justify-content: space-between; gap: 12px; text-transform: uppercase; letter-spacing: .08em; font-size: 10px; color: #647569; }
+.landing-news-project { margin-top: 24px; color: var(--portal-accent); font-size: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.landing-news-grid h3 { margin-top: 10px; font-size: 23px; line-height: 1.2; letter-spacing: -.025em; font-weight: 500; text-wrap: balance; }
+.landing-news-lead h3 { font-size: 37px; }
+.landing-news-body { margin-top: 18px; color: #626b64; font-size: 14px; line-height: 1.8; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.landing-news-lead .landing-news-body { -webkit-line-clamp: 7; }
+.landing-news-grid footer { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; margin-top: 24px; font-size: 11px; }
+.landing-news-grid footer a:first-child { color: var(--portal-accent); font-weight: 600; }
+.landing-news-grid footer a:last-child { color: #778176; }
+.landing-news-grid a:hover, .landing-news-bottom a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.landing-news-bottom { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid #bec9bf; padding-top: 18px; font-size: 11px; color: #68766b; }
+.landing-news-bottom a { flex-shrink: 0; font-weight: 600; color: var(--portal-accent); }
+.landing-area-section { max-width: 1152px; margin: auto; padding: 35px 24px 90px; display: grid; grid-template-columns: 1fr 1.05fr; gap: 65px; align-items: center; }
+.landing-area-copy > p:not(.landing-eyebrow) { color: #637068; font-size: 14px; line-height: 1.8; margin-top: 24px; }
+.landing-area-benefits { display: grid; gap: 13px; margin-top: 25px; font-size: 12px; color: #344a40; }
+.landing-area-benefits b { margin-right: 12px; font-size: 10px; font-weight: 400; color: #839081; }
+.landing-area-map { position: relative; height: 510px; min-width: 0; overflow: hidden; border-radius: 4px; background: #e5eadf; border: 1px solid #d5dccf; isolation: isolate; }
+.landing-area-toolbar { position: absolute; top: 16px; left: 16px; right: 16px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; font-size: 10px; }
+.landing-area-toolbar > span { background: #fffdf7e8; padding: 9px 12px; }
+.landing-area-toolbar > div { display: flex; background: #fffdf7; padding: 3px; border-radius: 5px; }
+.landing-area-toolbar button { padding: 10px; min-height: 40px; cursor: pointer; border-radius: 3px; }
+.landing-area-toolbar button[aria-pressed="true"] { background: #214f50; color: white; }
+.landing-area-location { position: absolute; bottom: 35px; left: 18px; right: 18px; display: flex; align-items: center; justify-content: space-between; padding: 20px; background: #fffef9f5; box-shadow: 0 4px 30px #233f3910; }
+.landing-area-location small { font-size: 9px; text-transform: uppercase; letter-spacing: .12em; color: #67796e; }
+.landing-area-location strong { display: block; font-size: 21px; font-weight: 500; margin: 6px 0; }
+.landing-area-location span span { font-size: 11px; color: #63766b; }
+.landing-area-location b { font-size: 25px; font-weight: 400; color: var(--portal-accent); }
+.landing-area-attribution { position: absolute; right: 10px; bottom: 8px; font-size: 9px; color: #3c5144; background: #fffdf7b0; }
+.landing-analysis { background: #233e36; color: #f3f2e9; }
+.landing-analysis-inner { max-width: 1152px; padding: 65px 24px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 90px; align-items: center; }
+.landing-analysis .landing-eyebrow { color: #b9ccad; }
+.landing-analysis-inner > div > p:not(.landing-eyebrow) { font-size: 14px; line-height: 1.8; color: #b8c8be; max-width: 430px; margin-top: 22px; }
+.landing-analysis-inner a { display: inline-block; margin-top: 30px; padding-bottom: 7px; border-bottom: 1px solid #a7b6a7; font-size: 12px; }
+.landing-analysis-data { padding-left: 35px; border-left: 1px solid #ffffff25; }
+.landing-analysis-data .landing-analysis-label { font-size: 10px; text-transform: uppercase; letter-spacing: .13em; color: #b7cbb4; }
+.landing-analysis-counts { display: flex; gap: 35px; margin: 25px 0; }
+.landing-analysis-counts strong { display: block; font-size: clamp(30px, 3vw, 43px); letter-spacing: -.04em; font-weight: 400; }
+.landing-analysis-counts span { display: block; margin-top: 5px; font-size: 11px; color: #b8c8be; }
+.landing-analysis-topics { display: grid; gap: 15px; padding-top: 20px; border-top: 1px solid #ffffff25; font-size: 12px; color: #cbd7c7; }
+.landing-analysis-bars > div { display: grid; grid-template-columns: 100px 1fr 45px; gap: 10px; align-items: center; margin-top: 15px; font-size: 11px; }
+.landing-analysis-bars i { height: 4px; background: #bed0b2; }
+.landing-business-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #bec9bf; }
+.landing-business-grid article { padding: 25px 25px 30px 0; min-width: 0; }
+.landing-business-grid article + article { border-left: 1px solid #d9dfd5; padding-left: 25px; }
+.landing-business-number { font-size: 43px; font-weight: 400; letter-spacing: -.05em; color: #9aaa98; }
+.landing-business-tags { font-size: 9px; text-transform: uppercase; letter-spacing: .1em; color: #788672; margin: 24px 0 10px; }
+.landing-business-grid h3 { font-size: 23px; line-height: 1.2; letter-spacing: -.03em; font-weight: 500; }
+.landing-business-grid h3 + p { font-size: 13px; line-height: 1.8; color: #697367; margin-top: 18px; }
+.landing-business-grid a { display: inline-block; font-size: 12px; font-weight: 500; margin-top: 25px; color: var(--portal-accent); }
+.landing-business-contact { padding: 30px; margin-top: 35px; background: #e5ebde; display: flex; justify-content: space-between; align-items: center; gap: 30px; }
+.landing-business-contact h3 { font-size: 22px; letter-spacing: -.03em; font-weight: 500; }
+.landing-business-contact p { font-size: 13px; color: #697367; margin-top: 8px; }
+.landing-business-contact a { padding: 16px 22px; background: #233e36; color: #fff; font-size: 12px; flex-shrink: 0; }
+@media (max-width: 760px) {
+  .landing-search-hero { min-height: 650px; padding: 80px 20px 95px; }
+  .landing-search-content h1 { font-size: clamp(36px, 8.5vw, 58px); }
+  .landing-hero-description { font-size: 14px; padding: 0 8px; }
+  .landing-search-content > p:first-child { font-size: 9px; letter-spacing: .13em; }
+  .landing-municipio-search { margin-top: 28px; }
+  .landing-search-field input { font-size: 16px; }
+  .landing-section-heading { display: block; margin-bottom: 30px; }
+  .landing-section-heading > p { margin-top: 20px; max-width: 100%; }
+  .landing-editorial, .landing-business { padding: 55px 20px; }
+  .landing-news-grid { grid-template-columns: 1fr; }
+  .landing-news-lead { border-right: 0; padding-right: 0 !important; grid-row: auto; }
+  .landing-news-lead h3 { font-size: 30px; }
+  .landing-news-grid article + article { border-top: 1px solid #d9dfd5; }
+  .landing-news-bottom { flex-direction: column; gap: 15px; }
+  .landing-area-section { grid-template-columns: 1fr; gap: 30px; padding: 15px 20px 55px; }
+  .landing-area-map { height: 420px; }
+  .landing-analysis-inner { grid-template-columns: 1fr; gap: 35px; padding: 50px 20px; }
+  .landing-analysis-data { padding: 25px 0 0; border-left: 0; border-top: 1px solid #ffffff25; }
+  .landing-analysis-counts { gap: 25px; }
+  .landing-business-grid { grid-template-columns: 1fr; }
+  .landing-business-grid article, .landing-business-grid article + article { border-left: 0; padding: 25px 0; border-bottom: 1px solid #d9dfd5; }
+  .landing-business-number { float: right; font-size: 35px; }
+  .landing-business-tags { margin-top: 0; }
+  .landing-business-grid h3 { max-width: 80%; }
+  .landing-business-contact { align-items: stretch; flex-direction: column; padding: 25px; }
+  .landing-business-contact a { text-align: center; }
+  .landing-search-results { max-height: 330px; overflow-y: auto; }
+}
+@media (max-width: 370px) {
+  .landing-search-field { gap: 7px; padding-left: 10px; }
+  .landing-search-field > svg { width: 18px; flex-shrink: 0; }
+  .landing-search-field > button { width: 40px; }
+  .landing-analysis-counts { flex-wrap: wrap; }
+}
