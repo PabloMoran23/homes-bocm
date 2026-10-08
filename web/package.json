@@ -20,7 +20,8 @@
     "lint": "eslint",
     "test:map": "node scripts/test-portal-map-data.mjs",
     "build:province-previews": "node scripts/build-province-previews.mjs",
-    "check:province-previews": "node scripts/build-province-previews.mjs --check"
+    "check:province-previews": "node scripts/build-province-previews.mjs --check",
+    "build:province-boundaries": "node scripts/build-province-boundaries.mjs"
   },
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",

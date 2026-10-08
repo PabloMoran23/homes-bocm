@@ -45,13 +45,17 @@ Next.js 16 (App Router), Tailwind CSS v4, react-leaflet, Chart.js, Supabase.
 MapLibre ni descarga teselas en el navegador para las tarjetas. Los mapas de las
 páginas de provincia y municipio siguen siendo interactivos.
 
-Al cambiar la cobertura de `data/project-directory.json`, regenerar y guardar las
+Las imágenes encuadran el contorno provincial del IGN y no muestran puntos de proyectos.
+Los límites simplificados se guardan en `data/province-boundaries.json`.
+
+Al añadir provincias a `data/project-directory.json`, regenerar y guardar las
 miniaturas junto con los datos:
 
 ```bash
+npm run build:province-boundaries # opcional: actualiza límites desde el IGN
 npm run build:province-previews  # requiere red; usa teselas de OpenFreeMap
 npm run check:province-previews # verifica cobertura y dimensiones sin red
 ```
 
 La generación se ejecuta explícitamente, no durante una visita ni en el build de
-Vercel. Mantener los créditos de OpenStreetMap y OpenMapTiles del directorio.
+Vercel. Mantener los créditos de OpenStreetMap, OpenMapTiles e IGN del directorio.
