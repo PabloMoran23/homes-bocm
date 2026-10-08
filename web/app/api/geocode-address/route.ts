@@ -59,12 +59,19 @@ export async function GET(req: Request) {
     viewbox: "-3.90,40.65,-3.50,40.31",
   });
 
-  const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
-    headers: {
-      "Accept-Language": "es",
-      "User-Agent": "HomesMadrid/1.0 (https://homes.local)",
-    },
-  });
+  let res: Response;
+  try {
+    res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, {
+      headers: {
+        "Accept-Language": "es",
+        "User-Agent": "Homes/1.0 (https://homes-urbanismo.es)",
+      },
+      signal: AbortSignal.timeout(7000),
+      next: { revalidate: 86400 },
+    });
+  } catch {
+    return NextResponse.json({ error: "No se pudo localizar la dirección. Vuelve a intentarlo." }, { status: 504 });
+  }
 
   if (!res.ok) {
     return NextResponse.json({ error: "No se pudo buscar esa dirección" }, { status: 502 });

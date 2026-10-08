@@ -91,7 +91,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Indica dirección (ndp) o lat/lng" }, { status: 400 });
   }
 
-  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
     return NextResponse.json({ error: "Coordenadas inválidas" }, { status: 400 });
   }
 

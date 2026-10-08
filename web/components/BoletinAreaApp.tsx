@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   boletinResumenParrafo,
   boletinStatLabel,
@@ -38,13 +38,6 @@ type GeocodeResult = {
   rawLabel?: string;
   error?: string;
 };
-
-function norm(s: string) {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
 
 function formatEdicionDate(d = new Date()) {
   return d.toLocaleDateString("es-ES", {
@@ -134,8 +127,9 @@ export function BoletinAreaApp() {
   const resultsAnchorRef = useRef<HTMLDivElement>(null);
   const scrollResultsAfterLoad = useRef(false);
 
-  const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
-  const [searchReady, setSearchReady] = useState(false);
+  const [matches, setMatches] = useState<{ query: string; items: UbicacionSearchItem[] }>({ query: "", items: [] });
+  const activeSearch = useRef<AbortController | null>(null);
+  const geocoded = useRef<{ query: string; result: GeocodeResult } | null>(null);
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<UbicacionSearchItem | null>(null);
   const [openSuggest, setOpenSuggest] = useState(false);
@@ -145,46 +139,45 @@ export function BoletinAreaApp() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<BoletinAreaResult | null>(null);
 
+  // Fetch only a handful of matches after typing stops; no full address catalogue.
+  const suggestions = matches.query === q.trim() ? matches.items : [];
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
+    const query = q.trim();
+    if (!openSuggest || selected || query.length < 2) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
       try {
-        const res = await fetch("/data/ubicaciones-search.json");
-        if (!res.ok) throw new Error("missing");
-        if (!cancelled) {
-          setSearchIndex((await res.json()) as UbicacionSearchItem[]);
-          setSearchReady(true);
-        }
+        const res = await fetch(`/api/dominio/search-ubicaciones?q=${encodeURIComponent(query)}`, {
+          signal: controller.signal,
+        });
+        if (!res.ok) return;
+        const items = await res.json() as UbicacionSearchItem[];
+        if (!controller.signal.aborted) setMatches({ query, items });
       } catch {
-        if (!cancelled) setError("No hemos podido cargar el buscador de direcciones. Prueba a recargar la página.");
+        // Free-text search remains available if suggestions fail.
       }
-    })();
+    }, 300);
     return () => {
-      cancelled = true;
+      window.clearTimeout(timer);
+      controller.abort();
     };
-  }, []);
+  }, [q, selected, openSuggest]);
 
-  const suggestions = useMemo(() => {
-    const nq = norm(q.trim());
-    if (nq.length < 2) return [];
-    return searchIndex
-      .filter((item) => {
-        const blob = norm(
-          [item.label, item.direccion, item.distrito, item.barrio, item.ndp].join(" "),
-        );
-        return blob.includes(nq);
-      })
-      .slice(0, 10);
-  }, [q, searchIndex]);
+  useEffect(() => () => activeSearch.current?.abort(), []);
 
   const buscar = useCallback(
     async (override?: { ndp?: string; q?: string }) => {
-      const ndp = override?.ndp ?? selected?.ndp;
+      const ndp = override?.ndp ?? (override?.q ? undefined : selected?.ndp);
       const freeText = (override?.q ?? q).trim();
       if (!ndp && freeText.length < 3) {
         setError("Escribe una dirección o elige una sugerencia");
         return;
       }
+      activeSearch.current?.abort();
+      const controller = new AbortController();
+      activeSearch.current = controller;
+      const timeout = window.setTimeout(() => controller.abort("timeout"), 20_000);
+      setOpenSuggest(false);
       setLoading(true);
       setError(null);
       setData(null);
@@ -196,11 +189,18 @@ export function BoletinAreaApp() {
         if (ndp) {
           params.set("ndp", ndp);
         } else {
-          const geoRes = await fetch(`/api/geocode-address?q=${encodeURIComponent(freeText)}`);
-          const geo = (await geoRes.json()) as GeocodeResult;
-          if (!geoRes.ok || geo.error) {
-            throw new Error(geo.error || "No se pudo localizar esa dirección");
+          let geo = geocoded.current?.query === freeText ? geocoded.current.result : null;
+          if (!geo) {
+            const geoRes = await fetch(`/api/geocode-address?q=${encodeURIComponent(freeText)}`, {
+              signal: controller.signal,
+            });
+            geo = await geoRes.json() as GeocodeResult;
+            if (!geoRes.ok || geo.error) {
+              throw new Error(geo.error || "No se pudo localizar esa dirección");
+            }
           }
+          if (controller.signal.aborted) return;
+          geocoded.current = { query: geo.label, result: geo };
           params.set("lat", String(geo.lat));
           params.set("lng", String(geo.lng));
           params.set("label", geo.label);
@@ -208,10 +208,16 @@ export function BoletinAreaApp() {
           setSelected(null);
           setOpenSuggest(false);
         }
-        const res = await fetch(`/api/boletin-area?${params}`);
+        const res = await fetch(`/api/boletin-area?${params}`, { signal: controller.signal });
         const json = (await res.json()) as BoletinAreaResult & { error?: string };
         if (!res.ok || json.error) {
           throw new Error(json.error || "No se pudo cargar el boletín");
+        }
+        if (controller.signal.aborted) return;
+        if (ndp) {
+          const label = json.center.direccion || ndp;
+          setQ(label);
+          setSelected({ ndp, label, direccion: label, distrito: json.center.distrito || "", barrio: json.center.barrio || "" });
         }
         setData(json);
         trackEvent("boletin_buscar", {
@@ -221,9 +227,14 @@ export function BoletinAreaApp() {
         });
         scrollResultsAfterLoad.current = true;
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Error al consultar");
+        if (!controller.signal.aborted) {
+          setError(e instanceof Error ? e.message : "Error al consultar");
+        } else if (controller.signal.reason === "timeout") {
+          setError("La consulta está tardando demasiado. Vuelve a intentarlo.");
+        }
       } finally {
-        setLoading(false);
+        window.clearTimeout(timeout);
+        if (activeSearch.current === controller) setLoading(false);
       }
     },
     [selected, q, radiusM, months],
@@ -251,19 +262,19 @@ export function BoletinAreaApp() {
   }, [qFromUrl, ndpFromUrl, buscar]);
 
   useEffect(() => {
-    if (!searchReady || !ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
-    const item = searchIndex.find((i) => i.ndp === ndpFromUrl);
-    if (!item) return;
+    if (!ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
     autoLoadedNdp.current = ndpFromUrl;
     queueMicrotask(() => {
-      setSelected(item);
-      setQ(item.label);
+      setSelected(null);
+      setQ(ndpFromUrl);
       setOpenSuggest(false);
       void buscar({ ndp: ndpFromUrl });
     });
-  }, [searchReady, ndpFromUrl, searchIndex, buscar]);
+  }, [ndpFromUrl, buscar]);
 
   const pickSuggestion = useCallback((item: UbicacionSearchItem) => {
+    activeSearch.current?.abort();
+    setLoading(false);
     setSelected(item);
     setQ(item.label);
     setOpenSuggest(false);
@@ -272,7 +283,7 @@ export function BoletinAreaApp() {
   }, []);
 
   const radioLabel = RADIUS_OPTIONS.find((o) => o.m === (data?.params.radiusM ?? radiusM))?.label;
-  const canSearch = searchReady && !loading && (selected != null || q.trim().length >= 3);
+  const canSearch = !loading && (selected != null || q.trim().length >= 3);
   const filtersStale = Boolean(
     data && (data.params.radiusM !== radiusM || data.params.months !== months),
   );
@@ -309,9 +320,20 @@ export function BoletinAreaApp() {
                 type="search"
                 value={q}
                 onChange={(e) => {
+                  activeSearch.current?.abort();
+                  setLoading(false);
+                  setData(null);
+                  setError(null);
                   setQ(e.target.value);
                   setSelected(null);
                   setOpenSuggest(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && canSearch) {
+                    e.preventDefault();
+                    void buscar();
+                  }
+                  if (e.key === "Escape") setOpenSuggest(false);
                 }}
                 onFocus={() => setOpenSuggest(true)}
                 placeholder="Calle, número o barrio…"
@@ -542,7 +564,7 @@ export function BoletinAreaApp() {
         ) : (
           <div className="mt-12 rounded-2xl border border-dashed border-slate-300 bg-white/50 px-6 py-16 text-center">
             <p className="font-serif text-lg text-slate-600">
-              Introduce tu dirección y pulsa «Generar boletín» para ver el resumen de tu zona.
+              {loading ? "Consultando las licencias y los proyectos cercanos…" : "Introduce tu dirección y pulsa «Buscar dirección» para ver el resumen de tu zona."}
             </p>
           </div>
         )}

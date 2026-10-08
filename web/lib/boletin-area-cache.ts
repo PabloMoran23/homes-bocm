@@ -10,15 +10,7 @@ type CacheEntry = {
 
 const cache = new Map<string, CacheEntry>();
 
-function prune(now: number) {
-  if (cache.size <= MAX_ENTRIES) return;
-  for (const [key, entry] of cache) {
-    if (entry.expiresAt <= now) cache.delete(key);
-    if (cache.size <= MAX_ENTRIES * 0.8) break;
-  }
-}
-
-/** Clave estable (~100 m) para reutilizar respuestas calientes en la misma instancia. */
+/** Preserve the requested center; nearby addresses may have different results. */
 export function boletinAreaCacheKey(input: {
   lat: number;
   lng: number;
@@ -29,8 +21,7 @@ export function boletinAreaCacheKey(input: {
   if (input.ndp) {
     return `ndp:${input.ndp.trim()}:${input.radiusM}:${input.months}`;
   }
-  const lat = Math.round(input.lat * 1000) / 1000;
-  const lng = Math.round(input.lng * 1000) / 1000;
+  const { lat, lng } = input;
   return `geo:${lat}:${lng}:${input.radiusM}:${input.months}`;
 }
 
@@ -46,8 +37,12 @@ export function readBoletinAreaCache(key: string): BoletinAreaResult | null {
 
 export function writeBoletinAreaCache(key: string, result: BoletinAreaResult) {
   const now = Date.now();
-  prune(now);
+  cache.delete(key);
   cache.set(key, { expiresAt: now + TTL_MS, result });
+  for (const [entryKey, entry] of cache) {
+    if (entry.expiresAt <= now) cache.delete(entryKey);
+  }
+  while (cache.size > MAX_ENTRIES) cache.delete(cache.keys().next().value!);
 }
 
 export const BOLETIN_AREA_CACHE_HEADERS = {
