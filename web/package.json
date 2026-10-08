@@ -18,7 +18,9 @@
     "verify:production": "node scripts/verify-production.mjs",
     "start": "next start",
     "lint": "eslint",
-    "test:map": "node scripts/test-portal-map-data.mjs"
+    "test:map": "node scripts/test-portal-map-data.mjs",
+    "build:province-previews": "node scripts/build-province-previews.mjs",
+    "check:province-previews": "node scripts/build-province-previews.mjs --check"
   },
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",
@@ -37,6 +39,7 @@
     "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
+    "@mapbox/vector-tile": "3.0.0",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
@@ -44,7 +47,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "pbf": "5.1.2",
     "react-test-renderer": "19.2.4",
+    "sharp": "0.34.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -73,28 +73,11 @@
   position: relative;
   overflow: hidden;
 }
-.mapHost {
-  position: absolute;
-  inset: 0;
-}
-.mapHost canvas {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
 .miniMap img {
   position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.mapState {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 10px;
-  color: #6b7b6e;
 }
 .cardText {
   padding: 14px 16px 16px;

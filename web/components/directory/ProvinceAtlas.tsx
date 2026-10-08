@@ -1,17 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import styles from "./ProvinceAtlas.module.css";
-const MiniMap = dynamic(() => import("./ProvinceMiniMap"), {
-  ssr: false,
-  loading: () => <div className={styles.miniMap} />,
-});
 export type AtlasProvince = {
   name: string;
   slug: string;
   href: string;
-  centers: [number, number][];
   municipalities: { name: string; href: string }[];
 };
 // Preserve the atlas reading order in a regular grid.
@@ -87,7 +82,9 @@ export function ProvinceAtlas({ provinces }: { provinces: AtlasProvince[] }) {
               prefetch={false}
               className={styles.provinceLink}
             >
-              <MiniMap centers={p.centers} />
+              <div className={styles.miniMap} aria-hidden="true">
+                <Image src={`/maps/provinces/${p.slug}.webp`} alt="" width={520} height={260} loading="lazy" unoptimized />
+              </div>
               <div className={styles.cardText}>
                 <h2>{p.name}</h2>
                 <p>

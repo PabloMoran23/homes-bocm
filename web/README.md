@@ -38,3 +38,20 @@ Rutas `/madrid/bocm`, `/planes`, etc. están en desarrollo (redirigen a `/en-des
 ## Stack
 
 Next.js 16 (App Router), Tailwind CSS v4, react-leaflet, Chart.js, Supabase.
+
+## Miniaturas del directorio de provincias
+
+`/proyectos` sirve imágenes WebP locales de `public/maps/provinces/`; no inicializa
+MapLibre ni descarga teselas en el navegador para las tarjetas. Los mapas de las
+páginas de provincia y municipio siguen siendo interactivos.
+
+Al cambiar la cobertura de `data/project-directory.json`, regenerar y guardar las
+miniaturas junto con los datos:
+
+```bash
+npm run build:province-previews  # requiere red; usa teselas de OpenFreeMap
+npm run check:province-previews # verifica cobertura y dimensiones sin red
+```
+
+La generación se ejecuta explícitamente, no durante una visita ni en el build de
+Vercel. Mantener los créditos de OpenStreetMap y OpenMapTiles del directorio.

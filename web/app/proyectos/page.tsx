@@ -23,7 +23,6 @@ export default function ProjectsDirectoryPage() {
       name: p.name,
       slug: p.slug,
       href: provincePath(p.slug),
-      centers: municipalities.map((m) => m.center),
       municipalities: municipalities.map((m) => ({
         name: m.name,
         href: municipalityPath(m),
