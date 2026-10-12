@@ -1,6 +1,6 @@
 # Analítica de sesiones
 
-La medición propia complementa las visitas agregadas de Vercel. Solo empieza tras aceptar la analítica y recoge sesiones por pestaña, con 30 minutos de inactividad. No identifica personas ni enlaza visitas de días diferentes. El origen de entrada se conserva al navegar; después de caducar en la misma pestaña se marca como interno.
+La medición propia complementa las visitas agregadas de Vercel. Se activa por defecto en la web, sin aviso de aceptación, y recoge sesiones por pestaña, con 30 minutos de inactividad. No identifica personas ni enlaza visitas de días diferentes. El origen de entrada se conserva al navegar; después de caducar en la misma pestaña se marca como interno.
 
 ## Datos
 
@@ -12,16 +12,16 @@ Se acumula tiempo mientras la pestaña está visible y ha habido actividad en el
 
 `/admin/analitica` usa la contraseña y cookie de administrador existentes. En producción pública solo se habilitan esa página y el login; los otros paneles siguen bloqueados. La página valida la cookie también en servidor. Las tablas tienen RLS y sin permisos para anon/authenticated. Las RPC requieren un secreto de servidor cuyo hash se guarda en un esquema privado. El navegador nunca recibe el secreto.
 
-La recepción exige mismo origen, consentimiento en el payload, lista cerrada de eventos/propiedades, tamaño y timestamps válidos. Se deduplica por UUID. Un límite compartido en base de datos permite 30 lotes por minuto y origen de red, usando un HMAC rotatorio que expira a las dos horas. Se excluyen User-Agents de bots conocidos, `navigator.webdriver` y administradores autenticados. Más de 100 vistas en una sesión se marca como sospechoso; no garantiza separar personas y bots. Un usuario puede bloquear la medición y la muestra solo representa visitantes que la aceptan.
+La recepción exige mismo origen, lista cerrada de eventos/propiedades, tamaño y timestamps válidos. Se deduplica por UUID. Un límite compartido en base de datos permite 30 lotes por minuto y origen de red, usando un HMAC rotatorio que expira a las dos horas. Se incluyen también administradores y bots que ejecutan JavaScript. El servidor marca cada evento con `traffic_type`: `admin`, `bot` o `unclassified`, usando la sesión de administrador y las señales de automatización; estas señales no identifican todos los bots. Más de 100 vistas en una sesión se marca como sospechoso; no garantiza separar personas y bots. Un usuario puede bloquear la medición por lo que los datos pueden no incluir todas las visitas.
 
 ## Configuración
 
 1. Aplicar `supabase/migrations/20261012120000_session_analytics.sql` usando la conexión PostgreSQL de servidor.
 2. Generar un secreto aleatorio de al menos 32 bytes. Registrar SHA-256 hexadecimal en `homes_analytics_private.config` y poner el valor original en `ANALYTICS_RPC_KEY` del servidor.
 3. Configurar `NEXT_PUBLIC_SESSION_ANALYTICS=1`, `ADMIN_PANEL_PASSWORD` robusta y `CRON_SECRET` en Vercel Production. Nunca usar NEXT_PUBLIC para secretos.
-4. Desplegar. Vercel ejecuta `/api/analytics/retention` diariamente a las 03:15 UTC con CRON_SECRET. Borra solo eventos de más de 90 días y límites caducados. Cada escritura e informe también aplica retención. La elección del visitante dura 180 días y puede retirarse desde Privacidad.
+4. Desplegar. Vercel ejecuta `/api/analytics/retention` diariamente a las 03:15 UTC con CRON_SECRET. Borra solo eventos de más de 90 días y límites caducados. Cada escritura e informe también aplica retención.
 
-Desactivar `NEXT_PUBLIC_SESSION_ANALYTICS` y volver a desplegar detiene la recogida y oculta las preferencias; mantener la tarea de retención mientras existan datos. No hay backfill de visitas previas.
+Desactivar `NEXT_PUBLIC_SESSION_ANALYTICS` y volver a desplegar detiene la recogida ; mantener la tarea de retención mientras existan datos. No hay backfill de visitas previas.
 
 ## Verificación
 

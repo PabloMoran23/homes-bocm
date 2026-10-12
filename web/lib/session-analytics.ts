@@ -1,9 +1,6 @@
-/** First-party session measurement. Never starts before explicit consent. */
-export const CONSENT_KEY = "homes_analytics_consent_v1";
+/** First-party session measurement enabled by default on website pages. */
 const SESSION_KEY = "homes_analytics_session_v1";
 const IDLE_MS = 30 * 60 * 1000;
-const CONSENT_MS = 180 * 24 * 60 * 60 * 1000;
-export type Consent = "accepted" | "rejected" | null;
 export type AnalyticsProps = Record<string, string | number | boolean | null>;
 type Session = { id: string; lastActivity: number; source: string };
 type MeasurementEvent = { id: string; session: string; page: string; name: string; path: string; source: string; at: number; props: AnalyticsProps };
@@ -15,23 +12,6 @@ let busy = false;
 
 export function analyticsEnabled() {
   return process.env.NEXT_PUBLIC_SESSION_ANALYTICS === "1";
-}
-
-export function readConsent(): Consent {
-  if (typeof window === "undefined") return null;
-  try {
-    const saved = JSON.parse(localStorage.getItem(CONSENT_KEY) || "null");
-    return saved && Date.now() - saved.at < CONSENT_MS && ["accepted", "rejected"].includes(saved.value) ? saved.value : null;
-  } catch { return null; }
-}
-
-export function writeConsent(value: Exclude<Consent, null>) {
-  try { localStorage.setItem(CONSENT_KEY, JSON.stringify({ value, at: Date.now() })); } catch { /* Storage unavailable: stay opted out. */ }
-  if (value === "rejected") {
-    queue = []; session = null; page = ""; path = "";
-    try { sessionStorage.removeItem(SESSION_KEY); } catch { /* No storage. */ }
-  }
-  window.dispatchEvent(new Event("homes-analytics-consent"));
 }
 
 function entrySource() {
@@ -66,7 +46,7 @@ export function touchAnalyticsSession() {
 }
 
 export function measurementAllowed() {
-  return typeof window !== "undefined" && analyticsEnabled() && readConsent() === "accepted" && !location.pathname.startsWith("/admin") && !navigator.webdriver;
+  return typeof window !== "undefined" && analyticsEnabled();
 }
 
 /** Route IDs are useful for projects; addresses, query strings and fragments are not collected. */
@@ -107,7 +87,7 @@ export function recordSessionEvent(name: string, props: AnalyticsProps = {}) {
 export async function flushAnalytics(beacon = false) {
   if (!measurementAllowed() || !queue.length || busy) return;
   const batch = queue.splice(0, 20);
-  const body = JSON.stringify({ consent: true, events: batch });
+  const body = JSON.stringify({ automated: navigator.webdriver === true, events: batch });
   if (beacon && navigator.sendBeacon("/api/analytics", new Blob([body], { type: "application/json" }))) return;
   busy = true;
   try {

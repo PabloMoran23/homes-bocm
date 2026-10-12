@@ -13,17 +13,17 @@ function load(file, globals = {}) {
 const { sanitizeAnalyticsBatch } = load("../lib/analytics-validation.ts");
 const now = Date.now();
 const event = { id: webcrypto.randomUUID(), session: webcrypto.randomUUID(), page: webcrypto.randomUUID(), name: "boletin_buscar", path: "/boletin", source: "google", at: now, props: { q: "private address", lat: 40.45, distrito: "Hortaleza", resultados: 0, active_seconds: -5 } };
-const clean = sanitizeAnalyticsBatch({ consent: true, events: [event] }, now);
+const clean = sanitizeAnalyticsBatch({ events: [event] }, now);
 assert.equal(clean[0].props.distrito, "Hortaleza");
 assert.equal(clean[0].props.resultados, 0);
 assert.equal(clean[0].props.active_seconds, 0);
 assert.equal("q" in clean[0].props, false);
 assert.equal("lat" in clean[0].props, false);
-for (const changed of [{ path: "/boletin?q=secret" }, { path: "/admin/analitica" }, { path: "/ubicacion/123" }, { at: now - 90000000 }, { name: "arbitrary" }, { session: "invalid" }]) {
-  assert.equal(sanitizeAnalyticsBatch({ consent: true, events: [{ ...event, ...changed }] }, now), null);
+for (const changed of [{ path: "/boletin?q=secret" }, { path: "/ubicacion/123" }, { at: now - 90000000 }, { name: "arbitrary" }, { session: "invalid" }]) {
+  assert.equal(sanitizeAnalyticsBatch({ events: [{ ...event, ...changed }] }, now), null);
 }
-assert.equal(sanitizeAnalyticsBatch({ consent: false, events: [event] }), null);
-assert.equal(sanitizeAnalyticsBatch({ consent: true, events: Array(21).fill(event) }), null);
+assert.equal(sanitizeAnalyticsBatch({ events: [] }), null);
+assert.equal(sanitizeAnalyticsBatch({ events: Array(21).fill(event) }), null);
 
 function storage() {
   const map = new Map();
@@ -36,10 +36,8 @@ const sessionStorage = storage();
 const location = { pathname: "/proyecto/demo", hostname: "homes-urbanismo.es" };
 const navigator = { webdriver: false, sendBeacon: () => false };
 const a = load("../lib/session-analytics.ts", { process: { env: { NEXT_PUBLIC_SESSION_ANALYTICS: "1" } }, window: new EventTarget(), Event, URL, document: { referrer: "https://www.google.com/search?q=private" }, location, navigator, localStorage, sessionStorage, crypto: webcrypto, Date: class extends Date { static now() { return clock; } }, fetch: async (_url,opts) => { batches.push(JSON.parse(opts.body)); return { status: 204 }; } });
-a.startAnalyticsPage(); a.recordSessionEvent("document_click"); await a.flushAnalytics();
-assert.equal(batches.length, 0, "No measurement before consent");
-assert.equal(sessionStorage.map.size, 0, "No session ID before consent");
-a.writeConsent("accepted");
+localStorage.setItem("homes_analytics_consent_v1", JSON.stringify({ value: "rejected", at: now }));
+assert.equal(a.measurementAllowed(), true, "Measurement starts by default even with a legacy preference");
 // Child effects can send a fiche event before the global page effect.
 a.recordSessionEvent("ficha_proyecto_ver", { id: "demo" });
 const firstPage = a.startAnalyticsPage();
@@ -59,10 +57,13 @@ a.recordPageEngagement(firstPage, { active_seconds: 1500 });
 await a.flushAnalytics();
 assert.notEqual(batches[2].events[0].session, firstSession, "Idle session rotates");
 assert.equal(batches[2].events.some(e => e.name === "page_engagement"), false, "Old engagement cannot leak to new session");
-a.writeConsent("rejected"); a.recordSessionEvent("document_click"); await a.flushAnalytics();
-assert.equal(batches.length, 3, "Revocation stops collection");
-assert.equal(sessionStorage.map.size, 0);
-a.writeConsent("accepted"); navigator.webdriver = true; a.startAnalyticsPage(); await a.flushAnalytics();
-assert.equal(batches.length, 3, "Declared automation is excluded");
+navigator.webdriver = true; location.pathname = "/boletin"; a.startAnalyticsPage(); await a.flushAnalytics();
+assert.equal(batches.length, 4, "Declared automation is included");
+assert.equal(batches[3].automated, true, "Automation is marked for later filtering");
+navigator.webdriver = false; location.pathname = "/admin/analitica";
+a.startAnalyticsPage(); await a.flushAnalytics();
+assert.equal(batches.length, 5, "Admin pages are included");
+assert.ok(sanitizeAnalyticsBatch({ events: batches[4].events }, clock), "Admin events are accepted");
+assert.equal("consent" in batches[0], false, "Default measurement does not claim explicit consent");
 assert.equal(a.safeAnalyticsPath("/ubicacion/secret?address=private"), "/ubicacion");
-console.log("Session analytics: consent, privacy, deduplication, navigation, expiry and bot checks passed.");
+console.log("Session analytics: default measurement, privacy, deduplication, navigation, expiry and traffic inclusion checks passed.");

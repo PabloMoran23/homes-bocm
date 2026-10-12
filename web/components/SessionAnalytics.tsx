@@ -2,29 +2,20 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { analyticsEnabled, flushAnalytics, measurementAllowed, readConsent, recordPageEngagement, recordSessionEvent, startAnalyticsPage, touchAnalyticsSession, writeConsent, type Consent } from "@/lib/session-analytics";
+import { flushAnalytics, measurementAllowed, recordPageEngagement, recordSessionEvent, startAnalyticsPage, touchAnalyticsSession } from "@/lib/session-analytics";
 
 export function SessionAnalytics() {
   const pathname = usePathname();
-  const [consent, setConsent] = useState<Consent>(null);
-  const [ready, setReady] = useState(false);
-  const [settings, setSettings] = useState(false);
-  const [details, setDetails] = useState(false);
   const [sessionVersion, setSessionVersion] = useState(0);
-  const publicPage = !pathname.startsWith("/admin");
 
   useEffect(() => {
-    const sync = () => { setConsent(readConsent()); setReady(true); };
     const renew = () => setSessionVersion(v => v + 1);
-    sync();
-    window.addEventListener("homes-analytics-consent", sync);
-    window.addEventListener("storage", sync);
     window.addEventListener("homes-analytics-session", renew);
-    return () => { window.removeEventListener("homes-analytics-consent", sync); window.removeEventListener("storage", sync); window.removeEventListener("homes-analytics-session", renew); };
+    return () => window.removeEventListener("homes-analytics-session", renew);
   }, []);
 
   useEffect(() => {
-    if (consent !== "accepted" || !publicPage || !measurementAllowed()) return;
+    if (!measurementAllowed()) return;
     const pageId = startAnalyticsPage();
     let activeMs = 0;
     let maxScroll = 0;
@@ -73,21 +64,7 @@ export function SessionAnalytics() {
       document.removeEventListener("pointerdown", activity); document.removeEventListener("keydown", activity);
       document.removeEventListener("visibilitychange", visibility); window.removeEventListener("pagehide", hide);
     };
-  }, [pathname, consent, publicPage, sessionVersion]);
+  }, [pathname, sessionVersion]);
 
-  if (!analyticsEnabled() || !ready || !publicPage) return null;
-  if (consent !== null && !settings) return <button type="button" onClick={() => setSettings(true)} className="fixed bottom-2 left-2 z-[1200] rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600 shadow-sm">Privacidad</button>;
-  const choose = (value: "accepted" | "rejected") => { writeConsent(value); setSettings(false); };
-  return (
-    <section aria-label="Preferencias de analítica" className="fixed bottom-3 left-3 right-3 z-[1200] mx-auto max-w-xl rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-xl">
-      <p className="font-semibold text-slate-900">Ayúdanos a mejorar Homes</p>
-      <p className="mt-1">Si aceptas, mediremos las páginas que consultas, el tiempo de actividad y los clics para entender qué información resulta útil. Puedes usar toda la web si rechazas.</p>
-      <button type="button" className="mt-2 underline" aria-expanded={details} onClick={() => setDetails(!details)}>Qué datos guardamos</button>
-      {details && <p className="mt-2 text-xs leading-relaxed">Guardamos un identificador aleatorio de sesión por pestaña, el origen de entrada (como Google), las páginas, zonas generales, filtros, resultados y clics. No guardamos IP, direcciones completas, búsquedas escritas ni grabaciones. La sesión caduca tras 30 minutos sin actividad. Los eventos se eliminan después de 90 días y tu elección se recuerda durante 180 días. Puedes retirar el permiso desde «Privacidad».</p>}
-      <div className="mt-3 flex gap-3">
-        <button type="button" onClick={() => choose("rejected")} className="flex-1 rounded-lg border border-slate-300 px-4 py-2 font-medium">Rechazar analítica</button>
-        <button type="button" onClick={() => choose("accepted")} className="flex-1 rounded-lg border border-slate-300 px-4 py-2 font-medium">Aceptar analítica</button>
-      </div>
-    </section>
-  );
+  return null;
 }

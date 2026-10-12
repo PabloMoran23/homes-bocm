@@ -6,15 +6,15 @@ type CleanEvent = { id: string; session: string; page: string; name: string; pat
 
 export function sanitizeAnalyticsBatch(body: unknown, now = Date.now()): CleanEvent[] | null {
   if (!body || typeof body !== "object") return null;
-  const input = body as { consent?: unknown; events?: unknown };
-  if (input.consent !== true || !Array.isArray(input.events) || input.events.length < 1 || input.events.length > 20) return null;
+  const input = body as { events?: unknown };
+  if (!Array.isArray(input.events) || input.events.length < 1 || input.events.length > 20) return null;
   const output: CleanEvent[] = [];
   for (const raw of input.events) {
     if (!raw || typeof raw !== "object") return null;
     const event = raw as Record<string, unknown>;
     if (![event.id, event.session, event.page].every(v => typeof v === "string" && UUID.test(v))) return null;
     if (!EVENT_NAMES.includes(event.name as typeof EVENT_NAMES[number])) return null;
-    if (typeof event.path !== "string" || !/^\/[a-zA-Z0-9/%:_-]*$/.test(event.path) || event.path.length > 240 || event.path.startsWith("/admin") || event.path.startsWith("/api") || event.path.startsWith("/ubicacion/")) return null;
+    if (typeof event.path !== "string" || !/^\/[a-zA-Z0-9/%:_-]*$/.test(event.path) || event.path.length > 240 || event.path.startsWith("/api") || event.path.startsWith("/ubicacion/")) return null;
     if (!["google", "bing", "direct", "internal", "other"].includes(String(event.source))) return null;
     if (typeof event.at !== "number" || !Number.isFinite(event.at) || event.at < now - 86400000 || event.at > now + 60000) return null;
     const props: CleanEvent["props"] = {};

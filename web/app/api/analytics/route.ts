@@ -10,16 +10,19 @@ export async function POST(request: NextRequest) {
   const key = process.env.ANALYTICS_RPC_KEY;
   if (process.env.NEXT_PUBLIC_SESSION_ANALYTICS !== "1" || !key) return new NextResponse(null, { status: 503 });
   if (request.headers.get("origin") !== request.nextUrl.origin) return new NextResponse(null, { status: 403 });
-  if (/bot|crawler|spider|headless|lighthouse|prerender/i.test(request.headers.get("user-agent") || "")) return new NextResponse(null, { status: 204 });
-  if (await isValidAdminSession(request.cookies.get(ADMIN_COOKIE)?.value)) return new NextResponse(null, { status: 204 });
+  const admin = await isValidAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
+  let automated = /bot|crawler|spider|headless|lighthouse|prerender/i.test(request.headers.get("user-agent") || "");
   if (!request.headers.get("content-type")?.startsWith("application/json") || Number(request.headers.get("content-length") || 0) > 24000) return new NextResponse(null, { status: 413 });
   let events;
   try {
     const text = await request.text();
     if (text.length > 24000) return new NextResponse(null, { status: 413 });
-    events = sanitizeAnalyticsBatch(JSON.parse(text));
+    const body = JSON.parse(text);
+    automated ||= body?.automated === true;
+    events = sanitizeAnalyticsBatch(body);
   } catch { return new NextResponse(null, { status: 400 }); }
   if (!events) return new NextResponse(null, { status: 400 });
+  for (const event of events) event.props.traffic_type = admin ? "admin" : automated ? "bot" : "unclassified";
   const supabase = getSupabaseServer();
   if (!supabase) return new NextResponse(null, { status: 503 });
   // Short-lived rotating hash for rate limiting; raw IP is never stored.
