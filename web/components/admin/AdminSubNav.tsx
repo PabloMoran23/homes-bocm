@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 const tabs = [
+  { href: "/admin/analitica", label: "Analítica" },
   { href: "/admin/scrapers", label: "Scrapers" },
   { href: "/admin/municipios", label: "Municipios / bots" },
   { href: "/admin/pipeline", label: "Pipeline SIGMA" },

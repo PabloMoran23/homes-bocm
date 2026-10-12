@@ -48,7 +48,8 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
   if (!isAdminPath(pathname)) return null;
 
   const edition = getEdition();
-  if (edition === "public") {
+  const analyticsAccess = pathname === "/admin/analitica" || isAdminPublicPath(pathname);
+  if (edition === "public" && !analyticsAccess) {
     if (pathname.startsWith("/api/admin")) {
       return NextResponse.json({ error: "No disponible" }, { status: 404 });
     }

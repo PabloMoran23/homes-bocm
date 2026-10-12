@@ -224,6 +224,9 @@ export function BoletinAreaApp() {
           modo: ndp ? "ndp" : "geocode",
           radius_m: radiusM,
           months,
+          distrito: json.center.distrito || "",
+          barrio: json.center.barrio || "",
+          resultados: json.licencias.length + json.expedientesSigma.length,
         });
         scrollResultsAfterLoad.current = true;
       } catch (e) {

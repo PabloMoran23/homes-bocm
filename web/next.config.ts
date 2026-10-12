@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     "/proyectos": ["./data/project-directory.json"],
     "/proyectos/**/*": ["./data/project-directory.json"],
     "/proyecto/*": ["./data/project-directory.json"],
+    "/admin/analitica": ["./data/project-directory.json"],
   },
   async redirects() {
     return [

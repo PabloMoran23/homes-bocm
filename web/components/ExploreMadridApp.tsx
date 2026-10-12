@@ -8,6 +8,7 @@ import { useMunicipalityBoundary } from "@/lib/use-municipality-boundary";
 import { scatterApproximateProjects } from "@/lib/map-municipality-placement";
 import { usePortalMapData } from "@/lib/use-portal-map-data";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
+import { trackEvent } from "@/lib/analytics";
 
 import { normSearch } from "@/lib/madrid";
 import { sigmaPassesPortalLink } from "@/lib/madrid-sigma-filters";
@@ -239,6 +240,7 @@ export function ExploreMadridApp() {
   } | null>(null);
 
   const selectMunicipio = useCallback(({ municipio, from, to }: MapMunicipioSelection) => {
+    trackEvent("mapa_buscar", { modo: "municipio", municipio: municipio.slug });
     setDateFrom(from);
     setDateTo(to);
     setMapBounds(null);
@@ -365,7 +367,10 @@ export function ExploreMadridApp() {
           const res = await fetch(`${SEARCH_UBICACIONES_API}?q=${encodeURIComponent(nq)}`);
           if (!res.ok) return;
           const rows = (await res.json()) as UbicacionSearchItem[];
-          if (!cancelled && Array.isArray(rows)) setSearchIndex(rows);
+          if (!cancelled && Array.isArray(rows)) {
+            setSearchIndex(rows);
+            trackEvent("mapa_buscar", { modo: "sugerencias", caracteres: nq.length, resultados: rows.length });
+          }
         } catch {
           /* búsqueda opcional */
         }
@@ -406,6 +411,12 @@ export function ExploreMadridApp() {
   const portalMapMeta = portal.meta;
   const portalLoading = portal.loading;
   const portalErr = portal.error;
+
+  useEffect(() => {
+    if (!catalogQuery.trim() || portalLoading || !portalQuery) return;
+    const timer = window.setTimeout(() => trackEvent("mapa_buscar", { modo: "catalogo", municipio: portalQuery.slug, caracteres: catalogQuery.trim().length, resultados: catalogFiltered.length }), 800);
+    return () => window.clearTimeout(timer);
+  }, [catalogQuery, catalogFiltered.length, portalLoading, portalQuery]);
 
   useEffect(() => {
     if (!cmMapScope || !portalQuery || gateOpen) return;
@@ -749,6 +760,7 @@ export function ExploreMadridApp() {
     return buildPortalMapSpotlightItem(project, clasificacionIndex?.[group]);
   }, [selectedPortalProject, portalQuery?.token, clasificacionIndex, catalogIds]);
   const onSelectPortalProject = useCallback((project: CmPortalProyectoProps | null) => {
+    if (project) trackEvent("mapa_seleccionar", { kind: "proyecto", id: project.id, municipio: portalQuery?.slug || "" });
     if (project) setSelectedLicense(null);
     setSelectedPortalProject(project && portalQuery ? { token: portalQuery.token, project } : null);
     if (project && !window.matchMedia("(min-width: 1024px)").matches) setPanelOpen(false);
@@ -758,6 +770,7 @@ export function ExploreMadridApp() {
   const onSelectLicense = useCallback((license: UbicacionMapProperties | null) => {
     setSelectedLicense(license);
     if (license) {
+      trackEvent("mapa_seleccionar", { kind: "licencia" });
       setSelectedPortalProject(null);
       setSelectedSigmaGrupo(null);
       if (!window.matchMedia("(min-width: 1024px)").matches) setPanelOpen(false);
@@ -765,6 +778,7 @@ export function ExploreMadridApp() {
   }, []);
 
   const onSelectSigmaExpediente = useCallback((grupo: string | null) => {
+    if (grupo) trackEvent("mapa_seleccionar", { kind: "sigma", id: grupo });
     if (grupo) setSelectedLicense(null);
     setSelectedSigmaGrupo(grupo);
   }, []);
@@ -775,6 +789,7 @@ export function ExploreMadridApp() {
   );
 
   const pickSuggestion = useCallback((item: UbicacionSearchItem) => {
+    trackEvent("mapa_buscar", { modo: "ubicacion", distrito: item.distrito || "", barrio: item.barrio || "" });
     setQ(item.label);
     setHighlightNdp(item.ndp);
     setOpenSuggest(false);

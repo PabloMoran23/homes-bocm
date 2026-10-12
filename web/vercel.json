@@ -2,6 +2,7 @@
   "buildCommand": "npm run build:public",
   "installCommand": "npm install",
   "framework": "nextjs",
+  "crons": [{ "path": "/api/analytics/retention", "schedule": "15 3 * * *" }],
   "env": {
     "NEXT_PUBLIC_EDITION": "public",
     "NEXT_PUBLIC_MAP_SCOPE": "cm",

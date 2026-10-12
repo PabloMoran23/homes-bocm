@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
@@ -468,7 +469,7 @@ export function ProjectDetailView({
                 type="button"
                 role="tab"
                 aria-selected={activeTab === t.id}
-                onClick={() => setTab(t.id)}
+                onClick={() => { setTab(t.id); trackEvent("ficha_pestana", { tab: t.id }); }}
                 className={`shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition ${
                   activeTab === t.id
                     ? "bg-[var(--portal-paper)] text-[var(--portal-accent)] shadow-sm"

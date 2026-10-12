@@ -120,6 +120,10 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
       trackEvent("estadisticas_filtro", {
         tab: "licencias",
         activos: countActiveLicenciasFilters(next),
+        distritos: next.distritos.join(","),
+        actuaciones: next.actuaciones.join(","),
+        procedimientos: next.procedimientos.join(","),
+        usos: next.usos.join(","),
       });
     }
   }, []);

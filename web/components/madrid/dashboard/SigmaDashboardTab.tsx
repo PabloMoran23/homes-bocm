@@ -105,6 +105,13 @@ export function SigmaDashboardTab({
       trackEvent("estadisticas_filtro", {
         tab: "sigma",
         activos: countActiveSigmaFilters(next),
+        distrito: next.distrito.join(","),
+        anio: next.anio.join(","),
+        categoriaProyecto: next.categoriaProyecto.join(","),
+        tipoObra: next.tipoObra.join(","),
+        tipoLegal: next.tipoLegal.join(","),
+        escala: next.escala.join(","),
+        iniciativa: next.iniciativa.join(","),
       });
     }
   }, []);

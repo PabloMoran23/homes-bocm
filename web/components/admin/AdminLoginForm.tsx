@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { isPublicEdition } from "@/lib/edition";
 
 export function AdminLoginForm({ from }: { from?: string }) {
   const router = useRouter();
@@ -25,7 +26,7 @@ export function AdminLoginForm({ from }: { from?: string }) {
         return;
       }
       const dest =
-        from && from.startsWith("/admin") && from !== "/admin/login" ? from : "/admin/scrapers";
+        from && from.startsWith("/admin/") && from !== "/admin/login" ? from : isPublicEdition() ? "/admin/analitica" : "/admin/scrapers";
       router.replace(dest);
       router.refresh();
     } catch {
