@@ -7,11 +7,11 @@ export type AnalyticsReport = {
   actions: { event_name: string; count: number }[];
   journeys: { session_id: string; started_at: string; source: string; entry_path: string; pageviews: number; active_seconds: number; suspicious: boolean; events: { id: string; event_name: string; path: string; occurred_at: string; props: Record<string, string | number> }[] }[];
 };
-export async function getAnalyticsReport(days: number, source: string): Promise<AnalyticsReport> {
+export async function getAnalyticsReport(days: number, source: string, traffic = "all"): Promise<AnalyticsReport> {
   const supabase = getSupabaseServer();
   const key = process.env.ANALYTICS_RPC_KEY;
   if (!supabase || !key) throw new Error("La recogida de sesiones todavía no está configurada.");
-  const { data, error } = await supabase.rpc("homes_analytics_report", { p_key: key, p_days: days, p_source: source });
+  const { data, error } = await supabase.rpc("homes_analytics_report_filtered", { p_key: key, p_days: days, p_source: source, p_traffic: traffic });
   if (error) throw new Error("No se ha podido consultar la analítica. Comprueba la migración y la configuración del servidor.");
   return data as AnalyticsReport;
 }

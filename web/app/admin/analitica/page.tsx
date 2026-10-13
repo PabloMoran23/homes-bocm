@@ -18,13 +18,14 @@ function pageLabel(path: string) {
   return path;
 }
 
-export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<{ days?: string; source?: string }> }) {
+export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<{ days?: string; source?: string; traffic?: string }> }) {
   if (!await isValidAdminSession((await cookies()).get(ADMIN_COOKIE)?.value)) redirect("/admin/login?from=/admin/analitica");
   const params = await searchParams;
   const days = [7,30,90].includes(Number(params.days)) ? Number(params.days) : 30;
   const source = ["google","bing","direct","internal","other"].includes(params.source || "") ? params.source! : "all";
+  const traffic = ["interesting","bot","admin","unclassified"].includes(params.traffic || "") ? params.traffic! : "all";
   let report;
-  try { report = await getAnalyticsReport(days, source); }
+  try { report = await getAnalyticsReport(days, source, traffic); }
   catch (error) { return <div className="mx-auto max-w-6xl p-8"><h1 className="text-2xl font-semibold">Analítica</h1><p className="mt-4">{error instanceof Error ? error.message : "Analítica no disponible"}</p></div>; }
   const stats = report.overview;
   const cards = [["Sesiones",stats.sessions],["Páginas vistas",stats.pageviews],["Con interacción",stats.active_sessions],["Una sola página",stats.single_page_sessions],["Sin interacción medida",stats.without_interaction],["Actividad media",seconds(stats.avg_active_seconds)]];
@@ -33,8 +34,11 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
     <form className="flex flex-wrap items-end gap-3">
       <label className="text-sm">Periodo<select name="days" defaultValue={days} className="ml-2 rounded border p-2"><option value="7">7 días</option><option value="30">30 días</option><option value="90">90 días</option></select></label>
       <label className="text-sm">Origen<select name="source" defaultValue={source} className="ml-2 rounded border p-2"><option value="all">Todos</option>{["google","bing","direct","internal","other"].map(s=><option key={s} value={s}>{label(s)}</option>)}</select></label>
+      <label className="text-sm">Sesiones<select name="traffic" defaultValue={traffic} className="ml-2 rounded border p-2"><option value="all">Todas</option><option value="interesting">Con actividad, sin bots ni admin</option><option value="unclassified">Sin bots ni admin</option><option value="bot">Bots detectados</option><option value="admin">Administradores</option></select></label>
       <button className="rounded bg-slate-900 px-4 py-2 text-sm text-white">Consultar</button>
     </form>
+    <a href={`?days=${days}&source=${source}&traffic=interesting`} className="inline-block text-sm font-medium underline">Ver sesiones con actividad →</a>
+    {traffic === "interesting" && <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">Se muestran sesiones con varias páginas, alguna acción o al menos 10 segundos activos. Se excluyen las marcadas como bot o administrador, las rutas de administración y las de más de 100 páginas. Es una selección por comportamiento; no confirma que sean personas. El filtro se aplica también a los totales, páginas, orígenes y recorridos.</p>}
     <p className="rounded-lg bg-slate-100 p-4 text-sm text-slate-600">Una sesión corresponde a una pestaña y caduca tras 30 minutos sin actividad. «Con interacción» significa varias páginas, alguna acción o al menos 10 segundos de actividad. Una sola página no significa que la persona no encontrara la respuesta. Se incluyen administradores y bots que ejecutan la medición. Cada evento indica su tipo de tráfico; «unclassified» no garantiza que sea una persona. {stats.suspicious_sessions > 0 ? `${stats.suspicious_sessions} sesiones tienen más de 100 páginas vistas y se marcan como sospechosas.` : ""}</p>
     <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">{cards.map(([name,value])=><div key={name} className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs text-slate-500">{name}</p><p className="mt-2 text-2xl font-semibold">{value}</p></div>)}</div>
     {stats.sessions === 0 && <p className="rounded-xl border border-dashed p-6 text-slate-600">Todavía no hay sesiones para este filtro. Los datos se recogen desde la activación de la analítica; no se reconstruyen visitas anteriores.</p>}

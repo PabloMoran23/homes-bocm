@@ -26,3 +26,7 @@ Desactivar `NEXT_PUBLIC_SESSION_ANALYTICS` y volver a desplegar detiene la recog
 ## Verificación
 
 `node scripts/test-session-analytics.mjs`, `npx tsc --noEmit`, lint de ficheros cambiados y build público. Comprobar en DB que anon no puede leer la tabla, una RPC sin secreto falla, retries no duplican eventos y los informes mantienen el origen y el tiempo por página. En producción comprobar login privado, lote válido, rechazo de payloads no permitidos y limpieza autenticada. Las pruebas de DB se ejecutan en una transacción revertida para no contaminar el informe.
+
+## Filtros del panel
+
+El filtro de sesiones se combina con periodo y origen y se aplica antes de calcular todos los indicadores y limitar los últimos 50 recorridos. «Con actividad, sin bots ni admin» requiere varias páginas, una acción real (abrir una ficha no cuenta por sí solo) o al menos 10 segundos activos acumulados por página. Excluye sesiones marcadas como bot/administrador, rutas de administración y más de 100 vistas. No demuestra que sean personas. También permite consultar todas, bots, administradores y sin bots ni admin; ningún filtro borra datos. Aplicar `20261013190000_analytics_session_filters.sql` antes de publicar.
