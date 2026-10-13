@@ -1,0 +1,35 @@
+slug: polop
+nombre: "Polop"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://polop.org"
+  adapter: municipio.adapters.polop:PolopAyuntamientoAdapter
+  config:
+    web_base: "https://polop.org"
+    sede_base: "https://polop.sedelectronica.es"
+    board_url: "https://polop.sedelectronica.es/board//"
+    urbanismo_url: "https://polop.org/gestiones/urbanismo/"
+    instancias_url: "https://polop.org/gestiones/instancias-ordenanzas/"
+    gva_base: "https://politicaterritorial.gva.es/auto/urbanismo/reg-planeamiento/2%20ALICANTE/03107%20POLOP/"
+    cod_ine_mun: "03107"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-polop/1.0"
+    centroid: [38.6225, -0.1292]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Fuentes: WordPress polop.org (urbanismo con PDFs/Dropbox PGOU) +
+    sede espublico gestiona (tablón / dossier) + registro GVA planeamiento +
+    ICV WFS zonificación (cod_ine_mun=03107).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
