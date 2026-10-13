@@ -1,0 +1,38 @@
+slug: potries
+nombre: "Potries"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://potries.org"
+  adapter: municipio.adapters.potries:PotriesAyuntamientoAdapter
+  config:
+    web_base: "https://potries.org"
+    sede_base: "https://potries.sedelectronica.es"
+    transp_base: "https://potries.portal-transparencia.com"
+    board_url: "https://potries.sedelectronica.es/board/"
+    urbanismo_url: "https://potries.org/es/organizacion-municipal/urbanismo-servicios-y-seguridad/"
+    ordenances_url: "https://potries.portal-transparencia.com/ordenances/?lang=es"
+    planejament_url: "https://potries.portal-transparencia.com/planejament/?lang=es"
+    planejament_tram_url: "https://potries.portal-transparencia.com/planejament-tramitacio/?lang=es"
+    tramits_url: "https://potries.sedelectronica.es/dossier"
+    request_delay_s: 0.5
+    insecure_ssl: true
+    user_agent: "poc-bocm-potries/1.0"
+    centroid: [38.9169, -0.1874]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      offsets: [0, 500, 1000]
+  notes: |
+    WordPress (Enfold) + portal transparencia propio + sede espublico gestiona.
+    Planeamiento y ordenanzas en potries.portal-transparencia.com (PDFs /uploads).
+    Zonificación ICV GVA WFS (INE 46125).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
