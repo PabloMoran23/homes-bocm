@@ -98,8 +98,13 @@ def _rows_from_xlsx(path: Path, year: int) -> list[dict[str, Any]]:
     df = df.dropna(how="all")
     df = df.rename(columns={orig: _norm_col(str(orig)) for orig in df.columns})
     out: list[dict[str, Any]] = []
+    origin = {"municipio_slug": "madrid", "adapter": "madrid-opendata",
+        "url": _download_url_for_year(year), "dataset": "300193-0-licencias-urbanisticas",
+        "resourceSha256": sha256(path.read_bytes()).hexdigest(),
+        "cacheModifiedAt": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()}
     for _, row in df.iterrows():
-        rec: dict[str, Any] = {"anio_dataset": year}
+        rec: dict[str, Any] = {"anio_dataset": year, "source": "madrid-opendata",
+            "_territorial_origin": origin}
         empty = True
         for key, val in row.items():
             if pd.isna(val) or (isinstance(val, str) and not val.strip()):
@@ -140,6 +145,7 @@ def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     RAW_DIR.mkdir(parents=True, exist_ok=True)
 
+    resources: dict[str, dict[str, Any]] = {}
     per_year: dict[str, int] = {}
     all_rows: list[dict[str, Any]] = []
     columns_seen: set[str] = set()
@@ -167,6 +173,9 @@ def main() -> None:
         except Exception as exc:
             print(f"  ERROR parse {year}: {exc}", flush=True)
             continue
+        resources[str(year)] = {"url": url, "sha256": sha256(dest.read_bytes()).hexdigest(),
+            "cacheModifiedAt": datetime.fromtimestamp(dest.stat().st_mtime, timezone.utc).isoformat(),
+            "downloadedThisRun": not args.skip_download, "factualUpdatedAt": None}
         per_year[str(year)] = len(rows)
         for r in rows:
             columns_seen.update(r.keys())
@@ -201,6 +210,8 @@ def main() -> None:
     summary = {
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "source": "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
+        "sourceSnapshot": {"mode": "cached-xlsx-replay" if args.skip_download else "xlsx-download",
+                           "resources": resources, "factualUpdatedAt": None},
         "totalRows": len(rows_to_write),
         "byYear": per_year,
         "columns": sorted(columns_seen),

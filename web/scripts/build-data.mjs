@@ -1,3 +1,4 @@
+import { createStatisticsScope } from "../lib/statistics-scope.mjs";
 /**
  * Genera public/data/projects.json, summary.json y admin-coverage.json desde:
  * - history_parsed_incremental.csv (BOCM / Madrid)
@@ -19,6 +20,7 @@ import {
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "csv-parse/sync";
+import { assertLicenseTerritory } from "./assert-license-territory.mjs";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
 import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
 import { buildMadridDistritos } from "./build-madrid-distritos.mjs";
@@ -53,6 +55,7 @@ const outDir = join(webRoot, "public/data");
 
 /** `madrid-public`: solo Madrid capital en projects + licencias recientes (deploy MVP). */
 const buildScope = process.env.BUILD_DATA_SCOPE || "full";
+if (!["full", "madrid-public"].includes(buildScope)) throw new Error("statistics-scope: unknown BUILD_DATA_SCOPE");
 const isMadridPublicBuild = buildScope === "madrid-public";
 const LICENCIAS_MIN_YEAR_PUBLIC = 2022;
 
@@ -116,7 +119,7 @@ async function runMadridPostBuild(opts = {}) {
         }
       }
     } catch (err) {
-      console.warn("Licencias urbanísticas (web):", err?.message || err);
+      throw new Error(`Licencias urbanísticas (web): ${err?.message || err}`);
     }
   }
 
@@ -131,6 +134,8 @@ async function runMadridPostBuild(opts = {}) {
   } catch (err) {
     console.warn("SIGMA filter-rows:", err?.message || err);
   }
+
+  assertLicenseTerritory(outDir);
 
   try {
     buildMadridDashboardStats({ outDir });
@@ -1912,6 +1917,8 @@ const summary = {
     tagline: "Proyectos urbanísticos en tu zona",
   },
 };
+
+summary.statisticsScope = createStatisticsScope(summary);
 
 const madridSigmaBocmByExp = buildMadridSigmaBocmProjectsByExpediente(exportProjects);
 

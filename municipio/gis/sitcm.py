@@ -288,4 +288,6 @@ def resolve_ambito_geometry(municipio_wfs: str, title: str) -> tuple[dict[str, A
     name = str((feats[0].get("properties") or {}).get("DS_NOMB_AMB") or "")
     meta["ambito_name"] = name
     meta["feature_count"] = len(feats)
+    meta["source_crs"] = "EPSG:4326"
+    meta["axis_order"] = "xy"
     return geom, meta

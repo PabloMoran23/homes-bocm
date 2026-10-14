@@ -134,6 +134,8 @@ export type Project = {
 };
 
 export type DataSummary = {
+  buildScope?: string;
+  statisticsScope?: import("./statistics-scope.mjs").StatisticsScope;
   generatedAt: string;
   total: number;
   totalRelevant?: number;
@@ -295,7 +297,13 @@ export type MadridLicenciaRow = {
   lng: number | null;
 };
 
+export type MadridLicenseSourceSnapshot = {
+  mode: string;
+  factualUpdatedAt?: string | null;
+};
+
 export type MadridLicenciasIndex = {
+  sourceSnapshot?: MadridLicenseSourceSnapshot | null;
   generatedAt: string;
   source: string;
   totalRows: number;
@@ -357,6 +365,7 @@ export type MadridDashboardStats = {
   generatedAt: string;
   distritoCentroids?: Record<string, MadridDashboardDistritoCentroid>;
   licencias: {
+    sourceSnapshot?: MadridLicenseSourceSnapshot | null;
     generatedAt: string;
     totalRows: number;
     withCoords: number;

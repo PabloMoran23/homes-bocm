@@ -144,7 +144,10 @@ export function MadridDashboard({ stats }: { stats: MadridDashboardStats }) {
             temporal, rankings y cruce por distrito.
           </p>
           <p className="mt-2 text-xs text-slate-400">
-            {fmtDate(stats.generatedAt)}
+            Generación del panel: {fmtDate(stats.generatedAt)}
+            {stats.licencias?.sourceSnapshot?.mode === "cached-xlsx-replay"
+              ? " · Licencias reconstruidas desde archivos conservados. Fecha de actualización municipal no verificada."
+              : null}
           </p>
 
           <div className="mt-6 inline-flex rounded-xl border border-slate-200/90 bg-white/80 p-1 shadow-sm backdrop-blur-sm">

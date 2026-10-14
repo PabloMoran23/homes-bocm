@@ -1,3 +1,4 @@
+import { nationalStatisticsScope } from "@/lib/statistics-scope.mjs";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MadridPresentacion } from "@/components/madrid/dashboard/MadridPresentacion";
@@ -17,7 +18,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = withCanonical("/madrid/estadisticas", {
   title: "Estadísticas de licencias urbanísticas en Madrid por distrito",
   description:
-    "El panorama urbanístico de Madrid y de España: obra, locales, planes en marcha y los grandes desarrollos de la capital.",
+    "El panorama urbanístico de Madrid: obra, locales, planes en marcha y los grandes desarrollos de la capital.",
 });
 
 const INSTRUMENTO_FAMILIA: [RegExp, string][] = [
@@ -43,14 +44,17 @@ function familiaInstrumento(name: string): string | null {
 }
 
 function espanaFromSummary(summary: DataSummary | null): EspanaPresentacion | null {
-  if (!summary) return null;
+  const scope = nationalStatisticsScope(summary);
+  if (!summary || !scope) {
+    console.warn("statistics-scope: national panel unavailable (missing/incompatible summary)");
+    return null;
+  }
   const porAno = summary.byYear
     .map((row) => ({ year: Number(row.year), count: row.count }))
-    .filter((row) => row.year >= 1990 && row.year <= 2030)
     .sort((a, b) => a.year - b.year);
-  const relevant = summary.byTerritorioRelevant ?? summary.byTerritorio ?? [];
-  const territorios = relevant.filter((row) => row.count >= 30);
-  const territoriosMenores = relevant.filter((row) => row.count > 0 && row.count < 30);
+  const territories = summary.byTerritorio ?? [];
+  const territorios = territories.filter((row) => row.count >= 30);
+  const territoriosMenores = territories.filter((row) => row.count > 0 && row.count < 30);
   const instrumentoMap = new Map<string, number>();
   for (const row of summary.byTipo ?? []) {
     const familia = familiaInstrumento(row.name);
@@ -65,7 +69,8 @@ function espanaFromSummary(summary: DataSummary | null): EspanaPresentacion | nu
     .filter((row) => row.name.toLowerCase() !== "madrid")
     .slice(0, 8);
   return {
-    anuncios: summary.totalRelevant ?? summary.total,
+    scope,
+    anuncios: scope.denominator.count,
     yearMin: porAno[0] ? String(porAno[0].year) : null,
     yearMax: porAno.at(-1) ? String(porAno.at(-1)!.year) : null,
     comunidades: summary.byTerritorio?.length ?? territorios.length,
