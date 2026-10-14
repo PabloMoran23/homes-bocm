@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-RULE_VERSION = "h01-v1"
+RULE_VERSION = "h01-v2"
 _CATEGORIES_BYTES = (Path(__file__).parent / "policies/entity_categories.json").read_bytes()
 CATEGORIES = json.loads(_CATEGORIES_BYTES)["outside_domain"]
 POLICY_VERSION = RULE_VERSION + "-" + hashlib.sha256(_CATEGORIES_BYTES).hexdigest()[:12]
@@ -53,7 +53,12 @@ def classify(record: dict, *, kind: str = "proyecto") -> dict:
         grant_date = date.fromisoformat(str(record.get("fecha_concesion") or "")[:10])
     except ValueError:
         grant_date = None
-    granted = bool(grant_date) or state in {"concedida", "concedido", "otorgada", "otorgado"} or bool(re.search(r"\b(?:concesion de|se concede|se otorga|licencia concedida)\b", title))
+    # Una fecha o frase positiva nunca vence a solicitud/negación/revocación.
+    adverse_state = bool(re.search(r"\b(?:deneg\w*|revoc\w*|anulad\w*|caduc\w*|desist\w*|inadmit\w*|rechaz\w*|suspend\w*|solicit\w*|pendiente|en tramitacion)\b", state))
+    adverse_title = bool(re.search(r"\b(?:deneg\w*|revoc\w*|anulacion|caducidad|solicitud|solicita\w*|propuesta de concesion|no se concede|no se otorga|sin concesion)\b", title))
+    affirmative_act = bool(re.search(r"(?:^|\bpor la que )se (?:concede|otorga)\b", title))
+    affirmative_act = affirmative_act or bool(re.match(r"^licencia (?:de [^,;.]+ )?(?:concedida|otorgada)\b", title))
+    granted = not (adverse_state or adverse_title) and (bool(grant_date) or state in {"concedida", "concedido", "otorgada", "otorgado"} or affirmative_act)
 
     def result(entity_type: str, reason: str, eligible: bool = False) -> dict:
         return {"version": POLICY_VERSION, "content_hash": fingerprint, "kind": kind,

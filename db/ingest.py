@@ -36,7 +36,7 @@ if str(DB_DIR) not in sys.path:
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 from municipio.entity_policy import annotate  # noqa: E402
-from entity_reprocess import reprocess_queue  # noqa: E402
+from entity_reprocess import ensure_schema, reprocess_queue  # noqa: E402
 
 SCHEMA = "homes"
 
@@ -707,6 +707,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           updated_at = EXCLUDED.updated_at
     """
     with _owned_conn(conn) as c, c.cursor() as cur:
+        ensure_schema(c)
         execute_values(cur, sql, tuples, page_size=100)
         _classify_saved(c, "proyecto", [str(r["id"]) for r in ready])
     return len(tuples)
@@ -723,6 +724,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
     keys = [str(r.get("id") or r.get("licencia_key") or r.get("id_origen")) for r in ready]
     now = _now()
     with _owned_conn(conn) as c, c.cursor() as cur:
+        ensure_schema(c)
         id_map = _next_licencia_ids(cur, keys)
         tuples = []
         for rec, key in zip(ready, keys):

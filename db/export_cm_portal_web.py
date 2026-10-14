@@ -178,6 +178,8 @@ def export_licencias(cur, out_dir: Path, generated_at: str) -> int:
     return len(features)
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -185,6 +187,7 @@ def main() -> int:
 
     with psycopg2.connect(pg_url()) as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             n_proy_pts, n_proy_polys, proy_stats = export_proyectos(cur, out_dir, generated_at)
             n_lic = export_licencias(cur, out_dir, generated_at)
 

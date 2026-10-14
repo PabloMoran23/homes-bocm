@@ -30,9 +30,11 @@ def main():
         print(json.dumps(report))
         return 0 if report["passes"] else 1
     from ingest import connect
+    from entity_reprocess import require_policy_active
     with connect() as conn:
         conn.set_session(readonly=True)
         with conn.cursor() as cur:
+            require_policy_active(cur)
             cur.execute("""SELECT kind,id,title,url FROM (
                 SELECT 'proyecto' AS kind,id::text AS id,denominacion AS title,enlace AS url FROM homes.proyecto_actividad
                 UNION ALL

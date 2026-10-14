@@ -97,6 +97,8 @@ def territory(row, reference, by_name):
     return reference[next(iter(candidates))]
 
 
+from entity_reprocess import require_policy_active
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--municipios", type=Path, default=ROOT / "tools/.cache-spain-municipios-georef.json")
@@ -113,6 +115,7 @@ def main():
     with psycopg2.connect(url, connect_timeout=15) as conn:
         conn.set_session(readonly=True)
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             cur.execute("""
                 SELECT p.id, p.bocm_primary_id, p.expediente_grupo,
                        p.denominacion, p.bocm_title, p.resumen_contenido, p.bocm_resumen,

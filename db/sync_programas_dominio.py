@@ -236,11 +236,14 @@ def sync_programas(cur, out_path: Path) -> dict[str, Any]:
     }
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     with psycopg2.connect(pg_url()) as con:
         con.autocommit = False
         with con.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             stats = sync_programas(cur, out_path)
             con.commit()
     log(

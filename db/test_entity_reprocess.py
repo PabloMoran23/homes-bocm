@@ -11,7 +11,7 @@ from psycopg2.extras import Json
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "db"))
 sys.path.insert(0, str(ROOT))
-from entity_reprocess import enqueue_stale, reprocess_queue
+from entity_reprocess import activate_policy, ensure_schema, enqueue_stale, reprocess_queue, require_policy_active
 from ingest import portal_proyecto_row, save_proyectos, save_licencias
 from municipio.entity_policy import POLICY_VERSION
 
@@ -50,6 +50,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
                 CREATE FUNCTION homes.map_cm_portal() RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT jsonb_agg(homes._proyecto_map_portal_row(p)) FROM homes.proyecto p $$;
                 CREATE FUNCTION homes.madrid_dashboard_stats() RETURNS bigint LANGUAGE sql STABLE AS $$ SELECT count(*) FROM homes.licencia $$""")
             cur.execute((ROOT / "supabase/migrations/20261014235900_entity_activity_policy.sql").read_text())
+        activate_policy(conn)
         conn.commit()
         conn.close()
 
@@ -76,6 +77,65 @@ class ReprocessIntegrationTest(unittest.TestCase):
         row = portal_proyecto_row(rec, slug="madrid", nombre="Madrid")
         save_proyectos([row], conn=self.conn)
         return rec
+
+    def legacy_without_policy(self):
+        with self.conn.cursor() as cur:
+            cur.execute("""DROP TRIGGER entity_classification_changed ON homes.proyecto;
+                DROP TRIGGER entity_classification_changed ON homes.licencia;
+                DROP VIEW homes.proyecto_actividad CASCADE; DROP VIEW homes.licencia_actividad CASCADE;
+                DROP FUNCTION homes.activate_entity_policy();
+                DROP TABLE homes.entity_policy_config CASCADE; DROP TABLE homes.entity_reprocess_queue CASCADE;""")
+            src = (ROOT / "supabase/migrations/20250602160000_rpc_dominio.sql").read_text()
+            cur.execute(src[src.index("CREATE OR REPLACE FUNCTION homes.get_proyecto_portal"):src.index("CREATE OR REPLACE FUNCTION public.get_proyecto_portal")])
+            cur.execute("INSERT INTO homes.proyecto(id,denominacion,enlace,raw_features_json) VALUES ('legacy','Plan parcial Sector 12','https://example/12',%s)",
+                        (Json({"expediente": "2026/12"}),))
+
+    def test_code_first_bootstraps_without_aborting_ingestion_or_cutting_reads(self):
+        self.legacy_without_policy()
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        self.add("new")  # bootstrap occurs before any new project write
+        save_licencias([{"id": "new-license", "titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "estado": "concedida"}], conn=self.conn)
+        self.assertFalse(self.scalar("SELECT active FROM homes.entity_policy_config"))
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        with self.conn.cursor() as cur:
+            with self.assertRaisesRegex(RuntimeError, "control_active=false"):
+                require_policy_active(cur)
+        reprocess_queue(self.conn)
+        activate_policy(self.conn)
+        self.assertTrue(self.scalar("SELECT active FROM homes.entity_policy_config"))
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('new')"))
+
+    def test_migration_first_keeps_legacy_reads_during_failure_then_activates_atomically(self):
+        self.legacy_without_policy()
+        ensure_schema(self.conn)
+        self.assertFalse(self.scalar("SELECT active FROM homes.entity_policy_config"))
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        with patch("entity_reprocess.annotate", side_effect=RuntimeError("temporary failure")):
+            self.assertEqual(reprocess_queue(self.conn)["failed"], 1)
+        self.scalar("SAVEPOINT premature_activation; SELECT 1")
+        with self.assertRaisesRegex(psycopg2.Error, "entity_policy_not_ready"):
+            activate_policy(self.conn)
+        self.scalar("ROLLBACK TO SAVEPOINT premature_activation; SELECT 1")
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        reprocess_queue(self.conn)
+        activate_policy(self.conn)
+        self.assertTrue(self.scalar("SELECT active FROM homes.entity_policy_config"))
+        self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+
+    def test_rule_upgrade_preserves_active_snapshot_until_atomic_switch(self):
+        self.add()
+        with patch("entity_reprocess.POLICY_VERSION", "next"), patch("municipio.entity_policy.POLICY_VERSION", "next"):
+            enqueue_stale(self.conn)
+            self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 1)
+            self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('valid')"))
+            reprocess_queue(self.conn)
+            self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 1)
+            self.assertEqual(self.scalar("SELECT version FROM homes.entity_policy_config"), POLICY_VERSION)
+            activate_policy(self.conn)
+            self.assertEqual(self.scalar("SELECT version FROM homes.entity_policy_config"), "next")
+            self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 1)
 
     def test_upsert_recurrence_resources_and_publication_rpc(self):
         self.add()
@@ -109,6 +169,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
             enqueue_stale(self.conn)
             self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 0)
             reprocess_queue(self.conn)
+            activate_policy(self.conn)
             self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 1)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto"), 1)
 
@@ -132,8 +193,11 @@ class ReprocessIntegrationTest(unittest.TestCase):
         common = {"titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid"}
         save_licencias([{**common, "id": "request", "fecha": "2026-10-14"},
                         {**common, "id": "grant", "fecha_concesion": "2026-10-14"},
-                        {**common, "id": "taxi", "titulo": "Licencia de taxi", "fecha_concesion": "2026-10-14"}], conn=self.conn)
-        self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia"), 3)
+                        {**common, "id": "taxi", "titulo": "Licencia de taxi", "fecha_concesion": "2026-10-14"},
+                        {**common, "id": "denied", "titulo": "Denegación de concesión de licencia de obras", "estado": "denegada", "fecha_concesion": "2026-10-14"},
+                        {**common, "id": "requested", "titulo": "Solicitud de concesión de licencia de obras", "estado": "solicitada", "fecha_concesion": "2026-10-14"},
+                        {**common, "id": "revoked", "titulo": "Revocación de licencia de obras", "estado": "revocada", "fecha_concesion": "2026-10-14"}], conn=self.conn)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia"), 6)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia_actividad"), 1)
         self.assertEqual(self.scalar("SELECT homes.madrid_dashboard_stats()"), 1)
         self.assertIsNone(self.scalar("SELECT fecha_concesion FROM homes.licencia WHERE licencia_key='request'"))
@@ -171,7 +235,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
             cur.execute("SAVEPOINT unexpected_rpc")
             cur.execute("CREATE FUNCTION homes.map_cm_portal(integer) RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT jsonb_agg(p.id) FROM homes.proyecto p $$")
             with self.assertRaisesRegex(psycopg2.Error, "Firma RPC inesperada"):
-                cur.execute(migration)
+                activate_policy(self.conn)
             cur.execute("ROLLBACK TO SAVEPOINT unexpected_rpc")
 
     def test_municipal_map_exports_use_same_activity_views(self):

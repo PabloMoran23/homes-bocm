@@ -48,6 +48,27 @@ class EntityPolicyTest(unittest.TestCase):
         self.assertTrue(classify({**rec, "estado": "concedida"}, kind="licencia")["activity_eligible"])
         self.assertTrue(classify({**rec, "fecha_concesion": "2026-10-14"}, kind="licencia")["grant_evidenced"])
 
+    def test_denied_requested_revoked_and_conflicting_grants_abstain(self):
+        common = {"expediente": "2026/123", "url": "https://sede.example/exp/123"}
+        for title, state in (
+            ("Denegación de concesión de licencia de obras", "denegada"),
+            ("Solicitud de concesión de licencia de obras", "solicitada"),
+            ("Revocación de licencia de obras concedida", "revocada"),
+            ("No se concede licencia de obras", ""),
+            ("Se concede licencia de obras", "denegada"),
+            ("Solicitud de licencia de obras", "concedida"),
+            ("Propuesta de concesión de licencia de obras", "pendiente"),
+            ("Concesión de licencia de obras", ""),
+        ):
+            rec = {**common, "titulo": title, "estado": state}
+            result = classify(rec, kind="licencia")
+            self.assertFalse(result["grant_evidenced"], (title, state))
+            self.assertFalse(result["activity_eligible"], (title, state))
+            if state in ("denegada", "solicitada", "revocada"):
+                self.assertFalse(classify({**rec, "fecha_concesion": "2026-10-01"}, kind="licencia")["grant_evidenced"])
+        for evidence in ({"estado": "concedida"}, {"fecha_concesion": "2026-10-01"}, {}):
+            self.assertTrue(classify({**common, "titulo": "Se concede licencia de obras", **evidence}, kind="licencia")["grant_evidenced"])
+
     def test_official_source_structures(self):
         self.assertTrue(classify({"titulo": "Área A", "object_id": 123, "sigma_layer_kind": "gestion", "url": "https://geoportal.example/123"})["activity_eligible"])
         self.assertTrue(classify({"titulo": "Construcción vivienda", "source": "madrid-opendata", "licencia_key": "stable", "fecha_concesion": "2026-10-01"}, kind="licencia")["activity_eligible"])

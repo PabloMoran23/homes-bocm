@@ -5,7 +5,8 @@ La política `municipio/entity_policy.py` clasifica mediante estructura y eviden
 siendo elegible. Formularios, normativa, documentos, anuncios sin identidad,
 categorías ajenas al urbanismo y casos ambiguos se conservan en las tablas y los
 JSONL originales, pero no entran en actividad. Las licencias requieren fecha real
-de concesión o acto/estado explícito; una fecha de solicitud nunca se convierte
+de concesión o acto/estado explícito; solicitudes, denegaciones, revocaciones y contradicciones
+prevalecen incluso frente a una fecha positiva; una fecha de solicitud nunca se convierte
 en concesión. No se emplean agentes ni modelos en la ingesta.
 
 La lista `municipio/policies/entity_categories.json` se versiona en Git y su hash
@@ -15,28 +16,48 @@ forma parte de la versión efectiva. Cambiar reglas de código exige incrementar
 
 ## Integración y operación
 
-1. Aplicar `20261014235900_entity_activity_policy.sql` mediante el proceso normal
-   de migraciones. No se ha ejecutado en producción durante este trabajo.
-2. Si se integra H03, sanear primero sus outliers geográficos históricos: los
-   CHECK NOT VALID de H03 también se exigen al actualizar metadatos de esos rows.
-3. Ejecutar `python db/entity_reprocess.py` antes de publicar. Altas, cambios e
-   histórico comparten la misma cola y política. Una versión nueva encola solo
-   filas cuya versión es distinta. Altas/cambios por SQL externo se encolan por
-   trigger; `save_proyectos` y `save_licencias` procesan sus filas en la misma
-   transacción. Cambios de programas, métricas o GIS derivados no invalidan la
-   clasificación si no cambian evidencia usada por esta política.
-4. Ejecutar de nuevo tras otros replay que cambien evidencia (semántica H02,
-   fuentes originales) y antes de exportar. Los workflows refresh-web-data,
-   refresh-municipios y sync-supabase ejecutan el worker automáticamente.
-5. Regenerar/publicar los artefactos web por el flujo existente: la migración no
-   modifica JSON estáticos ya desplegados. No publicar hasta vaciar la cola.
+1. La migración prepara config/cola/triggers/vistas con **control_active=false**;
+   NO cambia las RPC ni activa filtros públicos. Mientras se prepara el histórico,
+   las vistas conservan la lectura previa explícitamente. Si llega primero el
+   código, `save_proyectos`/`save_licencias` hacen ese bootstrap idempotente antes
+   de escribir: no dependen de que la cola ya exista. Un advisory lock serializa
+   ese bootstrap; si llega primero la migración, los escritores antiguos siguen
+   funcionando y sus cambios se encolan.
+2. `python db/entity_reprocess.py` prepara la versión objetivo y clasifica en
+   lotes. Un fallo deja la activación anterior intacta y devuelve código no cero.
+   Reintentar el mismo comando retoma únicamente las tareas pendientes.
+3. Con toda fila preparada y sin backlog, el comando toma un lock SHARE sobre
+   ambas tablas (bloquea escritores, permite lecturas), comprueba de nuevo la
+   completitud, actualiza snapshots activos y RPC de la allowlist y cambia el
+   flag/version en **una sola transacción**. Una firma inesperada aborta esta
+   transacción completa; no hay ventana de RPC vacías durante el rollout.
+4. En actualizaciones de política, cada `_entity_policy` guarda el candidato y
+   un snapshot anidado `active` de la versión anterior. Tareas `policy_change`
+   conservan la actividad válida hasta el cambio atómico. Las tareas
+   `source_change` sí ocultan únicamente la entidad modificada. No se añaden
+   nuevas claves raw ajenas a `_entity_policy`, de modo que el hash H02 no cambia.
+5. Si se integra H03, sus guardias deben permitir actualizaciones de metadatos
+   sobre históricos inválidos; si no, el worker registra el fallo y conserva el
+   rollout anterior hasta corregir y reintentar. Ejecutar el replay GIS antes de
+   la última clasificación H01. Repetir H01 tras otros replay que cambien evidencia.
+6. Los workflows refresh-web-data, refresh-municipios y sync-supabase ejecutan
+   este comando automáticamente. Los exportadores tienen preflight obligatorio:
+   si el control está inactivo o la versión actual aún no está activa, fallan con
+   un mensaje explícito para ejecutar el worker y no publican legado como si
+   estuviera controlado. Las RPC y artefactos desplegados previos siguen sirviendo
+   durante la preparación. Después, regenerar/publicar por el flujo normal.
+
+`homes.entity_policy_rollout` expone `control_active`, versión activa/objetivo,
+pendientes y fallos. Una instalación preparada no se presenta como protegida.
+No se ha ejecutado ninguna migración ni replay productivo durante este trabajo.
 
 El worker bloquea primero la entidad y después su tarea, con SKIP LOCKED. Nunca
 retira una tarea de una entidad bloqueada por otro escritor. Los fallos quedan
 con contador, último error y fecha en `homes.entity_reprocess_queue`; el proceso
 continúa con las otras filas, devuelve código no cero y permite reintentar.
-`homes.entity_policy_health` muestra backlog y fallos. Ninguna entidad pendiente,
-con error o política obsoleta entra en las vistas de actividad. Un pico de
+`homes.entity_policy_health` muestra backlog y fallos. Con el control activo, ninguna fuente cambiada pendiente o con error entra en
+actividad. La versión activa anterior solo se conserva para cambios de regla
+hasta la activación atómica de la siguiente versión. Un pico de
 entidades desconocidas produce `status=adapter_incident` y reason_code en el
 informe `*.entities.json` del adaptador (mínimo 10; ratio >=25 %; aumento >15 pp).
 No se abre ni se envía una incidencia externa automáticamente.

@@ -734,6 +734,8 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
     log(f"OK: madrid-licencias-index.json ({total} filas desde {min_year})")
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -742,6 +744,7 @@ def main() -> int:
 
     with psycopg2.connect(pg_url()) as con:
         with con.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             bocm_rows = _fetch_proyectos_bocm(cur)
             sigma_rows = _fetch_proyectos_sigma(cur)
             export_projects(out_dir, bocm_rows, generated_at)
