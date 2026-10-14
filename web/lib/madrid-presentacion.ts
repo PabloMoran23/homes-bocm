@@ -50,6 +50,7 @@ export type MadridPresentacion = {
 };
 
 export type EspanaPresentacion = {
+  scope: import("./statistics-scope.mjs").NationalStatisticsScope;
   anuncios: number;
   yearMin: string | null;
   yearMax: string | null;
