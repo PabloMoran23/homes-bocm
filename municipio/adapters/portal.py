@@ -11,6 +11,10 @@ class AyuntamientoAdapter(ABC):
     Un módulo por municipio (scrape, API, datos abiertos del ayto.).
     """
 
+    # Shared semantic contract: generic fecha has unknown meaning; never use tipo
+    # as fase. Descriptions (descripcion/resumen/resumen_contenido) retain their
+    # source field. Explicit dates: fecha_publicacion, fecha_acuerdo, fecha_aprob.
+    # The mandatory ingest guard is db.project_semantics (versioned + replayable).
     slug: str
     base_url: str
 

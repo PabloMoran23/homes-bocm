@@ -1,0 +1,31 @@
+name: Municipal semantic contract
+on:
+  pull_request:
+    paths:
+      - 'db/**'
+      - 'municipio/adapters/**'
+      - '.github/workflows/project-semantics.yml'
+  push:
+    branches: [main]
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: semantics
+          POSTGRES_DB: semantics_test
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r db/requirements-supabase.txt
+      - name: Adapter contracts and transactional replay
+        env:
+          PYTHONPATH: 'db:.'
+          TEST_SEMANTICS_DB_URL: postgresql://postgres:semantics@localhost:5432/semantics_test
+        run: python -m unittest db/test_project_semantics.py db/test_project_semantics_postgres.py -v
