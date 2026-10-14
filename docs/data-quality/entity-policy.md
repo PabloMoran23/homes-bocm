@@ -15,7 +15,7 @@ forma parte de la versión efectiva. Cambiar reglas de código exige incrementar
 
 ## Integración y operación
 
-1. Aplicar `20261014100000_entity_activity_policy.sql` mediante el proceso normal
+1. Aplicar `20261014235900_entity_activity_policy.sql` mediante el proceso normal
    de migraciones. No se ha ejecutado en producción durante este trabajo.
 2. Si se integra H03, sanear primero sus outliers geográficos históricos: los
    CHECK NOT VALID de H03 también se exigen al actualizar metadatos de esos rows.

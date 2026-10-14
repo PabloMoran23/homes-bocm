@@ -49,7 +49,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
             cur.execute("""CREATE FUNCTION homes._proyecto_map_portal_row(p homes.proyecto) RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT jsonb_build_object('id',p.id) $$;
                 CREATE FUNCTION homes.map_cm_portal() RETURNS jsonb LANGUAGE sql STABLE AS $$ SELECT jsonb_agg(homes._proyecto_map_portal_row(p)) FROM homes.proyecto p $$;
                 CREATE FUNCTION homes.madrid_dashboard_stats() RETURNS bigint LANGUAGE sql STABLE AS $$ SELECT count(*) FROM homes.licencia $$""")
-            cur.execute((ROOT / "supabase/migrations/20261014100000_entity_activity_policy.sql").read_text())
+            cur.execute((ROOT / "supabase/migrations/20261014235900_entity_activity_policy.sql").read_text())
         conn.commit()
         conn.close()
 
@@ -165,7 +165,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
             cur.execute("CREATE FUNCTION homes.audit_resources() RETURNS bigint LANGUAGE sql STABLE AS $$ SELECT count(*) FROM homes.proyecto $$")
         self.add("generic", titulo="Formulario de obras", expediente=None)
         with self.conn.cursor() as cur:
-            migration = (ROOT / "supabase/migrations/20261014100000_entity_activity_policy.sql").read_text()
+            migration = (ROOT / "supabase/migrations/20261014235900_entity_activity_policy.sql").read_text()
             cur.execute(migration)
             self.assertEqual(self.scalar("SELECT homes.audit_resources()"), 1)
             cur.execute("SAVEPOINT unexpected_rpc")
