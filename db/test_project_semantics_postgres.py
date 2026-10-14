@@ -47,7 +47,7 @@ class ReplayTest(unittest.TestCase):
                 if col in present:
                     continue
                 value = row.get(col)
-                kind = "jsonb" if isinstance(value, Json) else "boolean" if isinstance(value, bool) else "timestamptz" if isinstance(value, datetime) else "text"
+                kind = "boolean" if col == "bocm_es_relevante" else "jsonb" if isinstance(value, Json) else "boolean" if isinstance(value, bool) else "timestamptz" if isinstance(value, datetime) else "text"
                 cur.execute(f'ALTER TABLE homes.proyecto ADD COLUMN "{col}" {kind}')
         with self.conn:
             save_proyectos([row], conn=self.conn)

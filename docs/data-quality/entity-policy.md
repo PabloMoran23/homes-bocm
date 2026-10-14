@@ -104,3 +104,5 @@ se ha desplegado. Los campos originales sin suficiente identidad quedan
 pendientes, incluso si una heurística anterior los había publicado; la política
 prefiere abstenerse. El muestreo de candidatos requiere contrastar publicación
 real antes de emplearlo como criterio de cierre.
+
+La versión h01-v3 valida la fecha de concesión mediante el contrato temporal H05: fechas observadas futuras, inválidas o parciales no prueban por sí solas una concesión. Un estado o acto afirmativo independiente puede probarla sin inventar la fecha. El cambio de versión fuerza el replay de las clasificaciones anteriores.

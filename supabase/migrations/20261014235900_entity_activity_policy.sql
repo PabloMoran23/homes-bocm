@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS homes.entity_policy_config (
   target_version text NOT NULL, active boolean NOT NULL DEFAULT false
 );
 ALTER TABLE homes.entity_policy_config ADD COLUMN IF NOT EXISTS active boolean NOT NULL DEFAULT false;
-ALTER TABLE homes.entity_policy_config ADD COLUMN IF NOT EXISTS target_version text NOT NULL DEFAULT 'h01-v2-5c35bf508856';
-INSERT INTO homes.entity_policy_config(singleton,version,target_version) VALUES (true, 'h01-v2-5c35bf508856', 'h01-v2-5c35bf508856')
+ALTER TABLE homes.entity_policy_config ADD COLUMN IF NOT EXISTS target_version text NOT NULL DEFAULT 'h01-v3-5c35bf508856';
+INSERT INTO homes.entity_policy_config(singleton,version,target_version) VALUES (true, 'h01-v3-5c35bf508856', 'h01-v3-5c35bf508856')
 ON CONFLICT(singleton) DO NOTHING;
 CREATE TABLE IF NOT EXISTS homes.entity_reprocess_queue (
   entity_table text NOT NULL CHECK(entity_table IN ('proyecto','licencia')),

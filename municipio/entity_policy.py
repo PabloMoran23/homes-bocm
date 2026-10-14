@@ -6,7 +6,6 @@ requiere aumentar RULE_VERSION; las categorías tienen además hash automático.
 from __future__ import annotations
 
 import hashlib
-from datetime import date
 import json
 import re
 import unicodedata
@@ -14,7 +13,9 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-RULE_VERSION = "h01-v2"
+from db.license_dates import parse_date
+
+RULE_VERSION = "h01-v3"
 _CATEGORIES_BYTES = (Path(__file__).parent / "policies/entity_categories.json").read_bytes()
 CATEGORIES = json.loads(_CATEGORIES_BYTES)["outside_domain"]
 POLICY_VERSION = RULE_VERSION + "-" + hashlib.sha256(_CATEGORIES_BYTES).hexdigest()[:12]
@@ -49,10 +50,11 @@ def classify(record: dict, *, kind: str = "proyecto") -> dict:
     source = bool(urlparse(url).netloc) or bool(urlparse(str(record.get("source_dataset") or "")).netloc and record.get("id_origen"))
     structure = norm(record.get("entity_type") or record.get("source_entity_type"))
     state = norm(record.get("estado") or record.get("estado_tramitacion") or record.get("fase"))
-    try:
-        grant_date = date.fromisoformat(str(record.get("fecha_concesion") or "")[:10])
-    except ValueError:
-        grant_date = None
+    # Revalidate original evidence on every rule version. A quarantined future
+    # or invalid observed date cannot establish a grant; partial dates retain
+    # their precision in H05 but do not establish a day of concession here.
+    grant_field = parse_date(record.get("fecha_concesion"))
+    grant_date = grant_field["value"] if grant_field["precision"] == "day" else None
     # Una fecha o frase positiva nunca vence a solicitud/negación/revocación.
     adverse_state = bool(re.search(r"\b(?:deneg\w*|revoc\w*|anulad\w*|caduc\w*|desist\w*|inadmit\w*|rechaz\w*|suspend\w*|solicit\w*|pendiente|en tramitacion)\b", state))
     adverse_title = bool(re.search(r"\b(?:deneg\w*|revoc\w*|anulacion|caducidad|solicitud|solicita\w*|propuesta de concesion|no se concede|no se otorga|sin concesion)\b", title))

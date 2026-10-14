@@ -206,6 +206,21 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertEqual(self.scalar("SELECT homes.madrid_dashboard_stats()"), 1)
         self.assertIsNone(self.scalar("SELECT fecha_concesion FROM homes.licencia WHERE licencia_key='request'"))
 
+    def test_temporal_quarantine_cannot_establish_a_grant(self):
+        common = {"titulo": "Licencia de obras de viviendas", "expediente": "2026/12",
+                  "url": "https://example/12", "municipio_slug": "madrid", "source": "madrid-opendata"}
+        save_licencias([{**common, "id": "future", "fecha_concesion": "2099-01-01"},
+                        {**common, "id": "invalid", "fecha_concesion": "2025-02-30"},
+                        {**common, "id": "partial", "fecha_concesion": "2025-02"}], conn=self.conn)
+        self.assertIsNone(self.scalar("SELECT fecha_concesion FROM homes.licencia WHERE licencia_key='future'"))
+        self.assertEqual(self.scalar("SELECT raw_json->'temporal'->'quarantine'->0->>'reason' FROM homes.licencia WHERE licencia_key='future'"), "future_observed_date")
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia_actividad"), 0)
+        self.assertFalse(self.scalar("SELECT (raw_json->'_entity_policy'->>'grant_evidenced')::boolean FROM homes.licencia WHERE licencia_key='future'"))
+        # Independent affirmative state still proves a grant, without fabricating its date.
+        save_licencias([{**common, "id": "affirmative", "estado": "concedida", "fecha_concesion": "2099-01-01"}], conn=self.conn)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia_actividad"), 1)
+        self.assertIsNone(self.scalar("SELECT fecha_concesion FROM homes.licencia WHERE licencia_key='affirmative'"))
+
     def test_locked_writer_cannot_lose_a_pending_reclassification(self):
         self.add()
         self.scalar("INSERT INTO homes.entity_reprocess_queue(entity_table,entity_id) VALUES ('proyecto','valid') RETURNING entity_id")
@@ -252,7 +267,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
                      "municipal_boundary": {"type": "Polygon", "coordinates": [[[-3.8,40.3],[-3.6,40.3],[-3.6,40.5],[-3.8,40.5],[-3.8,40.3]]]}}
         self.add(**geography)
         self.add("generic", titulo="Formulario de obras", expediente=None, **geography)
-        save_licencias([{"id": "grant", "titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid", "fecha_concesion": "2026-10-14", "source": "madrid-opendata", **geography}], conn=self.conn)
+        save_licencias([{"id": "grant", "titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid", "fecha_concesion": "2026-10-14", "source": "ayuntamiento", "_territorial_origin": {"adapter": "fixture", "url": "https://example/12", "municipio_slug": "madrid"}, **geography}], conn=self.conn)
         with tempfile.TemporaryDirectory() as folder, self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             points, polygons, stats = export_proyectos(cur, Path(folder), "2026-10-14")
             self.assertEqual(points, 1)
