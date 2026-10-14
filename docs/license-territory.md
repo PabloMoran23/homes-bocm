@@ -105,3 +105,10 @@ público para reprocesos posteriores.
 
 La transición de `statisticsScope` de H06/#860 permanece activa junto con esta guardia.
 No se cambian sus denominadores ni fechas de evidencia al reconstruir las licencias.
+
+Validación de transición realizada desde un clon limpio con dependencias físicas (sin
+symlink), sin `SUPABASE_DB_URL` ni `DATABASE_URL`: `npm run build:public` completa
+prebuild, guardias territorial y H06, Turbopack, TypeScript y generación de páginas.
+La interfaz distingue la generación del panel del origen factual: muestra que las
+licencias se reconstruyeron desde archivos conservados y que no se verificó su fecha
+de actualización municipal.
