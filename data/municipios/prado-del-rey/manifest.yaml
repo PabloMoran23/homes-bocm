@@ -1,0 +1,29 @@
+slug: prado-del-rey
+nombre: "Prado del Rey"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://pradodelrey.sedelectronica.es"
+  adapter: municipio.adapters.prado_del_rey:PradoDelReyAyuntamientoAdapter
+  config:
+    sede_base: "https://pradodelrey.sedelectronica.es"
+    board_url: "https://pradodelrey.sedelectronica.es/board/"
+    web_base: "https://www.pradodelrey.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-prado-del-rey/1.0)"
+    centroid: [36.8898, -5.5542]
+  notes: |
+    Fuentes: PGOU en web Joomla Phoca Download (/homepage/pgou) + tablón sede espublico gestiona.
+    SITUA/VITUA Junta para planeamiento regional. Sin visor municipal de expedientes.
+  geometry:
+    kind: partial
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
