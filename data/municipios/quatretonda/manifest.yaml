@@ -1,0 +1,25 @@
+slug: quatretonda
+nombre: Quatretonda
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://quatretonda.es"
+  adapter: municipio.adapters.quatretonda:QuatretondaAyuntamientoAdapter
+  config:
+    sede_base: "https://quatretonda.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-quatretonda/1.0 (+urbanismo research)"
+    cod_ine_mun: "46214"
+  notes: |
+    WordPress (Themify) quatretonda.es: noticies i formularis PDF d'urbanisme.
+    Seu espublico gestiona: /board i /info (tabló d'anuncis).
+    Geometria: ICV WFS InventarioSuSuz filtrat CODINE=46214.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
