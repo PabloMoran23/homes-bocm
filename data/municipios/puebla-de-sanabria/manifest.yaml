@@ -1,0 +1,26 @@
+slug: puebla-de-sanabria
+nombre: "Puebla de Sanabria"
+provincia: Puebla de Sanabria (Zamora)
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.pueblasanabria.com"
+  adapter: municipio.adapters.puebla_de_sanabria:PueblaDeSanabriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puebla-de-sanabria/1.0"
+    web_base: "https://www.pueblasanabria.com"
+    sede_base: "https://puebladesanabria.sedelectronica.es"
+    wfs_municipio: "Puebla de Sanabria"
+  notes: |
+    Joomla YOOtheme (pueblasanabria.com): trámites con PDFs de licencia/declaración responsable.
+    Sede espublico: tablón /board e info.0 (licencias urbanísticas, modificaciones NNSS, edictos).
+    PlanPublica Junta CYL provincia 49 / municipio 200.
+    Geometría: IDECyL WFS urbanismo (sectores e instrumentos), sin visor municipal propio.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
