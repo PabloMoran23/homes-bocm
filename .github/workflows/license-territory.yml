@@ -1,0 +1,23 @@
+name: License territorial contract
+on:
+  pull_request:
+    paths: ['db/**', 'municipio/**', 'sector_geometry/madrid_licencias_download.py', 'web/scripts/**', '.github/workflows/license-territory.yml']
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  territorial-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-data-refresh.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+        working-directory: web
+      - run: python -m unittest discover -s db -p test_license_territory.py
+      - run: node web/scripts/test-license-territory.mjs

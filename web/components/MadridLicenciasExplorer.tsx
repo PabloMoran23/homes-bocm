@@ -194,6 +194,9 @@ export function MadridLicenciasExplorer() {
         {index.generatedAt
           ? ` · índice ${new Date(index.generatedAt).toLocaleString("es-ES")}`
           : null}
+        {index.sourceSnapshot?.mode === "cached-xlsx-replay"
+          ? " · Reconstruido desde archivos conservados; fecha de actualización municipal no verificada."
+          : null}
       </p>
 
       <div className="flex flex-wrap items-end gap-3">
