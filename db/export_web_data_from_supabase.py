@@ -27,6 +27,8 @@ POC_ROOT = DB_DIR.parent
 sys.path.insert(0, str(DB_DIR))
 sys.path.insert(0, str(POC_ROOT))
 
+from license_territory import MADRID_CODE, VERSION, resolve_territory
+
 from export_sigma_ambito_web import fecha_aprob_ms  # noqa: E402
 from sector_geometry.madrid_nti_vivienda_sanity import sanitize_viviendas_en_metrics  # noqa: E402
 from sync_madrid_public_to_supabase import pg_url  # noqa: E402
@@ -633,6 +635,7 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
         SELECT
           l.id,
           l.licencia_key,
+          l.municipio_slug, l.fuente, l.raw_json,
           l.anio_dataset,
           l.fecha_alta,
           l.fecha_concesion,
@@ -657,7 +660,13 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
     by_uso: dict[str, int] = defaultdict(int)
     by_distrito: dict[str, int] = defaultdict(int)
 
+    excluded = []
     for r in rows:
+        territory = resolve_territory(r)
+        if territory["municipioCode"] != MADRID_CODE:
+            excluded.append({"id": r["id"], "reason": territory["reason"] or "outside_madrid",
+                             "territory": territory})
+            continue
         year = _licencia_year(r)
         if year is None or year < min_year:
             continue
@@ -665,6 +674,8 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
         lat, lng = r.get("lat"), r.get("lng")
         row_out = {
             "id": r["id"],
+            "municipioCode": MADRID_CODE,
+            "municipioSlug": "madrid",
             "licenciaKey": r.get("licencia_key"),
             "anioDataset": year,
             "fechaAlta": r.get("fecha_alta"),
@@ -688,6 +699,7 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
                         "geometry": {"type": "Point", "coordinates": [lng, lat]},
                         "properties": {
                             "id": r["id"],
+                            "municipioCode": MADRID_CODE,
                             "tipoExpediente": r.get("tipo_expediente"),
                             "objeto": r.get("objeto"),
                             "uso": r.get("uso"),
@@ -701,7 +713,16 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
         if r.get("distrito"):
             by_distrito[str(r["distrito"])] += 1
 
+    # Validate the entire cut before replacing any previously valid license artifact.
+    assert sum(len(p["rows"]) for p in by_year.values()) == total
+    assert sum(len(p["features"]) for p in by_year.values()) == with_coords
+    assert all(r["municipioCode"] == MADRID_CODE for p in by_year.values() for r in p["rows"])
     years = sorted(by_year.keys())
+    for old in out_dir.glob("madrid-licencias-*.json"):
+        year = old.stem.removeprefix("madrid-licencias-")
+        if year.isdigit() and int(year) not in years:
+            old.unlink()
+            old.with_suffix(".geojson").unlink(missing_ok=True)
     by_year_count = {}
     for y in years:
         pack = by_year[y]
@@ -720,6 +741,10 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
     index = {
         "generatedAt": datetime.now(UTC).isoformat(),
         "source": "supabase-dominio",
+        "municipioCode": MADRID_CODE,
+        "territorialPolicy": VERSION,
+        "excludedTerritory": len(excluded),
+        "withoutCoords": total - with_coords,
         "totalRows": total,
         "withCoords": with_coords,
         "byYear": by_year_count,
@@ -731,7 +756,9 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
         json.dumps(index, indent=2, ensure_ascii=False),
         encoding="utf-8",
     )
-    log(f"OK: madrid-licencias-index.json ({total} filas desde {min_year})")
+    (out_dir / "madrid-licencias-territory-report.json").write_text(
+        json.dumps({"policy": VERSION, "excluded": excluded}, ensure_ascii=False), encoding="utf-8")
+    log(f"OK: madrid-licencias-index.json ({total} filas desde {min_year}; {len(excluded)} excluidas por territorio)")
 
 
 def main() -> int:

@@ -1,3 +1,4 @@
+import { assertLicenseTerritory } from "./assert-license-territory.mjs";
 /**
  * Filas compactas para filtrar el dashboard de licencias en cliente.
  */
@@ -47,6 +48,7 @@ function titleCase(s) {
  */
 export function buildMadridLicenciasFilterRows(opts) {
   const { outDir } = opts;
+  assertLicenseTerritory(outDir);
   const rows = [];
   const distritoCounts = new Map();
   const actuacionCounts = new Map();

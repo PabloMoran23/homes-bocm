@@ -17,6 +17,7 @@ Uso:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 from contextlib import contextmanager
@@ -33,6 +34,8 @@ if str(POC_ROOT) not in sys.path:
     sys.path.insert(0, str(POC_ROOT))
 if str(DB_DIR) not in sys.path:
     sys.path.insert(0, str(DB_DIR))
+
+from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 
@@ -717,7 +720,10 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
             lat, lng = _latlng(rec)
             fecha = _iso_date(rec.get("fecha_concesion") or rec.get("fecha"))
             anio = int(fecha[:4]) if fecha else None
-            slug = _blank(rec.get("municipio_slug"))
+            territory = resolve_territory(rec)
+            slug = territory["municipio_slug"]
+            if territory["reason"]:
+                logging.warning("license territory quarantine key=%s reason=%s", key, territory["reason"])
             tuples.append(
                 (
                     id_map[key],
@@ -734,10 +740,10 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     _blank(rec.get("unidad") or rec.get("distrito")),
                     lat,
                     lng,
-                    Json({**rec, "source": rec.get("source") or rec.get("fuente") or "ayuntamiento"}),
+                    Json(territorial_raw(rec)),
                     rec.get("proyecto_id"),
                     slug,
-                    rec.get("fuente") or rec.get("source") or "ayuntamiento",
+                    rec.get("fuente") or rec.get("source"),
                     key,
                     now,
                     now,
@@ -760,8 +766,8 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               lng = COALESCE(EXCLUDED.lng, {SCHEMA}.licencia.lng),
               raw_json = EXCLUDED.raw_json,
               inmueble_id = COALESCE(EXCLUDED.inmueble_id, {SCHEMA}.licencia.inmueble_id),
-              municipio_slug = COALESCE(EXCLUDED.municipio_slug, {SCHEMA}.licencia.municipio_slug),
-              fuente = COALESCE(EXCLUDED.fuente, {SCHEMA}.licencia.fuente),
+              municipio_slug = EXCLUDED.municipio_slug,
+              fuente = EXCLUDED.fuente,
               id_origen = COALESCE(EXCLUDED.id_origen, {SCHEMA}.licencia.id_origen),
               updated_at = EXCLUDED.updated_at
         """
@@ -1330,7 +1336,9 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]
         if not rec.get("id"):
             continue
         row = dict(rec)
-        row["municipio_slug"] = manifest.slug
+        row["_territorial_origin"] = {"municipio_slug": manifest.slug,
+            "adapter": manifest.portal.adapter or "municipio-manifest", "url": manifest.portal.base_url}
+        row["municipio_slug"] = rec.get("municipio_slug") or manifest.slug
         row["fuente"] = rec.get("fuente") or rec.get("source") or "ayuntamiento"
         lic_rows.append(row)
         if rec.get("pdf_url"):

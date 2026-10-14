@@ -1,7 +1,7 @@
 /**
  * Exporta licencias urbanísticas (JSONL) → índice + GeoJSON/JSON por año para la web.
  */
-import { createReadStream, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { createReadStream, existsSync, mkdirSync, writeFileSync, readdirSync, unlinkSync } from "node:fs";
 import { createInterface } from "node:readline";
 import { join } from "node:path";
 import proj4 from "proj4";
@@ -10,6 +10,8 @@ import {
   ACTUACION_QUE_LEYENDA,
   labelActuacionQue,
 } from "./lib/actuacion-que-config.mjs";
+
+import { licenseTerritory, TERRITORIAL_POLICY } from "./lib/license-territory.mjs";
 
 const UTM30 =
   "+proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs";
@@ -106,6 +108,8 @@ import { buildDireccion } from "./direccion.mjs";
 
 function compactRow(row, coords) {
   return {
+    municipioCode: "28079",
+    municipioSlug: "madrid",
     anioDataset: row.anio_dataset ?? null,
     fechaAlta: row.fecha_de_alta ?? null,
     fechaConcesion: row.fecha_concesin ?? null,
@@ -160,6 +164,7 @@ export async function buildMadridLicenciasWeb(opts) {
   const byMonth = new Map();
   /** @type {Map<string, Map<string, number>>} */
   const monthActuacionMaps = new Map();
+  const excluded = [];
   let total = 0;
   let withCoords = 0;
 
@@ -172,13 +177,18 @@ export async function buildMadridLicenciasWeb(opts) {
     } catch {
       continue;
     }
-    total += 1;
+    const territory = licenseTerritory(row);
+    if (territory.municipioCode !== "28079") {
+      excluded.push({ reason: territory.reason || "outside_madrid", id: row.id || row.licencia_key || null });
+      continue;
+    }
     const year =
       Number(row.anio_dataset) ||
       parseYearFromDate(row.fecha_concesin) ||
       parseYearFromDate(row.fecha_de_alta) ||
       0;
-    if (minYear != null && year > 0 && year < minYear) continue;
+    if (!year || (minYear != null && year < minYear)) continue;
+    total += 1;
     if (!byYear.has(year)) byYear.set(year, { features: [], rows: [] });
     const bucket = byYear.get(year);
 
@@ -241,6 +251,7 @@ export async function buildMadridLicenciasWeb(opts) {
         type: "Feature",
         geometry: { type: "Point", coordinates: [coords.lng, coords.lat] },
         properties: {
+          municipioCode: "28079",
           licencia_urbana: true,
           anio_dataset: compact.anioDataset,
           fecha_concesion: compact.fechaConcesion,
@@ -323,6 +334,10 @@ export async function buildMadridLicenciasWeb(opts) {
     };
   });
 
+  for (const name of readdirSync(outDir)) {
+    const match = /^madrid-licencias-(\d{4})\.(json|geojson)$/.exec(name);
+    if (match && !years.includes(Number(match[1]))) unlinkSync(join(outDir, name));
+  }
   for (const y of years) {
     const { features, rows } = byYear.get(y);
     byYearCount[String(y)] = rows.length;
@@ -339,6 +354,10 @@ export async function buildMadridLicenciasWeb(opts) {
   const index = {
     generatedAt: new Date().toISOString(),
     source: "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
+    municipioCode: "28079",
+    territorialPolicy: TERRITORIAL_POLICY,
+    excludedTerritory: excluded.length,
+    withoutCoords: total - withCoords,
     totalRows: total,
     withCoords,
     byYear: byYearCount,
@@ -356,6 +375,7 @@ export async function buildMadridLicenciasWeb(opts) {
     seriesByMonthActuacionQue,
   };
 
+  writeFileSync(join(outDir, "madrid-licencias-territory-report.json"), JSON.stringify({ policy: TERRITORIAL_POLICY, excluded }));
   writeFileSync(join(outDir, "madrid-licencias-index.json"), JSON.stringify(index, null, 2));
   console.log(
     `OK: madrid-licencias-index.json (${total.toLocaleString("es-ES")} filas, ${withCoords.toLocaleString("es-ES")} con ubicación)`,

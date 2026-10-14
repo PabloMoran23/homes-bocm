@@ -99,7 +99,9 @@ def _rows_from_xlsx(path: Path, year: int) -> list[dict[str, Any]]:
     df = df.rename(columns={orig: _norm_col(str(orig)) for orig in df.columns})
     out: list[dict[str, Any]] = []
     for _, row in df.iterrows():
-        rec: dict[str, Any] = {"anio_dataset": year}
+        rec: dict[str, Any] = {"anio_dataset": year, "source": "madrid-opendata",
+            "_territorial_origin": {"municipio_slug": "madrid", "adapter": "madrid-opendata",
+                "url": _download_url_for_year(year), "dataset": "300193-0-licencias-urbanisticas"}}
         empty = True
         for key, val in row.items():
             if pd.isna(val) or (isinstance(val, str) and not val.strip()):
