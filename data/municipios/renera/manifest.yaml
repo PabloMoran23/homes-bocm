@@ -1,0 +1,25 @@
+slug: renera
+nombre: "Renera"
+provincia: Renera
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://renera.sedelectronica.es"
+  adapter: municipio.adapters.renera:ReneraAyuntamientoAdapter
+  config:
+    sede_base: "https://renera.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-renera/1.0 (+urbanismo research)"
+    centroid: [39.5933, -1.4233]
+  notes: |
+    Sede espublico gestiona: tablón (/board), transparencia, catálogo (/dossier).
+    /info y /dossier requieren cookie JSESSIONID (bootstrap vía /board).
+    Sin web corporativa propia; municipio en provincia de Guadalajara (CP 19145).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
