@@ -142,17 +142,16 @@ def _proyecto_tipo(title: str) -> str:
     return "urbanismo"
 
 
-def _gml_poslist_to_polygon(poslist: str) -> dict[str, Any] | None:
+def _gml_poslist_to_polygon(poslist: str, axis_order: str = "yx", source_crs: str = "EPSG:4326") -> dict[str, Any] | None:
     nums = [float(x) for x in poslist.split() if x.strip()]
-    if len(nums) < 6:
+    if len(nums) < 8 or len(nums) % 2:
         return None
     ring: list[list[float]] = []
     for i in range(0, len(nums) - 1, 2):
-        lng, lat = nums[i], nums[i + 1]
+        lng, lat = (nums[i + 1], nums[i]) if axis_order == "yx" else (nums[i], nums[i + 1])
         ring.append([lng, lat])
-    if ring and ring[0] != ring[-1]:
-        ring.append(ring[0])
-    return {"type": "Polygon", "coordinates": [ring]}
+    return {"type": "Polygon", "coordinates": [ring], "source_crs": source_crs,
+            "source_gml": {"posList": poslist, "crs": source_crs, "axis_order": axis_order}}
 
 
 def _merge_geometries(geoms: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -166,9 +165,12 @@ def _merge_geometries(geoms: list[dict[str, Any]]) -> dict[str, Any] | None:
             polys.extend(coords)
     if not polys:
         return None
+    declared = {g.get("source_crs") for g in geoms}
+    metadata = {"source_crs": declared.pop() if len(declared) == 1 else None,
+                "source_gml": [g.get("source_gml") for g in geoms]}
     if len(polys) == 1:
-        return {"type": "Polygon", "coordinates": polys[0]}
-    return {"type": "MultiPolygon", "coordinates": polys}
+        return {"type": "Polygon", "coordinates": polys[0], **metadata}
+    return {"type": "MultiPolygon", "coordinates": polys, **metadata}
 
 
 class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
@@ -395,7 +397,14 @@ class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
                     if tag == "msGeometry":
                         pos = child.find(".//gml:posList", ns)
                         if pos is not None and pos.text:
-                            geom = _gml_poslist_to_polygon(pos.text)
+                            from pyproj import CRS
+                            declared_crs = next((el.get("srsName") for el in child.iter() if el.get("srsName")), "EPSG:4326")
+                            try:
+                                axis = CRS.from_user_input(declared_crs).axis_info[0].direction
+                                axis_order = "yx" if axis == "north" else "xy"
+                            except Exception:
+                                axis_order = "xy"  # Unknown CRS will be quarantined, never located.
+                            geom = _gml_poslist_to_polygon(pos.text, axis_order, declared_crs)
                     else:
                         props[tag] = (child.text or "").strip()
                 if not geom:
@@ -484,6 +493,8 @@ class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         return {
             "geom_geojson": geom,
+            "geometry_crs": geom.get("source_crs"),
+            "geometry_axis_order": "xy",
             "geometry_source": "portal_wfs",
             "geometry_source_url": source_url,
             "coord_source": "portal_geometry_centroid",

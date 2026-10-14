@@ -860,6 +860,8 @@ def sync_licencias_incremental(cur, years: set[int]) -> dict[str, Any]:
                 lat,
                 lng,
                 raw,
+                (raw.adapted.get("_territory") or {}).get("municipio_slug"),
+                raw.adapted.get("fuente") or raw.adapted.get("source"),
                 None,
                 None,
                 None,
@@ -889,6 +891,8 @@ def sync_licencias_incremental(cur, years: set[int]) -> dict[str, Any]:
             "lat",
             "lng",
             "raw_json",
+            "municipio_slug",
+            "fuente",
             "proyecto_id",
             "proyecto_match_method",
             "proyecto_match_score",
@@ -912,6 +916,8 @@ def sync_licencias_incremental(cur, years: set[int]) -> dict[str, Any]:
         "lat = EXCLUDED.lat, "
         "lng = EXCLUDED.lng, "
         "raw_json = EXCLUDED.raw_json, "
+        "municipio_slug = EXCLUDED.municipio_slug, "
+        "fuente = EXCLUDED.fuente, "
         "updated_at = EXCLUDED.updated_at",
     )
     stats["mode"] = "incremental"
@@ -979,6 +985,8 @@ def sync_licencias_full(cur) -> dict[str, Any]:
                 lat,
                 lng,
                 raw,
+                (raw.adapted.get("_territory") or {}).get("municipio_slug"),
+                raw.adapted.get("fuente") or raw.adapted.get("source"),
                 None,
                 None,
                 None,
@@ -1016,6 +1024,8 @@ def sync_licencias_full(cur) -> dict[str, Any]:
             "lat",
             "lng",
             "raw_json",
+            "municipio_slug",
+            "fuente",
             "proyecto_id",
             "proyecto_match_method",
             "proyecto_match_score",

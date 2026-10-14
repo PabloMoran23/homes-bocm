@@ -23,3 +23,16 @@ La presentación compara sólo meses acreditados comunes entre años; sin ellos 
 `sync_madrid_public_to_supabase.licencia_key` contiene fecha de concesión/año. En modo incremental una corrección del origen puede crear otra identidad y dejar la antigua en la base. Falta un identificador estable o evidencia de snapshot completo para reconciliar sin borrar registros legítimos. Este cambio normaliza valores, pero no migra esa identidad. La reconstrucción completa invalida derivados sobre el snapshot recibido; no resuelve duplicados ya presentes en la base. El PR referencia H05 sin cerrarla. No se ejecuta reproceso de producción ni se certifican cierres sin evidencia.
 
 Pruebas: `python db/test_license_dates.py`, `npm --prefix web run test:license-dates`, TypeScript y ESLint. Cubren ingesta/export, calendario, precisión, cuarentena, repetición, corrección entre años, retirada de partición, fallo/recuperación y comparativas parciales.
+
+## Integración del snapshot territorial
+
+El replay del caché acreditado conserva 48.960 filas de 2022–2026, 47.762 puntos y
+1.198 filas sin coordenadas. La procedencia se propaga a índice, filtro, dashboard
+y presentación; `factualUpdatedAt=null` conserva la falta de fecha factual municipal.
+Las marcas `generatedAt` corresponden a la ejecución real de cada builder. No hay
+evidencia de cierre: se publica `lastCompleteMonth=null`, cobertura parcial y
+comparativa vacía, retirando el supuesto cierre de abril basado en volumen.
+
+`assert-license-temporal.mjs` se ejecuta también con `SKIP_BUILD_DATA=1`: comprueba
+contrato, totales, procedencia y meses comparables sobre los JSON versionados. La
+regresión rechaza una presentación con abril de 2026 indebidamente cerrado.

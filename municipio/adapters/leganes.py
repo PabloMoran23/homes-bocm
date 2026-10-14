@@ -279,6 +279,7 @@ class LeganesAyuntamientoAdapter(AyuntamientoAdapter):
             "request": "GetFeature",
             "typeNames": self.wfs_type,
             "outputFormat": "application/json",
+            "srsName": "EPSG:4326",
             "count": "500",
             "CQL_FILTER": self.wfs_filter,
         }
@@ -333,6 +334,8 @@ class LeganesAyuntamientoAdapter(AyuntamientoAdapter):
         if not geom:
             return
         rec["geom_geojson"] = geom
+        rec["geometry_crs"] = "EPSG:4326"
+        rec["geometry_axis_order"] = "xy"
         rec["geometry_source"] = "portal_wfs"
         rec["geometry_source_url"] = (
             f"{self.wfs_url}?service=WFS&typeNames={self.wfs_type}&CQL_FILTER={urllib.parse.quote(self.wfs_filter)}"

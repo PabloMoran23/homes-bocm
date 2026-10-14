@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.geometry import has_area_geometry, record_geometry
+from municipio.geography_control import manifest_geography_config, normalize_record
 from municipio.gis.arcgis import query_mapserver_geojson
 from municipio.gis.sitcm import resolve_ambito_geometry, resolve_municipio_wfs, sitcm_municipio_available
 from municipio.manifest import MunicipioManifest
@@ -130,6 +131,8 @@ def enrich_records(
             continue
 
         rec["geom_geojson"] = geom
+        rec["geometry_crs"] = (meta or {}).get("source_crs")
+        rec["geometry_axis_order"] = (meta or {}).get("axis_order", "xy")
         rec["geometry_source"] = (meta or {}).get("geometry_source") or "enrich_geometry"
         if meta and meta.get("geometry_source_url"):
             rec["geometry_source_url"] = meta["geometry_source_url"]
@@ -153,6 +156,14 @@ def enrich_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     proy_stats = enrich_records(proyectos, manifest=manifest, cfg=cfg)
     lic_stats = enrich_records(licencias, manifest=manifest, cfg=cfg)
 
+    validation_cfg = manifest_geography_config(manifest)
+    quarantined = 0
+    for records in (proyectos, licencias):
+        for rec in records:
+            checked = normalize_record(rec, cfg=validation_cfg, municipality=manifest.nombre, fetch_boundary=True)
+            rec.clear()
+            rec.update(checked)
+            quarantined += bool(rec["geography_validation"]["errors"])
     if proyectos:
         _write_jsonl(proyectos_path, proyectos)
     if licencias:
@@ -162,7 +173,8 @@ def enrich_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     lic_with_geom = sum(1 for r in licencias if has_area_geometry(r))
 
     return {
-        "status": "ok",
+        "status": "partial" if quarantined else "ok",
+        "geography_quarantined": quarantined,
         "slug": manifest.slug,
         "nombre": manifest.nombre,
         "sitcm_available": sitcm_municipio_available(manifest.nombre),

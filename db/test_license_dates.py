@@ -31,7 +31,7 @@ class LicenseDateTests(unittest.TestCase):
         from export_web_data_from_supabase import export_licencias, _licencia_year
         class Cursor:
             def execute(self, _sql): pass
-            def fetchall(self): return self.rows
+            def fetchall(self): return [{"fuente": "madrid-opendata", **r} for r in self.rows]
         cursor = Cursor()
         with tempfile.TemporaryDirectory() as temp:
             out = Path(temp)

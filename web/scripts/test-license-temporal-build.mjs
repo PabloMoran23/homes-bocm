@@ -5,12 +5,13 @@ import { tmpdir } from "node:os";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
 import { buildMadridLicenciasFilterRows } from "./build-madrid-licencias-filter-rows.mjs";
 import { buildMadridPresentacion } from "./build-madrid-presentacion.mjs";
+import { assertLicenseTemporal } from "./assert-license-temporal.mjs";
 import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
 const dir = mkdtempSync(join(tmpdir(), "homes-license-temporal-"));
 const source = join(dir, "source.jsonl");
 const out = dir;
 const asOf = "2026-10-14";
-const writeSource = rows => writeFileSync(source, rows.map(r => JSON.stringify(r)).join("\n"));
+const writeSource = rows => writeFileSync(source, rows.map(r => JSON.stringify({ source: "madrid-opendata", ...r })).join("\n"));
 const build = async () => {
   await buildMadridLicenciasWeb({ jsonlPath: source, outDir: out, asOf });
   return buildMadridLicenciasFilterRows({ outDir: out, asOf });
@@ -44,6 +45,17 @@ try {
   assert.equal(presentation.licencias.ritmo[0].status, "partial");
   const stats = buildMadridDashboardStats({ outDir: out });
   assert.equal(stats.licencias.coverageStatus, "partial");
+  assertLicenseTemporal(out);
+  writeFileSync(join(out, "madrid-presentacion.json"), JSON.stringify({ ...presentation, lastCompleteMonth: "2026-04" }));
+  assert.throws(() => assertLicenseTemporal(out), /Último mes completo/);
+  writeFileSync(join(out, "madrid-presentacion.json"), JSON.stringify(presentation));
+  assertLicenseTemporal(out);
+  const partitionPath = join(out, "madrid-licencias-2025.json");
+  const partition = readFileSync(partitionPath, "utf8");
+  writeFileSync(partitionPath, partition.replace("2025-02-01", "2025-03-01"));
+  assert.throws(() => assertLicenseTemporal(out), /Snapshot temporal cambiado/);
+  writeFileSync(partitionPath, partition);
+  assertLicenseTemporal(out);
   // Source evidence permits only common closed months; corrections invalidate it.
   writeSource([2023, 2024, 2025].map(y => ({ fecha_concesin: `${y}-02-01` })));
   let filters = await build();

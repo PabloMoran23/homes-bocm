@@ -297,7 +297,13 @@ export type MadridLicenciaRow = {
   lng: number | null;
 };
 
+export type MadridLicenseSourceSnapshot = {
+  mode: string;
+  factualUpdatedAt?: string | null;
+};
+
 export type MadridLicenciasIndex = {
+  sourceSnapshot?: MadridLicenseSourceSnapshot | null;
   generatedAt: string;
   source: string;
   totalRows: number;
@@ -359,6 +365,7 @@ export type MadridDashboardStats = {
   generatedAt: string;
   distritoCentroids?: Record<string, MadridDashboardDistritoCentroid>;
   licencias: {
+    sourceSnapshot?: MadridLicenseSourceSnapshot | null;
     generatedAt: string;
     periodCoverage?: Record<string, { status: "complete" | "partial" }>;
     coverageStatus?: "complete" | "partial";

@@ -366,6 +366,8 @@ export function buildMadridPresentacion(opts) {
     temporal: lic.temporal,
     licencias: {
       total: lic.totalRows,
+      sourceSnapshot: lic.sourceSnapshot ?? null,
+      temporalScope: lic.temporalScope ?? null,
       comparisonMonths,
       comparisonLabel,
       coverageStatus: Object.values(coverage).every(p => p.status === "complete") && Object.keys(coverage).length ? "complete" : "partial",

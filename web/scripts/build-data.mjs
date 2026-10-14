@@ -20,6 +20,7 @@ import {
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "csv-parse/sync";
+import { assertLicenseTerritory } from "./assert-license-territory.mjs";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
 import { buildMadridDashboardStats } from "./build-madrid-dashboard-stats.mjs";
 import { buildMadridDistritos } from "./build-madrid-distritos.mjs";
@@ -139,6 +140,7 @@ async function runMadridPostBuild(opts = {}) {
     console.warn("SIGMA filter-rows:", err?.message || err);
   }
 
+  assertLicenseTerritory(outDir);
   // Recompute dates and coverage before exposing any dashboard series.
   buildMadridLicenciasFilterRows({ outDir });
   buildMadridDashboardStats({ outDir });

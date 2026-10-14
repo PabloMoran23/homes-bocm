@@ -1,3 +1,4 @@
+import { assertLicenseTerritory } from "./assert-license-territory.mjs";
 /**
  * Agrega estadísticas Madrid (licencias + SIGMA) → public/data/madrid-dashboard-stats.json
  */
@@ -38,6 +39,7 @@ function titleCase(s) {
  */
 export function buildMadridDashboardStats(opts) {
   const { outDir } = opts;
+  assertLicenseTerritory(outDir);
   const licPath = join(outDir, "madrid-licencias-index.json");
   const sigmaPath = join(outDir, "madrid-sigma.json");
   const slimPath = join(outDir, "madrid-sigma-visor-slim.json");
@@ -62,6 +64,9 @@ export function buildMadridDashboardStats(opts) {
       generatedAt: idx.generatedAt,
       coverageStatus: "partial",
       periodCoverage,
+      sourceSnapshot: idx.sourceSnapshot ?? null,
+      temporalScope: idx.temporalScope ?? null,
+      municipioCode: idx.municipioCode,
       totalRows: idx.totalRows,
       withCoords: idx.withCoords,
       years,

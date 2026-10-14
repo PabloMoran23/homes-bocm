@@ -1,3 +1,4 @@
+import { assertLicenseTerritory } from "./assert-license-territory.mjs";
 /**
  * Filas compactas para filtrar el dashboard de licencias en cliente.
  */
@@ -36,6 +37,7 @@ function titleCase(s) {
  */
 export function buildMadridLicenciasFilterRows(opts) {
   const { outDir } = opts;
+  assertLicenseTerritory(outDir);
   const rows = [];
   const quarantine = [];
   const inputHash = createHash("sha256").update(DATE_RULE_VERSION);
@@ -109,7 +111,11 @@ export function buildMadridLicenciasFilterRows(opts) {
   const coveragePath = join(outDir, "madrid-period-coverage.json");
   const evidence = existsSync(coveragePath) ? JSON.parse(readFileSync(coveragePath, "utf-8")) : {};
   const coverage = periodCoverage(rows.map(r => r.m), evidence, { inputDigest, asOf });
+  const indexPath = join(outDir, "madrid-licencias-index.json");
+  const index = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, "utf-8")) : {};
   const payload = {
+    sourceSnapshot: index.sourceSnapshot ?? null,
+    temporalScope: index.temporalScope ?? null,
     temporal: { ruleVersion: DATE_RULE_VERSION, inputDigest, asOf, quarantineCount: quarantine.length, rebuild: "full" },
     periodCoverage: coverage,
     generatedAt: new Date().toISOString(),
