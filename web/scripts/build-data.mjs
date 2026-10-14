@@ -1,3 +1,4 @@
+import { createStatisticsScope } from "../lib/statistics-scope.mjs";
 /**
  * Genera public/data/projects.json, summary.json y admin-coverage.json desde:
  * - history_parsed_incremental.csv (BOCM / Madrid)
@@ -53,6 +54,7 @@ const outDir = join(webRoot, "public/data");
 
 /** `madrid-public`: solo Madrid capital en projects + licencias recientes (deploy MVP). */
 const buildScope = process.env.BUILD_DATA_SCOPE || "full";
+if (!["full", "madrid-public"].includes(buildScope)) throw new Error("statistics-scope: unknown BUILD_DATA_SCOPE");
 const isMadridPublicBuild = buildScope === "madrid-public";
 const LICENCIAS_MIN_YEAR_PUBLIC = 2022;
 
@@ -1912,6 +1914,8 @@ const summary = {
     tagline: "Proyectos urbanísticos en tu zona",
   },
 };
+
+summary.statisticsScope = createStatisticsScope(summary);
 
 const madridSigmaBocmByExp = buildMadridSigmaBocmProjectsByExpediente(exportProjects);
 

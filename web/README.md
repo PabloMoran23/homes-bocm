@@ -59,3 +59,31 @@ npm run check:province-previews # verifica cobertura y dimensiones sin red
 
 La generación se ejecuta explícitamente, no durante una visita ni en el build de
 Vercel. Mantener los créditos de OpenStreetMap, OpenMapTiles e IGN del directorio.
+
+
+### Contrato de alcance de las estadísticas
+
+`summary.json.statisticsScope` (versión 1) se genera en ambos exportadores en cada
+build: no se mantiene a mano. Declara ámbito, fuentes y territorios incluidos,
+periodo observado, fecha de comprobación y denominador de todos los anuncios
+publicados. `full` significa conjunto de fuentes incluidas, con cobertura nacional
+**parcial**; no prueba exhaustividad ni homogeneidad territorial o temporal.
+`madrid-public` nunca es elegible para el panel España.
+
+`npm run build-data` y `npm run build` validan el contrato, incluso cuando
+`SKIP_BUILD_DATA=1`. Un manifest ausente, un ámbito desconocido o una divergencia
+de los totales aborta el build con `statistics-scope`. Después de actualizar código
+que introduce este contrato, hay que regenerar los datos con el exportador habitual
+antes de publicar; los snapshots antiguos sin manifest se rechazan. La página
+valida de nuevo cada lectura, registra una advertencia y muestra indisponibilidad
+nacional ante datos incompatibles. No sustituye esa indisponibilidad con cifras
+regionales ni infiere cobertura completa a partir de la presencia de registros.
+
+Pruebas del contrato, adaptador y HTML: `node scripts/test-statistics-scope.mjs`.
+Comprobación del artefacto publicado (HTTP/JSON/contrato fallan con salida no cero):
+`node scripts/assert-statistics-scope.mjs https://TU_HOST/data/summary.json`.
+El intervalo del manifest describe años observados, no años cerrados ni una prueba
+de completitud de la ingesta. Las fuentes originales se conservan; cambiar fuentes
+o reglas exige regenerar el resumen por el mismo proceso.
+
+El prebuild convierte también un snapshot cacheado anterior al contrato mediante `build-statistics-scope.mjs`, usando la misma función de exportación. Conserva fechas y conteos, valida el resultado y publica el JSON atómicamente; no repara manifiestos contradictorios ni deduce alcance de un nombre de archivo. La transición es idempotente y no requiere acceso a la base de datos.
