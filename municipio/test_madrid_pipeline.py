@@ -60,6 +60,8 @@ class MadridIngestMappingTest(unittest.TestCase):
                 "expediente_grupo": "135/2018/00716",
                 "sigma_layer_kind": "tramitados_ad",
                 "geom_geojson": POLY,
+                "geometry_crs": "EPSG:4326",
+                "municipal_boundary": POLY,
                 "lat": 40.415,
                 "lon": -3.705,
                 "tramitacion": [{"fecha": "2020-01-01", "tramite": "Inicio"}],

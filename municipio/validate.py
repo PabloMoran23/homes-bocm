@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.geometry import has_area_geometry
+from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates
 from municipio.manifest import MunicipioManifest, POC_ROOT
 
 # Paridad mínima respecto a dashboard Madrid (licencias + proyectos BOCM)
@@ -75,7 +76,7 @@ def _count_with_coords(path: Path) -> int:
                 obj = json.loads(line)
             except json.JSONDecodeError:
                 continue
-            if obj.get("lat") is not None and (obj.get("lon") is not None or obj.get("lng") is not None):
+            if valid_coordinates(obj.get("lat"), obj.get("lon") if obj.get("lon") is not None else obj.get("lng")):
                 n += 1
     return n
 
@@ -114,6 +115,17 @@ def validate_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
         count = _count_jsonl(path)
         with_coords = _count_with_coords(path)
         with_geometry = _count_with_geometry(path)
+        geography_errors = []
+        if path.is_file():
+            cfg = manifest_geography_config(manifest)
+            for line_no, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if not line.strip():
+                    continue
+                rec = json.loads(line)
+                checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+                errors = checked["geography_validation"]["errors"]
+                if errors:
+                    geography_errors.append({"line": line_no, "id": rec.get("id"), "errors": errors})
         fields = _sample_fields(path)
         required = set(spec.get("fields_any") or [])
         has_fields = bool(fields & required) if required else count > 0
@@ -125,7 +137,11 @@ def validate_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
             level = "partial"
         if name == "proyectos" and count >= min_rows and with_coords < min_coords:
             level = "partial"
+        if geography_errors:
+            level = "partial"
         report["datasets"][name] = {
+            "geography_quarantined": len(geography_errors),
+            "geography_errors": geography_errors,
             "level": level,
             "rows": count,
             "with_coords": with_coords,

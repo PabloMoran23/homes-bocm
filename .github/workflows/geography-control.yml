@@ -1,0 +1,37 @@
+name: Geography replay and recurring control
+on:
+  schedule:
+    - cron: '42 3 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'municipio/**'
+      - 'db/ingest.py'
+      - 'data/municipios/**'
+      - 'requirements-municipio.txt'
+permissions:
+  contents: read
+jobs:
+  geography:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-municipio.txt -r db/requirements-supabase.txt
+      - run: python -m unittest municipio.test_geography_control
+      - name: Replay originals and queue unresolved geography (dry run)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -n "${SUPABASE_DB_URL:-}" ]; then
+            python -m municipio.geography_replay --database --report geography-replay-report.json
+          else
+            python -m municipio.geography_replay --report geography-replay-report.json
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: geography-replay-report
+          path: geography-replay-report.json

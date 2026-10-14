@@ -272,6 +272,7 @@ class SanSebastianDeLosReyesAyuntamientoAdapter(AyuntamientoAdapter):
             "request": "GetFeature",
             "typeName": WFS_TYPE,
             "outputFormat": "application/json",
+            "srsName": "EPSG:4326",
             "count": str(max_features),
             "CQL_FILTER": cql,
         }
@@ -297,6 +298,8 @@ class SanSebastianDeLosReyesAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         result = {
             "geom_geojson": geom,
+            "geometry_crs": "EPSG:4326",
+            "geometry_axis_order": "xy",
             "geometry_source": "cm_sit_wfs",
             "geometry_source_url": url,
             "coord_source": "portal_geometry_centroid",
