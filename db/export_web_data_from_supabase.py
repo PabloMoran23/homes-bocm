@@ -28,6 +28,7 @@ sys.path.insert(0, str(DB_DIR))
 sys.path.insert(0, str(POC_ROOT))
 
 from license_territory import MADRID_CODE, VERSION, resolve_territory
+from statistics_scope import create_statistics_scope  # noqa: E402
 
 from export_sigma_ambito_web import fecha_aprob_ms  # noqa: E402
 from sector_geometry.madrid_nti_vivienda_sanity import sanitize_viviendas_en_metrics  # noqa: E402
@@ -278,7 +279,7 @@ def _build_summary(projects: list[dict[str, Any]], generated_at: str) -> dict[st
 
     sort_entries = lambda m: sorted(m.items(), key=lambda x: -x[1])  # noqa: E731
 
-    return {
+    summary = {
         "generatedAt": generated_at,
         "total": len(projects),
         "buildScope": "madrid-public",
@@ -302,6 +303,9 @@ def _build_summary(projects: list[dict[str, Any]], generated_at: str) -> dict[st
             "tagline": "Proyectos urbanísticos en tu zona",
         },
     }
+
+    summary["statisticsScope"] = create_statistics_scope(summary)
+    return summary
 
 
 def export_madrid_sigma(out_dir: Path, rows: list[dict[str, Any]], generated_at: str) -> None:
