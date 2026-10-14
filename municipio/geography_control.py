@@ -131,6 +131,12 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
         original = copy.deepcopy(rec["geography_original"])
     else:
         original = _safe(current)
+        # The migration quarantines invalid canonical legacy fields transactionally.
+        # Replay that retained evidence when no newer geographic source exists.
+        quarantine = rec.get("_geography_quarantine") or {}
+        saved = quarantine.get("original") if isinstance(quarantine, dict) else None
+        if isinstance(saved, dict) and not any(current.get(k) is not None for k in FIELDS if k != "coord_source"):
+            original = _safe({k: saved[k] for k in FIELDS if k in saved})
     out["geography_original"] = original
     working = {**rec, **original}
     for k in FIELDS:
@@ -142,9 +148,11 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     if not crs and geom:
         raw = next((working.get(k) for k in ("geom_geojson", "geometry", "geom") if isinstance(working.get(k), dict)), {})
         crs = (raw.get("crs") or {}).get("properties", {}).get("name")
+    coordinate_crs = cfg.get("coordinates_crs") or rec.get("coordinates_crs") or cfg.get("source_crs") or rec.get("source_crs")
     boundaries = cfg.get("municipal_boundaries") or rec.get("municipal_boundaries") or {}
     boundary = cfg.get("municipal_boundary") or rec.get("municipal_boundary")
-    if not boundary and fetch_boundary and (geom or any(original.get(k) is not None for k in ("lat", "lon", "lng"))):
+    can_transform = bool(geom and crs) or bool(not geom and coordinate_crs and any(original.get(k) is not None for k in ("lat", "lon", "lng")))
+    if not boundary and fetch_boundary and can_transform:
         boundary = official_boundary(municipality)
     if boundary:
         boundaries = {**boundaries, municipality: boundary}
@@ -167,6 +175,8 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     multi = len(scope) > 1 and bool(rec.get("multimunicipal_evidence")) and municipality in scope
 
     def municipal_check(g):
+        if not municipality or municipality not in scope:
+            raise ValueError("ingest_municipality_outside_scope")
         if territory is None:
             raise ValueError("municipal_boundary_unavailable")
         if len(scope) > 1 and not multi:
@@ -194,7 +204,6 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
             errors["geometry"] = str(exc)
     lat = original.get("lat")
     lng = original.get("lon") if original.get("lon") is not None else original.get("lng")
-    coordinate_crs = cfg.get("coordinates_crs") or rec.get("coordinates_crs") or cfg.get("source_crs") or rec.get("source_crs")
     # Geometry-derived coordinates must be regenerated from the original geometry.
     if (lat is not None or lng is not None) and "geometry" not in errors and not geom:
         try:

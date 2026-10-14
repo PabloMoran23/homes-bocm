@@ -24,9 +24,16 @@ su entrada, `geography_validation` registra versión, hashes, CRS, ejes y causas
 La geografía inválida no se sustituye por un centroide municipal. El registro
 puede mantenerse sin ubicación. El upsert borra explícitamente coordenadas
 antiguas cuando la nueva evidencia falla; una ubicación anterior tampoco se
-conserva sin validación vigente. Los CHECK NOT VALID de la migración impiden
-nuevas coordenadas/topologías inválidas incluso para escritores SQL directos;
-no corrigen ni validan el histórico existente.
+conserva sin validación vigente. La migración bloquea escrituras concurrentes,
+retiene los campos inválidos del legado en `raw._geography_quarantine`, y limpia
+solo su geografía antes de activar CHECKs completamente validados, todo en una
+transacción. No transforma ni supone CRS. De ese modo los UPDATE de raw/fase de
+H01/H02 siguen funcionando; ninguna nueva geografía inválida entra por SQL.
+El snapshot conservado sigue entrando en la cola readonly hasta su recuperación.
+La geografía válida y las demás columnas permanecen intactas. Si la migración
+falla, se revierte también la cuarentena; hay una prueba que inyecta un fallo
+tras limpiar los campos y verifica la recuperación completa. Una recuperación
+posterior usa el normalizador y evidencia CRS, sin restaurar campos inválidos.
 
 ## Reproceso local reproducible
 
@@ -49,15 +56,21 @@ Un histórico sin declaración CRS queda en cola hasta recuperar el original con
 su declaración: ejecutar el adaptador/backfill correspondiente y el pipeline
 normal. No añadir EPSG por intuición al histórico.
 
-El workflow `geography-control.yml` ejecuta pruebas y replay diario; sube la cola
-como artefacto y falla cuando no puede completar un control o quedan cuarentenas.
+El workflow `geography-control.yml` separa dos certificaciones locales (unittest
+y PostgreSQL/PostGIS desechable) del control operativo. Los PRs solo ejecutan
+las pruebas, sin secretos de producción, acceso a fuentes ni scan de la DB.
+El job readonly y su artefacto de cola se ejecutan exclusivamente por schedule o
+workflow_dispatch, y fallan si quedan controles incompletos o cuarentenas.
+Un CRS desconocido se rechaza sin pedir límites por red innecesariamente.
 El pipeline diario municipal ya ejecuta enrich, geocode y sync para cada lote.
 
 ## Pendiente operativo
 
 Esta PR no modifica producción. Falta recuperar originales de los 327 casos
 identificados en el corte, ejecutar su backfill/replay e ingesta, revisar una
-muestra visual por adaptador y validar los CHECK contra el histórico saneado.
+muestra visual por adaptador y desplegar la cuarentena/constraints en el entorno
+autorizado. La migración ya se probó en PostgreSQL 16.15/PostGIS 3.4.2 local,
+incluido el replay real de #857 sobre un outlier histórico y el UPDATE raw H01.
 Con secreto DB configurado, el control diario lee producción en una sesión
 readonly y encola originales y causas por ID, incluyendo los nuevos casos.
 Sin ese secreto, cubre los JSONL disponibles en checkout; no certifica
@@ -72,3 +85,15 @@ de Leganés y 62 de San Sebastián de los Reyes, reproduciendo respectivamente
 241 y 17 pares fuera de rango. Se generó la cola en /tmp, sin modificar los
 originales ni publicar geografía por inferencia del CRS. No había copia local de
 L’Alfàs del Pi. Estas cifras son evidencia del corte, no constantes de las reglas.
+
+Pruebas SQL reproducibles en una DB local desechable cuyo nombre empiece por h03_:
+
+```bash
+H03_TEST_DB_URL=postgresql://postgres:password@127.0.0.1:5432/h03_geography_tests python -m unittest db.test_geography_postgres -v
+# Integración adicional con el checkout de #857, sin editarlo:
+H03_TEST_DB_URL=... H03_SEMANTICS_ROOT=/ruta/checkout-857 python -m unittest db.test_geography_postgres -v
+```
+
+El validador SQL usa `Box3D`. Solo captura errores de parseo de la entrada;
+`UndefinedFunction` y fallos de implementación se propagan y abortan la migración,
+comprobado contra PostGIS real y mediante autocomprobación al aplicar la regla.

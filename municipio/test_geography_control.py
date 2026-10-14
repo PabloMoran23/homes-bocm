@@ -75,6 +75,39 @@ class GeographyTest(unittest.TestCase):
         self.assertEqual(normalize_record(rec, cfg=cfg, municipality="Test")["lat"], 40.2)
         self.assertNotIn("lat", normalize_record(rec, municipality="Test"))
 
+    def test_single_other_municipality_cannot_override_ingest_scope(self):
+        other = {"type": "Polygon", "coordinates": [[[-3, 40], [-2, 40], [-2, 41], [-3, 41], [-3, 40]]]}
+        rec = {"geom_geojson": {"type": "Point", "coordinates": [-2.5, 40.5]},
+               "geometry_crs": "EPSG:4326", "municipality_scope": ["Other"],
+               "municipal_boundaries": {"Other": other}}
+        for evidence in (None, "instrument claiming Other only"):
+            with self.subTest(evidence=evidence):
+                rec["multimunicipal_evidence"] = evidence
+                checked = normalize_record(rec, municipality="Test")
+                self.assertNotIn("lat", checked)
+                self.assertEqual(checked["geography_validation"]["errors"]["geometry"], "ingest_municipality_outside_scope")
+        explicit = normalize_record({"lat": 40.5, "lng": -2.5, "coordinates_crs": "EPSG:4326",
+                                     "municipality_scope": ["Other"], "municipal_boundaries": {"Other": other}}, municipality="Test")
+        self.assertNotIn("lat", explicit)
+        self.assertEqual(explicit["geography_validation"]["errors"]["coordinates"], "ingest_municipality_outside_scope")
+
+    def test_unknown_crs_does_not_query_live_boundary(self):
+        with patch("municipio.geography_control.official_boundary") as fetch:
+            checked = normalize_record({"geom_geojson": POLY}, municipality="Test", fetch_boundary=True)
+            self.assertEqual(checked["geography_validation"]["errors"]["geometry"], "unknown_crs")
+            checked = normalize_record({"lat": 40.2, "lng": -3.8}, municipality="Test", fetch_boundary=True)
+            self.assertEqual(checked["geography_validation"]["errors"]["coordinates"], "unknown_coordinate_crs")
+            fetch.assert_not_called()
+
+    def test_sql_quarantine_evidence_replays_without_guessing_crs(self):
+        raw = {"lat": None, "lng": None, "_geography_quarantine": {"status": "quarantined", "original": {"lat": 4000000, "lng": 400000}}}
+        checked = normalize_record(raw, cfg=CFG, municipality="Test")
+        self.assertEqual(checked["geography_original"]["lat"], 4000000)
+        self.assertEqual(checked["geography_validation"]["errors"]["coordinates"], "unknown_coordinate_crs")
+        self.assertEqual(checked, normalize_record(checked, cfg=CFG, municipality="Test"))
+        newer = {**raw, "lat": 40.2, "lng": -3.8, "coordinates_crs": "EPSG:4326"}
+        self.assertEqual(normalize_record(newer, cfg=CFG, municipality="Test")["lat"], 40.2)
+
     def test_two_records_never_leak_element_centroid(self):
         manifest = SimpleNamespace(nombre="Test", slug="test", portal=SimpleNamespace(config={"centroid": [40.7, -3.2]}))
         records = [{"id": "geom", "geom_geojson": POLY, "geometry_crs": "EPSG:4326"}, {"id": "empty"}]
