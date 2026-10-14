@@ -1,0 +1,35 @@
+slug: pozoblanco
+nombre: "Pozoblanco"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://pozoblanco.es"
+  adapter: municipio.adapters.pozoblanco:PozoblancoAyuntamientoAdapter
+  config:
+    wp_base: "https://pozoblanco.es"
+    sede_base: "https://sede.eprinsa.es/pozoblanco"
+    tablon_url: "https://sede.eprinsa.es/pozoblanco/tablon-de-edictos"
+    wp_categories: [54, 97, 93, 100, 104]
+    wp_max_pages: 5
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-pozoblanco/1.0"
+    centroid: [38.3790, -4.8483]
+    seed_pages:
+      - "https://pozoblanco.es/areas-municipales/urbanismo/normas-y-planes-urbanisticos/"
+      - "https://pozoblanco.es/areas-municipales/urbanismo/"
+      - "https://portal-transparencia.pozoblanco.es/planificacion/"
+  notes: |
+    WordPress Divi: noticias urbanismo (categorías WP) + ~80 PDFs adaptación LOUA/PGOU.
+    Sede eprinsa (Diputación Córdoba): tablón Ember SPA; trámites licencias sin histórico abierto.
+    SITUA (cid=14051): sin documentos indexados públicamente en el buscador JDA.
+    Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
