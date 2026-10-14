@@ -85,3 +85,5 @@ Comprobación del artefacto publicado (HTTP/JSON/contrato fallan con salida no c
 El intervalo del manifest describe años observados, no años cerrados ni una prueba
 de completitud de la ingesta. Las fuentes originales se conservan; cambiar fuentes
 o reglas exige regenerar el resumen por el mismo proceso.
+
+El prebuild convierte también un snapshot cacheado anterior al contrato mediante `build-statistics-scope.mjs`, usando la misma función de exportación. Conserva fechas y conteos, valida el resultado y publica el JSON atómicamente; no repara manifiestos contradictorios ni deduce alcance de un nombre de archivo. La transición es idempotente y no requiere acceso a la base de datos.
