@@ -49,25 +49,36 @@ def census():
     return sources
 
 
-def review(slug):
-    """Source adapters must attest exhaustive review; legacy status=ok cannot do so.
+def _publication_connection():
+    from ingest import connect
+    conn = connect()
+    with conn.cursor() as cur:
+        cur.execute('SET search_path TO homes, public')
+    conn.commit()
+    return conn
 
-    Restore the existing outputs when a source is partial, blocked or unverified.
-    Only verified source outputs reach sync, which already uses stable identities.
+
+def review(job):
+    """Capture privately, then publish DB and queue completion in one transaction.
+
+    Staging never replaces canonical output files. A stale worker may finish
+    capture, but cannot publish or advance review state after losing its lease.
     """
+    from copy import copy
     from municipio import licencias_runner, proyectos_runner
     from municipio.orchestrator import run
-    manifest = load_manifest(slug)
-    output = manifest.output_dir
-    with tempfile.TemporaryDirectory(prefix='review-') as tmp:
-        backup = Path(tmp)/'output'
-        existed = output.exists()
-        if existed:
-            shutil.copytree(output,backup)
-        reviewed = False
-        written = False
-        enabled_count = 0
+    from ingest import sync_municipio_output
+    manifest = copy(load_manifest(job['slug']))
+    reviewed = False
+    with tempfile.TemporaryDirectory(prefix='review-stage-') as tmp:
+        original_output = manifest.output_dir
+        manifest._output_dir = Path(tmp)/'output'
+        if original_output.exists():
+            shutil.copytree(original_output,manifest.output_dir)
+        else:
+            manifest.ensure_output_dir()
         try:
+            enabled_count = 0
             for name, enabled, runner in (
                 ('proyectos',manifest.proyectos.enabled,proyectos_runner.update),
                 ('licencias',manifest.licencias.enabled,licencias_runner.update),
@@ -81,41 +92,40 @@ def review(slug):
             if not enabled_count:
                 raise RuntimeError('no enabled source to review')
             reviewed = True
-            for step in ('enrich_geometry','geocode','sync_supabase','validate'):
+            for step in ('enrich_geometry','geocode','validate'):
                 result = run(manifest,step)
                 for payload in result['steps'].values():
-                    if payload.get('error') or payload.get('status') in ('deferred','partial','failed') or (step == 'sync_supabase' and payload.get('status') == 'skipped'):
+                    if payload.get('error') or payload.get('status') in ('deferred','partial','failed'):
                         raise RuntimeError(f'{step}: {payload}')
-                if step == 'sync_supabase':
-                    written = True
-            return {'complete':True,'written':True}
+            conn = _publication_connection()
+            try:
+                def publish(connection):
+                    result = sync_municipio_output(manifest.slug, conn=connection, manifest=manifest)
+                    if result.get('status') != 'ok':
+                        raise RuntimeError(f'sync: {result}')
+                    return result
+                Queue(conn).publish(job,publish)
+            finally:
+                conn.close()
+            return {'complete':True,'written':True,'published':True}
         except Exception as exc:
-            if output.exists():
-                shutil.rmtree(output)
-            if existed:
-                shutil.copytree(backup,output)
-            return {'complete':False,'reviewed':reviewed,'written':written,'error':f'{type(exc).__name__}: {exc}'}
+            return {'complete':False,'reviewed':reviewed,'written':False,'error':f'{type(exc).__name__}: {exc}'}
 
 
-def _child(slug, result_path):
+def _child(job, result_path):
     try:
-        result = review(slug)
+        result = review(job)
     except Exception as exc:
         result = {'complete':False,'error':f'{type(exc).__name__}: {exc}'}
     Path(result_path).write_text(json.dumps(result))
 
 
-def bounded_review(slug):
-    # A hard bound is necessary: a runner timeout must leave a recoverable lease.
-    # Child output is isolated; no IPC queue whose feeder thread could deadlock.
+def bounded_review(job):
+    # Capture is isolated and disposable even when the child is killed. Canonical
+    # DB publication and the queue checkpoint happen in the same fenced commit.
     with tempfile.TemporaryDirectory(prefix='review-result-') as tmp:
         result_path = str(Path(tmp)/'result.json')
-        output = load_manifest(slug).output_dir
-        backup = Path(tmp)/'prior-output'
-        existed = output.exists()
-        if existed:
-            shutil.copytree(output,backup)
-        child = multiprocessing.Process(target=_child,args=(slug,result_path))
+        child = multiprocessing.Process(target=_child,args=(job,result_path))
         child.start()
         child.join(REVIEW_SECONDS)
         if child.is_alive():
@@ -124,16 +134,8 @@ def bounded_review(slug):
             if child.is_alive():
                 child.kill()
                 child.join()
-            if output.exists():
-                shutil.rmtree(output)
-            if existed:
-                shutil.copytree(backup,output)
             return {'complete':False,'error':'review_timeout: SLA remains breached'}
         if not Path(result_path).exists():
-            if output.exists():
-                shutil.rmtree(output)
-            if existed:
-                shutil.copytree(backup,output)
             return {'complete':False,'error':f'review_worker_exit:{child.exitcode}'}
         return json.loads(Path(result_path).read_text())
 
@@ -144,8 +146,9 @@ def dispatch(queue, *, limit=3, worker=bounded_review, clock=time.time):
         job = queue.claim(clock())
         if not job:
             break
-        result = worker(job['slug'])
-        accepted = queue.finish(job,clock(),**result)
+        result = worker(job)
+        published = result.pop('published',False)
+        accepted = published or queue.finish(job,clock(),**result)
         out.append({'slug':job['slug'],'lease_accepted':accepted,**result})
     return out
 

@@ -1145,22 +1145,32 @@ def finish_ingest_run(
 class IngestSession:
     """Una ejecución de scraper: abre conexión, registra ingest_run y hace upserts."""
 
-    def __init__(self, scraper: str, municipio_slug: str | None = None):
+    def __init__(self, scraper: str, municipio_slug: str | None = None, *, conn=None):
         self.scraper = scraper
         self.municipio_slug = municipio_slug
-        self.conn = None
+        self.conn = conn
+        self._external_conn = conn is not None
         self.run_id: int | None = None
         self.counts: dict[str, int] = {}
 
     def __enter__(self) -> "IngestSession":
-        self.conn = connect()
+        if not self._external_conn:
+            self.conn = connect()
         self.run_id = start_ingest_run(
             self.scraper, self.municipio_slug, conn=self.conn
         )
-        self.conn.commit()
+        if not self._external_conn:
+            self.conn.commit()
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
+        if self._external_conn:
+            # The caller owns the atomic fenced publication transaction. Never
+            # commit, roll back, close or suppress its exception in this scope.
+            if exc is None:
+                finish_ingest_run(self.run_id, status="ok",
+                                  rows_upserted=self.counts, conn=self.conn)
+            return
         try:
             if exc is not None and self.conn is not None:
                 # Si no, el siguiente SQL ve la transacción abortada y tapa el error real.
@@ -1221,6 +1231,8 @@ class IngestSession:
         return stats
 
     def commit(self) -> None:
+        if self._external_conn:
+            raise RuntimeError("Transaction commit belongs to the fenced publisher")
         if self.conn is not None:
             self.conn.commit()
 
@@ -1272,11 +1284,11 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
         print(f"  aviso supabase: {exc}", flush=True)
 
 
-def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]:
+def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manifest=None) -> dict[str, Any]:
     """Lee output/municipios/<slug>/*.jsonl y hace upsert. Lo usa el post-merge de cada PR."""
     from municipio.manifest import load_manifest
 
-    manifest = load_manifest(slug)
+    manifest = manifest or load_manifest(slug)
     out_dir = manifest.output_dir
     proyectos_raw = _read_jsonl(out_dir / "proyectos.jsonl")
     licencias_raw = _read_jsonl(out_dir / "licencias.jsonl")
@@ -1354,7 +1366,7 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]
         stats["reason"] = "sin SUPABASE_DB_URL"
         return stats
 
-    with IngestSession("municipio", municipio_slug=manifest.slug) as ses:
+    with IngestSession("municipio", municipio_slug=manifest.slug, conn=conn) as ses:
         ses.save_municipio_from_manifest(manifest)
         ses.save_proyectos(proy_rows)
         if hijas_rows:

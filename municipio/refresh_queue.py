@@ -32,6 +32,10 @@ CREATE TABLE IF NOT EXISTS refresh_attempt (
 """
 
 
+class StaleLease(RuntimeError):
+    """The lease was revoked or expired; publishing must roll back entirely."""
+
+
 class Queue:
     def __init__(self, connection, *, sqlite=False):
         self.conn = connection
@@ -98,26 +102,51 @@ class Queue:
                 return {'slug':slug, 'token':token, 'failures':failures}
         return None
 
-    def finish(self, job, now, *, complete=False, reviewed=False, written=False, error=None):
+    def finish(self, job, now, **result):
         with self.locked():
-            row = self.execute('SELECT failures,interval_seconds FROM refresh_review WHERE slug=? AND lease_token=? AND lease_until>?', (job['slug'],job['token'],now)).fetchone()
-            if row is None:
-                return False  # Fencing: an old runner cannot complete a new lease.
-            failures, interval = row
-            if reviewed or complete:
-                self.execute('UPDATE refresh_review SET last_complete=? WHERE slug=?', (now,job['slug']))
-            if complete:
-                self.execute('UPDATE refresh_review SET last_complete=?,due_at=?,retry_at=?,failures=0,last_error=NULL WHERE slug=?', (now,now+max(0,interval-LEAD_SECONDS),now,job['slug']))
-            else:
-                failures += 1
-                jitter = int(hashlib.sha256(f"{job['slug']}:{failures}".encode()).hexdigest()[:4],16) % 300
-                delay = min(86400, 900*2**min(failures-1,7)) + jitter
-                self.execute('UPDATE refresh_review SET failures=?,retry_at=?,last_error=? WHERE slug=?', (failures,now+delay,error or 'incomplete_review',job['slug']))
-            if written:
-                self.execute('UPDATE refresh_review SET last_write=? WHERE slug=?', (now,job['slug']))
-            self.execute('UPDATE refresh_review SET lease_token=NULL,lease_until=NULL WHERE slug=?', (job['slug'],))
-            self.execute('UPDATE refresh_attempt SET finished=?,outcome=?,error=?,review_completed=?,db_written=? WHERE token=?', (now,'complete' if complete else 'failed',error,now if reviewed or complete else None,now if written else None,job['token']))
-            return True
+            return self._finish_locked(job, now, **result)
+
+    def _finish_locked(self, job, now, *, complete=False, reviewed=False, written=False, error=None):
+        row = self.execute('SELECT failures,interval_seconds FROM refresh_review WHERE slug=? AND lease_token=? AND lease_until>?', (job['slug'],job['token'],now)).fetchone()
+        if row is None:
+            return False  # Fencing: an old runner cannot complete a new lease.
+        failures, interval = row
+        if reviewed or complete:
+            self.execute('UPDATE refresh_review SET last_complete=? WHERE slug=?', (now,job['slug']))
+        if complete:
+            self.execute('UPDATE refresh_review SET last_complete=?,due_at=?,retry_at=?,failures=0,last_error=NULL WHERE slug=?', (now,now+max(0,interval-LEAD_SECONDS),now,job['slug']))
+        else:
+            failures += 1
+            jitter = int(hashlib.sha256(f"{job['slug']}:{failures}".encode()).hexdigest()[:4],16) % 300
+            delay = min(86400, 900*2**min(failures-1,7)) + jitter
+            self.execute('UPDATE refresh_review SET failures=?,retry_at=?,last_error=? WHERE slug=?', (failures,now+delay,error or 'incomplete_review',job['slug']))
+        if written:
+            self.execute('UPDATE refresh_review SET last_write=? WHERE slug=?', (now,job['slug']))
+        self.execute('UPDATE refresh_review SET lease_token=NULL,lease_until=NULL WHERE slug=?', (job['slug'],))
+        self.execute('UPDATE refresh_attempt SET finished=?,outcome=?,error=?,review_completed=?,db_written=? WHERE token=?', (now,'complete' if complete else 'failed',error,now if reviewed or complete else None,now if written else None,job['token']))
+        return True
+
+    def publish(self, job, publisher):
+        """Check token and commit canonical writes + completion atomically.
+
+        Claims/reconcile take this same transaction lock. Recheck wall-clock
+        expiry after publication, so expiry during SQL rolls back all writes.
+        The publisher must use the supplied connection and never commit it.
+        """
+        with self.locked():
+            def valid_now():
+                now = self.execute('SELECT extract(epoch FROM clock_timestamp())').fetchone()[0]
+                now = float(now)
+                valid = self.execute('SELECT 1 FROM refresh_review WHERE slug=? AND lease_token=? AND lease_until>? AND enabled=1', (job['slug'],job['token'],now)).fetchone()
+                if not valid:
+                    raise StaleLease(f"{job['slug']}: publication refused: expired/revoked lease")
+                return now
+            valid_now()
+            result = publisher(self.conn)
+            now = valid_now()
+            if not self._finish_locked(job,now,complete=True,reviewed=True,written=True):
+                raise StaleLease(f"{job['slug']}: publication completion refused")
+            return result
 
     def metrics(self, now):
         rows = self.execute('SELECT slug,last_complete,interval_seconds,due_at,last_error FROM refresh_review WHERE enabled=1').fetchall()

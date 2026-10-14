@@ -108,13 +108,13 @@ def main(argv: list[str] | None = None) -> int:
             "--interval-days",
             type=int,
             default=15,
-            help="Días sin revisión completa para considerarlo due (default 15)",
+            help="Días sin ingest para considerarlo due (default 15)",
         )
         sp.add_argument(
             "--limit",
             type=int,
-            default=3,
-            help="Máximo de municipios por corrida (default 3)",
+            default=16,
+            help="Máximo de municipios por corrida (default 16)",
         )
         sp.add_argument("--include-madrid", action="store_true", help="Incluir Madrid capital")
         sp.add_argument(
@@ -129,7 +129,7 @@ def main(argv: list[str] | None = None) -> int:
     run_p.add_argument(
         "--force",
         action="store_true",
-        help="Ignorar revisión previa (útil con --municipio)",
+        help="Ignorar last_ingest_at (útil con --municipio)",
     )
 
     audit = sub.add_parser("audit-geometry", help="Auditar fuentes GIS de municipios en cola")
@@ -175,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
                 force=args.force,
             )
             print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
-            if payload.get("failed") or payload.get("status") == "partial":
+            if payload.get("failed"):
                 return 1
             return 0
 
