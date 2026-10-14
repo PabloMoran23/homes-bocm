@@ -57,3 +57,7 @@ public/data/*.json
 !public/data/madrid-presentacion.json
 !public/data/summary.json
 !public/data/sitemap-projects.json
+
+# Operational temporal quarantine reports produced with the public snapshot.
+!public/data/madrid-license-temporal-quarantine.json
+!public/data/madrid-filter-temporal-quarantine.json

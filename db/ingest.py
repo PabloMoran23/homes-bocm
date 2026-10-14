@@ -38,6 +38,7 @@ if str(DB_DIR) not in sys.path:
 from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
+from license_dates import license_temporal  # noqa: E402
 from project_semantics import apply as apply_project_semantics, source_record  # noqa: E402
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
 
@@ -791,8 +792,13 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
         for rec, key in zip(ready, keys):
             rec = _checked_geography(rec, slug=str(rec.get("municipio_slug") or ""))
             lat, lng = _latlng(rec)
-            fecha = _iso_date(rec.get("fecha_concesion") or rec.get("fecha"))
-            anio = int(fecha[:4]) if fecha else None
+            temporal = license_temporal({**rec, "fecha_concesion": rec.get("fecha_concesion") or rec.get("fecha")}, as_of=now.date())
+            if temporal["quarantine"]:
+                print(f"Temporal quarantine licencia={key}: " + ", ".join(f["field"] + ":" + f["reason"] for f in temporal["quarantine"]), file=sys.stderr)
+            grant = temporal["fields"]["fecha_concesion"]
+            alta = temporal["fields"]["fecha_alta"]
+            fecha = grant["value"]
+            anio = temporal["year"]
             territory = resolve_territory(rec)
             slug = territory["municipio_slug"]
             if territory["reason"]:
@@ -802,8 +808,8 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     id_map[key],
                     key,
                     rec.get("inmueble_id"),
-                    anio if anio is not None else _int(rec.get("anio_dataset")),
-                    _iso_date(rec.get("fecha_alta")),
+                    anio,
+                    alta["value"],
                     fecha,
                     _blank(rec.get("procedimiento")),
                     _blank(rec.get("tipo") or rec.get("tipo_expediente")),
@@ -813,7 +819,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     _blank(rec.get("unidad") or rec.get("distrito")),
                     lat,
                     lng,
-                    Json(territorial_raw(rec)),
+                    Json({**territorial_raw(rec), "temporal": temporal}),
                     rec.get("proyecto_id"),
                     slug,
                     rec.get("fuente") or rec.get("source"),
@@ -830,8 +836,9 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               inserted_at, updated_at
             ) VALUES %s
             ON CONFLICT (licencia_key) DO UPDATE SET
-              anio_dataset = COALESCE(EXCLUDED.anio_dataset, {SCHEMA}.licencia.anio_dataset),
-              fecha_concesion = COALESCE(EXCLUDED.fecha_concesion, {SCHEMA}.licencia.fecha_concesion),
+              anio_dataset = EXCLUDED.anio_dataset,
+              fecha_alta = EXCLUDED.fecha_alta,
+              fecha_concesion = EXCLUDED.fecha_concesion,
               tipo_expediente = COALESCE(EXCLUDED.tipo_expediente, {SCHEMA}.licencia.tipo_expediente),
               objeto = COALESCE(EXCLUDED.objeto, {SCHEMA}.licencia.objeto),
               unidad = COALESCE(EXCLUDED.unidad, {SCHEMA}.licencia.unidad),

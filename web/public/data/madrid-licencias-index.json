@@ -1,5 +1,6 @@
 {
-  "generatedAt": "2026-10-14T20:22:41.454Z",
+  "generatedAt": "2026-10-14T20:30:57.110Z",
+  "coverageStatus": "partial",
   "source": "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
   "sourceSnapshot": {
     "mode": "cached-xlsx-replay",
@@ -51,8 +52,8 @@
       2023,
       2022
     ],
-    "basis": "anio_dataset",
-    "description": "Ejercicio del recurso municipal; generatedAt es reproceso, no actualización factual de la fuente"
+    "basis": "normalized_license_date_or_dataset_year",
+    "description": "Año de fecha normalizada o ejercicio municipal cuando no hay fecha; generatedAt es reproceso, no actualización factual de la fuente"
   },
   "municipioCode": "28079",
   "territorialPolicy": "license-territory-v1",

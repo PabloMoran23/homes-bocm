@@ -20,8 +20,8 @@ const index = await buildMadridLicenciasWeb({
 if (!index?.sourceSnapshot || index.sourceSnapshot.mode !== 'cached-xlsx-replay')
   throw new Error('Se requiere evidencia de replay desde los XLSX originales cacheados');
 assertLicenseTerritory(outDir);
-buildMadridDashboardStats({outDir});
 buildMadridLicenciasFilterRows({outDir});
+buildMadridDashboardStats({outDir});
 buildMadridPresentacion({outDir});
 console.log(JSON.stringify({municipioCode:index.municipioCode, years:index.years,
   totalRows:index.totalRows, withCoords:index.withCoords, sourceMode:index.sourceSnapshot.mode}));

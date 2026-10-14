@@ -1,3 +1,5 @@
+import type { MadridLicenseSourceSnapshot } from "./types";
+
 export type PresentacionCount = { name: string; count: number };
 
 export type PresentacionYear = {
@@ -16,13 +18,19 @@ export type PresentacionYear = {
 
 export type MadridPresentacion = {
   generatedAt: string;
-  lastCompleteMonth: string;
+  lastCompleteMonth: string | null;
+  periodCoverage: Record<string, { status: "complete" | "partial"; reason: string; evidence: string | null }>;
   licencias: {
+    sourceSnapshot?: MadridLicenseSourceSnapshot | null;
+    temporalScope?: { minYear: number; years: number[]; basis: string; description: string } | null;
     total: number;
     sinDistrito: number;
     hastaMes: number;
+    coverageStatus: "complete" | "partial";
+    comparisonMonths: string[];
+    comparisonLabel: string;
     comparativa: PresentacionYear[];
-    ritmo: { month: string; total: number }[];
+    ritmo: { month: string; total: number; status: "complete" | "partial" }[];
     procedimiento: PresentacionCount[];
     porDistrito: PresentacionCount[];
     barriosLocal2025: PresentacionCount[];

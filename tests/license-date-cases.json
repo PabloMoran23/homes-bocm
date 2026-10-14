@@ -1,0 +1,20 @@
+[
+ {"raw":"2026-10-14","value":"2026-10-14","precision":"day"},
+ {"raw":"14/10/2026","value":"2026-10-14","precision":"day"},
+ {"raw":"2026-01-01","value":"2026-01-01","precision":"day"},
+ {"raw":"2024-02-29","value":"2024-02-29","precision":"day"},
+ {"raw":"29/02/2023","reason":"invalid_calendar_date"},
+ {"raw":"1900-02-29","reason":"invalid_calendar_date"},
+ {"raw":"2000-02-29","value":"2000-02-29","precision":"day"},
+ {"raw":"2025-02-31","reason":"invalid_calendar_date"},
+ {"raw":"2025-00-01","reason":"invalid_calendar_date"},
+ {"raw":"2025-13","reason":"invalid_calendar_date"},
+ {"raw":"2025","value":"2025","precision":"year"},
+ {"raw":"2025-02","value":"2025-02","precision":"month"},
+ {"raw":8202,"reason":"year_out_of_range"},
+ {"raw":"2027-01-01","reason":"future_observed_date"},
+ {"raw":"2027-01-01","meaning":"planned","value":"2027-01-01","precision":"day"},
+ {"raw":"1880","reason":"year_out_of_range"},
+ {"raw":"01/01/26","reason":"unsupported_or_ambiguous_format"},
+ {"raw":"2020_13-896","reason":"unsupported_or_ambiguous_format"}
+]
