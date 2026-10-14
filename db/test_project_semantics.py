@@ -71,6 +71,32 @@ class ContractTest(unittest.TestCase):
         original = {"titulo": "Plan", "tipo": "Plan parcial"}
         self.assertEqual(derive(original)["source_hash"], derive({**original, "_entity_policy": {"version": 2}})["source_hash"])
 
+    def test_combined_geography_semantics_guards_preserve_quarantine_and_other_markers(self):
+        quarantine = {"status": "quarantined", "original": {"lat": 4000000, "lng": 400000}}
+        raw = {"titulo": "Plan Norte", "tipo": "Plan parcial", "fase": "Información pública",
+               "_geography_quarantine": quarantine, "_entity_policy": {"status": "retained"},
+               "_territory": {"scope": "municipal"}}
+        source = {"id": "quarantined:1", "municipio_slug": "unknown", "municipio": "Test",
+                  "fuente": "ayuntamiento", "raw_features_json": raw}
+        class Cursor:
+            def __enter__(self): return self
+            def __exit__(self, *args): pass
+            def execute(self, *args): pass
+        class Connection:
+            def cursor(self): return Cursor()
+        from ingest import _PROYECTO_UPSERT_COLS
+        with patch("ingest.execute_values") as execute:
+            save_proyectos([source], conn=Connection())
+        values = dict(zip(_PROYECTO_UPSERT_COLS, execute.call_args_list[0].args[2][0]))
+        saved = values["raw_features_json"].adapted
+        self.assertEqual(saved["_geography_quarantine"], quarantine)
+        self.assertEqual(saved["_entity_policy"], raw["_entity_policy"])
+        self.assertEqual(saved["_territory"], raw["_territory"])
+        self.assertEqual(saved["_semantic_contract"]["fase_normalizada"], "informacion_publica")
+        self.assertEqual(saved["geography_validation"]["status"], "quarantined")
+        self.assertIsNone(values["lat"])
+        self.assertIsNone(values["lng"])
+
     def test_upsert_clears_bad_history_and_persists_immutable_evidence(self):
         row = portal_proyecto_row({"id": "1", "titulo": "Plan", "fecha": "2026-01-01"}, slug="parla", nombre="Parla")
         class Cursor:
