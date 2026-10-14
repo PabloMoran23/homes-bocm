@@ -32,6 +32,7 @@ DB_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(DB_DIR))
 
 from direccion import build_direccion  # noqa: E402
+from license_dates import license_temporal  # noqa: E402
 from geo_utils import (  # noqa: E402
     geom_area_approx_m2,
     geom_bbox,
@@ -486,7 +487,7 @@ def iter_licencias_rows() -> Iterable[dict[str, Any]]:
 def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, tuple], dict[str, int]]:
     inmuebles: dict[str, dict[str, Any]] = {}
     actuaciones_by_key: dict[str, tuple] = {}
-    stats = {"rows": 0, "skipped": 0, "with_coords": 0}
+    stats = {"rows": 0, "skipped": 0, "with_coords": 0, "temporal_quarantine": 0}
 
     for row in iter_licencias_rows():
         anio = row.get("anio_dataset") or row.get("anioDataset")
@@ -496,6 +497,9 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
             anio_i = None
         if years is not None and anio_i not in years:
             continue
+        temporal = license_temporal({"anio_dataset": anio, "fecha_concesion": row.get("fecha_concesin") or row.get("fechaConcesion"), "fecha_alta": row.get("fecha_de_alta") or row.get("fechaAlta")})
+        if temporal["quarantine"]:
+            stats["temporal_quarantine"] += 1
         ndp_raw = row.get("ndp_edificio") or row.get("ndpEdificio")
         if ndp_raw is None or ndp_raw == "":
             stats["skipped"] += 1
@@ -532,9 +536,9 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
         actuaciones_by_key[key] = (
             key,
             ndp,
-            anio_i,
-            null_if_empty(str(row.get("fecha_de_alta") or row.get("fechaAlta") or "")),
-            null_if_empty(str(row.get("fecha_concesin") or row.get("fechaConcesion") or "")),
+            temporal["year"],
+            temporal["fields"]["fecha_alta"]["value"],
+            temporal["fields"]["fecha_concesion"]["value"],
             null_if_empty(str(row.get("procedimiento") or "")),
             null_if_empty(str(row.get("tipo_de_expediente") or row.get("tipoExpediente") or "")),
             null_if_empty(str(row.get("uso") or "")),
@@ -543,7 +547,7 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
             null_if_empty(str(row.get("unidad_responsable") or row.get("unidad") or "")),
             lat,
             lng,
-            Json(row),
+            Json({**row, "temporal": temporal}),
         )
 
     stats["inmuebles"] = len(inmuebles)

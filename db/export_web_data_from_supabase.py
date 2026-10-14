@@ -28,6 +28,7 @@ sys.path.insert(0, str(DB_DIR))
 sys.path.insert(0, str(POC_ROOT))
 
 from export_sigma_ambito_web import fecha_aprob_ms  # noqa: E402
+from license_dates import license_temporal  # noqa: E402
 from sector_geometry.madrid_nti_vivienda_sanity import sanitize_viviendas_en_metrics  # noqa: E402
 from sync_madrid_public_to_supabase import pg_url  # noqa: E402
 from sync_programas_dominio import sync_programas  # noqa: E402
@@ -614,17 +615,7 @@ def export_ubicaciones(out_dir: Path, cur) -> None:
 
 
 def _licencia_year(row: dict[str, Any]) -> int | None:
-    y = row.get("anio_dataset")
-    if isinstance(y, int) and y > 1900:
-        return y
-    for field in ("fecha_concesion", "fecha_alta"):
-        raw = row.get(field)
-        if not raw:
-            continue
-        s = str(raw).strip()
-        if len(s) >= 4 and s[:4].isdigit():
-            return int(s[:4])
-    return None
+    return license_temporal(row)["year"]
 
 
 def export_licencias(out_dir: Path, cur, min_year: int) -> None:
@@ -634,6 +625,7 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
           l.id,
           l.licencia_key,
           l.anio_dataset,
+          l.raw_json,
           l.fecha_alta,
           l.fecha_concesion,
           l.procedimiento,
@@ -657,8 +649,13 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
     by_uso: dict[str, int] = defaultdict(int)
     by_distrito: dict[str, int] = defaultdict(int)
 
+    temporal_quarantine = []
+    as_of = datetime.now(UTC).date()
     for r in rows:
-        year = _licencia_year(r)
+        temporal = license_temporal(r, as_of=as_of)
+        if temporal["quarantine"]:
+            temporal_quarantine.append({"id": r["id"], "fields": temporal["quarantine"]})
+        year = temporal["year"]
         if year is None or year < min_year:
             continue
         total += 1
@@ -667,8 +664,9 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
             "id": r["id"],
             "licenciaKey": r.get("licencia_key"),
             "anioDataset": year,
-            "fechaAlta": r.get("fecha_alta"),
-            "fechaConcesion": r.get("fecha_concesion"),
+            "fechaAlta": temporal["fields"]["fecha_alta"]["value"],
+            "fechaConcesion": temporal["fields"]["fecha_concesion"]["value"],
+            "temporal": temporal,
             "procedimiento": r.get("procedimiento"),
             "tipoExpediente": r.get("tipo_expediente"),
             "uso": r.get("uso"),
@@ -716,10 +714,17 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
         )
         log(f"OK: madrid-licencias-{y} ({len(pack['rows'])} filas)")
 
+    # Full rebuild removes old AND new partitions on a correction, including empty years.
+    for path in out_dir.glob("madrid-licencias-????.*"):
+        if path.suffix in (".json", ".geojson") and path.stem[-4:].isdigit() and int(path.stem[-4:]) not in by_year:
+            path.unlink()
+    (out_dir / "madrid-license-temporal-quarantine.json").write_text(json.dumps(temporal_quarantine, ensure_ascii=False), encoding="utf-8")
+    log(f"Temporal quarantine: {len(temporal_quarantine)} licenses")
     top = lambda m, n=20: sorted(m.items(), key=lambda x: -x[1])[:n]  # noqa: E731
     index = {
         "generatedAt": datetime.now(UTC).isoformat(),
         "source": "supabase-dominio",
+        "coverageStatus": "partial",
         "totalRows": total,
         "withCoords": with_coords,
         "byYear": by_year_count,

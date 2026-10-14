@@ -145,6 +145,10 @@ function MadridTab({
 
   return (
     <div className="space-y-4">
+      <p role="status" className="rounded-xl bg-amber-50 p-4 text-sm text-amber-950">
+        {lic.coverageStatus === "complete" ? "Periodos con cierre acreditado." : "Datos parciales: cierre de fuente sin acreditar. Los recuentos observados pueden cambiar."}
+        {" "}{lic.comparisonLabel || "Comparación no disponible sin cierre acreditado."}
+      </p>
       <div className="grid gap-4 lg:grid-cols-12">
         <article className="flex flex-col justify-between rounded-[1.6rem] bg-[var(--portal-accent)] p-6 text-[var(--portal-paper)] shadow-lg shadow-[var(--portal-accent)]/15 lg:col-span-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">2025</p>
@@ -153,7 +157,7 @@ function MadridTab({
               {fmt(lic.cambiosLocal2025)}
             </p>
             <p className="mt-3 text-lg leading-snug">
-              cambios de local. Superaron a las reformas de piso.
+              cambios de local registrados en 2025 (cobertura parcial salvo cierre acreditado).
             </p>
           </div>
           <ul className="mt-8 space-y-2 text-sm text-white/80">
@@ -201,7 +205,7 @@ function MadridTab({
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-xs leading-relaxed text-slate-500">Cada año, menos.</p>
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">{lic.comparisonLabel || "Sin meses comunes con cierre acreditado."}</p>
           </article>
         </div>
       </div>
@@ -210,7 +214,7 @@ function MadridTab({
         <div className="lg:col-span-7">
           <GroupedBarChart
             title="Locales y reformas de piso"
-            subtitle="En 2025 el cambio de local adelanta a la reforma de piso."
+            subtitle={lic.comparisonLabel || "Sin cierre acreditado para comparar."}
             categories={years}
             valueLabel="licencias"
             series={[
@@ -248,7 +252,7 @@ function MadridTab({
         <div className="lg:col-span-7">
           <YearEvolutionChart
             title="El pulso de la obra"
-            subtitle="Mes a mes, de un año al siguiente."
+            subtitle="Recuentos observados por mes. Cobertura parcial salvo cierre acreditado."
             series={comparativa.map((r) => ({ year: r.year, value: r.total }))}
             seriesByMonth={lic.ritmo}
             granularity="month"
@@ -259,7 +263,7 @@ function MadridTab({
         <div className="lg:col-span-5">
           <GroupedBarChart
             title="Cuando se toca el edificio"
-            subtitle="Nueva planta, reforma, demolición y primera ocupación."
+            subtitle={lic.comparisonLabel || "Sin cierre acreditado para comparar."}
             categories={years}
             valueLabel="licencias"
             stacked

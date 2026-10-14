@@ -7,6 +7,7 @@ export function LicenciasDatosNota() {
       role="note"
     >
       <p className="font-semibold text-[var(--portal-accent)]">Cómo leer estas cifras</p>
+      <p className="mt-1.5 text-slate-600">Recuentos observados por periodo; cobertura parcial salvo cierre y paginación de fuente acreditados. No comparar periodos abiertos como años completos.</p>
       <p className="mt-1.5 text-slate-600">{LICENCIAS_DASHBOARD_NOTA}</p>
       <p className="mt-2 text-xs text-slate-500">
         Referencia: {ORDENANZA_LICENCIAS_2022.label} (vigencia general{" "}

@@ -358,6 +358,8 @@ export type MadridDashboardStats = {
   distritoCentroids?: Record<string, MadridDashboardDistritoCentroid>;
   licencias: {
     generatedAt: string;
+    periodCoverage?: Record<string, { status: "complete" | "partial" }>;
+    coverageStatus?: "complete" | "partial";
     totalRows: number;
     withCoords: number;
     years: number[];

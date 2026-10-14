@@ -21,7 +21,8 @@
     "test:map": "node scripts/test-portal-map-data.mjs",
     "build:province-previews": "node scripts/build-province-previews.mjs",
     "check:province-previews": "node scripts/build-province-previews.mjs --check",
-    "build:province-boundaries": "node scripts/build-province-boundaries.mjs"
+    "build:province-boundaries": "node scripts/build-province-boundaries.mjs",
+    "test:license-dates": "node scripts/test-license-dates.mjs && node scripts/test-license-temporal-build.mjs && node scripts/test-license-temporal-kpi.mjs"
   },
   "dependencies": {
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",

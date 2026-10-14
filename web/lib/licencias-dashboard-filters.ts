@@ -188,6 +188,8 @@ export function aggregateLicenciasFromRows(
 
   return {
     generatedAt: base.generatedAt,
+    periodCoverage: base.periodCoverage,
+    coverageStatus: base.coverageStatus || "partial",
     totalRows: filtered.length,
     withCoords: base.withCoords,
     years,

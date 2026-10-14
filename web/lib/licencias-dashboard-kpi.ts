@@ -32,6 +32,7 @@ export type LicenciasKpiSnapshot = {
   pctChange: number | null;
   periodLabel: string;
   compareLabel: string;
+  comparisonAvailable: boolean;
 };
 
 function sortedMonthly(lic: NonNullable<MadridDashboardStats["licencias"]>): MadridDashboardMapaMonth[] {
@@ -108,37 +109,47 @@ export function computeLicenciasKpi(
 ): LicenciasKpiSnapshot | null {
   const monthly = sortedMonthly(lic);
   const latest = monthly.at(-1);
-  const previous = monthly.at(-2);
+  const coverage = lic.periodCoverage || {};
+  const closed = (month: string) => coverage[month]?.status === "complete";
   if (!latest) return null;
 
   const ids = tipoIdsForMetric(metric);
 
   if (period === "1M") {
     const value = monthTypeCount(latest, ids);
+    const [y, m] = latest.month.split("-").map(Number);
+    const prevKey = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`;
+    const previous = monthly.find(row => row.month === prevKey);
     const prevValue = previous ? monthTypeCount(previous, ids) : 0;
+    const comparisonAvailable = closed(latest.month) && closed(prevKey);
     return {
       value,
       previous: prevValue,
-      pctChange: percentChangeValue(value, prevValue),
-      periodLabel: formatMonthShort(latest.month),
-      compareLabel: previous ? formatMonthShort(previous.month) : "mes anterior",
+      pctChange: comparisonAvailable ? percentChangeValue(value, prevValue) : null,
+      comparisonAvailable,
+      periodLabel: formatMonthShort(latest.month) + (closed(latest.month) ? "" : " · parcial"),
+      compareLabel: comparisonAvailable ? formatMonthShort(prevKey) : "Sin comparación: cierre no acreditado",
     };
   }
 
   const year = latest.month.slice(0, 4);
   const untilMonth = Number(latest.month.slice(5, 7));
   const prevYear = String(Number(year) - 1);
-  const value = yearToDateCount(monthly, year, untilMonth, ids);
-  const prevValue = yearToDateCount(monthly, prevYear, untilMonth, ids);
+  const common = Array.from({ length: untilMonth }, (_, i) => String(i + 1).padStart(2, "0"))
+    .filter(m => closed(`${year}-${m}`) && closed(`${prevYear}-${m}`));
+  const comparisonAvailable = common.length > 0;
+  const countCommon = (y: string) => common.reduce((sum, m) => sum + monthTypeCount(monthly.find(row => row.month === `${y}-${m}`), ids), 0);
+  const value = comparisonAvailable ? countCommon(year) : yearToDateCount(monthly, year, untilMonth, ids);
+  const prevValue = comparisonAvailable ? countCommon(prevYear) : 0;
   const ytdStart = `${year}-01`;
-  const prevYtdStart = `${prevYear}-01`;
 
   return {
     value,
     previous: prevValue,
-    pctChange: percentChangeValue(value, prevValue),
-    periodLabel: formatMonthRange(ytdStart, latest.month),
-    compareLabel: formatMonthRange(prevYtdStart, `${prevYear}-${latest.month.slice(5, 7)}`),
+    pctChange: comparisonAvailable ? percentChangeValue(value, prevValue) : null,
+    comparisonAvailable,
+    periodLabel: comparisonAvailable ? `${year} · meses cerrados ${common.join(", ")}` : formatMonthRange(ytdStart, latest.month) + " · parcial",
+    compareLabel: comparisonAvailable ? `${prevYear} · mismos meses cerrados` : "Sin comparación: cierre no acreditado",
   };
 }
 

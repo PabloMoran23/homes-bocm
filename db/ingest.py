@@ -35,6 +35,7 @@ if str(DB_DIR) not in sys.path:
     sys.path.insert(0, str(DB_DIR))
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
+from license_dates import license_temporal  # noqa: E402
 
 SCHEMA = "homes"
 
@@ -715,16 +716,21 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
         tuples = []
         for rec, key in zip(ready, keys):
             lat, lng = _latlng(rec)
-            fecha = _iso_date(rec.get("fecha_concesion") or rec.get("fecha"))
-            anio = int(fecha[:4]) if fecha else None
+            temporal = license_temporal({**rec, "fecha_concesion": rec.get("fecha_concesion") or rec.get("fecha")}, as_of=now.date())
+            if temporal["quarantine"]:
+                print(f"Temporal quarantine licencia={key}: " + ", ".join(f["field"] + ":" + f["reason"] for f in temporal["quarantine"]), file=sys.stderr)
+            grant = temporal["fields"]["fecha_concesion"]
+            alta = temporal["fields"]["fecha_alta"]
+            fecha = grant["value"]
+            anio = temporal["year"]
             slug = _blank(rec.get("municipio_slug"))
             tuples.append(
                 (
                     id_map[key],
                     key,
                     rec.get("inmueble_id"),
-                    anio if anio is not None else _int(rec.get("anio_dataset")),
-                    _iso_date(rec.get("fecha_alta")),
+                    anio,
+                    alta["value"],
                     fecha,
                     _blank(rec.get("procedimiento")),
                     _blank(rec.get("tipo") or rec.get("tipo_expediente")),
@@ -734,7 +740,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     _blank(rec.get("unidad") or rec.get("distrito")),
                     lat,
                     lng,
-                    Json({**rec, "source": rec.get("source") or rec.get("fuente") or "ayuntamiento"}),
+                    Json({**rec, "source": rec.get("source") or rec.get("fuente") or "ayuntamiento", "temporal": temporal}),
                     rec.get("proyecto_id"),
                     slug,
                     rec.get("fuente") or rec.get("source") or "ayuntamiento",
@@ -751,8 +757,9 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               inserted_at, updated_at
             ) VALUES %s
             ON CONFLICT (licencia_key) DO UPDATE SET
-              anio_dataset = COALESCE(EXCLUDED.anio_dataset, {SCHEMA}.licencia.anio_dataset),
-              fecha_concesion = COALESCE(EXCLUDED.fecha_concesion, {SCHEMA}.licencia.fecha_concesion),
+              anio_dataset = EXCLUDED.anio_dataset,
+              fecha_alta = EXCLUDED.fecha_alta,
+              fecha_concesion = EXCLUDED.fecha_concesion,
               tipo_expediente = COALESCE(EXCLUDED.tipo_expediente, {SCHEMA}.licencia.tipo_expediente),
               objeto = COALESCE(EXCLUDED.objeto, {SCHEMA}.licencia.objeto),
               unidad = COALESCE(EXCLUDED.unidad, {SCHEMA}.licencia.unidad),
