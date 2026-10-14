@@ -30,6 +30,7 @@ def main() -> None:
                 )
                 SELECT proyecto_id, investigado_at
                 FROM latest
+                JOIN homes.proyecto_actividad p ON p.id=latest.proyecto_id
                 WHERE NULLIF(btrim(resumen), '') IS NOT NULL
                 ORDER BY proyecto_id
             """)

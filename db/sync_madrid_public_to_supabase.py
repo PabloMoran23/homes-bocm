@@ -543,7 +543,7 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
             null_if_empty(str(row.get("unidad_responsable") or row.get("unidad") or "")),
             lat,
             lng,
-            Json(row),
+            Json({**row, "source_dataset": "https://datos.madrid.es/portal/site/egob/", "source": "madrid-opendata", "id_origen": key}),
         )
 
     stats["inmuebles"] = len(inmuebles)

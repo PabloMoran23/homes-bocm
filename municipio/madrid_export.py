@@ -400,6 +400,8 @@ def build_licencias() -> list[dict[str, Any]]:
                 "lon": tup[12] if tup[12] is not None else inm.get("lng"),
                 "lng": tup[12] if tup[12] is not None else inm.get("lng"),
                 "coord_source": inm.get("coord_source") or ("utm_jsonl" if tup[11] is not None else None),
+                "source_dataset": "https://datos.madrid.es/portal/site/egob/",
+                "id_origen": key,
                 "source": "madrid-opendata",
                 "fuente": "madrid-opendata",
             }

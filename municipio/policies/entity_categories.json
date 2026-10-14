@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "outside_domain": {
+    "animales": ["tenencia de animales", "registro de animales", "animales potencialmente peligrosos"],
+    "taxi": ["transmision de taxi", "licencia de taxi", "licencias de taxi"],
+    "empleo": ["bolsa de empleo", "bolsa de trabajo", "proceso selectivo", "oferta publica de empleo"],
+    "tributos": ["domiciliacion de tributos", "calendario fiscal"],
+    "eventos": ["celebracion de evento", "celebra la maya", "celebra las fiestas"]
+  }
+}

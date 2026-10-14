@@ -122,7 +122,7 @@ def main():
                        m.lat AS municipio_lat, m.lng AS municipio_lng,
                        EXISTS (SELECT 1 FROM homes.proyecto_investigacion i WHERE i.proyecto_id=p.id) AS investigado,
                        (SELECT left(i.resumen, 240) FROM homes.proyecto_investigacion i WHERE i.proyecto_id=p.id ORDER BY i.investigado_at DESC, i.id DESC LIMIT 1) AS investigacion_resumen
-                FROM homes.proyecto p LEFT JOIN homes.municipio m ON m.slug=p.municipio_slug
+                FROM homes.proyecto_actividad p LEFT JOIN homes.municipio m ON m.slug=p.municipio_slug
                 ORDER BY p.id
             """)
             rows = cur.fetchall()

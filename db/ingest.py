@@ -35,6 +35,8 @@ if str(DB_DIR) not in sys.path:
     sys.path.insert(0, str(DB_DIR))
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
+from municipio.entity_policy import annotate  # noqa: E402
+from entity_reprocess import reprocess_queue  # noqa: E402
 
 SCHEMA = "homes"
 
@@ -317,7 +319,7 @@ def fetch_municipio_scraper_stats(*, conn=None) -> dict[str, dict[str, Any]]:
                             AND jsonb_array_length(tramitacion) > 0
                           )
                   )::int AS with_visor
-                FROM {SCHEMA}.proyecto
+                FROM {SCHEMA}.proyecto_actividad
                 WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
                 GROUP BY municipio_slug
                 """
@@ -326,7 +328,7 @@ def fetch_municipio_scraper_stats(*, conn=None) -> dict[str, dict[str, Any]]:
             cur.execute(
                 f"""
                 SELECT municipio_slug, COUNT(*)::int
-                FROM {SCHEMA}.licencia
+                FROM {SCHEMA}.licencia_actividad
                 WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
                 GROUP BY municipio_slug
                 """
@@ -533,7 +535,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "centroid_lat": rec.get("centroid_lat") if rec.get("centroid_lat") is not None else lat,
         "centroid_lng": rec.get("centroid_lng") if rec.get("centroid_lng") is not None else lng,
         "area_approx_m2": _float(rec.get("area_approx_m2")),
-        "raw_features_json": Json({k: v for k, v in rec.items() if k != "id"}),
+        "raw_features_json": Json(annotate({k: v for k, v in rec.items() if k != "id"})),
         "sin_datos_visor": bool(rec.get("sin_datos_visor")) if rec.get("sin_datos_visor") is not None else False,
         "visor_url": visor_url,
         "visor_cabecera": _jsonish(rec.get("visor_cabecera")),
@@ -568,7 +570,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "bocm_tipo_instrumento": _blank(rec.get("bocm_tipo_instrumento")) or _blank(tipo),
         "bocm_resumen": _blank(rec.get("bocm_resumen")) or _blank(titulo[:800] if titulo else ""),
         "bocm_es_relevante": (
-            True if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
+            None if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
         ),
         "bocm_sigma_match_type": _blank(rec.get("bocm_sigma_match_type")),
         "bocm_sigma_match_score": _float(rec.get("bocm_sigma_match_score")),
@@ -598,6 +600,15 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
             "documentacion_urls": doc_urls if isinstance(doc_urls, list) else [],
         },
     }
+
+
+def _classify_saved(conn, table: str, ids: list[str]) -> None:
+    # Las escrituras y la retirada de la cola forman una sola transacción.
+    for start in range(0, len(ids), 500):
+        result = reprocess_queue(conn, table=table, ids=ids[start:start + 500])
+        if result["failed"]:
+            # No ocultar el fallo: la fila permanece en cola y fuera de actividad.
+            print(f"entity_policy_error: {table}: {result}", flush=True)
 
 
 def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
@@ -697,6 +708,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
     """
     with _owned_conn(conn) as c, c.cursor() as cur:
         execute_values(cur, sql, tuples, page_size=100)
+        _classify_saved(c, "proyecto", [str(r["id"]) for r in ready])
     return len(tuples)
 
 
@@ -715,7 +727,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
         tuples = []
         for rec, key in zip(ready, keys):
             lat, lng = _latlng(rec)
-            fecha = _iso_date(rec.get("fecha_concesion") or rec.get("fecha"))
+            fecha = _iso_date(rec.get("fecha_concesion"))
             anio = int(fecha[:4]) if fecha else None
             slug = _blank(rec.get("municipio_slug"))
             tuples.append(
@@ -766,6 +778,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               updated_at = EXCLUDED.updated_at
         """
         execute_values(cur, sql, tuples, page_size=200)
+        _classify_saved(c, "licencia", [str(id_map[k]) for k in keys])
     return len(tuples)
 
 

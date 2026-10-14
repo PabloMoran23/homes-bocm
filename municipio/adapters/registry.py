@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import importlib
+from functools import wraps
+from municipio.entity_policy import annotate_jsonl
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
@@ -33,11 +35,16 @@ def load_portal_adapter(manifest: MunicipioManifest) -> AyuntamientoAdapter:
         )
     cls = _import_class(spec)
     cfg = {**manifest.portal.config, **manifest.licencias.config}
-    return cls(
-        slug=manifest.slug,
-        config=cfg,
-        base_url=manifest.portal.base_url,
-    )
+    adapter = cls(slug=manifest.slug, config=cfg, base_url=manifest.portal.base_url)
+    for name in ("backfill_proyectos", "update_proyectos", "backfill_licencias", "update_licencias"):
+        method = getattr(adapter, name)
+        kind = "licencia" if "licencias" in name else "proyecto"
+        def wrapped(out_jsonl, *args, _method=method, _kind=kind, **kwargs):
+            result = _method(out_jsonl, *args, **kwargs)
+            report = annotate_jsonl(out_jsonl, kind=_kind)
+            return {**result, "entity_policy": report}
+        setattr(adapter, name, wraps(method)(wrapped))
+    return adapter
 
 
 def load_licencias_adapter(spec: str | None, slug: str, config: dict[str, Any]) -> Any:

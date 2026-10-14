@@ -80,7 +80,7 @@ def build_inputs_from_proyecto(cur) -> list[ExpedienteProgramaInput]:
           tipo_legal,
           tipo_obra,
           categoria_proyecto
-        FROM {SCHEMA}.proyecto
+        FROM {SCHEMA}.proyecto_actividad
         WHERE expediente_grupo IS NOT NULL
         """
     )
@@ -200,7 +200,7 @@ def update_proyecto_programa_ids(cur) -> int:
     )
     cur.execute(
         f"""
-        SELECT COUNT(*)::int AS n FROM {SCHEMA}.proyecto WHERE programa_id IS NOT NULL
+        SELECT COUNT(*)::int AS n FROM {SCHEMA}.proyecto_actividad WHERE programa_id IS NOT NULL
         """
     )
     row = cur.fetchone()
