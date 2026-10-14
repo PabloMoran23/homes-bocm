@@ -1,0 +1,32 @@
+slug: renedo-de-esgueva
+nombre: "Renedo de Esgueva"
+provincia: "Renedo de Esgueva (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://ayto.renedodeesgueva.es"
+  adapter: municipio.adapters.renedo_de_esgueva:RenedoDeEsguevaAyuntamientoAdapter
+  config:
+    sede_base: "https://renedodeesgueva.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 133
+    ine_code: "47133"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Renedo de Esgueva"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47133"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=133"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=133"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-renedo-de-esgueva/1.0"
+    insecure_ssl: true
+    centroid: [41.5528, -4.3892]
+  notes: |
+    Web WordPress (urbanismo informativo) + sede espublico gestiona (tablón/transparencia).
+    Planeamiento en PlanPublica JCYL (código municipio 133, provincia 47). Geometría vía IDECyL WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
