@@ -1,0 +1,27 @@
+slug: penaranda-de-duero
+nombre: "Peñaranda de Duero"
+provincia: "Peñaranda de Duero (Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.penarandadeduero.es"
+  adapter: municipio.adapters.penaranda_de_duero:PenarandaDeDueroAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-penaranda-de-duero/1.0"
+    drupal_base: "https://www.penarandadeduero.es"
+    sede_base: "https://penarandadeduero.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 261
+    wfs_municipio: "Peñaranda de Duero"
+    insecure_ssl: true
+  notes: |
+    Drupal + sede espublico gestiona + archivo PLAU/PLAI JCyL (prov. 09, mun. 261, INE 09261)
+    e IDECyL WFS urbanismo (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
