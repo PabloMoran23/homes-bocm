@@ -1,43 +1,19 @@
 name: Refresh municipios
-
 on:
   schedule:
-    # Diario 04:17 UTC. Cada corrida refresca un lote; en ~15 días cubre el censo.
-    - cron: "17 4 * * *"
+    - cron: "17 * * * *"
   workflow_dispatch:
-    inputs:
-      interval_days:
-        description: "Días sin ingest para considerarlo due"
-        type: string
-        default: "15"
-      limit:
-        description: "Municipios por corrida"
-        type: string
-        default: "16"
-      slugs:
-        description: "Slugs separados por coma (vacío = due-queue automático)"
-        type: string
-        default: ""
-      force:
-        description: "Ignorar last_ingest_at (solo con slugs)"
-        type: boolean
-        default: false
-
 permissions:
   contents: read
-
 concurrency:
   group: refresh-municipios
   cancel-in-progress: false
-
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
-
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -45,42 +21,17 @@ jobs:
           cache-dependency-path: |
             requirements-municipio.txt
             db/requirements-supabase.txt
-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-municipio.txt
-          pip install -r db/requirements-supabase.txt
-
-      - name: Refresh due municipios
+        run: pip install -r requirements-municipio.txt -r db/requirements-supabase.txt
+      - name: Dispatch bounded durable source reviews
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
-          INTERVAL_DAYS: ${{ github.event.inputs.interval_days || '15' }}
-          LIMIT: ${{ github.event.inputs.limit || '16' }}
-          SLUGS: ${{ github.event.inputs.slugs || '' }}
-          FORCE: ${{ github.event.inputs.force || 'false' }}
-        run: |
-          set -euo pipefail
-          if [ -z "${SUPABASE_DB_URL:-}" ]; then
-            echo "SUPABASE_DB_URL is required." >&2
-            exit 1
-          fi
-          CMD_DUE=(python3 -m municipio schedule due --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}")
-          CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update)
-          if [ -n "${SLUGS}" ]; then
-            IFS=',' read -ra parts <<< "${SLUGS}"
-            for slug in "${parts[@]}"; do
-              slug="${slug#"${slug%%[![:space:]]*}"}"
-              slug="${slug%"${slug##*[![:space:]]}"}"
-              if [ -n "$slug" ]; then
-                CMD_DUE+=(--municipio "$slug")
-                CMD_RUN+=(--municipio "$slug")
-              fi
-            done
-          fi
-          if [ "${FORCE}" = "true" ]; then
-            CMD_RUN+=(--force)
-          fi
-          "${CMD_DUE[@]}"
-          "${CMD_RUN[@]}"
+        run: python3 -m municipio.refresh_dispatch
+      - name: Preserve operational evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-report-${{ github.run_id }}
+          path: refresh-report.json
+          retention-days: 30
