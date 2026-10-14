@@ -117,6 +117,7 @@ def _iso_date(v: Any) -> str:
 
 def proyecto_to_portal(row: dict[str, Any]) -> dict[str, Any]:
     enlace = row.get("enlace") or row.get("sigma_enlace_snapshot")
+    semantics = (row.get("raw_features_json") or {}).get("_semantic_contract", {})
     return {
         "id": row.get("bocm_primary_id") or row.get("id"),
         "sourceId": row.get("bocm_source_id") or "bocm",
@@ -130,8 +131,13 @@ def proyecto_to_portal(row: dict[str, Any]) -> dict[str, Any]:
         "municipio": row.get("bocm_municipio") or row.get("municipio") or "",
         "tipoInstrumento": row.get("bocm_tipo_instrumento") or "",
         "nombreSector": row.get("bocm_nombre_sector") or "",
-        "estadoTramitacion": row.get("bocm_estado_tramitacion") or "",
-        "fechaAcuerdo": row.get("bocm_fecha_acuerdo"),
+        "estadoTramitacion": (semantics.get("fase") if semantics else row.get("bocm_estado_tramitacion")) or "",
+        "fechaAcuerdo": semantics.get("fecha_acuerdo") if semantics else row.get("bocm_fecha_acuerdo"),
+        "fechaPublicacion": semantics.get("fecha_publicacion"),
+        "descripcionFuente": semantics.get("description"),
+        "resumenEvidencia": semantics.get("facts", []),
+        "contenidoEstado": semantics.get("status"),
+        "contenidoDesconocido": semantics.get("unknown", {}),
         "organo": row.get("bocm_organo") or "",
         "promotor": row.get("bocm_promotor"),
         "numViviendas": row.get("num_viviendas_max"),

@@ -39,6 +39,7 @@ from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 from license_dates import license_temporal  # noqa: E402
+from project_semantics import apply as apply_project_semantics, source_record  # noqa: E402
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
 
 SCHEMA = "homes"
@@ -514,8 +515,6 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     now = _now()
     titulo = str(rec.get("titulo") or rec.get("denominacion") or "").strip()
     tipo = str(rec.get("tipo") or rec.get("tipo_figura") or rec.get("figura_codigo") or "").strip()
-    fecha = _blank(rec.get("fecha") or rec.get("fecha_aprob"))
-    pub_date = _iso_date(fecha)
     lat, lng = _latlng(rec)
     url = _blank(rec.get("url") or rec.get("enlace") or rec.get("visor_url"))
     docs: list[str] = []
@@ -539,19 +538,18 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     catalog_source = _blank(rec.get("catalog_source")) or (
         "sigma" if fuente == "sigma" else "ayuntamiento-portal"
     )
-    fase = _blank(rec.get("fase")) or _blank(tipo)
     visor_url = _blank(rec.get("visor_url")) or url
     nti_muestra = rec.get("nti_documentos_muestra")
     if not isinstance(nti_muestra, list):
         nti_muestra = docs[:5]
     tramitacion = rec.get("tramitacion") if isinstance(rec.get("tramitacion"), list) else []
     doc_urls = rec.get("documentacion_urls") if isinstance(rec.get("documentacion_urls"), list) else docs
-    return {
+    row = {
         "id": pid,
         "expediente_grupo": _blank(rec.get("expediente_grupo")),
         "exp_numero_original": _blank(rec.get("exp_numero_original")),
         "denominacion": _blank(titulo),
-        "fecha_aprob": pub_date,
+        "fecha_aprob": None,
         "enlace": url,
         "catalog_source": catalog_source,
         "sigma_layer_kind": _blank(rec.get("sigma_layer_kind")),
@@ -583,11 +581,11 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "nti_listado_url": _blank(rec.get("nti_listado_url")) or url,
         "visor_fetched_at": rec.get("visor_fetched_at"),
         "visor_raw_json": _jsonish(rec.get("visor_raw") or rec.get("visor_raw_json"), default={}),
-        "resumen_contenido": _blank(rec.get("resumen_contenido")) or _blank(titulo),
+        "resumen_contenido": None,
         "tipo_legal": _blank(rec.get("tipo_legal")) or _blank(tipo),
         "escala": _blank(rec.get("escala")),
-        "contenido_principal": _blank(rec.get("contenido_principal")) or _blank(titulo),
-        "fase": fase,
+        "contenido_principal": _blank(rec.get("contenido_principal")),
+        "fase": None,
         "fase_normalizada": _blank(rec.get("fase_normalizada")),
         "categoria_proyecto": _blank(rec.get("categoria_proyecto")),
         "tipo_obra": _blank(rec.get("tipo_obra")),
@@ -598,13 +596,13 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         ),
         "bocm_primary_id": _blank(rec.get("bocm_primary_id")),
         "bocm_source_id": _blank(rec.get("bocm_source_id")) or ("sigma" if fuente == "sigma" else "ayuntamiento-portal"),
-        "bocm_pub_date": _iso_date(rec.get("bocm_pub_date")) or pub_date,
+        "bocm_pub_date": None,
         "bocm_art_num": _blank(rec.get("bocm_art_num")),
         "bocm_title": _blank(rec.get("bocm_title")) or _blank(titulo),
         "bocm_pdf_url": _blank(rec.get("bocm_pdf_url")) or (docs[0] if docs else None),
         "bocm_municipio": _blank(rec.get("bocm_municipio")) or nombre,
         "bocm_tipo_instrumento": _blank(rec.get("bocm_tipo_instrumento")) or _blank(tipo),
-        "bocm_resumen": _blank(rec.get("bocm_resumen")) or _blank(titulo[:800] if titulo else ""),
+        "bocm_resumen": None,
         "bocm_es_relevante": (
             True if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
         ),
@@ -638,11 +636,45 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     }
 
 
+    original = {k: v for k, v in rec.items() if k != "id"}
+    derived = apply_project_semantics(original, row)
+    row["raw_features_json"] = Json({**original, "_semantic_contract": derived})
+    return row
+
+
+def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
+    """Persist source + rule versions atomically with the canonical upsert."""
+    versions = []
+    for row in rows:
+        raw = row.get("raw_features_json")
+        raw = raw.adapted if isinstance(raw, Json) else raw
+        derived = raw.get("_semantic_contract") if isinstance(raw, dict) else None
+        if derived:
+            versions.append((row["id"], derived["source_hash"], derived["contract_version"],
+                             derived["template_version"], Json(source_record(raw)), Json(derived)))
+    if versions:
+        cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
+        execute_values(cur, f"""INSERT INTO {SCHEMA}.proyecto_semantica_version
+                         (proyecto_id, source_hash, contract_version, template_version, source_record, derivation)
+                         VALUES %s ON CONFLICT DO NOTHING""", versions, page_size=100)
+
+
 def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
     ready = [r for r in rows if r and r.get("id")]
     if not ready:
         return 0
+    # Geographic validation preserves every raw marker before semantic derivation.
     ready = [_checked_project_row(r) for r in ready]
+    # Also guard canonical callers that bypass portal_proyecto_row.
+    for row in ready:
+        if row.get("municipio_slug") and row.get("fuente") not in ("sigma", "bocm", "bocm_legacy"):
+            raw = row.get("raw_features_json")
+            raw = raw.adapted if isinstance(raw, Json) else raw
+            if not isinstance(raw, dict):
+                raise ValueError(f"{row['id']}: missing original municipal record for semantic contract")
+            original = source_record(raw)
+            derived = apply_project_semantics(original, row)
+            row["raw_features_json"] = Json({**original, "_semantic_contract": derived})
     cols = [c for c in _PROYECTO_UPSERT_COLS]
     tuples = [tuple(r.get(c) for c in cols) for r in ready]
     sql = f"""
@@ -668,8 +700,10 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           tipo_legal = COALESCE(EXCLUDED.tipo_legal, {SCHEMA}.proyecto.tipo_legal),
           escala = COALESCE(EXCLUDED.escala, {SCHEMA}.proyecto.escala),
           contenido_principal = EXCLUDED.contenido_principal,
-          fase = COALESCE(EXCLUDED.fase, {SCHEMA}.proyecto.fase),
-          fase_normalizada = COALESCE(EXCLUDED.fase_normalizada, {SCHEMA}.proyecto.fase_normalizada),
+          fase = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'
+            THEN EXCLUDED.fase ELSE COALESCE(EXCLUDED.fase, {SCHEMA}.proyecto.fase) END,
+          fase_normalizada = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'
+            THEN EXCLUDED.fase_normalizada ELSE COALESCE(EXCLUDED.fase_normalizada, {SCHEMA}.proyecto.fase_normalizada) END,
           categoria_proyecto = COALESCE(EXCLUDED.categoria_proyecto, {SCHEMA}.proyecto.categoria_proyecto),
           tipo_obra = COALESCE(EXCLUDED.tipo_obra, {SCHEMA}.proyecto.tipo_obra),
           clasificacion_confianza = COALESCE(EXCLUDED.clasificacion_confianza, {SCHEMA}.proyecto.clasificacion_confianza),
@@ -688,7 +722,8 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           expediente_grupo = COALESCE(EXCLUDED.expediente_grupo, {SCHEMA}.proyecto.expediente_grupo),
           exp_numero_original = COALESCE(EXCLUDED.exp_numero_original, {SCHEMA}.proyecto.exp_numero_original),
           sigma_layer_kind = COALESCE(EXCLUDED.sigma_layer_kind, {SCHEMA}.proyecto.sigma_layer_kind),
-          fecha_aprob = COALESCE(EXCLUDED.fecha_aprob, {SCHEMA}.proyecto.fecha_aprob),
+          fecha_aprob = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'
+            THEN EXCLUDED.fecha_aprob ELSE COALESCE(EXCLUDED.fecha_aprob, {SCHEMA}.proyecto.fecha_aprob) END,
           infopublica_inicio = COALESCE(EXCLUDED.infopublica_inicio, {SCHEMA}.proyecto.infopublica_inicio),
           infopublica_fin = COALESCE(EXCLUDED.infopublica_fin, {SCHEMA}.proyecto.infopublica_fin),
           figura_codigo = COALESCE(EXCLUDED.figura_codigo, {SCHEMA}.proyecto.figura_codigo),
@@ -704,7 +739,8 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           id_origen = COALESCE(EXCLUDED.id_origen, {SCHEMA}.proyecto.id_origen),
           bocm_primary_id = COALESCE(EXCLUDED.bocm_primary_id, {SCHEMA}.proyecto.bocm_primary_id),
           bocm_municipio = EXCLUDED.bocm_municipio,
-          bocm_pub_date = COALESCE(EXCLUDED.bocm_pub_date, {SCHEMA}.proyecto.bocm_pub_date),
+          bocm_pub_date = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'
+            THEN EXCLUDED.bocm_pub_date ELSE COALESCE(EXCLUDED.bocm_pub_date, {SCHEMA}.proyecto.bocm_pub_date) END,
           bocm_art_num = COALESCE(EXCLUDED.bocm_art_num, {SCHEMA}.proyecto.bocm_art_num),
           bocm_title = EXCLUDED.bocm_title,
           bocm_pdf_url = COALESCE(EXCLUDED.bocm_pdf_url, {SCHEMA}.proyecto.bocm_pdf_url),
@@ -736,6 +772,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
     """
     with _owned_conn(conn) as c, c.cursor() as cur:
         execute_values(cur, sql, tuples, page_size=100)
+        save_semantic_versions(cur, ready)
     return len(tuples)
 
 
@@ -1194,22 +1231,32 @@ def finish_ingest_run(
 class IngestSession:
     """Una ejecución de scraper: abre conexión, registra ingest_run y hace upserts."""
 
-    def __init__(self, scraper: str, municipio_slug: str | None = None):
+    def __init__(self, scraper: str, municipio_slug: str | None = None, *, conn=None):
         self.scraper = scraper
         self.municipio_slug = municipio_slug
-        self.conn = None
+        self.conn = conn
+        self._external_conn = conn is not None
         self.run_id: int | None = None
         self.counts: dict[str, int] = {}
 
     def __enter__(self) -> "IngestSession":
-        self.conn = connect()
+        if not self._external_conn:
+            self.conn = connect()
         self.run_id = start_ingest_run(
             self.scraper, self.municipio_slug, conn=self.conn
         )
-        self.conn.commit()
+        if not self._external_conn:
+            self.conn.commit()
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
+        if self._external_conn:
+            # The caller owns the atomic fenced publication transaction. Never
+            # commit, roll back, close or suppress its exception in this scope.
+            if exc is None:
+                finish_ingest_run(self.run_id, status="ok",
+                                  rows_upserted=self.counts, conn=self.conn)
+            return
         try:
             if exc is not None and self.conn is not None:
                 # Si no, el siguiente SQL ve la transacción abortada y tapa el error real.
@@ -1270,6 +1317,8 @@ class IngestSession:
         return stats
 
     def commit(self) -> None:
+        if self._external_conn:
+            raise RuntimeError("Transaction commit belongs to the fenced publisher")
         if self.conn is not None:
             self.conn.commit()
 
@@ -1321,11 +1370,11 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
         print(f"  aviso supabase: {exc}", flush=True)
 
 
-def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]:
+def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manifest=None) -> dict[str, Any]:
     """Lee output/municipios/<slug>/*.jsonl y hace upsert. Lo usa el post-merge de cada PR."""
     from municipio.manifest import load_manifest
 
-    manifest = load_manifest(slug)
+    manifest = manifest or load_manifest(slug)
     out_dir = manifest.output_dir
     proyectos_raw = _read_jsonl(out_dir / "proyectos.jsonl")
     licencias_raw = _read_jsonl(out_dir / "licencias.jsonl")
@@ -1405,7 +1454,7 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]
         stats["reason"] = "sin SUPABASE_DB_URL"
         return stats
 
-    with IngestSession("municipio", municipio_slug=manifest.slug) as ses:
+    with IngestSession("municipio", municipio_slug=manifest.slug, conn=conn) as ses:
         ses.save_municipio_from_manifest(manifest)
         ses.save_proyectos(proy_rows)
         if hijas_rows:
