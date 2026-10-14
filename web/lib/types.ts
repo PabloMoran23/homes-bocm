@@ -367,6 +367,8 @@ export type MadridDashboardStats = {
   licencias: {
     sourceSnapshot?: MadridLicenseSourceSnapshot | null;
     generatedAt: string;
+    periodCoverage?: Record<string, { status: "complete" | "partial" }>;
+    coverageStatus?: "complete" | "partial";
     totalRows: number;
     withCoords: number;
     years: number[];

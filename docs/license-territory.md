@@ -67,7 +67,9 @@ conservarse junto con `_territory`. H02 / #857 modifica bloques de proyectos y n
 cambia este contrato. H03 / #858 normaliza coordenadas dentro de save_licencias;
 conservar ambas validaciones (territorio no se deduce de coordenadas). H05 / #854
 modifica fechas, raw y particiones: componer marcadores y mantener el filtro territorial
-antes de elegir el año. Ninguno de esos commits se ha incorporado a esta rama.
+antes de elegir el año. La integración H05 conserva conjuntamente los contratos territorial y geográfico,
+y mantiene el alcance estadístico H06. La relación con cambios aún no integrados
+debe revisarse contra el SHA de main usado en el merge.
 
 ## Transición del snapshot versionado y compilación Vercel
 
@@ -94,8 +96,9 @@ explicitan que esta revisión no ha descargado una actualización factual.
 El snapshot nuevo tiene **48.960** licencias de los ejercicios de dataset **2022–2026**:
 18.467 / 6.538 / 8.811 / 11.496 / 3.648. Se usa `minYear=2022`, el ámbito que ya exigía
 el build público. Índice, dashboard, filtro y presentación usan las mismas 48.960 filas.
-El mapa cubre 47.762; 1.198 carecen de coordenadas válidas. El mes completo más reciente
-de la presentación es abril de 2026: reconstruir en octubre no extiende ese periodo.
+El mapa cubre 47.762; 1.198 carecen de coordenadas válidas. H05 retira el supuesto cierre de abril de 2026 basado en volumen. Sin evidencia de
+cierre y paginación, `lastCompleteMonth=null`, la cobertura es parcial y no hay
+comparativas de meses completos. Reconstruir en octubre no acredita cierre.
 
 El corte previo auditado de 59.374 mezclaba territorios; no constituye una comparación
 factual de actividad con este replay. Los GeoJSON heredados 2015–2021 se retiran del

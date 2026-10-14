@@ -49,6 +49,8 @@ export function buildMadridDashboardStats(opts) {
   let licencias = null;
   if (existsSync(licPath)) {
     const idx = JSON.parse(readFileSync(licPath, "utf-8"));
+    const coveragePath = join(outDir, "madrid-licencias-filter-rows.json");
+    const periodCoverage = existsSync(coveragePath) ? JSON.parse(readFileSync(coveragePath, "utf-8")).periodCoverage || {} : {};
     const years = (idx.years || []).slice().sort((a, b) => a - b);
     const seriesByYear = years.map((y) => ({
       year: y,
@@ -60,6 +62,8 @@ export function buildMadridDashboardStats(opts) {
     }));
     licencias = {
       generatedAt: idx.generatedAt,
+      coverageStatus: "partial",
+      periodCoverage,
       sourceSnapshot: idx.sourceSnapshot ?? null,
       temporalScope: idx.temporalScope ?? null,
       municipioCode: idx.municipioCode,
@@ -68,7 +72,7 @@ export function buildMadridDashboardStats(opts) {
       years,
       seriesByYear,
       seriesByYearActuacionQue: idx.byYearActuacionQue || idx.byYearMapaTipo || [],
-      seriesByMonth: idx.seriesByMonth || [],
+      seriesByMonth: (idx.seriesByMonth || []).map(r => ({ ...r, status: periodCoverage[r.month]?.status || "partial" })),
       seriesByMonthActuacionQue: idx.seriesByMonthActuacionQue || idx.seriesByMonthMapaTipo || [],
       months: idx.months || [],
       topActuacionQue: idx.topActuacionQue || idx.topMapaTipo || [],

@@ -4,6 +4,9 @@ import { assertLicenseTerritory } from "./assert-license-territory.mjs";
  */
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
+import { licenseTemporal, DATE_RULE_VERSION } from "./lib/license-dates.mjs";
+import { periodCoverage } from "./lib/period-coverage.mjs";
 import { normalizarActuacionEdificio } from "./lib/actuacion-edificio.mjs";
 import { labelActuacionQue } from "./lib/actuacion-que-config.mjs";
 
@@ -22,20 +25,6 @@ function normDistritoKey(name) {
   return normKey(name).replace(/-/g, " ");
 }
 
-function parseMonthKey(concesion, alta) {
-  for (const raw of [concesion, alta]) {
-    if (!raw || typeof raw !== "string") continue;
-    const parts = raw.trim().split(/[/.-]/);
-    if (parts.length < 3) continue;
-    const m = Number(parts[1]);
-    let y = Number(parts[2]);
-    if (y < 100) y += 2000;
-    if (!Number.isFinite(m) || m < 1 || m > 12 || y < 1990 || y > 2100) continue;
-    return `${y}-${String(m).padStart(2, "0")}`;
-  }
-  return null;
-}
-
 function titleCase(s) {
   return String(s)
     .split(/\s+/)
@@ -50,6 +39,9 @@ export function buildMadridLicenciasFilterRows(opts) {
   const { outDir } = opts;
   assertLicenseTerritory(outDir);
   const rows = [];
+  const quarantine = [];
+  const inputHash = createHash("sha256").update(DATE_RULE_VERSION);
+  const asOf = opts.asOf || new Date().toISOString().slice(0, 10);
   const distritoCounts = new Map();
   const actuacionCounts = new Map();
   const procedimientoCounts = new Map();
@@ -64,14 +56,26 @@ export function buildMadridLicenciasFilterRows(opts) {
     .sort((a, b) => a.year - b.year);
 
   if (!files.length) {
-    console.log("Aviso: sin madrid-licencias-YYYY.json — omitiendo filter-rows");
-    return null;
+    const indexPath = join(outDir, "madrid-licencias-index.json");
+    if (!existsSync(indexPath)) throw new Error("Licencias: faltan particiones e índice; captura incompleta");
+    const content = readFileSync(indexPath, "utf-8");
+    const index = JSON.parse(content);
+    if (index.totalRows !== 0 || !Array.isArray(index.years) || index.years.length !== 0) {
+      throw new Error("Licencias: faltan particiones de un índice no vacío");
+    }
+    // An authoritative empty rebuild must withdraw all previously published rows.
+    // A missing/partial capture must never be mistaken for this state.
+    inputHash.update(content);
   }
 
   for (const { path } of files) {
-    const batch = JSON.parse(readFileSync(path, "utf-8"));
+    const content = readFileSync(path, "utf-8");
+    inputHash.update(content);
+    const batch = JSON.parse(content);
     for (const r of batch) {
-      const month = parseMonthKey(r.fechaConcesion, r.fechaAlta);
+      const temporal = licenseTemporal(r, { asOf });
+      if (temporal.quarantine.length) quarantine.push({ id: r.id ?? null, fields: temporal.quarantine });
+      const month = temporal.month;
       if (!month) continue;
 
       const act = normalizarActuacionEdificio({
@@ -103,7 +107,17 @@ export function buildMadridLicenciasFilterRows(opts) {
         count,
       }));
 
+  const inputDigest = inputHash.digest("hex");
+  const coveragePath = join(outDir, "madrid-period-coverage.json");
+  const evidence = existsSync(coveragePath) ? JSON.parse(readFileSync(coveragePath, "utf-8")) : {};
+  const coverage = periodCoverage(rows.map(r => r.m), evidence, { inputDigest, asOf });
+  const indexPath = join(outDir, "madrid-licencias-index.json");
+  const index = existsSync(indexPath) ? JSON.parse(readFileSync(indexPath, "utf-8")) : {};
   const payload = {
+    sourceSnapshot: index.sourceSnapshot ?? null,
+    temporalScope: index.temporalScope ?? null,
+    temporal: { ruleVersion: DATE_RULE_VERSION, inputDigest, asOf, quarantineCount: quarantine.length, rebuild: "full" },
+    periodCoverage: coverage,
     generatedAt: new Date().toISOString(),
     totalRows: rows.length,
     options: {
@@ -125,6 +139,7 @@ export function buildMadridLicenciasFilterRows(opts) {
 
   const outPath = join(outDir, "madrid-licencias-filter-rows.json");
   writeFileSync(outPath, JSON.stringify(payload));
+  writeFileSync(join(outDir, "madrid-filter-temporal-quarantine.json"), JSON.stringify(quarantine));
   const kb = Math.round((readFileSync(outPath).length / 1024) * 10) / 10;
   console.log(`OK: madrid-licencias-filter-rows.json (${rows.length.toLocaleString("es-ES")} filas, ${kb} KB)`);
   return payload;

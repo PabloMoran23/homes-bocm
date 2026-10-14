@@ -46,7 +46,7 @@ export function LicenciasKpiCard({
             <>
               {snapshot.periodLabel}
               <span className="text-slate-300"> · </span>
-              vs {snapshot.compareLabel}
+              {snapshot.comparisonAvailable ? "vs " : ""}{snapshot.compareLabel}
             </>
           ) : (
             "Sin datos mensuales"

@@ -35,6 +35,11 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const webRoot = join(__dirname, "..");
+// Fail before touching public artifacts if either implementation violates the date contract.
+for (const [command, args] of [[process.execPath, [join(__dirname, "test-license-dates.mjs")]], ["python3", [join(webRoot, "../db/test_license_dates.py"), "LicenseDateTests.test_shared_contract", "LicenseDateTests.test_invalid_primary_does_not_fallback", "LicenseDateTests.test_replay_originals"]]]) {
+  const result = spawnSync(command, args, { encoding: "utf-8", env: process.env });
+  if (result.status !== 0) throw new Error(result.stderr || result.stdout || "Temporal contract checks failed");
+}
 const pocRoot = join(webRoot, "..");
 const homesRoot = join(pocRoot, "..");
 const bocmCsv = join(pocRoot, "output/history_parsed_incremental.csv");
@@ -119,7 +124,7 @@ async function runMadridPostBuild(opts = {}) {
         }
       }
     } catch (err) {
-      throw new Error(`Licencias urbanísticas (web): ${err?.message || err}`);
+      throw new Error("Licencias urbanísticas (web): " + (err?.message || err));
     }
   }
 
@@ -136,23 +141,14 @@ async function runMadridPostBuild(opts = {}) {
   }
 
   assertLicenseTerritory(outDir);
-
-  try {
-    buildMadridDashboardStats({ outDir });
-  } catch (err) {
-    console.warn("Dashboard Madrid (stats):", err?.message || err);
-  }
-
-  try {
-    buildMadridLicenciasFilterRows({ outDir });
-  } catch (err) {
-    console.warn("Licencias filter-rows:", err?.message || err);
-  }
+  // Recompute dates and coverage before exposing any dashboard series.
+  buildMadridLicenciasFilterRows({ outDir });
+  buildMadridDashboardStats({ outDir });
 
   try {
     buildMadridPresentacion({ outDir });
   } catch (err) {
-    console.warn("Presentación Madrid:", err?.message || err);
+    throw new Error("Presentación Madrid: " + (err?.message || err));
   }
 
   const ubicacionesExport = join(pocRoot, "db", "export_ubicaciones_web.py");

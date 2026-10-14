@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { commonCompleteMonths } from "./lib/period-coverage.mjs";
 import { normalizarActuacionEdificio } from "./lib/actuacion-edificio.mjs";
 
 const OPEN_FASE = new Set([
@@ -98,8 +99,6 @@ const DISTRITO_ALIAS = {
   "san blas canillejas": "san blas",
 };
 
-const MIN_COMPLETE_MONTH = 400;
-const COMPARE_YEARS = [2023, 2024, 2025];
 
 function norm(s) {
   return String(s ?? "")
@@ -196,8 +195,12 @@ export function buildMadridPresentacion(opts) {
   const lic = JSON.parse(readFileSync(licPath, "utf-8"));
   const sig = JSON.parse(readFileSync(sigPath, "utf-8"));
 
+  const referenceYear = Number((opts.asOf || lic.temporal?.asOf || new Date().toISOString()).slice(0, 4));
+  const compareYears = [referenceYear - 3, referenceYear - 2, referenceYear - 1];
+  const coverage = lic.periodCoverage || {};
+  const comparisonMonths = commonCompleteMonths(compareYears, coverage);
+  const comparisonLabel = comparisonMonths.length ? `Meses comunes con cierre acreditado: ${comparisonMonths.join(", ")}` : "Comparación no disponible: falta cierre acreditado en meses comunes.";
   const monthCounts = new Map();
-  const yearCounts = new Map();
   const byYear = new Map();
   const proc = new Map();
   const distritoAll = new Map();
@@ -214,7 +217,6 @@ export function buildMadridPresentacion(opts) {
     const year = Number(month.slice(0, 4));
     if (!month || !Number.isFinite(year)) continue;
     bump(monthCounts, month);
-    if (year >= 2023 && year <= 2026) bump(yearCounts, year);
 
     if (!isDistrito(row.d)) sinDistrito += 1;
     else {
@@ -224,33 +226,33 @@ export function buildMadridPresentacion(opts) {
 
     if (PROC[row.p]) bump(proc, row.p);
 
-    if (!COMPARE_YEARS.includes(year)) continue;
+    if (!compareYears.includes(year) || !comparisonMonths.includes(month.slice(5, 7))) continue;
     if (!byYear.has(year)) byYear.set(year, yearBucket());
     addActuacion(byYear.get(year), row);
     if (isDistrito(row.d)) bump(distritoRecent, row.d);
   }
 
   const completeMonths = [...monthCounts.entries()]
-    .filter(([month, count]) => month >= "2023-01" && month <= "2026-12" && count >= MIN_COMPLETE_MONTH)
+    .filter(([month]) => coverage[month]?.status === "complete")
     .map(([month]) => month)
     .sort();
-  const lastCompleteMonth = completeMonths.at(-1) || "2025-12";
+  const lastCompleteMonth = completeMonths.at(-1) || null;
 
   const ytdBucket = yearBucket();
-  byYear.set(2026, ytdBucket);
+  byYear.set(referenceYear, ytdBucket);
   for (const row of lic.rows) {
     const month = row.m || "";
-    if (!month.startsWith("2026") || month > lastCompleteMonth) continue;
+    if (!month.startsWith(`${referenceYear}-`) || coverage[month]?.status !== "complete") continue;
     addActuacion(ytdBucket, row);
     if (isDistrito(row.d)) bump(distritoRecent, row.d);
   }
 
   const ritmo = [];
   for (const [month, count] of [...monthCounts.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
-    if (month >= "2025-01" && month <= lastCompleteMonth) ritmo.push({ month, total: count });
+    if (month >= "2025-01") ritmo.push({ month, total: count, status: coverage[month]?.status || "partial" });
   }
 
-  const comparativa = COMPARE_YEARS.map((year) => {
+  const comparativa = (comparisonMonths.length ? compareYears : []).map((year) => {
     const b = byYear.get(year) || yearBucket();
     return {
       year,
@@ -319,7 +321,7 @@ export function buildMadridPresentacion(opts) {
     if (row.fn) bump(fase, row.fn);
     if (row.es) bump(escala, row.es);
     if (row.tl) bump(instrumento, row.tl);
-    if (row.y >= 2016 && row.y <= 2026) bump(incoados, row.y);
+    if (row.y >= 2016 && row.y <= referenceYear) bump(incoados, row.y);
     if (row.i && row.i !== "-") {
       iniciativaConDato += 1;
       bump(iniciativa, row.i);
@@ -355,14 +357,20 @@ export function buildMadridPresentacion(opts) {
   }
   cruce.sort((a, b) => b.licencias - a.licencias);
 
-  const ytd = byYear.get(2026) || yearBucket();
-  const y2025 = comparativa.find((r) => r.year === 2025);
+  const ytd = byYear.get(referenceYear) || yearBucket();
 
   const payload = {
     generatedAt: new Date().toISOString(),
     lastCompleteMonth,
+    periodCoverage: coverage,
+    temporal: lic.temporal,
     licencias: {
       total: lic.totalRows,
+      sourceSnapshot: lic.sourceSnapshot ?? null,
+      temporalScope: lic.temporalScope ?? null,
+      comparisonMonths,
+      comparisonLabel,
+      coverageStatus: Object.values(coverage).every(p => p.status === "complete") && Object.keys(coverage).length ? "complete" : "partial",
       sinDistrito,
       hastaMes: ytd.total,
       comparativa,
@@ -371,8 +379,8 @@ export function buildMadridPresentacion(opts) {
       porDistrito: sortedCounts(distritoAll, (id) => distritoDisplay(id), { limit: 21 }),
       barriosLocal2025: sortedCounts(barriosLocal, (name) => name, { limit: 8 }),
       barriosReforma2025: sortedCounts(barriosReforma, (name) => name, { limit: 8 }),
-      cambiosLocal2025: y2025?.aperturas ?? 0,
-      reformasMenores2025: y2025?.reformasMenores ?? 0,
+      cambiosLocal2025: (lic.rows || []).filter(r => r.m.startsWith("2025-") && r.a === "local_actividad").length,
+      reformasMenores2025: (lic.rows || []).filter(r => r.m.startsWith("2025-") && r.a === "vivienda_obra_menor").length,
     },
     planes: {
       total: sig.totalRows,
