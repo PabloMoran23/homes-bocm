@@ -1,9 +1,9 @@
 /**
  * Exporta licencias urbanísticas (JSONL) → índice + GeoJSON/JSON por año para la web.
  */
-import { createReadStream, existsSync, mkdirSync, writeFileSync, readdirSync, unlinkSync } from "node:fs";
+import { createReadStream, readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync, unlinkSync } from "node:fs";
 import { createInterface } from "node:readline";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import proj4 from "proj4";
 import { normalizarActuacionEdificio } from "./lib/actuacion-edificio.mjs";
 import {
@@ -351,9 +351,17 @@ export async function buildMadridLicenciasWeb(opts) {
     );
   }
 
+  const summaryPath = opts.summaryPath || join(dirname(jsonlPath), "madrid_licencias_summary.json");
+  const sourceSummary = existsSync(summaryPath) ? JSON.parse(readFileSync(summaryPath, "utf8")) : null;
+  const snapshot = sourceSummary?.sourceSnapshot;
+  const sourceSnapshot = snapshot ? { ...snapshot, resources: Object.fromEntries(
+    Object.entries(snapshot.resources || {}).filter(([year]) => years.includes(Number(year)))) } : null;
   const index = {
     generatedAt: new Date().toISOString(),
     source: "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
+    sourceSnapshot,
+    temporalScope: { minYear: minYear ?? Math.min(...years), years, basis: "anio_dataset",
+      description: "Ejercicio del recurso municipal; generatedAt es reproceso, no actualización factual de la fuente" },
     municipioCode: "28079",
     territorialPolicy: TERRITORIAL_POLICY,
     excludedTerritory: excluded.length,

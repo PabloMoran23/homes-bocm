@@ -60,6 +60,9 @@ export function buildMadridDashboardStats(opts) {
     }));
     licencias = {
       generatedAt: idx.generatedAt,
+      sourceSnapshot: idx.sourceSnapshot ?? null,
+      temporalScope: idx.temporalScope ?? null,
+      municipioCode: idx.municipioCode,
       totalRows: idx.totalRows,
       withCoords: idx.withCoords,
       years,

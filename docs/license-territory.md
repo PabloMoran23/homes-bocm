@@ -68,3 +68,40 @@ cambia este contrato. H03 / #858 normaliza coordenadas dentro de save_licencias;
 conservar ambas validaciones (territorio no se deduce de coordenadas). H05 / #854
 modifica fechas, raw y particiones: componer marcadores y mantener el filtro territorial
 antes de elegir el año. Ninguno de esos commits se ha incorporado a esta rama.
+
+## Transición del snapshot versionado y compilación Vercel
+
+La publicación Vercel usa `build:public` con `SKIP_BUILD_DATA=1`, sin acceso a DB.
+Se entrega el juego completo acreditado que requiere ese camino: índice, filas JSON,
+GeoJSON, filtro, dashboard y presentación. No se elimina el guardia territorial.
+
+Para reconstruirlo desde el caché original del descargador oficial:
+
+```
+python -m sector_geometry.madrid_licencias_download --skip-download
+node web/scripts/rebuild-cached-license-snapshot.mjs
+node web/scripts/assert-license-territory.mjs
+```
+
+El primer comando exige XLSX locales en `output/madrid_licencias_raw/`; en esta revisión
+se copiaron preservando mtime desde el caché autorizado de trabajo. Los recursos y sus
+SHA256 se conservan en `madrid-licencias-index.json.sourceSnapshot.resources` y en el
+linaje de cada fila de ingestión. `cacheModifiedAt` registra el mtime del fichero cacheado:
+**no es una fecha factual de actualización municipal**. `generatedAt` es la hora del
+reproceso. `downloadedThisRun=false`, `mode=cached-xlsx-replay` y `factualUpdatedAt=null`
+explicitan que esta revisión no ha descargado una actualización factual.
+
+El snapshot nuevo tiene **48.960** licencias de los ejercicios de dataset **2022–2026**:
+18.467 / 6.538 / 8.811 / 11.496 / 3.648. Se usa `minYear=2022`, el ámbito que ya exigía
+el build público. Índice, dashboard, filtro y presentación usan las mismas 48.960 filas.
+El mapa cubre 47.762; 1.198 carecen de coordenadas válidas. El mes completo más reciente
+de la presentación es abril de 2026: reconstruir en octubre no extiende ese periodo.
+
+El corte previo auditado de 59.374 mezclaba territorios; no constituye una comparación
+factual de actividad con este replay. Los GeoJSON heredados 2015–2021 se retiran del
+snapshot público, junto con el año inválido 8202, para que ningún mapa antiguo eluda el
+índice del ámbito 2022+. El histórico XLSX completo se conserva fuera del snapshot
+público para reprocesos posteriores.
+
+La transición de `statisticsScope` de H06/#860 permanece activa junto con esta guardia.
+No se cambian sus denominadores ni fechas de evidencia al reconstruir las licencias.
