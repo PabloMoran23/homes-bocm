@@ -68,7 +68,7 @@ export function MadridPresentacion({
               Qué se mueve
             </p>
             <h1 className="mt-1 text-4xl font-semibold tracking-tight text-[var(--portal-ink)] sm:text-5xl">
-              {tab === "madrid" ? "Madrid ciudad" : "España"}
+              {tab === "madrid" ? "Madrid ciudad" : espana?.scope.title ?? "España · datos no disponibles"}
             </h1>
             <p className="mt-1 text-sm text-slate-500">El panorama de la obra y del planeamiento</p>
           </div>
@@ -581,7 +581,7 @@ function EspanaTab({ espana }: { espana: EspanaPresentacion | null }) {
   if (!espana) {
     return (
       <p className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
-        El resumen de boletines no está disponible ahora mismo.
+        No hay un resumen con alcance nacional validado. Un resumen limitado a Madrid o con un ámbito desconocido no se presenta como estadísticas de España.
       </p>
     );
   }
@@ -600,20 +600,25 @@ function EspanaTab({ espana }: { espana: EspanaPresentacion | null }) {
 
   return (
     <div className="space-y-4">
+      <p className="rounded-2xl bg-amber-50 p-4 text-sm text-amber-900">
+        {espana.scope.limitations} Territorios: {espana.scope.territories.join(", ")}.
+        Fuentes: {espana.scope.sources.join(", ")}. Periodo: {rango}.
+        Última comprobación: {espana.scope.checkedAt}. Denominador: todos los anuncios publicados.
+      </p>
       <div className="grid gap-4 lg:grid-cols-12">
         <article className="flex flex-col justify-between rounded-[1.6rem] bg-[var(--portal-accent)] p-6 text-[var(--portal-paper)] lg:col-span-4">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">España</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white/70">{espana.scope.title}</p>
             <p className="mt-6 text-6xl font-semibold tabular-nums tracking-tight">{fmt(espana.anuncios)}</p>
-            <p className="mt-3 text-lg leading-snug">anuncios de planeamiento en más de una década.</p>
+            <p className="mt-3 text-lg leading-snug">anuncios publicados en las fuentes incluidas.</p>
           </div>
           <p className="mt-6 text-sm text-white/75">
-            De Madrid a las islas. Planeamiento publicado entre {rango}.
+            Cobertura parcial. Publicaciones entre {rango}.
           </p>
         </article>
         <div className="lg:col-span-8">
           <YearEvolutionChart
-            title="Una década de planeamiento"
+            title="Publicaciones por año"
             subtitle="Lo que se publica cada año en los boletines."
             series={espana.porAno.map((row) => ({ year: row.year, value: row.count }))}
             valueLabel="anuncios"
@@ -640,7 +645,7 @@ function EspanaTab({ espana }: { espana: EspanaPresentacion | null }) {
       <div className="grid gap-4 lg:grid-cols-12">
         <article className="rounded-[1.6rem] bg-white p-5 ring-1 ring-[var(--portal-paper-deep)] lg:col-span-7">
           <h3 className="text-[15px] font-semibold text-slate-900">Dónde se publica más</h3>
-          <p className="mt-0.5 text-xs text-slate-500">El planeamiento, comunidad a comunidad.</p>
+          <p className="mt-0.5 text-xs text-slate-500">Anuncios en los territorios cubiertos; la cobertura entre comunidades no es homogénea.</p>
           <ul className="mt-4 space-y-3">
             {espana.territorios.map((row) => (
               <li key={row.name} className="grid grid-cols-[11rem_1fr_auto] items-center gap-3 text-sm">
@@ -659,7 +664,7 @@ function EspanaTab({ espana }: { espana: EspanaPresentacion | null }) {
         <article className="rounded-[1.6rem] bg-white p-5 ring-1 ring-[var(--portal-paper-deep)] lg:col-span-5">
           <h3 className="text-[15px] font-semibold text-slate-900">Qué se tramita</h3>
           <p className="mt-0.5 text-xs text-slate-500">
-            Planes especiales, estudios de detalle, modificaciones y el resto de figuras.
+            Figuras mostradas. Los porcentajes se calculan sobre {fmt(instrumentoTotal)} anuncios clasificados en estas figuras.
           </p>
           <ShareDonut
             items={espana.instrumentos}

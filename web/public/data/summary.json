@@ -210,5 +210,27 @@
   "portal": {
     "name": "Homes · Urbanismo",
     "tagline": "Proyectos urbanísticos en tu zona"
+  },
+  "statisticsScope": {
+    "version": 1,
+    "buildScope": "madrid-public",
+    "geography": "Comunidad de Madrid",
+    "coverage": "partial",
+    "sources": [
+      "bocm"
+    ],
+    "territories": [
+      "Comunidad de Madrid"
+    ],
+    "period": {
+      "min": "2013",
+      "max": "2026"
+    },
+    "checkedAt": "2026-10-12T10:57:08.665005+00:00",
+    "denominator": {
+      "population": "all-published-announcements",
+      "count": 931
+    },
+    "limitations": "Cobertura parcial de las fuentes y territorios enumerados; no representa todos los anuncios ni permite comparar cobertura homogénea entre comunidades."
   }
 }

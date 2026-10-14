@@ -134,6 +134,8 @@ export type Project = {
 };
 
 export type DataSummary = {
+  buildScope?: string;
+  statisticsScope?: import("./statistics-scope.mjs").StatisticsScope;
   generatedAt: string;
   total: number;
   totalRelevant?: number;
