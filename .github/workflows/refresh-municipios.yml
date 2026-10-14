@@ -52,6 +52,11 @@ jobs:
           pip install -r requirements-municipio.txt
           pip install -r db/requirements-supabase.txt
 
+      - name: Reprocess municipal semantic contracts
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: python3 db/reprocess_project_semantics.py
+
       - name: Refresh due municipios
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}

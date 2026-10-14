@@ -51,6 +51,7 @@ jobs:
       - name: Migration and legacy metadata integration on isolated PostGIS
         env:
           H03_TEST_DB_URL: postgresql://postgres:geography_test@127.0.0.1:5432/h03_geography_tests
+          H03_SEMANTICS_ROOT: ${{ github.workspace }}
         run: python -m unittest db.test_geography_postgres -v
   recurring-control:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
