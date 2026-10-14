@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, readFileSync, existsSync, rmSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { buildMadridLicenciasWeb } from "./build-madrid-licencias.mjs";
@@ -66,5 +66,21 @@ try {
   assert.equal(readFileSync(join(out, "madrid-licencias-filter-rows.json"), "utf8"), before);
   await build();
   assert.equal(buildMadridPresentacion({ outDir: out }).licencias.total, 1);
+  // Quarantining the final record must replace, not retain, old filter rows.
+  writeSource([{ fecha_concesin: "8202-02-01" }]);
+  const empty = await build();
+  assert.equal(empty.totalRows, 0);
+  assert.deepEqual(empty.rows, []);
+  assert.equal(JSON.parse(readFileSync(join(out, "madrid-licencias-index.json"))).totalRows, 0);
+  assert.equal(JSON.parse(readFileSync(join(out, "madrid-licencias-filter-rows.json"))).rows.length, 0);
+  assert.equal(existsSync(join(out, "madrid-licencias-2026.json")), false);
+  assert.equal(buildMadridPresentacion({ outDir: out }).licencias.total, 0);
+  assert.equal(buildMadridDashboardStats({ outDir: out }).licencias.totalRows, 0);
+  const emptyFile = readFileSync(join(out, "madrid-licencias-filter-rows.json"), "utf8");
+  unlinkSync(join(out, "madrid-licencias-index.json"));
+  assert.throws(() => buildMadridLicenciasFilterRows({ outDir: out, asOf }), /captura incompleta/);
+  assert.equal(readFileSync(join(out, "madrid-licencias-filter-rows.json"), "utf8"), emptyFile);
+  writeSource([{ fecha_concesin: "2026-03-01" }]);
+  assert.equal((await build()).totalRows, 1);
   console.log("OK temporal build: repeat, correction, partial API, 401 rows, evidence, stale evidence, fail/recover");
 } finally { rmSync(dir, { recursive: true, force: true }); }

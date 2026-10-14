@@ -54,8 +54,16 @@ export function buildMadridLicenciasFilterRows(opts) {
     .sort((a, b) => a.year - b.year);
 
   if (!files.length) {
-    console.log("Aviso: sin madrid-licencias-YYYY.json — omitiendo filter-rows");
-    return null;
+    const indexPath = join(outDir, "madrid-licencias-index.json");
+    if (!existsSync(indexPath)) throw new Error("Licencias: faltan particiones e índice; captura incompleta");
+    const content = readFileSync(indexPath, "utf-8");
+    const index = JSON.parse(content);
+    if (index.totalRows !== 0 || !Array.isArray(index.years) || index.years.length !== 0) {
+      throw new Error("Licencias: faltan particiones de un índice no vacío");
+    }
+    // An authoritative empty rebuild must withdraw all previously published rows.
+    // A missing/partial capture must never be mistaken for this state.
+    inputHash.update(content);
   }
 
   for (const { path } of files) {
