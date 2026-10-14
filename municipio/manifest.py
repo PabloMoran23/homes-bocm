@@ -46,10 +46,11 @@ class MunicipioManifest:
     licencias: LicenciasConfig
     proyectos: ProyectosConfig
     path: Path
+    _output_dir: Path | None = field(default=None, repr=False)
 
     @property
     def output_dir(self) -> Path:
-        return POC_ROOT / "output" / "municipios" / self.slug
+        return self._output_dir or POC_ROOT / "output" / "municipios" / self.slug
 
     def ensure_output_dir(self) -> Path:
         self.output_dir.mkdir(parents=True, exist_ok=True)

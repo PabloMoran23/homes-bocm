@@ -64,10 +64,18 @@ def _is_timeout(exc: BaseException) -> bool:
     return "timeout" in text or "timed out" in text
 
 
-def run(manifest: MunicipioManifest, step: Step = "all") -> dict[str, Any]:
+def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = False) -> dict[str, Any]:
+    """Run pipeline steps; staging never syncs or changes DB freshness marks.
+
+    Staging errors belong to the durable queue. Legacy callers keep their
+    original timeout deferral and sync behavior by default.
+    """
+    steps = _steps_for(step)
+    if staging and "sync_supabase" in steps:
+        raise ValueError("Staging must not include a canonical database sync")
     results: dict[str, Any] = {"slug": manifest.slug, "steps": {}}
     timed_out = False
-    for name in _steps_for(step):
+    for name in steps:
         if name == "sync_supabase" and timed_out:
             results["steps"][name] = {
                 "status": "deferred",
@@ -88,11 +96,12 @@ def run(manifest: MunicipioManifest, step: Step = "all") -> dict[str, Any]:
             if _is_timeout(e):
                 timed_out = True
     if timed_out:
-        results["retry"] = "next_day"
-        try:
-            defer_manifest(manifest)
-        except Exception as exc:
-            results["defer_error"] = str(exc)
+        results["retry"] = "durable_queue" if staging else "next_day"
+        if not staging:
+            try:
+                defer_manifest(manifest)
+            except Exception as exc:
+                results["defer_error"] = str(exc)
     return results
 
 
