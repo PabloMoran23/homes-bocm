@@ -34,6 +34,8 @@ no corrigen ni validan el histórico existente.
 # Por defecto, solo inspección y cola, sin escritura a DB ni JSONL.
 python -m municipio.geography_replay --report /tmp/geography-report.json
 python -m municipio.geography_replay --slug leganes --slug san-sebastian-de-los-reyes --slug l-alfas-del-pi
+# Originales retenidos fuera del checkout (se mantienen intactos sin --apply):
+python -m municipio.geography_replay --input-root /ruta/output/municipios --slug leganes --report /tmp/leganes.json
 # Control de producción de solo lectura: cola desde la evidencia raw, sin UPDATE/INSERT.
 python -m municipio.geography_replay --database --report /tmp/live-geography-report.json
 # Tras revisar el informe, regenerar derivados locales desde originales retenidos.
@@ -64,3 +66,9 @@ producción. La cola no reemplaza la recuperación/backfill inicial de fuentes.
 Las fuentes que aún no declaran CRS/coordenadas o no tienen límite municipal
 verificable pierden la ubicación hasta completar su configuración con evidencia.
 Ese caso queda registrado en la cola; el registro se conserva sin mapa.
+
+En la comprobación local de originales ignorados se procesaron 363 registros
+de Leganés y 62 de San Sebastián de los Reyes, reproduciendo respectivamente
+241 y 17 pares fuera de rango. Se generó la cola en /tmp, sin modificar los
+originales ni publicar geografía por inferencia del CRS. No había copia local de
+L’Alfàs del Pi. Estas cifras son evidencia del corte, no constantes de las reglas.

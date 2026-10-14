@@ -76,6 +76,7 @@ def inspect_database(connection, *, slugs: list[str] | None = None) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--slug", action="append")
+    parser.add_argument("--input-root", type=Path, help="Alternative directory containing <slug>/{proyectos,licencias}.jsonl")
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--database", action="store_true", help="Read-only live control and queue from original DB evidence")
     parser.add_argument("--report", type=Path, default=Path("geography-replay-report.json"))
@@ -89,7 +90,7 @@ def main() -> int:
             manifest = load_manifest(slug)
             cfg = manifest_geography_config(manifest)
             for name in ("proyectos.jsonl", "licencias.jsonl"):
-                path = manifest.output_dir / name
+                path = (args.input_root / slug / name) if args.input_root else manifest.output_dir / name
                 if path.is_file():
                     report["files"].append(replay_file(path, cfg=cfg, municipality=manifest.nombre, apply=args.apply))
         except Exception as exc:
