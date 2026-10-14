@@ -488,7 +488,10 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
     actuaciones_by_key: dict[str, tuple] = {}
     stats = {"rows": 0, "skipped": 0, "with_coords": 0}
 
-    for row in iter_licencias_rows():
+    from license_territory import territorial_raw
+
+    for original in iter_licencias_rows():
+        row = territorial_raw(original)
         anio = row.get("anio_dataset") or row.get("anioDataset")
         try:
             anio_i = int(anio) if anio is not None else None

@@ -369,12 +369,15 @@ def build_proyectos() -> list[dict[str, Any]]:
 
 def build_licencias() -> list[dict[str, Any]]:
     from sync_madrid_public_to_supabase import collect_licencias
+    from license_territory import resolve_territory
 
     if not JSONL_LIC.is_file():
         return []
     _inmuebles, actuaciones, _stats = collect_licencias()
     rows: list[dict[str, Any]] = []
     for key, tup in actuaciones.items():
+        if resolve_territory(tup[13].adapted)["municipioCode"] != "28079":
+            continue
         ndp = tup[1]
         inm = _inmuebles.get(ndp) or {}
         rows.append(
@@ -400,10 +403,13 @@ def build_licencias() -> list[dict[str, Any]]:
                 "lon": tup[12] if tup[12] is not None else inm.get("lng"),
                 "lng": tup[12] if tup[12] is not None else inm.get("lng"),
                 "coord_source": inm.get("coord_source") or ("utm_jsonl" if tup[11] is not None else None),
-                "source_dataset": "https://datos.madrid.es/portal/site/egob/",
+                "source_dataset": (tup[13].adapted or {}).get("source_dataset") or "https://datos.madrid.es/portal/site/egob/",
                 "id_origen": key,
-                "source": "madrid-opendata",
-                "fuente": "madrid-opendata",
+                "source": (tup[13].adapted or {}).get("source"),
+                "fuente": (tup[13].adapted or {}).get("fuente"),
+                "municipio_slug": (tup[13].adapted or {}).get("municipio_slug"),
+                "_territorial_origin": (tup[13].adapted or {}).get("_territorial_origin"),
+                "original": tup[13].adapted,
             }
         )
     return rows

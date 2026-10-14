@@ -2,3 +2,5 @@ openpyxl
 pandas
 psycopg2-binary
 PyYAML>=6.0
+pyproj>=3.6,<4
+shapely>=2.0,<3

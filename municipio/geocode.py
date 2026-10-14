@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.geometry import geometry_bbox, geometry_centroid, has_area_geometry, record_geometry
+from municipio.geography_control import manifest_geography_config, normalize_record, official_boundary, valid_coordinates
 from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, MunicipioManifest
 
 COORDS_CACHE_PATH = POC_ROOT / "output" / "municipios_coords_cache.json"
@@ -90,8 +91,15 @@ def _geocode_records(
     cache: dict[str, list[float]],
     jitter_missing: bool = True,
 ) -> dict[str, int]:
-    centroid = _municipio_centroid(manifest, cache)
+    municipal_centroid = _municipio_centroid(manifest, cache)
+    if municipal_centroid and not valid_coordinates(*municipal_centroid):
+        municipal_centroid = None
+    cfg = manifest_geography_config(manifest)
+    boundary = cfg.get("municipal_boundary") or official_boundary(manifest.nombre)
+    if boundary:
+        cfg = {**cfg, "municipal_boundary": boundary}
     stats = {
+        "quarantined": 0,
         "explicit": 0,
         "from_geometry": 0,
         "jittered_centroid": 0,
@@ -100,44 +108,21 @@ def _geocode_records(
     }
 
     for rec in records:
+        checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+        rec.clear()
+        rec.update(checked)
+        if rec["geography_validation"]["errors"]:
+            stats["quarantined"] += 1
+            continue
         lat, lng = _record_coords(rec)
         rec_id = str(rec.get("id") or rec.get("licencia_key") or "")
         geom = record_geometry(rec)
 
-        if geom and lat is None:
-            centroid = geometry_centroid(geom)
-            if centroid:
-                lat, lng = centroid
-                rec["geom_geojson"] = geom
-                rec["lat"] = round(lat, 7)
-                rec["lon"] = round(lng, 7)
-                rec["lng"] = round(lng, 7)
-                rec["coord_source"] = rec.get("coord_source") or "portal_geometry_centroid"
-                stats["from_geometry"] += 1
-                continue
-
-        if geom and has_area_geometry(rec) and rec.get("coord_source") == "municipio_centroid_jitter":
-            centroid = geometry_centroid(geom)
-            if centroid:
-                lat, lng = centroid
-                rec["lat"] = round(lat, 7)
-                rec["lon"] = round(lng, 7)
-                rec["lng"] = round(lng, 7)
-                rec["coord_source"] = "portal_geometry_centroid"
-                stats["from_geometry"] += 1
-                continue
-
         if lat is not None and lng is not None:
-            stats["explicit"] += 1
-            rec["lat"] = round(lat, 7)
-            rec["lon"] = lng
-            rec["lng"] = lng
-            rec["coord_source"] = rec.get("coord_source") or "portal_explicit"
-            if geom and not rec.get("geom_geojson"):
-                rec["geom_geojson"] = geom
+            stats["from_geometry" if geom else "explicit"] += 1
             continue
 
-        if centroid is None:
+        if municipal_centroid is None:
             stats["missing_centroid"] += 1
             continue
 
@@ -145,7 +130,7 @@ def _geocode_records(
             stats["skipped"] += 1
             continue
 
-        base_lat, base_lng = centroid
+        base_lat, base_lng = municipal_centroid
         if rec_id:
             lat, lng = _jitter(base_lat, base_lng, rec_id)
             stats["jittered_centroid"] += 1
@@ -157,6 +142,12 @@ def _geocode_records(
         rec["lon"] = round(lng, 7)
         rec["lng"] = round(lng, 7)
         rec["coord_source"] = "municipio_centroid_jitter"
+        rec["coordinates_crs"] = "EPSG:4326"
+        checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+        rec.clear()
+        rec.update(checked)
+        if rec["geography_validation"]["errors"]:
+            stats["quarantined"] += 1
 
     return stats
 
@@ -208,7 +199,7 @@ def geocode_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
     lic_with_geom = sum(1 for r in licencias if has_area_geometry(r))
 
     return {
-        "status": "ok",
+        "status": "partial" if proy_stats["quarantined"] or lic_stats["quarantined"] else "ok",
         "slug": manifest.slug,
         "nombre": manifest.nombre,
         "centroid": list(centroid) if centroid else None,

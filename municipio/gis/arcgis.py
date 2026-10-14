@@ -63,4 +63,6 @@ def query_mapserver_geojson(cfg: dict[str, Any], rec: dict[str, Any]) -> tuple[d
         return None, meta
 
     meta["feature_count"] = len(feats)
+    meta["source_crs"] = "EPSG:4326"
+    meta["axis_order"] = "xy"
     return geom, meta

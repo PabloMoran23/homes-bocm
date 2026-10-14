@@ -17,6 +17,7 @@ Uso:
 from __future__ import annotations
 
 import json
+import logging
 import os
 import sys
 from contextlib import contextmanager
@@ -34,9 +35,12 @@ if str(POC_ROOT) not in sys.path:
 if str(DB_DIR) not in sys.path:
     sys.path.insert(0, str(DB_DIR))
 
+from license_territory import resolve_territory, territorial_raw
+
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 from municipio.entity_policy import annotate  # noqa: E402
 from entity_reprocess import ensure_schema, reprocess_queue  # noqa: E402
+from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
 
 SCHEMA = "homes"
 
@@ -133,7 +137,10 @@ def _jsonish(v: Any, *, default: Any = None) -> Any:
 def _latlng(rec: dict[str, Any]) -> tuple[float | None, float | None]:
     lat = _float(rec.get("lat"))
     lng = rec.get("lon") if rec.get("lon") is not None else rec.get("lng")
-    return lat, _float(lng)
+    lng = _float(lng)
+    if not valid_coordinates(lat, lng) or not (27 <= lat <= 44 and -19 <= lng <= 5):
+        return None, None
+    return lat, lng
 
 
 def _iso_date(value: Any) -> str | None:
@@ -471,7 +478,37 @@ _PROYECTO_UPSERT_COLS = [
 ]
 
 
+def _checked_geography(rec: dict[str, Any], *, slug: str = "", nombre: str = "") -> dict[str, Any]:
+    cfg = {}
+    if slug:
+        try:
+            from municipio.manifest import load_manifest
+            manifest = load_manifest(slug)
+            cfg = manifest_geography_config(manifest)
+            nombre = nombre or manifest.nombre
+        except (FileNotFoundError, ValueError):
+            pass
+    return normalize_record(rec, cfg=cfg, municipality=nombre or str(rec.get("municipio") or ""), fetch_boundary=True)
+
+
+def _checked_project_row(rec: dict[str, Any]) -> dict[str, Any]:
+    # Direct writers bypass portal_proyecto_row. Replay source evidence here too.
+    raw = rec.get("raw_features_json")
+    if isinstance(raw, Json):
+        raw = raw.adapted
+    source = raw if isinstance(raw, dict) else rec
+    checked = _checked_geography(source, slug=str(rec.get("municipio_slug") or ""), nombre=str(rec.get("municipio") or ""))
+    out = dict(rec)
+    for key in ("lat", "lng", "centroid_lat", "centroid_lng", "bbox_min_lng", "bbox_min_lat", "bbox_max_lng", "bbox_max_lat", "coord_source"):
+        out[key] = checked.get(key)
+    out["geom_geojson"] = Json(checked["geom_geojson"]) if checked.get("geom_geojson") else None
+    out["has_geometry"] = bool(checked.get("geom_geojson"))
+    out["raw_features_json"] = Json(checked)
+    return out
+
+
 def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[str, Any] | None:
+    rec = _checked_geography(rec, slug=slug, nombre=nombre)
     pid = _blank(rec.get("id"))
     if not pid:
         return None
@@ -615,6 +652,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
     ready = [r for r in rows if r and r.get("id")]
     if not ready:
         return 0
+    ready = [_checked_project_row(r) for r in ready]
     cols = [c for c in _PROYECTO_UPSERT_COLS]
     tuples = [tuple(r.get(c) for c in cols) for r in ready]
     sql = f"""
@@ -686,17 +724,17 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           bocm_es_relevante = EXCLUDED.bocm_es_relevante,
           bocm_sigma_match_type = COALESCE(EXCLUDED.bocm_sigma_match_type, {SCHEMA}.proyecto.bocm_sigma_match_type),
           bocm_sigma_match_score = COALESCE(EXCLUDED.bocm_sigma_match_score, {SCHEMA}.proyecto.bocm_sigma_match_score),
-          lat = COALESCE(EXCLUDED.lat, {SCHEMA}.proyecto.lat),
-          lng = COALESCE(EXCLUDED.lng, {SCHEMA}.proyecto.lng),
-          coord_source = COALESCE(EXCLUDED.coord_source, {SCHEMA}.proyecto.coord_source),
-          has_geometry = EXCLUDED.has_geometry OR {SCHEMA}.proyecto.has_geometry,
-          geom_geojson = COALESCE(EXCLUDED.geom_geojson, {SCHEMA}.proyecto.geom_geojson),
-          bbox_min_lng = COALESCE(EXCLUDED.bbox_min_lng, {SCHEMA}.proyecto.bbox_min_lng),
-          bbox_min_lat = COALESCE(EXCLUDED.bbox_min_lat, {SCHEMA}.proyecto.bbox_min_lat),
-          bbox_max_lng = COALESCE(EXCLUDED.bbox_max_lng, {SCHEMA}.proyecto.bbox_max_lng),
-          bbox_max_lat = COALESCE(EXCLUDED.bbox_max_lat, {SCHEMA}.proyecto.bbox_max_lat),
-          centroid_lat = COALESCE(EXCLUDED.centroid_lat, {SCHEMA}.proyecto.centroid_lat),
-          centroid_lng = COALESCE(EXCLUDED.centroid_lng, {SCHEMA}.proyecto.centroid_lng),
+          lat = EXCLUDED.lat,
+          lng = EXCLUDED.lng,
+          coord_source = EXCLUDED.coord_source,
+          has_geometry = EXCLUDED.has_geometry,
+          geom_geojson = EXCLUDED.geom_geojson,
+          bbox_min_lng = EXCLUDED.bbox_min_lng,
+          bbox_min_lat = EXCLUDED.bbox_min_lat,
+          bbox_max_lng = EXCLUDED.bbox_max_lng,
+          bbox_max_lat = EXCLUDED.bbox_max_lat,
+          centroid_lat = EXCLUDED.centroid_lat,
+          centroid_lng = EXCLUDED.centroid_lng,
           sector_key = EXCLUDED.sector_key,
           num_viviendas_max = COALESCE(EXCLUDED.num_viviendas_max, {SCHEMA}.proyecto.num_viviendas_max),
           sup_total_m2 = COALESCE(EXCLUDED.sup_total_m2, {SCHEMA}.proyecto.sup_total_m2),
@@ -728,10 +766,14 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
         id_map = _next_licencia_ids(cur, keys)
         tuples = []
         for rec, key in zip(ready, keys):
+            rec = _checked_geography(rec, slug=str(rec.get("municipio_slug") or ""))
             lat, lng = _latlng(rec)
             fecha = _iso_date(rec.get("fecha_concesion"))
             anio = int(fecha[:4]) if fecha else None
-            slug = _blank(rec.get("municipio_slug"))
+            territory = resolve_territory(rec)
+            slug = territory["municipio_slug"]
+            if territory["reason"]:
+                logging.warning("license territory quarantine key=%s reason=%s", key, territory["reason"])
             tuples.append(
                 (
                     id_map[key],
@@ -748,10 +790,10 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
                     _blank(rec.get("unidad") or rec.get("distrito")),
                     lat,
                     lng,
-                    Json({**rec, "source": rec.get("source") or rec.get("fuente") or "ayuntamiento"}),
+                    Json(territorial_raw(rec)),
                     rec.get("proyecto_id"),
                     slug,
-                    rec.get("fuente") or rec.get("source") or "ayuntamiento",
+                    rec.get("fuente") or rec.get("source"),
                     key,
                     now,
                     now,
@@ -770,12 +812,12 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               tipo_expediente = COALESCE(EXCLUDED.tipo_expediente, {SCHEMA}.licencia.tipo_expediente),
               objeto = COALESCE(EXCLUDED.objeto, {SCHEMA}.licencia.objeto),
               unidad = COALESCE(EXCLUDED.unidad, {SCHEMA}.licencia.unidad),
-              lat = COALESCE(EXCLUDED.lat, {SCHEMA}.licencia.lat),
-              lng = COALESCE(EXCLUDED.lng, {SCHEMA}.licencia.lng),
+              lat = EXCLUDED.lat,
+              lng = EXCLUDED.lng,
               raw_json = EXCLUDED.raw_json,
               inmueble_id = COALESCE(EXCLUDED.inmueble_id, {SCHEMA}.licencia.inmueble_id),
-              municipio_slug = COALESCE(EXCLUDED.municipio_slug, {SCHEMA}.licencia.municipio_slug),
-              fuente = COALESCE(EXCLUDED.fuente, {SCHEMA}.licencia.fuente),
+              municipio_slug = EXCLUDED.municipio_slug,
+              fuente = EXCLUDED.fuente,
               id_origen = COALESCE(EXCLUDED.id_origen, {SCHEMA}.licencia.id_origen),
               updated_at = EXCLUDED.updated_at
         """
@@ -1160,22 +1202,32 @@ def finish_ingest_run(
 class IngestSession:
     """Una ejecución de scraper: abre conexión, registra ingest_run y hace upserts."""
 
-    def __init__(self, scraper: str, municipio_slug: str | None = None):
+    def __init__(self, scraper: str, municipio_slug: str | None = None, *, conn=None):
         self.scraper = scraper
         self.municipio_slug = municipio_slug
-        self.conn = None
+        self.conn = conn
+        self._external_conn = conn is not None
         self.run_id: int | None = None
         self.counts: dict[str, int] = {}
 
     def __enter__(self) -> "IngestSession":
-        self.conn = connect()
+        if not self._external_conn:
+            self.conn = connect()
         self.run_id = start_ingest_run(
             self.scraper, self.municipio_slug, conn=self.conn
         )
-        self.conn.commit()
+        if not self._external_conn:
+            self.conn.commit()
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
+        if self._external_conn:
+            # The caller owns the atomic fenced publication transaction. Never
+            # commit, roll back, close or suppress its exception in this scope.
+            if exc is None:
+                finish_ingest_run(self.run_id, status="ok",
+                                  rows_upserted=self.counts, conn=self.conn)
+            return
         try:
             if exc is not None and self.conn is not None:
                 # Si no, el siguiente SQL ve la transacción abortada y tapa el error real.
@@ -1236,6 +1288,8 @@ class IngestSession:
         return stats
 
     def commit(self) -> None:
+        if self._external_conn:
+            raise RuntimeError("Transaction commit belongs to the fenced publisher")
         if self.conn is not None:
             self.conn.commit()
 
@@ -1287,11 +1341,11 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
         print(f"  aviso supabase: {exc}", flush=True)
 
 
-def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]:
+def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manifest=None) -> dict[str, Any]:
     """Lee output/municipios/<slug>/*.jsonl y hace upsert. Lo usa el post-merge de cada PR."""
     from municipio.manifest import load_manifest
 
-    manifest = load_manifest(slug)
+    manifest = manifest or load_manifest(slug)
     out_dir = manifest.output_dir
     proyectos_raw = _read_jsonl(out_dir / "proyectos.jsonl")
     licencias_raw = _read_jsonl(out_dir / "licencias.jsonl")
@@ -1345,7 +1399,9 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]
         if not rec.get("id"):
             continue
         row = dict(rec)
-        row["municipio_slug"] = manifest.slug
+        row["_territorial_origin"] = {"municipio_slug": manifest.slug,
+            "adapter": manifest.portal.adapter or "municipio-manifest", "url": manifest.portal.base_url}
+        row["municipio_slug"] = rec.get("municipio_slug") or manifest.slug
         row["fuente"] = rec.get("fuente") or rec.get("source") or "ayuntamiento"
         lic_rows.append(row)
         if rec.get("pdf_url"):
@@ -1369,7 +1425,7 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False) -> dict[str, Any]
         stats["reason"] = "sin SUPABASE_DB_URL"
         return stats
 
-    with IngestSession("municipio", municipio_slug=manifest.slug) as ses:
+    with IngestSession("municipio", municipio_slug=manifest.slug, conn=conn) as ses:
         ses.save_municipio_from_manifest(manifest)
         ses.save_proyectos(proy_rows)
         if hijas_rows:
