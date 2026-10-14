@@ -197,7 +197,7 @@ def _fetch_proyectos_bocm(cur) -> list[dict[str, Any]]:
     cur.execute(
         f"""
         SELECT *
-        FROM {SCHEMA}.proyecto p
+        FROM {SCHEMA}.proyecto_actividad p
         WHERE p.bocm_primary_id IS NOT NULL AND {MADRID_MUNICIPIO_SQL}
         ORDER BY p.bocm_pub_date DESC NULLS LAST, p.bocm_primary_id
         """
@@ -209,7 +209,7 @@ def _fetch_proyectos_sigma(cur) -> list[dict[str, Any]]:
     cur.execute(
         f"""
         SELECT *
-        FROM {SCHEMA}.proyecto p
+        FROM {SCHEMA}.proyecto_actividad p
         WHERE p.expediente_grupo IS NOT NULL
            OR p.sigma_layer_kind IS NOT NULL
         ORDER BY p.expediente_grupo NULLS LAST, p.id
@@ -499,7 +499,7 @@ def export_sigma_geojson(out_dir: Path, rows: list[dict[str, Any]], cur) -> None
     cur.execute(
         f"""
         SELECT p.expediente_grupo, COUNT(*)::int AS n
-        FROM {SCHEMA}.licencia l
+        FROM {SCHEMA}.licencia_actividad l
         JOIN {SCHEMA}.proyecto p ON p.id = l.proyecto_id
         WHERE p.expediente_grupo IS NOT NULL
         GROUP BY p.expediente_grupo
@@ -546,21 +546,21 @@ def export_ubicaciones(out_dir: Path, cur) -> None:
           i.barrio,
           i.lat,
           i.lng,
-          (SELECT COUNT(*)::int FROM {SCHEMA}.licencia l WHERE l.inmueble_id = i.id) AS licencias_count,
+          (SELECT COUNT(*)::int FROM {SCHEMA}.licencia_actividad l WHERE l.inmueble_id = i.id) AS licencias_count,
           (SELECT COUNT(DISTINCT p.expediente_grupo)::int
-             FROM {SCHEMA}.licencia l
+             FROM {SCHEMA}.licencia_actividad l
              JOIN {SCHEMA}.proyecto p ON p.id = l.proyecto_id
             WHERE l.inmueble_id = i.id AND p.expediente_grupo IS NOT NULL) AS sigma_count,
-          (SELECT l.tipo_expediente FROM {SCHEMA}.licencia l
+          (SELECT l.tipo_expediente FROM {SCHEMA}.licencia_actividad l
             WHERE l.inmueble_id = i.id {_ULTIMA_LICENCIA_ORDER}) AS ultima_licencia_tipo,
-          (SELECT l.objeto FROM {SCHEMA}.licencia l
+          (SELECT l.objeto FROM {SCHEMA}.licencia_actividad l
             WHERE l.inmueble_id = i.id {_ULTIMA_LICENCIA_ORDER}) AS ultima_licencia_objeto,
-          (SELECT l.uso FROM {SCHEMA}.licencia l
+          (SELECT l.uso FROM {SCHEMA}.licencia_actividad l
             WHERE l.inmueble_id = i.id {_ULTIMA_LICENCIA_ORDER}) AS ultima_licencia_uso,
-          (SELECT l.procedimiento FROM {SCHEMA}.licencia l
+          (SELECT l.procedimiento FROM {SCHEMA}.licencia_actividad l
             WHERE l.inmueble_id = i.id {_ULTIMA_LICENCIA_ORDER}) AS ultima_licencia_procedimiento,
           (SELECT COALESCE(NULLIF(TRIM(l.fecha_concesion), ''), l.fecha_alta)
-             FROM {SCHEMA}.licencia l
+             FROM {SCHEMA}.licencia_actividad l
             WHERE l.inmueble_id = i.id {_ULTIMA_LICENCIA_ORDER}) AS ultima_licencia_fecha
         FROM {SCHEMA}.inmueble i
         WHERE i.lat IS NOT NULL AND i.lng IS NOT NULL
@@ -651,7 +651,7 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
           i.ndp_edificio,
           i.direccion,
           i.distrito
-        FROM {SCHEMA}.licencia l
+        FROM {SCHEMA}.licencia_actividad l
         LEFT JOIN {SCHEMA}.inmueble i ON i.id = l.inmueble_id
         """
     )
@@ -774,6 +774,8 @@ def export_licencias(out_dir: Path, cur, min_year: int) -> None:
     log(f"OK: madrid-licencias-index.json ({total} filas desde {min_year}; {len(excluded)} excluidas por territorio)")
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -782,6 +784,7 @@ def main() -> int:
 
     with psycopg2.connect(pg_url()) as con:
         with con.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             bocm_rows = _fetch_proyectos_bocm(cur)
             sigma_rows = _fetch_proyectos_sigma(cur)
             export_projects(out_dir, bocm_rows, generated_at)

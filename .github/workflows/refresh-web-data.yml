@@ -138,6 +138,22 @@ jobs:
           "
 
 
+      - name: Reclassify changed entities and check activity
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: python3 db/entity_reprocess.py
+
+      - name: Prepare blind entity review sample
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: python3 db/audit_entity_activity.py --output output/entity-review.json
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: entity-review-sample
+          path: output/entity-review.json
+          retention-days: 30
+
       - name: Build public data files
         working-directory: web
         env:

@@ -38,6 +38,8 @@ if str(DB_DIR) not in sys.path:
 from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
+from municipio.entity_policy import annotate  # noqa: E402
+from entity_reprocess import ensure_schema, reprocess_queue  # noqa: E402
 from license_dates import license_temporal  # noqa: E402
 from project_semantics import apply as apply_project_semantics, source_record  # noqa: E402
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
@@ -326,7 +328,7 @@ def fetch_municipio_scraper_stats(*, conn=None) -> dict[str, dict[str, Any]]:
                             AND jsonb_array_length(tramitacion) > 0
                           )
                   )::int AS with_visor
-                FROM {SCHEMA}.proyecto
+                FROM {SCHEMA}.proyecto_actividad
                 WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
                 GROUP BY municipio_slug
                 """
@@ -335,7 +337,7 @@ def fetch_municipio_scraper_stats(*, conn=None) -> dict[str, dict[str, Any]]:
             cur.execute(
                 f"""
                 SELECT municipio_slug, COUNT(*)::int
-                FROM {SCHEMA}.licencia
+                FROM {SCHEMA}.licencia_actividad
                 WHERE NULLIF(TRIM(COALESCE(municipio_slug, '')), '') IS NOT NULL
                 GROUP BY municipio_slug
                 """
@@ -569,7 +571,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "centroid_lat": rec.get("centroid_lat") if rec.get("centroid_lat") is not None else lat,
         "centroid_lng": rec.get("centroid_lng") if rec.get("centroid_lng") is not None else lng,
         "area_approx_m2": _float(rec.get("area_approx_m2")),
-        "raw_features_json": Json({k: v for k, v in rec.items() if k != "id"}),
+        "raw_features_json": Json(annotate({k: v for k, v in rec.items() if k != "id"})),
         "sin_datos_visor": bool(rec.get("sin_datos_visor")) if rec.get("sin_datos_visor") is not None else False,
         "visor_url": visor_url,
         "visor_cabecera": _jsonish(rec.get("visor_cabecera")),
@@ -604,7 +606,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
         "bocm_tipo_instrumento": _blank(rec.get("bocm_tipo_instrumento")) or _blank(tipo),
         "bocm_resumen": None,
         "bocm_es_relevante": (
-            True if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
+            None if rec.get("bocm_es_relevante") is None else bool(_bool(rec.get("bocm_es_relevante")))
         ),
         "bocm_sigma_match_type": _blank(rec.get("bocm_sigma_match_type")),
         "bocm_sigma_match_score": _float(rec.get("bocm_sigma_match_score")),
@@ -636,7 +638,7 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     }
 
 
-    original = {k: v for k, v in rec.items() if k != "id"}
+    original = annotate({k: v for k, v in rec.items() if k != "id"})
     derived = apply_project_semantics(original, row)
     row["raw_features_json"] = Json({**original, "_semantic_contract": derived})
     return row
@@ -657,6 +659,16 @@ def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
         execute_values(cur, f"""INSERT INTO {SCHEMA}.proyecto_semantica_version
                          (proyecto_id, source_hash, contract_version, template_version, source_record, derivation)
                          VALUES %s ON CONFLICT DO NOTHING""", versions, page_size=100)
+
+
+def _classify_saved(conn, table: str, ids: list[str]) -> None:
+    # Las escrituras y la retirada de la cola forman una sola transacción.
+    for start in range(0, len(ids), 500):
+        result = reprocess_queue(conn, table=table, ids=ids[start:start + 500])
+        if result["failed"]:
+            # No ocultar el fallo: la fila permanece en cola y fuera de actividad.
+            print(f"entity_policy_error: {table}: {result}", flush=True)
+
 
 
 def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
@@ -771,8 +783,10 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           updated_at = EXCLUDED.updated_at
     """
     with _owned_conn(conn) as c, c.cursor() as cur:
+        ensure_schema(c)
         execute_values(cur, sql, tuples, page_size=100)
         save_semantic_versions(cur, ready)
+        _classify_saved(c, "proyecto", [str(r["id"]) for r in ready])
     return len(tuples)
 
 
@@ -787,18 +801,20 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
     keys = [str(r.get("id") or r.get("licencia_key") or r.get("id_origen")) for r in ready]
     now = _now()
     with _owned_conn(conn) as c, c.cursor() as cur:
+        ensure_schema(c)
         id_map = _next_licencia_ids(cur, keys)
         tuples = []
         for rec, key in zip(ready, keys):
             rec = _checked_geography(rec, slug=str(rec.get("municipio_slug") or ""))
             lat, lng = _latlng(rec)
-            temporal = license_temporal({**rec, "fecha_concesion": rec.get("fecha_concesion") or rec.get("fecha")}, as_of=now.date())
+            temporal = license_temporal(rec, as_of=now.date())
             if temporal["quarantine"]:
                 print(f"Temporal quarantine licencia={key}: " + ", ".join(f["field"] + ":" + f["reason"] for f in temporal["quarantine"]), file=sys.stderr)
             grant = temporal["fields"]["fecha_concesion"]
             alta = temporal["fields"]["fecha_alta"]
             fecha = grant["value"]
             anio = temporal["year"]
+
             territory = resolve_territory(rec)
             slug = territory["municipio_slug"]
             if territory["reason"]:
@@ -852,6 +868,7 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               updated_at = EXCLUDED.updated_at
         """
         execute_values(cur, sql, tuples, page_size=200)
+        _classify_saved(c, "licencia", [str(id_map[k]) for k in keys])
     return len(tuples)
 
 

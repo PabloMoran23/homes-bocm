@@ -13,6 +13,8 @@ from pathlib import Path
 import psycopg2
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> None:
     url = os.environ.get("SUPABASE_DB_URL") or os.environ.get("DATABASE_URL")
     if not url:
@@ -21,6 +23,7 @@ def main() -> None:
     with psycopg2.connect(url, connect_timeout=15) as conn:
         conn.set_session(readonly=True)
         with conn.cursor() as cur:
+            require_policy_active(cur)
             cur.execute("""
                 WITH latest AS (
                     SELECT DISTINCT ON (proyecto_id)
@@ -30,6 +33,7 @@ def main() -> None:
                 )
                 SELECT proyecto_id, investigado_at
                 FROM latest
+                JOIN homes.proyecto_actividad p ON p.id=latest.proyecto_id
                 WHERE NULLIF(btrim(resumen), '') IS NOT NULL
                 ORDER BY proyecto_id
             """)

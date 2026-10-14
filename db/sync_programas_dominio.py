@@ -80,7 +80,7 @@ def build_inputs_from_proyecto(cur) -> list[ExpedienteProgramaInput]:
           tipo_legal,
           tipo_obra,
           categoria_proyecto
-        FROM {SCHEMA}.proyecto
+        FROM {SCHEMA}.proyecto_actividad
         WHERE expediente_grupo IS NOT NULL
         """
     )
@@ -200,7 +200,7 @@ def update_proyecto_programa_ids(cur) -> int:
     )
     cur.execute(
         f"""
-        SELECT COUNT(*)::int AS n FROM {SCHEMA}.proyecto WHERE programa_id IS NOT NULL
+        SELECT COUNT(*)::int AS n FROM {SCHEMA}.proyecto_actividad WHERE programa_id IS NOT NULL
         """
     )
     row = cur.fetchone()
@@ -236,11 +236,14 @@ def sync_programas(cur, out_path: Path) -> dict[str, Any]:
     }
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_path = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     with psycopg2.connect(pg_url()) as con:
         con.autocommit = False
         with con.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             stats = sync_programas(cur, out_path)
             con.commit()
     log(

@@ -18,6 +18,7 @@ class ContractTest(unittest.TestCase):
         row = portal_proyecto_row({"id": "1", "titulo": "Plan Norte", "resumen": "Plan Norte"}, slug="parla", nombre="Parla")
         self.assertIsNone(row["resumen_contenido"])
         self.assertIsNone(row["bocm_resumen"])
+        self.assertIn("_entity_policy", row["raw_features_json"].adapted)
         self.assertEqual(row["raw_features_json"].adapted["_semantic_contract"]["status"], "discovered")
 
     def test_generic_date_type_and_fake_phase_not_inferred(self):
@@ -85,7 +86,7 @@ class ContractTest(unittest.TestCase):
         class Connection:
             def cursor(self): return Cursor()
         from ingest import _PROYECTO_UPSERT_COLS
-        with patch("ingest.execute_values") as execute:
+        with patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"), patch("ingest._classify_saved"):
             save_proyectos([source], conn=Connection())
         values = dict(zip(_PROYECTO_UPSERT_COLS, execute.call_args_list[0].args[2][0]))
         saved = values["raw_features_json"].adapted
@@ -105,7 +106,7 @@ class ContractTest(unittest.TestCase):
             def execute(self, *args): pass
         class Connection:
             def cursor(self): return Cursor()
-        with patch("ingest.execute_values") as execute:
+        with patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"), patch("ingest._classify_saved"):
             self.assertEqual(save_proyectos([row], conn=Connection()), 1)
         sql = execute.call_args_list[0].args[1]
         self.assertIn("fecha_aprob = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'", sql)

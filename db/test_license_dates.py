@@ -55,7 +55,7 @@ class LicenseDateTests(unittest.TestCase):
             def __exit__(self, *_): pass
         class Conn:
             def cursor(self): return Cursor()
-        with patch.object(ingest, "_next_licencia_ids", return_value={"same-key": 42}), patch.object(ingest, "execute_values") as execute:
+        with patch.object(ingest, "ensure_schema"), patch.object(ingest, "_classify_saved"), patch.object(ingest, "_next_licencia_ids", return_value={"same-key": 42}), patch.object(ingest, "execute_values") as execute:
             for value, expected in [("2024-02-29", "2024-02-29"), ("29/02/2023", None), ("2025-02", "2025-02")]:
                 ingest.save_licencias([{"id": "same-key", "fecha_concesion": value}], conn=Conn())
                 sql, rows = execute.call_args.args[1:3]

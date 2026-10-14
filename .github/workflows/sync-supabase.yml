@@ -27,3 +27,4 @@ jobs:
             exit 1
           fi
           python3 db/sync_sqlite_to_supabase.py --truncate
+          python3 db/entity_reprocess.py

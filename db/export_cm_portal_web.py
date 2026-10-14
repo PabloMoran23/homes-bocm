@@ -82,7 +82,7 @@ def export_proyectos(cur, out_dir: Path, generated_at: str) -> tuple[int, int, d
         SELECT id, municipio, denominacion, bocm_title, bocm_pub_date, bocm_tipo_instrumento,
                enlace, visor_url, lat, lng, coord_source, sector_key, catalog_source,
                has_geometry, geom_geojson
-        FROM {SCHEMA}.proyecto
+        FROM {SCHEMA}.proyecto_actividad
         WHERE catalog_source = %s
           AND lat IS NOT NULL AND lng IS NOT NULL
         ORDER BY municipio, bocm_pub_date DESC NULLS LAST, id
@@ -136,7 +136,7 @@ def export_licencias(cur, out_dir: Path, generated_at: str) -> int:
     cur.execute(
         f"""
         SELECT licencia_key, objeto, fecha_concesion, tipo_expediente, unidad, lat, lng, raw_json
-        FROM {SCHEMA}.licencia
+        FROM {SCHEMA}.licencia_actividad
         WHERE lat IS NOT NULL AND lng IS NOT NULL
           AND COALESCE(raw_json->>'source', '') = 'ayuntamiento'
           AND COALESCE(raw_json->>'municipio_slug', '') <> ''
@@ -178,6 +178,8 @@ def export_licencias(cur, out_dir: Path, generated_at: str) -> int:
     return len(features)
 
 
+from entity_reprocess import require_policy_active
+
 def main() -> int:
     out_dir = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_OUT
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -185,6 +187,7 @@ def main() -> int:
 
     with psycopg2.connect(pg_url()) as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            require_policy_active(cur)
             n_proy_pts, n_proy_polys, proy_stats = export_proyectos(cur, out_dir, generated_at)
             n_lic = export_licencias(cur, out_dir, generated_at)
 
