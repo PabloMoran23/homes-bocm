@@ -1,0 +1,30 @@
+slug: paterna-de-rivera
+nombre: "Paterna de Rivera"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://paternaderivera.sedelectronica.es"
+  adapter: municipio.adapters.paterna_de_rivera:PaternaDeRiveraAyuntamientoAdapter
+  config:
+    sede_base: "https://paternaderivera.sedelectronica.es"
+    board_url: "https://paternaderivera.sedelectronica.es/board"
+    web_base: "https://www.paternaderivera.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-paterna-de-rivera/1.0)"
+    centroid: [36.5219, -5.8683]
+  notes: |
+    Fuentes: tablón sede espublico gestiona (/board) + web Joomla/YOOtheme Phoca Download
+    (tablón de anuncios, contratos de obra, comisión urbanismo, formularios licencias).
+    Planeamiento regional vía SITU@ (INE 11025). Sin visor municipal de expedientes.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
