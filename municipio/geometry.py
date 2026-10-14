@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 from typing import Any
 
 
@@ -14,10 +16,10 @@ def record_geometry(rec: dict[str, Any]) -> dict[str, Any] | None:
                 return geom if isinstance(geom, dict) else None
             if gtype == "FeatureCollection":
                 feats = raw.get("features") or []
-                if feats and isinstance(feats[0], dict):
+                if len(feats) == 1 and isinstance(feats[0], dict):
                     geom = feats[0].get("geometry")
                     return geom if isinstance(geom, dict) else None
-            if gtype in {"Point", "LineString", "Polygon", "MultiPolygon", "MultiPoint"}:
+            if gtype in {"Point", "LineString", "Polygon", "MultiPolygon", "MultiPoint", "MultiLineString"}:
                 return raw
     return None
 
@@ -44,6 +46,8 @@ def geometry_bbox(geom: dict[str, Any]) -> tuple[float, float, float, float] | N
     lats: list[float] = []
     _walk_coords(geom.get("coordinates"), lngs, lats)
     if not lngs:
+        return None
+    if any(not math.isfinite(v) for v in lngs + lats):
         return None
     return min(lngs), min(lats), max(lngs), max(lats)
 
