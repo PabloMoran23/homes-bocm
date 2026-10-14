@@ -63,3 +63,19 @@ class ReviewTest(TestCase):
         self.assertIn('17 4 * * *',legacy)
         self.assertIn('python3 -m municipio schedule run',legacy)
         self.assertNotIn('refresh_dispatch',legacy)
+
+    def test_legacy_timeout_still_defers_by_default(self):
+        from municipio.orchestrator import RUNNERS, run
+        def timeout(manifest):
+            raise TimeoutError('legacy timeout')
+        with patch.dict(RUNNERS,{'enrich_geometry':timeout}), patch('municipio.orchestrator.defer_manifest') as defer:
+            result=run(self.manifest,'enrich_geometry')
+        self.assertEqual(result['retry'],'next_day')
+        defer.assert_called_once_with(self.manifest)
+
+    def test_staging_orchestrator_rejects_sync_steps(self):
+        from municipio.orchestrator import run
+        with self.assertRaisesRegex(ValueError,'Staging'):
+            run(self.manifest,'sync_supabase',staging=True)
+        with self.assertRaisesRegex(ValueError,'Staging'):
+            run(self.manifest,'update',staging=True)

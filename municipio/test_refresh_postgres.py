@@ -70,6 +70,7 @@ class PostgresQueueTest(unittest.TestCase):
         from unittest.mock import patch
         from municipio.manifest import load_manifest
         from municipio.refresh_dispatch import review
+        from municipio.orchestrator import RUNNERS, run as real_run
         from ingest import IngestSession, sync_municipio_output as real_sync
         dsn=os.environ['REVIEW_TEST_DSN']
         parsed=urlparse(dsn)
@@ -92,6 +93,8 @@ class PostgresQueueTest(unittest.TestCase):
                 cur.execute(DDL)
                 cur.execute('CREATE TABLE canonical_test(payload TEXT)')
                 cur.execute('CREATE TABLE ingest_test(stage TEXT)')
+                cur.execute('CREATE TABLE municipio(slug TEXT PRIMARY KEY,last_ingest_at TIMESTAMPTZ,updated_at TIMESTAMPTZ)')
+                cur.execute("INSERT INTO municipio VALUES('oviedo', now(), now())")
             conn.commit()
             q=Queue(conn)
             now=time.time()
@@ -135,6 +138,46 @@ class PostgresQueueTest(unittest.TestCase):
                 manifest.proyectos.enabled=True
                 manifest.licencias.enabled=False
                 with patch('municipio.refresh_dispatch.load_manifest',return_value=manifest), patch('municipio.proyectos_runner.update',side_effect=capture), patch('municipio.orchestrator.run',return_value={'steps':{}}), patch('municipio.refresh_dispatch._publication_connection',side_effect=connection), patch('ingest.sync_municipio_output',side_effect=publisher), patch('ingest.start_ingest_run',side_effect=start), patch('ingest.finish_ingest_run',side_effect=end):
+                    # Exercise real orchestrator timeout + real legacy deferral
+                    # helpers, redirected to this isolated PostgreSQL schema.
+                    # Any staging deferral regression would clear this mark.
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT last_ingest_at FROM municipio WHERE slug='oviedo'")
+                        freshness=cur.fetchone()[0]
+                    conn.commit()
+                    with patch('municipio.orchestrator.run',side_effect=real_run), patch.dict(RUNNERS,{'enrich_geometry':lambda manifest: (_ for _ in ()).throw(TimeoutError('staging source timeout'))}), patch('ingest.connect',side_effect=connection), patch('ingest.SCHEMA',schema), patch.dict(os.environ,{'DATABASE_URL':dsn}):
+                        stale_timeout=review(old)
+                        self.assertFalse(stale_timeout['complete'])
+                        self.assertIn('TimeoutError',stale_timeout['error'])
+                        self.assertFalse(q.finish(old,time.time(),**stale_timeout))
+                        with conn.cursor() as cur:
+                            cur.execute('SELECT lease_token FROM refresh_review')
+                            self.assertEqual(cur.fetchone()[0],current['token'])
+                            cur.execute("SELECT last_ingest_at FROM municipio WHERE slug='oviedo'")
+                            self.assertEqual(cur.fetchone()[0],freshness)
+                        conn.commit()
+                        current_timeout=review(current)
+                        self.assertFalse(current_timeout['complete'])
+                        self.assertTrue(q.finish(current,time.time(),**current_timeout))
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT last_ingest_at FROM municipio WHERE slug='oviedo'")
+                        self.assertEqual(cur.fetchone()[0],freshness)
+                        cur.execute('SELECT count(*) FROM canonical_test')
+                        self.assertEqual(cur.fetchone()[0],0)
+                        cur.execute('SELECT count(*) FROM ingest_test')
+                        self.assertEqual(cur.fetchone()[0],0)
+                        cur.execute('SELECT failures,retry_at,last_error FROM refresh_review')
+                        failures,retry_at,error=cur.fetchone()
+                        self.assertEqual(failures,1)
+                        self.assertGreater(retry_at,time.time())
+                        self.assertIn('TimeoutError',error)
+                    conn.commit()
+                    # Requeue using a new configuration after the valid retry;
+                    # the revoked original token remains revoked.
+                    source['hash']='v2-after-timeout'
+                    q.reconcile([source],time.time())
+                    current=q.claim(time.time())
+                    captured.clear()
                     stale=review(old)
                     self.assertFalse(stale['complete'])
                     self.assertIn('StaleLease',stale['error'])
@@ -171,6 +214,7 @@ class PostgresQueueTest(unittest.TestCase):
             # Expiry during the callback rolls back both canonical writes and
             # session history, even after IngestSession.__exit__ has run.
             source['hash']='v3'
+            source['slug']='expiry-test'
             q.reconcile([source],time.time())
             expires=q.claim(time.time())
             with conn.cursor() as cur:

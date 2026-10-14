@@ -93,7 +93,7 @@ def review(job):
                 raise RuntimeError('no enabled source to review')
             reviewed = True
             for step in ('enrich_geometry','geocode','validate'):
-                result = run(manifest,step)
+                result = run(manifest,step,staging=True)
                 for payload in result['steps'].values():
                     if payload.get('error') or payload.get('status') in ('deferred','partial','failed'):
                         raise RuntimeError(f'{step}: {payload}')
