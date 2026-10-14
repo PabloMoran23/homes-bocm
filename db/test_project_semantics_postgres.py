@@ -16,6 +16,10 @@ class ReplayTest(unittest.TestCase):
         self.conn = psycopg2.connect(os.environ["TEST_SEMANTICS_DB_URL"])
         with self.conn.cursor() as cur:
             cur.execute("DROP SCHEMA IF EXISTS homes CASCADE; CREATE SCHEMA homes")
+            # The common writer also bootstraps the inactive entity policy, whose
+            # schema references both canonical resource tables even for project-only writes.
+            cur.execute("DO $$ BEGIN CREATE ROLE service_role; EXCEPTION WHEN duplicate_object THEN NULL; END $$")
+            cur.execute("CREATE TABLE homes.licencia (id bigint PRIMARY KEY, raw_json jsonb)")
             cur.execute("""CREATE TABLE homes.proyecto (
                            id text PRIMARY KEY, municipio_slug text, fuente text,
                            raw_features_json jsonb, fase text, fase_normalizada text,

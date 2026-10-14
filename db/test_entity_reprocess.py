@@ -183,8 +183,12 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto_actividad"), 1)
 
     def test_other_raw_contract_preserved_and_worker_update_not_requeued(self):
-        self.add(_semantic_contract={"title": "source original"})
-        self.assertEqual(self.scalar("SELECT raw_features_json->'_semantic_contract' FROM homes.proyecto"), {"title": "source original"})
+        self.add(descripcion="Documento original de ordenación del ámbito Norte")
+        original_contract = self.scalar("SELECT raw_features_json->'_semantic_contract' FROM homes.proyecto")
+        self.assertEqual(original_contract["description"]["value"], "Documento original de ordenación del ámbito Norte")
+        self.scalar("INSERT INTO homes.entity_reprocess_queue(entity_table,entity_id) VALUES ('proyecto','valid') RETURNING entity_id")
+        self.assertEqual(reprocess_queue(self.conn)["processed"], 1)
+        self.assertEqual(self.scalar("SELECT raw_features_json->'_semantic_contract' FROM homes.proyecto"), original_contract)
         self.assertEqual(reprocess_queue(self.conn)["processed"], 0)
         self.scalar("UPDATE homes.proyecto SET updated_at=now(), num_viviendas_max=123 WHERE id='valid' RETURNING id")
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
@@ -242,9 +246,13 @@ class ReprocessIntegrationTest(unittest.TestCase):
         import tempfile
         from psycopg2.extras import RealDictCursor
         from export_cm_portal_web import export_proyectos, export_licencias
-        self.add(lat=40.4, lng=-3.7)
-        self.add("generic", titulo="Formulario de obras", expediente=None, lat=40.4, lng=-3.7)
-        save_licencias([{"id": "grant", "titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid", "fecha_concesion": "2026-10-14", "lat": 40.4, "lng": -3.7}], conn=self.conn)
+        # Explicit source CRS and boundary: the geography guard must validate
+        # the fixture just as it validates real records, without network requests.
+        geography = {"lat": 40.4, "lng": -3.7, "coordinates_crs": "EPSG:4326",
+                     "municipal_boundary": {"type": "Polygon", "coordinates": [[[-3.8,40.3],[-3.6,40.3],[-3.6,40.5],[-3.8,40.5],[-3.8,40.3]]]}}
+        self.add(**geography)
+        self.add("generic", titulo="Formulario de obras", expediente=None, **geography)
+        save_licencias([{"id": "grant", "titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid", "fecha_concesion": "2026-10-14", "source": "madrid-opendata", **geography}], conn=self.conn)
         with tempfile.TemporaryDirectory() as folder, self.conn.cursor(cursor_factory=RealDictCursor) as cur:
             points, polygons, stats = export_proyectos(cur, Path(folder), "2026-10-14")
             self.assertEqual(points, 1)
