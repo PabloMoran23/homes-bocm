@@ -62,9 +62,18 @@ RE_LICENCIA_LINK = re.compile(
 )
 
 
-def _stable_id(kind: str, key: str) -> str:
-    h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
-    return f"{ID_PREFIX}-{kind}-{h}"
+def _fecha_from_blob(text: str) -> str | None:
+    dmy = _parse_fecha_dmy(text)
+    if dmy:
+        return dmy
+    years = [
+        int(x.group(1))
+        for x in RE_YEAR.finditer(text or "")
+        if 1980 <= int(x.group(1)) <= 2030
+    ]
+    if years:
+        return f"{max(years)}-01-01"
+    return None
 
 
 def _parse_fecha_dmy(text: str) -> str | None:
@@ -139,6 +148,8 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
         self.formularios_url = str(self.config.get("formularios_url") or FORMULARIOS_URL)
         self.urbanismo_root = str(self.config.get("urbanismo_root") or URBANISMO_ROOT)
         self.urbanismo_page_id = int(self.config.get("urbanismo_page_id") or URBANISMO_PAGE_ID)
+        self._id_prefix = str(self.config.get("id_prefix") or ID_PREFIX)
+        self._municipio = str(self.config.get("municipio_nombre") or MUNICIPIO)
         self._ssl_ctx = ssl.create_default_context()
         if self.config.get("insecure_ssl", True):
             self._ssl_ctx.check_hostname = False
@@ -157,6 +168,10 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
         )
         with self._opener.open(req, timeout=60) as resp:
             return resp.read().decode("utf-8", errors="replace")
+
+    def _stable_id(self, kind: str, key: str) -> str:
+        h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
+        return f"{self._id_prefix}-{kind}-{h}"
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))
@@ -201,8 +216,8 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
         if title and link and RE_PROYECTO.search(title):
             rows.append(
                 {
-                    "id": _stable_id("proy", link),
-                    "municipio": MUNICIPIO,
+                    "id": self._stable_id("proy", link),
+                    "municipio": self._municipio,
                     "titulo": title[:500],
                     "fecha": fecha,
                     "tipo": _pdf_tipo(title),
@@ -222,8 +237,8 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
             pdf_title = f"{title}: {name}" if title else name
             rows.append(
                 {
-                    "id": _stable_id("proy", pdf),
-                    "municipio": MUNICIPIO,
+                    "id": self._stable_id("proy", pdf),
+                    "municipio": self._municipio,
                     "titulo": pdf_title[:500],
                     "fecha": _fecha_from_url(pdf) or fecha,
                     "tipo": _pdf_tipo(name),
@@ -312,7 +327,7 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(url)
                 rows.append(
                     {
-                        "id": _stable_id("lic", url),
+                        "id": self._stable_id("lic", url),
                         "fecha_concesion": _fecha_from_url(url),
                         "tipo": label[:120] or "trámite licencia",
                         "distrito": None,
@@ -326,7 +341,7 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
                 )
         rows.append(
             {
-                "id": _stable_id("lic", self.urbanismo_root),
+                "id": self._stable_id("lic", self.urbanismo_root),
                 "fecha_concesion": None,
                 "tipo": "normativa y planeamiento",
                 "distrito": None,
@@ -340,7 +355,7 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
         )
         rows.append(
             {
-                "id": _stable_id("lic", f"{self.sede_base}/"),
+                "id": self._stable_id("lic", f"{self.sede_base}/"),
                 "fecha_concesion": None,
                 "tipo": "sede electrónica urbanismo",
                 "distrito": None,
@@ -366,7 +381,7 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("expediente") or row["url"]
         rec: dict[str, Any] = {
-            "id": _stable_id("lic", key),
+            "id": self._stable_id("lic", key),
             "fecha_concesion": row.get("fecha"),
             "tipo": row.get("procedimiento") or "licencia",
             "distrito": None,
@@ -399,8 +414,8 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
             tipo = "convenio"
         key = row.get("expediente") or row["url"]
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
+            "id": self._stable_id("proy", key),
+            "municipio": self._municipio,
             "titulo": row["titulo"][:500],
             "fecha": row.get("fecha") or _fecha_from_blob(row["titulo"]),
             "tipo": tipo,
@@ -417,7 +432,7 @@ class SanAgustinDelGuadalixAyuntamientoAdapter(AyuntamientoAdapter):
         if not RE_LICENCIA.search(row.get("titulo") or ""):
             return None
         return {
-            "id": _stable_id("lic", row["url"]),
+            "id": self._stable_id("lic", row["url"]),
             "fecha_concesion": None,
             "tipo": row["titulo"][:120],
             "distrito": None,
