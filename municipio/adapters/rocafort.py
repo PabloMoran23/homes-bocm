@@ -413,6 +413,8 @@ class RocafortAyuntamientoAdapter(AyuntamientoAdapter):
                 }
                 if geom:
                     rec["geom_geojson"] = geom
+                    rec["geometry_crs"] = "EPSG:4326"
+                    rec["geometry_axis_order"] = "xy"
                     rec["geometry_source"] = "portal_wfs"
                     rec["geometry_source_url"] = url
                     rec["coord_source"] = "portal_geometry_centroid"
@@ -457,7 +459,16 @@ class RocafortAyuntamientoAdapter(AyuntamientoAdapter):
         hit = self._match_wfs(blob)
         if not hit:
             return
-        for key in ("geom_geojson", "geometry_source", "geometry_source_url", "coord_source", "lat", "lon"):
+        for key in (
+            "geom_geojson",
+            "geometry_crs",
+            "geometry_axis_order",
+            "geometry_source",
+            "geometry_source_url",
+            "coord_source",
+            "lat",
+            "lon",
+        ):
             if hit.get(key) is not None:
                 rec[key] = hit[key]
 

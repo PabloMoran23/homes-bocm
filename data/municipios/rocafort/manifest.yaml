@@ -12,7 +12,7 @@ portal:
     user_agent: "poc-bocm-rocafort/1.0"
     cod_ine_mun: "46216"
     sede_base: "https://rocafort.sede.dival.es"
-    centroid: [39.533, -0.404]
+    centroid: [39.536, -0.413]
     geometry:
       kind: icv_wfs
       wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
