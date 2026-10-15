@@ -1,0 +1,30 @@
+slug: rota
+nombre: "Rota"
+provincia: "Rota, Cádiz"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.aytorota.es"
+  adapter: municipio.adapters.rota:RotaAyuntamientoAdapter
+  config:
+    web_base: "https://www.aytorota.es"
+    sede_base: "https://aytorota.sedelectronica.es"
+    board_url: "https://aytorota.sedelectronica.es/board"
+    transparency_planeamiento_url: "https://aytorota.sedelectronica.es/transparency/61577592-b9a7-4b56-bb0f-6d4d2c92c036/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=11032"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rota/1.0"
+    centroid: [36.6178, -6.3624]
+  notes: |
+    Web Joomla/YOOtheme (PEPCH y documentación urbanística en PDF).
+    Sede espublico gestiona: tablón /board, transparencia urbanismo (sección 05),
+    catálogo /dossier y consulta /expedientes (autenticación).
+    SITUA Junta de Andalucía (cid=11032). Sin visor GIS municipal por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
