@@ -1,0 +1,31 @@
+slug: ruente
+nombre: "Ruente"
+provincia: "Cantabria"
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://ruente.es"
+  adapter: municipio.adapters.ruente:RuenteAyuntamientoAdapter
+  config:
+    wp_base: "https://ruente.es"
+    bandos_url: "https://ruente.es/bandos-y-anuncios/"
+    ordenanzas_url: "https://ruente.es/ordenanzas/"
+    sede_url: "https://ruente.sedelectronica.es/"
+    aucan_url: "https://aplicacionesweb.cantabria.es/aucan/public/zona/saja/ruente"
+    cod_ine: "39066"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ruente/1.0"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    centroid: [43.23748, -4.23909]
+  notes: |
+    Web WordPress (bandos y ordenanzas vía REST API; sin tablón HTML clásico).
+    Planeamiento: Normas Subsidiarias 1983 + modificaciones en AUCAN (Gob. Cantabria).
+    Portal transparencia cumpletransparencia (WAF/Incapsula desde algunos egress).
+    Sede ruente.sedelectronica.es (tramites; sin listado público de licencias).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
