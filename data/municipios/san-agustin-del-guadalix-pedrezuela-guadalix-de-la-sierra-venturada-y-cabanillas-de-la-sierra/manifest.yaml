@@ -1,0 +1,38 @@
+slug: san-agustin-del-guadalix-pedrezuela-guadalix-de-la-sierra-venturada-y-cabanillas-de-la-sierra
+nombre: "San Agustín del Guadalix, Pedrezuela, Guadalix de la Sierra, Venturada y Cabanillas de la Sierra"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sanagustindelguadalix.net"
+  adapter: >-
+    municipio.adapters.san_agustin_del_guadalix_pedrezuela_guadalix_de_la_sierra_venturada_y_cabanillas_de_la_sierra:SanAgustinDelGuadalixPedrezuelaGuadalixDeLaSierraVenturadaYCabanillasDeLaSierraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sag-pedrezuela-guadalix-venturada-cabanillas/1.0"
+    centroid: [40.7903, -3.6318]
+    geometry_crs: "EPSG:4326"
+    manifest_nombre: "San Agustín del Guadalix, Pedrezuela, Guadalix de la Sierra, Venturada y Cabanillas de la Sierra"
+  notes: |
+    Slug compuesto BOCM (anuncio multi-municipio, corredor norte A-1 / planeamiento intermunicipal).
+    Agrega adaptadores ya onboarded: san-agustin-del-guadalix, pedrezuela, guadalix-de-la-sierra,
+    venturada, cabanillas-de-la-sierra. Sin scrape adicional en portales nuevos.
+
+licencias:
+  enabled: true
+
+geometry:
+  validation:
+    coordinates_crs: EPSG:4326
+    source_crs: EPSG:4326
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - "San Agustín del Guadalix, Pedrezuela, Guadalix de la Sierra, Venturada y Cabanillas de la Sierra"
+    - "San Agustín del Guadalix"
+    - "Pedrezuela"
+    - "Guadalix de la Sierra"
+    - "Venturada"
+    - "Cabanillas de la Sierra"
