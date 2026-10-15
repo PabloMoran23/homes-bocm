@@ -10246,9 +10246,9 @@ municipios:
   bocm_count: 1
   status: done
   attempts: 1
-  last_run: '2026-10-15T08:20:24.989392+00:00'
+  last_run: '2026-10-15T08:20:44.984818+00:00'
   last_error: null
-  pr_url: pending
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/870
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-10-15T08:20:24.990370+00:00'
+updated_at: '2026-10-15T08:20:44.985739+00:00'
