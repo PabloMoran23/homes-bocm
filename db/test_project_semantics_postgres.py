@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 import psycopg2
 from psycopg2.extras import Json
-from reprocess_project_semantics import replay
+from reprocess_project_semantics import replay, replay_batch, run_replay
 from ingest import _PROYECTO_UPSERT_COLS, portal_proyecto_row, save_proyectos
 from datetime import datetime
 
@@ -91,6 +91,65 @@ class ReplayTest(unittest.TestCase):
             self.assertEqual(cur.fetchone()[0], 3)
             cur.execute("SELECT source_record FROM homes.proyecto_semantica_version ORDER BY created_at LIMIT 1")
             self.assertEqual(cur.fetchone()[0]["fecha"], "2026-10-14")
+
+    def test_batch_commit_survives_later_failure_and_restart_is_idempotent(self):
+        with self.conn.cursor() as cur:
+            cur.execute("INSERT INTO homes.proyecto(id,municipio_slug,fuente,raw_features_json) VALUES ('municipal:2','parla','ayuntamiento',%s)",
+                        (Json({'titulo':'Plan Sur','fase':'Información pública'}),))
+        self.conn.commit()
+        def factory():
+            return psycopg2.connect(self.conn.dsn)
+        actual = replay_batch
+        def fail_second(conn, **kwargs):
+            if kwargs['after_id'] is not None:
+                conn.close()
+                raise psycopg2.OperationalError('injected connection interruption')
+            return actual(conn, **kwargs)
+        with patch('reprocess_project_semantics.replay_batch', side_effect=fail_second):
+            with self.assertRaisesRegex(psycopg2.OperationalError, 'injected connection interruption'):
+                run_replay(batch_size=1, connect_factory=factory)
+        with self.conn.cursor() as cur:
+            cur.execute('SELECT count(*) FROM homes.proyecto_semantica_version')
+            self.assertEqual(cur.fetchone()[0], 1)
+            cur.execute("SELECT count(*) FROM homes.proyecto WHERE raw_features_json ? '_semantic_contract'")
+            self.assertEqual(cur.fetchone()[0], 1)
+        result = run_replay(batch_size=1, connect_factory=factory)
+        self.assertTrue(result['complete'])
+        self.assertEqual(result['reprocessed'], 1)
+        self.assertEqual(run_replay(batch_size=1, connect_factory=factory)['reprocessed'], 0)
+        with self.conn.cursor() as cur:
+            cur.execute('SELECT count(*) FROM homes.proyecto_semantica_version')
+            self.assertEqual(cur.fetchone()[0], 2)
+
+    def test_history_and_canonical_update_rollback_together(self):
+        with self.assertRaises(psycopg2.errors.CheckViolation):
+            with self.conn:
+                with self.conn.cursor() as cur:
+                    cur.execute("ALTER TABLE homes.proyecto ADD CONSTRAINT injected_replay_failure CHECK (NOT (raw_features_json ? '_semantic_contract'))")
+                replay_batch(self.conn, batch_size=1)
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT raw_features_json ? '_semantic_contract',fase FROM homes.proyecto")
+            self.assertEqual(cur.fetchone(), (False,'Plan parcial'))
+            cur.execute("SELECT to_regclass('homes.proyecto_semantica_version')")
+            self.assertIsNone(cur.fetchone()[0])
+
+    def test_bulk_update_preserves_dates_nulls_and_metadata_across_batches(self):
+        evidence = {'titulo':'Plan Norte','fase':'Información pública','fecha_publicacion':'2026-10-14',
+                    '_geography_quarantine':{'status':'quarantined'},'_entity_policy':{'fixture':'retained'}}
+        with self.conn.cursor() as cur:
+            cur.execute('UPDATE homes.proyecto SET raw_features_json=%s', (Json(evidence),))
+            cur.execute("INSERT INTO homes.proyecto(id,municipio_slug,fuente,raw_features_json) VALUES ('municipal:2','parla','ayuntamiento',%s)", (Json({'titulo':'Plan Sur'}),))
+        self.conn.commit()
+        result = run_replay(batch_size=2, max_batches=1, connect_factory=lambda:psycopg2.connect(self.conn.dsn))
+        self.assertEqual(result['reprocessed'],2)
+        self.assertFalse(result['complete'])
+        with self.conn.cursor() as cur:
+            cur.execute('SELECT id,bocm_pub_date,raw_features_json FROM homes.proyecto ORDER BY id')
+            first,second=cur.fetchall()
+            self.assertEqual(first[1].isoformat(),'2026-10-14')
+            self.assertIsNone(second[1])
+            self.assertEqual(first[2]['_geography_quarantine'],evidence['_geography_quarantine'])
+            self.assertEqual(first[2]['_entity_policy'],evidence['_entity_policy'])
 
 
 if __name__ == "__main__":

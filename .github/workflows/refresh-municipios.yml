@@ -53,9 +53,10 @@ jobs:
           pip install -r db/requirements-supabase.txt
 
       - name: Reprocess municipal semantic contracts
+        timeout-minutes: 20
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: python3 db/reprocess_project_semantics.py
+        run: python3 db/reprocess_project_semantics.py --batch-size 100
 
       - name: Refresh due municipios
         env:
