@@ -1,0 +1,30 @@
+slug: rute
+nombre: "Rute"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://rute.es"
+  adapter: municipio.adapters.rute:RuteAyuntamientoAdapter
+  config:
+    pgou_url: "https://rute.es/servicios/urbanismo/pgou/"
+    urbanismo_url: "https://rute.es/servicios/urbanismo/"
+    localizain_url: "https://rute.es/servicios/urbanismo/programa-localizain/"
+    instancias_url: "https://rute.es/ayuntamiento/normativa-municipal/modelos-de-solicitud/"
+    sede_base: "https://sede.eprinsa.es/rute"
+    tablon_url: "https://sede.eprinsa.es/rute/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rute/1.0"
+    centroid: [37.3264, -4.3683]
+  notes: |
+    WordPress ePrinsa: PGOU (Google Drive + BOP Diputación), programa LOCALIZAIN,
+    modelos PDF urbanismo. Sede eprinsa (Diputación Córdoba): tablón Ember SPA.
+    Transparencia: transparencia.rute.es. Sin visor GIS municipal por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
