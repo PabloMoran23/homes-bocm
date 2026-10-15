@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
-from municipio.geometry import geometry_centroid, record_geometry
+from municipio.geometry import record_geometry
 
 WP_BASE = "https://www.rivilladebarajas.es"
 SEDE_BASE = "https://rivilladebarajas.sedelectronica.es"
