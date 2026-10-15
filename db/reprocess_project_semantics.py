@@ -54,7 +54,7 @@ def replay_batch(conn, *, after_id: str | None = None, batch_size: int = 100) ->
                        r['bocm_pub_date'], r['resumen_contenido'], r['bocm_resumen'],
                        r['raw_features_json']) for r in changed]
             execute_values(cur, """UPDATE homes.proyecto AS p SET fase=v.fase,
-                fase_normalizada=v.fase_normalizada, fecha_aprob=v.fecha_aprob,
+                fase_normalizada=v.fase_normalizada, fecha_aprob=v.fecha_aprob::date,
                 bocm_pub_date=v.bocm_pub_date::date, resumen_contenido=v.resumen_contenido,
                 bocm_resumen=v.bocm_resumen, raw_features_json=v.raw_features_json::jsonb,
                 updated_at=now() FROM (VALUES %s) AS v(id,fase,fase_normalizada,

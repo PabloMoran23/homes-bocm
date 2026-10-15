@@ -98,7 +98,7 @@ class ReplayTest(unittest.TestCase):
                         (Json({'titulo':'Plan Sur','fase':'Información pública'}),))
         self.conn.commit()
         def factory():
-            return psycopg2.connect(self.conn.dsn)
+            return psycopg2.connect(os.environ['TEST_SEMANTICS_DB_URL'])
         actual = replay_batch
         def fail_second(conn, **kwargs):
             if kwargs['after_id'] is not None:
@@ -137,10 +137,13 @@ class ReplayTest(unittest.TestCase):
         evidence = {'titulo':'Plan Norte','fase':'Información pública','fecha_publicacion':'2026-10-14',
                     '_geography_quarantine':{'status':'quarantined'},'_entity_policy':{'fixture':'retained'}}
         with self.conn.cursor() as cur:
+            # Some deployed/legacy schemas use DATE here, others TEXT. The
+            # other replay tests retain TEXT; exercise DATE in this bulk case.
+            cur.execute('ALTER TABLE homes.proyecto ALTER COLUMN fecha_aprob TYPE date USING fecha_aprob::date')
             cur.execute('UPDATE homes.proyecto SET raw_features_json=%s', (Json(evidence),))
             cur.execute("INSERT INTO homes.proyecto(id,municipio_slug,fuente,raw_features_json) VALUES ('municipal:2','parla','ayuntamiento',%s)", (Json({'titulo':'Plan Sur'}),))
         self.conn.commit()
-        result = run_replay(batch_size=2, max_batches=1, connect_factory=lambda:psycopg2.connect(self.conn.dsn))
+        result = run_replay(batch_size=2, max_batches=1, connect_factory=lambda:psycopg2.connect(os.environ['TEST_SEMANTICS_DB_URL']))
         self.assertEqual(result['reprocessed'],2)
         self.assertFalse(result['complete'])
         with self.conn.cursor() as cur:
