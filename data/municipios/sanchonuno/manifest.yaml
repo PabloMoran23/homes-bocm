@@ -1,0 +1,33 @@
+slug: sanchonuno
+nombre: "Sanchonuño"
+provincia: "Sanchonuño-Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://sanchonuno.sedelectronica.es"
+  adapter: municipio.adapters.sanchonuno:SanchonunoAyuntamientoAdapter
+  config:
+    sede_base: "https://sanchonuno.sedelectronica.es"
+    planpublica_provincia: 40
+    planpublica_municipio: 179
+    ine_code: "40179"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Sanchonuño"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=40179"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=40&municipio=179"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=40&municipio=179"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sanchonuno/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [41.32595, -4.29518]
+  notes: |
+    Web corporativa www.sanchonuno.es bloqueada por WAF F5 (503 desde el agente).
+    Sede espublico gestiona + archivo PLAI/PLAU JCYL (prov. 40, muni. 179) + IDECyL WFS.
+    Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
