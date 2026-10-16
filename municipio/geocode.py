@@ -95,7 +95,9 @@ def _geocode_records(
     if municipal_centroid and not valid_coordinates(*municipal_centroid):
         municipal_centroid = None
     cfg = manifest_geography_config(manifest)
-    boundary = cfg.get("municipal_boundary") or official_boundary(manifest.nombre)
+    geocode_cfg = _load_geocode_config(manifest)
+    boundary_lookup = str(geocode_cfg.get("official_boundary_municipio") or manifest.nombre)
+    boundary = cfg.get("municipal_boundary") or official_boundary(boundary_lookup)
     if boundary:
         cfg = {**cfg, "municipal_boundary": boundary}
     stats = {
