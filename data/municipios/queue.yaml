@@ -10372,11 +10372,11 @@ municipios:
 - slug: san-juan-de-la-ar
   nombre: San Juan de la Ar
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-16T02:04:03.450190+00:00'
+  last_run: '2026-10-16T02:26:49.472645+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/880
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-10-16T02:04:03.452169+00:00'
+updated_at: '2026-10-16T02:26:49.474032+00:00'
