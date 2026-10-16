@@ -19,7 +19,6 @@ from municipio.geometry import geometry_centroid, record_geometry
 SEDE_BASE = "https://elpuig.sede.dival.es"
 WEB_BASE = "https://www.elpuig.es"
 MUNICIPIO = "El Puig de Santa Maria"
-ID_PREFIX = "el-puig-de-santa-maria"
 INE_COD_MUN = "46104"
 
 TABLON_RSS = f"{SEDE_BASE}/tablondeanuncios/tablon_rss.aspx"
@@ -55,9 +54,9 @@ RE_DOC_LINK = re.compile(
 )
 
 
-def _stable_id(kind: str, key: str) -> str:
+def _stable_id_for(slug: str, kind: str, key: str) -> str:
     h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:14]
-    return f"{ID_PREFIX}-{kind}-{h}"
+    return f"{slug}-{kind}-{h}"
 
 
 def _strip_html(text: str) -> str:
@@ -140,6 +139,12 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
         self.gva_type = str(geom_cfg.get("type_name") or GVA_WFS_TYPE)
         self.gva_offsets = list(geom_cfg.get("offsets") or GVA_WFS_OFFSETS)
         self._gva_cache: list[dict[str, Any]] | None = None
+
+    def _municipio_label(self) -> str:
+        return str(self.config.get("municipio_nombre") or MUNICIPIO)
+
+    def _stable_id(self, kind: str, key: str) -> str:
+        return _stable_id_for(self.slug, kind, key)
 
     def _fetch(self, url: str, *, timeout: int = 90) -> str:
         time.sleep(self.delay_s)
@@ -365,7 +370,7 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
     def _collect_licencia_info_pages(self) -> list[dict[str, Any]]:
         return [
             {
-                "id": _stable_id("lic", self.tablon_url),
+                "id": self._stable_id("lic", self.tablon_url),
                 "fecha_concesion": None,
                 "tipo": "tablón de anuncios",
                 "distrito": None,
@@ -378,7 +383,7 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
                 "origen": "sede_tablon",
             },
             {
-                "id": _stable_id("lic", self.urbanisme_url),
+                "id": self._stable_id("lic", self.urbanisme_url),
                 "fecha_concesion": None,
                 "tipo": "catálogo trámites urbanismo",
                 "distrito": None,
@@ -391,7 +396,7 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
                 "origen": "sede_tramite",
             },
             {
-                "id": _stable_id("lic", URB02_TRAMITE),
+                "id": self._stable_id("lic", URB02_TRAMITE),
                 "fecha_concesion": None,
                 "tipo": "licencia tipo 1",
                 "distrito": None,
@@ -419,7 +424,7 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         key = row.get("url") or blob
         return {
-            "id": _stable_id("lic", key),
+            "id": self._stable_id("lic", key),
             "fecha_concesion": row.get("fecha"),
             "tipo": "licencia / edicto",
             "distrito": None,
@@ -442,8 +447,8 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
 
         key = row.get("url") or blob
         rec: dict[str, Any] = {
-            "id": _stable_id("proy", key),
-            "municipio": MUNICIPIO,
+            "id": self._stable_id("proy", key),
+            "municipio": self._municipio_label(),
             "titulo": row["titulo"],
             "fecha": row.get("fecha"),
             "tipo": _proyecto_tipo(row["titulo"]),
@@ -468,8 +473,8 @@ class ElPuigDeSantaMariaAyuntamientoAdapter(AyuntamientoAdapter):
             exp = feat.get("expediente") or ""
             titulo = f"{label} (exp. {exp})" if exp else label
             rec: dict[str, Any] = {
-                "id": _stable_id("proy", f"gva:{exp}:{label}"),
-                "municipio": MUNICIPIO,
+                "id": self._stable_id("proy", f"gva:{exp}:{label}"),
+                "municipio": self._municipio_label(),
                 "titulo": titulo[:500],
                 "fecha": None,
                 "tipo": _proyecto_tipo(label),
