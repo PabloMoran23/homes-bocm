@@ -1,0 +1,35 @@
+slug: san-miguel-del-arroyo
+nombre: "San Miguel del Arroyo"
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    coordinates_crs: "EPSG:4326"
+
+portal:
+  base_url: "https://sanmigueldelarroyo.sedelectronica.es"
+  adapter: municipio.adapters.san_miguel_del_arroyo:SanMiguelDelArroyoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-miguel-del-arroyo/1.0"
+    sede_base: "https://sanmigueldelarroyo.sedelectronica.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=145"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=145"
+    wfs_municipio: "San Miguel del Arroyo"
+    insecure_ssl: true
+    centroid: [41.4426, -4.4737]
+  notes: |
+    Sede espublico gestiona (tablón /board/, trámites /dossier, transparencia).
+    Web corporativa en plantilla Diputación de Valladolid (urbanismo + normativa PDF).
+    PlanPublica JCyL provincia 47 / municipio 145 (código INE 47145).
+    IDECyL WFS urbanismo (n_mun=San Miguel del Arroyo).
+    Límite IGN por nombre exacto no disponible; validación H03 puede cuarentenar coords.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
