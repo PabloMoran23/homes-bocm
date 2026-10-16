@@ -10413,11 +10413,11 @@ municipios:
 - slug: san-martin-del-rey-aurelio
   nombre: San Martín del Rey Aurelio
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-16T08:02:45.674801+00:00'
+  last_run: '2026-10-16T08:21:09.569247+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/883
   notes: ''
   boletin_source_id: bopa
   comunidad_autonoma: asturias
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-10-16T08:02:45.676684+00:00'
+updated_at: '2026-10-16T08:21:09.570193+00:00'
