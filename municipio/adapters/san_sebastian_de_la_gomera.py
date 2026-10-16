@@ -307,6 +307,7 @@ class SanSebastianDeLaGomeraAyuntamientoAdapter(AyuntamientoAdapter):
         if not geom:
             return
         rec["geom_geojson"] = geom
+        rec["geometry_crs"] = "EPSG:4326"
         rec["geometry_source"] = "portal_geobdp_grafcan"
         rec["geometry_source_url"] = f"https://geobdp.grafcan.es/core/documentos/{doc_id}.html"
         rec["coord_source"] = "portal_geometry_centroid"
