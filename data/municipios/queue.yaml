@@ -10427,11 +10427,11 @@ municipios:
 - slug: san-miguel-de-cornezuelo
   nombre: San Miguel de Cornezuelo
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-16T10:04:07.067159+00:00'
+  last_run: '2026-10-16T10:14:57.087343+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/884
   notes: ''
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
@@ -11838,4 +11838,4 @@ municipios:
   provincia: Zurgena (Almería)
   boletin_counts:
     boja: 1
-updated_at: '2026-10-16T10:04:07.069810+00:00'
+updated_at: '2026-10-16T10:14:57.088282+00:00'
