@@ -1,0 +1,37 @@
+slug: san-juan-del-puerto
+nombre: "San Juan del Puerto"
+provincia: Huelva
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sanjuandelpuerto.es"
+  adapter: municipio.adapters.san_juan_del_puerto:SanJuanDelPuertoAyuntamientoAdapter
+  config:
+    web_base: "https://sanjuandelpuerto.es"
+    sede_base: "https://sanjuandelpuerto.sedelectronica.es"
+    board_url: "https://sanjuandelpuerto.sedelectronica.es/board/"
+    dossier_url: "https://sanjuandelpuerto.sedelectronica.es/dossier"
+    transparency_url: "https://sanjuandelpuerto.sedelectronica.es/transparency/"
+    transparency_urbanismo_url: "https://sanjuandelpuerto.sedelectronica.es/transparency/9b4f2ebd-8218-478f-8d2e-031359cf6bdb/"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    situa_pgou_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/planeamientoGeneralCompartir.jsf?municipiosSeleccionados=21059&codigosMunicipios=21059"
+    seed_pages:
+      - "https://sanjuandelpuerto.es/servicios-publicos/urbanismo/"
+      - "https://sanjuandelpuerto.es/servicios-publicos/urbanismo/plan-de-movilidad-sostenible/"
+      - "https://sanjuandelpuerto.es/ayuntamiento/exposicion-publica/"
+      - "https://sanjuandelpuerto.es/ayuntamiento/documentos/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-san-juan-del-puerto/1.0"
+    centroid: [37.3166, -6.8394]
+  notes: |
+    WordPress (Elementor) + sede espublico gestiona (tablón, dossier, transparencia)
+    + SITUA/VITUA Junta de Andalucía (INE 21059). Sin visor urbanístico municipal enlazable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
