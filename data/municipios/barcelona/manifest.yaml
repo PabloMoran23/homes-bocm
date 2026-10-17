@@ -1,0 +1,36 @@
+slug: barcelona
+nombre: "Barcelona"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://ajuntament.barcelona.cat/informaciourbanistica/cerca/es/"
+  adapter: municipio.adapters.barcelona:BarcelonaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-barcelona/1.0"
+    search_terms:
+      - pla
+    fetch_geometry: true
+    geometry_limit: 200
+    centroid: [41.3874, 2.1686]
+    geometry:
+      kind: piu_geometria_objecte
+      service_base: "https://ajuntament.barcelona.cat/informaciourbanistica/cerca/service"
+      crs_source: "EPSG:25831"
+  notes: |
+    PIU (Portal d'Informació Urbanística): cerca/service JSON.
+    ServeiUnificatRecerca, DarreresAprovacionsInicials, GeometriaObjecteUrbanistic.
+    Llicències: consulta per parcela al PIU (sense llistat públic massiu).
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    coordinates_crs: "EPSG:4326"
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
