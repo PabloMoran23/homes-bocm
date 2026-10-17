@@ -11,6 +11,22 @@ Si falta SUPABASE_DB_URL/DATABASE_URL o una herramienta, detente y reporta el er
 
 ## 1. Reservar y cargar contexto
 
+La reserva se escribe en Supabase, en `homes.entrada_investigacion_lease`, mediante el helper.
+Ejecuta los comandos desde la raíz del checkout que contiene `db/research_asunto.py`, con
+`SUPABASE_DB_URL` o `DATABASE_URL` configurada. Pegar este texto en una UI cuyo checkout todavía
+no contiene el helper no instala el código: ese checkout debe estar actualizado también.
+
+```bash
+# OWNER: cursor:<UUID nuevo por ejecución>
+python3 db/research_asunto.py claim --owner "$OWNER" --ttl 600
+# Lee proyecto_id y token del JSON devuelto como ID y TOKEN. Si es null, termina.
+python3 db/research_asunto.py context --project "$ID"
+# Conserva source_hash del contexto como SOURCE_HASH.
+python3 db/research_asunto.py renew --project "$ID" --owner "$OWNER" --token "$TOKEN" --ttl 600
+# Solo si abandonas sin guardar:
+python3 db/research_asunto.py release --project "$ID" --owner "$OWNER" --token "$TOKEN"
+```
+
 Genera un owner único `cursor:<UUID>`. Ejecuta `python3 db/research_asunto.py claim --owner "$OWNER"`.
 Si devuelve null termina. Conserva proyecto_id, owner y token. Obtén el contexto con
 `python3 db/research_asunto.py context --project "$ID"`. Conserva su `source_hash` como SOURCE_HASH. Si la fuente cambia durante la investigación, el guardado se detiene para evitar marcar como procesada una versión que no investigaste.
@@ -116,8 +132,31 @@ No inventes campos nuevos para sustituir identidad, padres o estado.
 
 ## 6. Guardar siempre el resultado
 
+**Destino del JSON: modelo territorial nuevo, no la tabla antigua de investigaciones de proyectos.**
+El JSON es la entrada del helper, no un objeto para INSERT directo. El helper lo reparte así:
+
+| Parte del JSON | Destino en Supabase |
+|---|---|
+| `proyecto_id`, tipo, estado, resumen, huecos y motivo | `homes.entrada_investigacion` |
+| `fuentes`, `busquedas_intentadas`, `datos`, `hallazgos`, `vinculos_pendientes` | Columnas JSONB de `homes.entrada_investigacion` |
+| `asuntos` y sus claves oficiales | Filas de `homes.asunto`, con UUIDs reutilizados |
+| `padre_ref` | `homes.asunto.padre_id` y relación `pertenece_a` confirmada |
+| `relaciones` | Filas de `homes.asunto_relacion` |
+| `asunto_ref` | Se resuelve al UUID de `homes.entrada_investigacion.asunto_id` |
+| Resultado actual por entrada | Puntero en `homes.entrada_investigacion_actual` |
+
+El helper genera hash del payload, metadatos y fecha; recibe request_id/source_hash/owner/token
+por argumentos. Al guardar libera la reserva dentro de la misma transacción. No escribe este
+formato en `homes.proyecto_investigacion`, `homes.proyecto_dato_extra` ni `homes.proyecto_hallazgo`.
+Esas tablas históricas y su lector web se conservan; la web necesita adaptación para presentar
+el modelo territorial nuevo. El campo `proyecto_id` conserva el ID de la entrada de origen,
+aunque la clasificación resultante sea norma, documento o subasta.
+
 Genera request_id UUID por investigación y consérvalo para reintentos. Guarda el JSON con:
-`python3 db/research_asunto.py save --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"`.
+```bash
+python3 db/research_asunto.py save --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"
+```
+La salida es `{"investigacion_id": numero}` de `homes.entrada_investigacion`.
 El helper valida reserva, IDs/padres y ciclos, guarda todo transaccionalmente y devuelve el id.
 Mismo request_id y JSON: mismo id. Contenido distinto con el mismo request_id: error.
 No uses el escritor antiguo de proyecto para normas/subastas/documentos. No hagas INSERT manual.
