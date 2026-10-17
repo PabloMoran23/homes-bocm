@@ -1,0 +1,26 @@
+slug: santa-cruz-de-pinares
+nombre: "Santa Cruz de Pinares"
+provincia: "Santa Cruz de Pinares (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.santacruzdepinares.es"
+  adapter: municipio.adapters.santa_cruz_de_pinares:SantaCruzDePinaresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-cruz-de-pinares/1.0"
+    sede_base: "https://aytosantacruzdepinares.sedelectronica.es"
+    plau_provincia: 5
+    plau_municipio: 222
+    insecure_ssl: true
+    centroid: [40.5334, -4.6020]
+  notes: |
+    Web Diputación Ávila (PLAU enlace) + sede espublico gestiona (tablón/dossier)
+    + PlanPublica JCyL (cód. mun. 222) + IDECyL WFS/SIUR (05222).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
