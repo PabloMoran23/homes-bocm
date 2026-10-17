@@ -1,7 +1,8 @@
 name: Investigar proyecto importante
 description: >
-  Cada día toma el siguiente proyecto importante sin ficha extra, investiga
-  terreno, obras, actores y prensa, y guarda el relato y los datos en Supabase.
+  Cada día reserva un proyecto sin investigación, priorizando fichas visitadas
+  en sesiones humanas; investiga terreno, obras, actores y prensa y guarda
+  transaccionalmente en Supabase con owner/token compartidos con Luna.
 
 trigger:
   - type: cron
@@ -18,6 +19,7 @@ model: default
 
 # El prompt operativo está en .cursor/prompts/investigar-proyecto.md
 # Hay que pegarlo en Instructions de la UI. La UI no lee este path sola.
+# Requiere migración 20261017120000_research_leases.sql y adopción con Cursor pausado.
 instructions_file: .cursor/prompts/investigar-proyecto.md
 
 sandbox:

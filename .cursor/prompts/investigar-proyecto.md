@@ -5,36 +5,41 @@
 
 Eres un agente de Cursor. En cada ejecución investigas **exactamente un** proyecto urbanístico y guardas la foto en Supabase (`homes.proyecto_investigacion`, `homes.proyecto_dato_extra`, `homes.proyecto_hallazgo`).
 
-No abras pull request. No toques scrapers ni otros municipios. Si falta `SUPABASE_DB_URL` y `DATABASE_URL`, para y dilo. No inventes cifras.
+No abras pull request. No toques scrapers ni otros municipios. Si falta `SUPABASE_DB_URL` y `DATABASE_URL`, para y dilo. No inventes cifras. Distingue cifras vigentes de máximos, rangos, estimaciones e históricos
+anulados; los anulados no son KPIs destacados. Verifica la fecha real de cada artículo;
+si no consta, usa `fuente_fecha: null`, nunca una fecha inferida.
 
 ## 1. Elegir el proyecto
 
-Conéctate con `SUPABASE_DB_URL` o `DATABASE_URL` y lista candidatos sin investigación previa:
+La selección y el guardado usan **reservas compartidas con Luna**. No uses el selector SQL antiguo
+ni insertes investigaciones directamente. Requiere la migración `20261017120000_research_leases.sql`.
+Si falta o falla una herramienta, para; no improvises una ruta sin reserva.
 
-```sql
-SELECT p.id,
-       p.denominacion,
-       p.municipio,
-       p.expediente_grupo,
-       COALESCE(p.num_viviendas_max, p.metric_num_viviendas_max, p.bocm_num_viviendas_max) AS viviendas,
-       COALESCE(p.sup_total_m2, p.metric_sup_total_m2, p.bocm_sup_total_m2) AS superficie,
-       p.tipo_figura,
-       p.fase,
-       p.bocm_promotor
-FROM homes.proyecto p
-WHERE NOT EXISTS (
-  SELECT 1 FROM homes.proyecto_investigacion i WHERE i.proyecto_id = p.id
-)
-ORDER BY
-  COALESCE(p.num_viviendas_max, p.metric_num_viviendas_max, p.bocm_num_viviendas_max, 0) DESC,
-  COALESCE(p.sup_total_m2, p.metric_sup_total_m2, p.bocm_sup_total_m2, 0) DESC,
-  p.updated_at DESC NULLS LAST
-LIMIT 20;
-```
+1. Genera un owner único por ejecución (`cursor:` + UUID). Ejecuta:
+   `python3 db/research_lease.py claim --owner "$OWNER" --ttl 600`.
+   Conserva exactamente `proyecto_id`, `owner`, `token` y `expires_at` del JSON.
+2. Si devuelve null, termina. La reserva se adquiere atómicamente; nunca investigues un candidato
+   sin haberlo reservado. Primero van fichas visitadas por sesiones humanas según el filtro `interesting` de la analítica
+   (sin bots/admin y con actividad), sobre todo el historial retenido, sin ventana nueva. Las rutas
+   se vinculan por identificadores/alias exactos y solo si son inequívocos. Dentro de esa prioridad
+   el orden sigue viviendas, superficie, updated_at y desempate por id;
+   cualquier investigación previa, incluida parcial, lo excluye.
+3. El JSON incluye la fila completa. Obtén las filas hijas con
+   `python3 db/research_lease.py context --owner "$OWNER" --project "$ID"`.
+4. Elige la primera actuación real (plan parcial, reforma interior, ámbito, sector, promoción).
+   Un documento de aprobación puede describir una actuación; no lo confundas con un proyecto
+   independiente del terreno que describe. Si es ordenanza, catálogo o ficha vacía sin actuación
+   identificable, ejecuta `python3 db/research_lease.py skip --owner "$OWNER" --project "$ID"
+   --token "$TOKEN" --reason "motivo concreto"`, y reserva el siguiente. Revisa como máximo 20
+   candidatos en esta ejecución. Los descartados se apartan 24h, sin inventar una investigación.
+5. Mientras investigas renueva al menos cada 120 segundos:
+   `python3 db/research_lease.py renew --owner "$OWNER" --project "$ID" --token "$TOKEN" --ttl 600`.
+   Si falla o vence la reserva, detente y no guardes. No recuperes una reserva ajena.
+   Si abandonas, usa `release` con esos mismos argumentos. Ante caída, vence automáticamente.
 
-Quédate con el primero que sea una actuación real (plan parcial, reforma interior, ámbito, sector, promoción). Salta ordenanzas, catálogos y fichas vacías si hay otro candidato mejor en la lista. Si la lista sale vacía, termina: no hay proyectos pendientes.
-
-Lee después la fila completa de `homes.proyecto` y, si existen, trámites, documentos y publicaciones BOCM de ese `proyecto_id`. Eso es el punto de partida, no la foto final. Si el expediente está casi vacío, investiga el proyecto y el terreno a los que apunta el nombre.
+Los datos iniciales son el punto de partida, no la foto final. Si el expediente está casi vacío,
+investiga el proyecto y el terreno a los que apunta el nombre. Si reconoces una actuación ya
+investigada bajo otra fila, explica la identidad y omítela; no inventes equivalencias entre ámbitos.
 
 ## 2. Investigar
 
@@ -92,7 +97,12 @@ Todo lo relevante que no quepa en una fila: conflictos entre fuentes, contexto d
 
 ## 6. Guardar
 
-Escribe un JSON y cárgalo en una transacción. Si en el checkout existe `db/save_proyecto_info_extra.py`, úsalo (`python3 db/save_proyecto_info_extra.py --file …`). Si no existe, inserta tú con psycopg en este orden: `proyecto_investigacion` (RETURNING id), luego `proyecto_dato_extra`, luego `proyecto_hallazgo`, y haz commit. No dejes filas a medias.
+Escribe un JSON y cárgalo con el helper obligatorio:
+`python3 db/save_proyecto_info_extra.py --file resultado.json --owner "$OWNER" --token "$TOKEN"`.
+No hay fallback de INSERT manual. El helper valida la reserva, guarda las tres tablas y registra
+el resultado en una sola transacción. Repetir el mismo JSON con el mismo owner/token devuelve
+el mismo id; cambiar el contenido en un reintento es un error. Una reserva vencida o reemplazada
+no puede guardar. Si el guardado falla conserva el JSON y reporta el error, sin crear otra ficha.
 
 Forma del JSON:
 
