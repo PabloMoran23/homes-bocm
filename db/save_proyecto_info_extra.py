@@ -2,12 +2,16 @@
 """Inserta una investigación de proyecto (foto + datos + hallazgos).
 
 Lee un JSON por stdin o por --file. Requiere SUPABASE_DB_URL o DATABASE_URL.
+Requiere --owner y --token de db/research_lease.py. Reintentos idénticos son idempotentes.
 No imprime la URL. Escribe el id de la investigación en stdout.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
+from datetime import date
+from urllib.parse import urlparse
 import json
 import os
 import sys
@@ -63,6 +67,9 @@ def validate(data: dict[str, Any]) -> None:
     datos = data.get("datos") or []
     if not isinstance(datos, list) or not datos:
         raise SystemExit("datos tiene que ser una lista con al menos una fila")
+    if not any(r.get("bloque") == "situacion" and r.get("clave") == "nombre_publico"
+               and r.get("destacado") is True for r in datos if isinstance(r, dict)):
+        raise SystemExit("Falta nombre_publico destacado")
     for i, row in enumerate(datos):
         if not isinstance(row, dict):
             raise SystemExit(f"datos[{i}] no es un objeto")
@@ -74,6 +81,12 @@ def validate(data: dict[str, Any]) -> None:
         confianza = _need(row, "confianza")
         if confianza not in CONFIANZA:
             raise SystemExit(f"datos[{i}].confianza no válida: {confianza}")
+        _need(row, "fuente_nombre")
+        url = urlparse(_need(row, "fuente_url"))
+        if url.scheme not in ("https", "http") or not url.netloc:
+            raise SystemExit(f"datos[{i}].fuente_url no válida")
+        if row.get("fuente_fecha"):
+            date.fromisoformat(row["fuente_fecha"])
         fuente = _need(row, "fuente_tipo")
         if fuente not in FUENTE:
             raise SystemExit(f"datos[{i}].fuente_tipo no válido: {fuente}")
@@ -84,14 +97,43 @@ def validate(data: dict[str, Any]) -> None:
         _need(row, "cuerpo")
 
 
-def save(data: dict[str, Any]) -> int:
+def save(data: dict[str, Any], *, owner: str, token: str,
+         request_id: str | None = None, source_hash: str | None = None) -> int:
     import psycopg2
 
+    if request_id is not None or "tipo_entrada" in data:
+        if not request_id:
+            raise ValueError("El contrato ampliado requiere request_id")
+        from research_asunto import save as save_regional
+        return save_regional(data, request_id=request_id, source_hash=source_hash,
+                             owner=owner, token=token)
     validate(data)
-    conn = psycopg2.connect(_db_url())
+    if not owner or not token:
+        raise ValueError("Se requiere owner y token de reserva")
+    digest = hashlib.sha256(json.dumps(data, sort_keys=True, ensure_ascii=False,
+                                      separators=(",", ":")).encode()).hexdigest()
+    conn = psycopg2.connect(_db_url(), connect_timeout=10,
+                            options="-c statement_timeout=15000 -c lock_timeout=5000")
     try:
         conn.autocommit = False
         with conn.cursor() as cur:
+            cur.execute("SELECT id FROM homes.proyecto WHERE id=%s FOR UPDATE", (data["proyecto_id"],))
+            cur.execute("""SELECT owner, token::text, expires_at > clock_timestamp(),
+                                  investigacion_id, payload_sha256
+                           FROM homes.proyecto_investigacion_lease WHERE proyecto_id=%s FOR UPDATE""",
+                        (data["proyecto_id"],))
+            lease = cur.fetchone()
+            if not lease or lease[0:2] != (owner, token):
+                raise ValueError("Reserva no pertenece a owner/token")
+            if lease[3] is not None:
+                if lease[4] != digest:
+                    raise ValueError("Reintento con contenido distinto")
+                conn.rollback()
+                return int(lease[3])
+            if not lease[2]:
+                raise ValueError("Reserva caducada")
+            cur.execute("SELECT set_config('homes.research_owner',%s,true), "
+                        "set_config('homes.research_token',%s,true)", (owner, token))
             cur.execute(
                 """
                 INSERT INTO homes.proyecto_investigacion
@@ -162,6 +204,12 @@ def save(data: dict[str, Any]) -> int:
                         int(row.get("orden", i)),
                     ),
                 )
+            cur.execute("""UPDATE homes.proyecto_investigacion_lease SET investigacion_id=%s,
+                              payload_sha256=%s WHERE proyecto_id=%s
+                              AND expires_at > clock_timestamp() RETURNING proyecto_id""",
+                        (inv_id, digest, data["proyecto_id"]))
+            if not cur.fetchone():
+                raise ValueError("Reserva caducada durante el guardado")
         conn.commit()
         return int(inv_id)
     except Exception:
@@ -174,8 +222,13 @@ def save(data: dict[str, Any]) -> int:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", help="JSON de la investigación. Si falta, se lee stdin.")
+    parser.add_argument("--owner", required=True, help="Propietario de la reserva")
+    parser.add_argument("--token", required=True, help="Token de fencing de la reserva")
+    parser.add_argument("--request-id", help="UUID de investigación del contrato ampliado")
+    parser.add_argument("--source-hash", help="Versión del contexto investigado")
     args = parser.parse_args()
-    inv_id = save(_load(args.file))
+    inv_id = save(_load(args.file), owner=args.owner, token=args.token,
+                  request_id=args.request_id, source_hash=args.source_hash)
     print(inv_id)
 
 

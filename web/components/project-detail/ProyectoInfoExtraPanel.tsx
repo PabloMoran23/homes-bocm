@@ -26,10 +26,11 @@ function formatDay(value: string | null | undefined): string | null {
 }
 
 export function proyectoInfoTabs(info: ProyectoInfoExtra): { id: ProyectoInfoTabId; label: string }[] {
-  const tabs: { id: ProyectoInfoTabId; label: string }[] = [
-    { id: "relato", label: "Qué está pasando" },
-    { id: "datos", label: "Datos" },
-  ];
+  const tabs: { id: ProyectoInfoTabId; label: string }[] = [];
+  if (info.resumen.trim()) tabs.push({ id: "relato", label: "Qué está pasando" });
+  if (info.datos.some((dato) => DATOS_COLUMNAS.flat().includes(dato.bloque) && dato.clave !== "nombre_publico")) {
+    tabs.push({ id: "datos", label: "Datos" });
+  }
   if (info.datos.some((dato) => dato.bloque === "cronologia")) {
     tabs.push({ id: "cronologia", label: "Cronología" });
   }
@@ -122,7 +123,7 @@ function BloqueList({ info, bloque }: { info: ProyectoInfoExtra; bloque: Proyect
   return (
     <section>
       <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {PROYECTO_INFO_BLOQUE_LABEL[bloque]}
+        {bloque === "programa" && info.tipoEntrada && info.tipoEntrada !== "actuacion" ? "Contenido y condiciones" : PROYECTO_INFO_BLOQUE_LABEL[bloque]}
       </h3>
       <div className="mt-1">
         {rows.map((dato) => (
@@ -195,6 +196,8 @@ export function ProyectoInfoTabPanel({
   tab: ProyectoInfoTabId;
   tramitacion?: SigmaVisorTramite[] | null;
 }) {
+  if (!proyectoInfoTabs(info).some((item) => item.id === tab)) return null;
+
   if (tab === "relato") {
     return (
       <div>
@@ -217,12 +220,6 @@ export function ProyectoInfoTabPanel({
             </div>
           ))}
         </div>
-        {info.huecos ? (
-          <p className="text-sm leading-relaxed text-slate-600">
-            <span className="font-semibold text-slate-700">Aún no consta: </span>
-            {info.huecos}
-          </p>
-        ) : null}
       </div>
     );
   }
@@ -262,9 +259,7 @@ export function ProyectoInfoTabPanel({
               <DatoRow key={`${dato.orden}-${dato.etiqueta}`} dato={dato} />
             ))}
           </div>
-        ) : (
-          <p className="mt-3 text-sm text-slate-500">Sin recortes de prensa en la ficha.</p>
-        )}
+        ) : null}
       </div>
       {info.hallazgos.length > 0 ? (
         <div>

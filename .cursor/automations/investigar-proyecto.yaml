@@ -1,7 +1,8 @@
-name: Investigar proyecto importante
+name: Investigar entrada territorial
 description: >
-  Cada día toma el siguiente proyecto importante sin ficha extra, investiga
-  terreno, obras, actores y prensa, y guarda el relato y los datos en Supabase.
+  Investiga una entrada territorial, incluyendo planeamiento, normativa,
+  documentos y subastas; clasifica su asunto, relaciona padres y conserva
+  también las investigaciones parciales o pendientes de identificar.
 
 trigger:
   - type: cron
@@ -18,6 +19,7 @@ model: default
 
 # El prompt operativo está en .cursor/prompts/investigar-proyecto.md
 # Hay que pegarlo en Instructions de la UI. La UI no lee este path sola.
+# Requiere 20261017140000 + 20261017160000; reserva con research_asunto.py y guarda con save_proyecto_info_extra.py.
 instructions_file: .cursor/prompts/investigar-proyecto.md
 
 sandbox:
