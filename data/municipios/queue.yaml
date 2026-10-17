@@ -55,11 +55,11 @@ municipios:
 - slug: zaragoza
   nombre: Zaragoza
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-17T20:18:34.272301+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/902
   notes: Sin boletín asociado
   comunidad_autonoma: aragon
   provincia: Zaragoza
