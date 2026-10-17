@@ -1,0 +1,32 @@
+slug: sant-joan-dalacant
+nombre: "Sant Joan d'Alacant"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.santjoandalacant.es"
+  adapter: municipio.adapters.sant_joan_d_alacant:SantJoanDAlacantAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-sant-joan-dalacant/1.0)"
+    web_base: "https://www.santjoandalacant.es"
+    sede_base: "https://santjoandalacant.sedelectronica.es"
+    board_url: "https://santjoandalacant.sedelectronica.es/board"
+    dossier_url: "https://santjoandalacant.sedelectronica.es/dossier"
+    urbanismo_area_id: 505
+    centroid_lat: 38.4014
+    centroid_lon: -0.4367
+    canonical_slug: sant-joan-d-alacant
+  notes: |
+    Alias de cola BOCM/CCAA (`sant-joan-dalacant`) al pipeline canónico `sant-joan-d-alacant`.
+    Mismo adapter: WordPress Elementor + sede espublico gestiona.
+
+licencias:
+  enabled: true
+  notes: Tablón sede + catálogo trámites urbanismo
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: WP área urbanismo/PGOU + noticias taxonomía Urbanismo + tablón sede

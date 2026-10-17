@@ -52,9 +52,9 @@
 
 ## Geometría / visor
 
-- **geometry_status:** `unavailable`
+- **geometry_status:** `unavailable` (adapter; sin cruce expediente↔GIS)
 - **Fuentes evaluadas:**
-  - ICV `terramapas.icv.gva.es/0702_Planeamiento` WFS `InventarioSuSuz` con `cod_ine_mun=03119` → **0 polígonos** para Sant Joan d'Alacant.
+  - ICV `terramapas.icv.gva.es/0702_Planeamiento` WFS `InventarioSuSuz` con `cod_ine_mun=03119` → **~8k polígonos** SUZ/UA (no enlazados a tablón/WP en el scrape actual).
   - Generalitat Valenciana: documentación PGOU en `mediambient.gva.es/auto/urbanismo/.../03119 SANT JOAN D'ALACANT/` (PDFs/planos, sin API GeoJSON).
   - No visor ArcGIS/WFS municipal público enlazado desde el portal.
 - **Estrategia:** sin geometría en adapter; orquestador aplicará centroide municipio + jitter.
