@@ -1,0 +1,36 @@
+slug: santervas-de-la-vega
+nombre: "Santervás de la Vega"
+provincia: "Santervás de la Vega (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://santervasdelavega.es"
+  adapter: municipio.adapters.santervas_de_la_vega:SantervasDeLaVegaAyuntamientoAdapter
+  config:
+    web_base: "https://santervasdelavega.es"
+    sede_base: "https://santervasdelavega.sedelectronica.es"
+    board_url: "https://santervasdelavega.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santervas-de-la-vega/1.0"
+    insecure_ssl: true
+    centroid: [42.551, -4.812]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Santervás de la Vega"
+    plai_provincia: 34
+    plai_municipio: 146
+  notes: |
+    Web WordPress (Diputación Palencia): galería urbanismo + ficha proyecto delimitación suelo urbano (PDFs).
+    Sede espublico gestiona: tablón /board.
+    PLAU JCYL provincia 34 municipio 146 (NUM y modificaciones).
+    Geometría: IDECyL WFS instrumento de ámbito (polígono municipal NUM).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
