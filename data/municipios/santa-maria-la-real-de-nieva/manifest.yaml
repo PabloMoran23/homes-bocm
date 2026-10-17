@@ -1,0 +1,30 @@
+slug: santa-maria-la-real-de-nieva
+nombre: "Santa María la Real de Nieva"
+provincia: "Santa María la Real de Nieva - Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://santamariadenieva.es"
+  adapter: municipio.adapters.santa_maria_la_real_de_nieva:SantaMariaLaRealDeNievaAyuntamientoAdapter
+  config:
+    web_base: "https://santamariadenieva.es"
+    sede_base: "https://santamariadenieva.sedelectronica.es"
+    board_url: "https://santamariadenieva.sedelectronica.es/board"
+    plai_municipio: 185
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Santa María la Real de Nieva"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-maria-la-real-de-nieva/1.0"
+    insecure_ssl: true
+  notes: |
+    WordPress (santamariadenieva.es) + sede espublico gestiona.
+    Planeamiento: archivo PLAI JCYL (provincia 40, municipio 185).
+    Geometría: IDECyL WFS PLAU CyL (instrumentos, planes parciales, sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
