@@ -1,8 +1,8 @@
-name: Investigar proyecto importante
+name: Investigar entrada territorial
 description: >
-  Cada día reserva un proyecto sin investigación, priorizando fichas visitadas
-  en sesiones humanas; investiga terreno, obras, actores y prensa y guarda
-  transaccionalmente en Supabase con owner/token compartidos con Luna.
+  Investiga una entrada territorial, incluyendo planeamiento, normativa,
+  documentos y subastas; clasifica su asunto, relaciona padres y conserva
+  también las investigaciones parciales o pendientes de identificar.
 
 trigger:
   - type: cron
@@ -19,7 +19,7 @@ model: default
 
 # El prompt operativo está en .cursor/prompts/investigar-proyecto.md
 # Hay que pegarlo en Instructions de la UI. La UI no lee este path sola.
-# Requiere migración 20261017120000_research_leases.sql y adopción con Cursor pausado.
+# Requiere migración aditiva 20261017140000_regional_research.sql y nuevo helper research_asunto.py.
 instructions_file: .cursor/prompts/investigar-proyecto.md
 
 sandbox:
