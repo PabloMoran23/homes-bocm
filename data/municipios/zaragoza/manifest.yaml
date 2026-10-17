@@ -1,0 +1,29 @@
+slug: zaragoza
+nombre: "Zaragoza"
+provincia: Zaragoza
+comunidad_autonoma: aragon
+
+portal:
+  base_url: "https://www.zaragoza.es"
+  adapter: municipio.adapters.zaragoza:ZaragozaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-zaragoza/1.0"
+    wfs_base: "https://idezar-sig.zaragoza.es/servicios/geoserver/urbanismo/wfs"
+    max_tablon_pages: 6
+    max_tablon_json_fetch: 80
+  notes: |
+    Proyectos: IDEZar WFS (PLA_1_Instrumentos_ambito + ámbitos desarrollo/recogido),
+    PDFs en planeamiento/informacion-publica y extractos Consejo Gerencia Urbanismo (tablón JSON).
+    Licencias: catálogo de trámites urbanísticos en sede (sin registro de concesiones).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  source_crs: EPSG:4326
+  notes: IDEZar WFS urbanismo con srsName=EPSG:4326 en el adapter.
