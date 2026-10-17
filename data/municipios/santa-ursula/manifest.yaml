@@ -1,0 +1,29 @@
+slug: santa-ursula
+nombre: "Santa Úrsula"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.santaursula.es"
+  adapter: municipio.adapters.santa_ursula:SantaUrsulaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.santaursula.es"
+    edictos_rss: "https://sede.santaursula.es/publico/sindicacion/edictos/RSS"
+    sitcan_package: "planeamiento-urbanistico-de-santa-ursula"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38040/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-ursula/1.0"
+    centroid: [28.4261, -16.4889]
+  notes: |
+    WordPress corporativo + sede Galileo GIYS (edictos RSS, tablón, procedimientos URBANISMO,
+    informe urbanístico y localización de expedientes).
+    Planeamiento sistematizado SITCAN/GRAFCAN (38 recursos) con geometría GeoBDP.
+    Sin listado público de licencias concedidas; trámites informativos en sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
