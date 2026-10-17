@@ -48,7 +48,11 @@ export type ProyectoInfoExtra = {
   id: number;
   proyectoId: string;
   investigadoAt: string;
-  estado: "completa" | "parcial";
+  estado: "completa" | "parcial" | "pendiente_identificar";
+  tipoEntrada?: string | null;
+  asuntoId?: string | null;
+  padreId?: string | null;
+  razonPendiente?: string | null;
   resumen: string;
   huecos: string | null;
   datos: ProyectoInfoDato[];
@@ -81,7 +85,7 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
   if (!row) return null;
   const resumen = asText(row.resumen);
   const proyectoId = asText(row.proyectoId);
-  const estado = row.estado === "parcial" ? "parcial" : row.estado === "completa" ? "completa" : null;
+  const estado = row.estado === "parcial" ? "parcial" : row.estado === "completa" ? "completa" : row.estado === "pendiente_identificar" ? "pendiente_identificar" : null;
   if (!resumen || !proyectoId || !estado) return null;
 
   const datos: ProyectoInfoDato[] = [];
@@ -140,6 +144,10 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
     proyectoId,
     investigadoAt: asText(row.investigadoAt) || "",
     estado,
+    tipoEntrada: asText(row.tipoEntrada),
+    asuntoId: asText(row.asuntoId),
+    padreId: asText(row.padreId),
+    razonPendiente: asText(row.razonPendiente),
     resumen,
     huecos: asText(row.huecos),
     datos,

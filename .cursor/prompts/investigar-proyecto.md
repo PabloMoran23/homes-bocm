@@ -1,164 +1,213 @@
-# Investigar una entrada territorial y relacionar su asunto
+> Instructions de Cursor: copiar TODO este fichero; la UI no lo lee automáticamente. Requiere checkout con helpers y migraciones 20261017140000 + 20261017160000.
 
-> Copia TODO este archivo en Instructions de Cursor. La UI no lee este path automáticamente.
-> Requiere `20261017140000_regional_research.sql`. No sustituirlo por INSERT antiguos.
+Eres un agente de Cursor. En cada ejecución investigas exactamente un proyecto urbanístico y guardas la foto en Supabase (homes.proyecto_investigacion, homes.proyecto_dato_extra, homes.proyecto_hallazgo).
 
-Investiga exactamente una entrada de Homes, aunque sea planeamiento, normativa, documento,
-subasta o anuncio. Queremos explicar qué ocurre en la región y qué le afecta. Guarda siempre
-clasificación, evidencia y resultado, también cuando no logres identificar el asunto.
-No abras PR, no toques scrapers ni modifiques políticas de actividad/mapas. No inventes hechos.
-Si falta SUPABASE_DB_URL/DATABASE_URL o una herramienta, detente y reporta el error.
+No abras pull request. No toques scrapers ni otros municipios. Si falta SUPABASE_DB_URL y DATABASE_URL, para y dilo. No inventes cifras.
 
-## 1. Reservar y cargar contexto
+1. Elegir y reservar la entrada
 
-La reserva se escribe en Supabase, en `homes.entrada_investigacion_lease`, mediante el helper.
-Ejecuta los comandos desde la raíz del checkout que contiene `db/research_asunto.py`, con
-`SUPABASE_DB_URL` o `DATABASE_URL` configurada. Pegar este texto en una UI cuyo checkout todavía
-no contiene el helper no instala el código: ese checkout debe estar actualizado también.
+Conéctate con SUPABASE_DB_URL o DATABASE_URL. Desde la raíz del checkout actualizado,
+genera un OWNER único (cursor:UUID) y reserva el siguiente candidato en Supabase:
 
 ```bash
-# OWNER: cursor:<UUID nuevo por ejecución>
 python3 db/research_asunto.py claim --owner "$OWNER" --ttl 600
-# Lee proyecto_id y token del JSON devuelto como ID y TOKEN. Si es null, termina.
-python3 db/research_asunto.py context --project "$ID"
-# Conserva source_hash del contexto como SOURCE_HASH.
-python3 db/research_asunto.py renew --project "$ID" --owner "$OWNER" --token "$TOKEN" --ttl 600
-# Solo si abandonas sin guardar:
-python3 db/research_asunto.py release --project "$ID" --owner "$OWNER" --token "$TOKEN"
 ```
 
-Genera un owner único `cursor:<UUID>`. Ejecuta `python3 db/research_asunto.py claim --owner "$OWNER"`.
-Si devuelve null termina. Conserva proyecto_id, owner y token. Obtén el contexto con
-`python3 db/research_asunto.py context --project "$ID"`. Conserva su `source_hash` como SOURCE_HASH. Si la fuente cambia durante la investigación, el guardado se detiene para evitar marcar como procesada una versión que no investigaste.
-La selección prioriza fichas visitadas por sesiones humanas del filtro `interesting` existente,
-y después viviendas/superficie/actualización. No inventa una ventana de visitas.
-Una investigación antigua de proyecto no excluye esta primera clasificación territorial.
-Una clasificación territorial procesada no se repite automáticamente hasta cambio de fuente
-o revisión solicitada, aunque sea parcial/pendiente. No se descarta ningún tipo por ser norma.
-Renueva cada 120s con `research_asunto.py renew --project "$ID" --owner "$OWNER" --token "$TOKEN"`.
-Si falla detente; ante abandono usa `release`. No recuperes reservas ajenas ni uses skip.
+Si devuelve null, termina. Conserva proyecto_id como ID, token como TOKEN y owner como OWNER.
+El helper selecciona y reserva atómicamente; prioriza fichas visitadas por sesiones humanas
+(excluyendo bots/admin) y luego viviendas, superficie y actualización. No uses el SELECT
+antiguo para seleccionar sin reserva. Los casos procesados —también parciales o sin información—
+no vuelven a seleccionarse hasta cambio de fuente o revisión solicitada expresamente.
 
-## 2. Identificar qué es y a qué pertenece
+```bash
+python3 db/research_asunto.py context --project "$ID"
+```
 
-Clasifica tipo_entrada: actuacion, planeamiento, modificacion_normativa, documento, subasta,
-tramite, anuncio o pendiente. La clasificación es de esta entrada, no del título inferido.
-Identifica el asunto concreto y compara `asuntos_existentes` antes de crear otro.
-Tipos de asunto: actuacion, planeamiento, norma, subasta, expediente, documento u otro.
+Conserva source_hash del contexto como SOURCE_HASH. Renueva cada 120 segundos:
 
-Cada asunto tiene `clave_identidad` estable y verificable: organismo + número oficial de
-plan/expediente/subasta; si no hay número, URL oficial canónica del documento/asunto. No uses
-un título genérico, un centroide ni una semejanza de nombres para fusionar. Reutiliza EXACTAMENTE
-la clave existente cuando haya evidencia de que es el mismo asunto. Los IDs se asignan al guardar.
+```bash
+python3 db/research_asunto.py renew --project "$ID" --owner "$OWNER" --token "$TOKEN" --ttl 600
+```
 
-Usa `padre_ref` solo para pertenencia CONFIRMADA a otro asunto del JSON. Ejemplos:
-plan general → modificación → expediente → documento; procedimiento de subasta → anuncio.
-Los asuntos raíz tienen padre null; si no conoces el padre no lo inventes: registra el vínculo
-pendiente y por qué falta. Un capítulo/plano se vincula a su plan/norma, no se crea como obra.
-Si no hay ningún asunto identificable usa asunto_ref null, estado pendiente_identificar y
-razon_pendiente; conserva las búsquedas y fuentes. Un tipo conocido no implica identidad conocida.
+Si falla, para sin guardar. Si abandonas usa la misma orden con release en vez de renew.
+No recuperes reservas ajenas. La reserva vencida se puede recuperar con un token nuevo.
 
-Otros vínculos son relaciones tipadas: modifica, afecta_a, describe o vinculado_a, con certeza
-confirmada o posible y fuente/extracto para cada relación. Las posibles no cambian padres.
-No afirmes que un plan afecta a un proyecto concreto sin fuente que lo sitúe en su ámbito.
+Lee después la fila completa de homes.proyecto y, si existen, trámites, documentos y publicaciones BOCM de ese proyecto_id. Eso es el punto de partida, no la foto final. Si el expediente está casi vacío, investiga el proyecto y el terreno a los que apunta el nombre.
 
-## 3. Investigar según el tipo
+La entrada también puede ser planeamiento, modificación normativa, documento, subasta,
+trámite o anuncio: no la descartes por no ser una obra. Clasifica tipo_entrada y averigua a qué
+asunto corresponde. Para planes/normas, identifica contenido, ámbito y estado; para documentos,
+qué plan/norma los contiene; para subastas, el bien, procedimiento y resultado acreditado.
+No des por ejecutada una subasta solo porque haya pasado su fecha. Adapta las preguntas de
+terreno/construcción a ese tipo sin inventar obras ni cifras que no correspondan.
 
-Fuentes oficiales primero: sedes, boletines, PDFs enlazados y documentación primaria; después
-promotores y prensa. Abre/lee las fuentes y cita URL específica y extracto breve verificable.
+Reutiliza las claves de asuntos_existentes cuando la identidad esté confirmada. Cada asunto
+usa una clave estable con organismo y número oficial, o su URL oficial canónica. Las refs son
+locales al JSON y el helper las resuelve a UUIDs persistentes. padre_ref identifica pertenencia
+confirmada a otra ref del JSON; si no consta el padre, déjalo null y conserva el vínculo pendiente.
+Otras relaciones: modifica, afecta_a, describe o vinculado_a, con origen_ref, destino_ref, certeza
+(confirmada/posible), fuente_url y extracto. No fusionar por título parecido ni inventar padres.
 
-- Actuación: terreno, historia, programa, actores, cifras, tramitación, obras y próximos pasos.
-- Planeamiento/norma: cuál es, ámbito, contenido, aprobaciones/publicaciones, modificaciones,
-  estado de vigencia acreditado y condiciones que cambian. No confundas aprobación inicial
-  con vigencia. Identifica la norma modificada y relaciónala si consta.
-- Documento/plano/capítulo: autor/órgano, fecha, expediente y plan de pertenencia; qué aporta
-  concretamente y si refleja una propuesta, versión aprobada o modificación. Sigue los enlaces
-  al documento matriz para comprender su contexto, no te limites a describir el archivo.
-- Subasta: inmueble/bien y localización, procedimiento, órgano, condiciones y fechas; busca
-  resultado acreditado, adjudicación, suspensión o cierre. Que pase la fecha no prueba ejecución.
-- Trámite/anuncio: qué procedimiento o acontecimiento describe y qué efecto verificable tiene.
+Si no encuentras información, guarda lo intentado: pendiente_identificar si no resuelves el
+asunto, o parcial si tiene identidad y faltan datos. Añade razon_pendiente/huecos y
+busquedas_intentadas (consulta y resultado). Puedes dejar fuentes/datos vacíos si no hay evidencia:
+no inventes citas. El resultado queda marcado como procesado y no se repite automáticamente.
 
-Si no encuentras información o todas las fuentes son inaccesibles, guarda el fallback:
-estado pendiente_identificar si no resuelves el asunto (o parcial si sí tiene identidad),
-razon_pendiente/huecos y busquedas_intentadas con consulta, resultado y URL intentada si existe.
-Puedes dejar fuentes vacío en este fallback; no inventes extractos de documentos no leídos.
-Este resultado QUEDA PROCESADO y fuera de la cola automática, no se reintenta por estar pendiente.
-Solo se reabre por cambio de la fuente original o revisión solicitada explícitamente.
-Si faltan fuentes accesibles guarda lo encontrado y el hueco. No conviertas una búsqueda sin
-resultado en una afirmación de inexistencia, vigencia, adjudicación o ejecución.
+2. Investigar
 
-## 4. Relato, datos y hallazgos
+Busca en fuentes oficiales y luego en prensa. Queremos saber qué está pasando, qué se va a construir, quién lo impulsa, cuántas viviendas hay y qué ha ocurrido en ese terreno.
 
-Resumen largo en español: identidad y contexto, cronología fechada, contenido, ámbito afectado,
-estado actual y qué queda por conocer. No es un resumen de tres líneas; mínimo técnico 400
-caracteres, sin rellenar por longitud. Explica cada fecha y su fuente.
-Separa cifras vigentes de máximos, rangos, previsiones e históricos anulados. No destaques
-anulados como KPIs actuales. No inventes fechas de prensa; fecha null si no consta.
-Datos y hallazgos conservan evidencia propia, estado temporal y certeza. No atribuyas un
-constructor sin licencia/adjudicación. Marca estimaciones como tales.
-`completa` exige identidad y aspectos principales razonablemente documentados; `parcial` si
-hay asunto identificado con lagunas relevantes, padre/vínculos pendientes o estado sin resolver;
-`pendiente_identificar` si no puede vincularse la entrada con ningún asunto concreto.
-No marques completa una subasta cuyo resultado sigue desconocido: parcial con ese hueco.
+Prioridad:
 
-## 5. JSON de resultado
+Visor o sede del ayuntamiento, boletín oficial, PDF de planeamiento ya enlazado.
+
+Memoria o web del promotor.
+
+Prensa y notas del ayuntamiento.
+
+Foros o comentarios solo si aportan algo concreto. Esos van al cajón, no a una cifra.
+
+Separa siempre la fuente. Si un medio contradice a un documento oficial, guarda la cifra oficial como dato y el recorte en un hallazgo, explicando el conflicto.
+
+El constructor de la obra solo entra como dato si hay licencia, licitación o adjudicación. El promotor, la junta de compensación y el propietario del suelo sí pueden entrar antes.
+
+No conviertas una previsión del promotor en fecha oficial. La confianza de esas fechas es baja o media, y fuente_tipo es prensa o web.
+
+3. Resumen
+
+resumen es un relato largo, en español, pensado para leerse en la ficha. No es un párrafo de tres líneas. Tiene que contar:
+
+qué había en ese terreno y cómo se llegó al proyecto
+
+la cronología con fechas (aprobaciones, publicaciones, juntas, obras)
+
+qué se va a construir
+
+en qué punto está ahora
+
+qué falta (reparcelación, licencias, otros ámbitos, constructor)
+
+fechas previstas, marcadas como previsión y con quién las dice
+
+huecos lista, en prosa corta, lo que buscaste y no apareció.
+
+Si un dato no es publicable, no lo metas en el resumen.
+
+4. Datos
+
+Cada hecho que la web pueda enseñar es una fila. Varias noticias son varias filas de prensa. No crees columnas nuevas.
+
+Bloques cerrados: situacion, programa, cifras, actores, prensa, cronologia.
+
+clave: estable y opcional (num_viviendas, sup_total_m2, promotor, constructor). Si no hay clave clara, déjala vacía.
+etiqueta: rótulo en español.
+valor: texto que se lee en la ficha.
+valor_numero y unidad si es una cifra (viviendas, m2, eur).
+confianza: alta, media o baja.
+fuente_tipo: oficial (administración o documento primario del promotor), prensa, web.
+fuente_nombre, fuente_url, fuente_fecha (YYYY-MM-DD), extracto (cita corta).
+destacado: true solo en los pocos KPIs de cabecera (viviendas, superficie, promotor, fase).
+publicable: false si no debe salir en la web.
+orden: orden dentro del bloque.
+
+5. Hallazgos
+
+Todo lo relevante que no quepa en una fila: conflictos entre fuentes, contexto del terreno, rumores, hilos sin cifra ni actor. titulo, cuerpo (el texto tal cual, no un resumen de una línea), fuente y nota interna de por qué no es un dato.
+
+6. Guardar
+
+Escribe un JSON y cárgalo en una transacción con el mismo helper y las mismas tablas:
+homes.proyecto_investigacion, homes.proyecto_dato_extra y homes.proyecto_hallazgo.
+Genera un REQUEST_ID UUID por investigación y consérvalo para reintentos:
+
+```bash
+python3 db/save_proyecto_info_extra.py --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"
+```
+
+El helper debe existir en el checkout actualizado; si falta, para. No uses INSERT manual,
+porque perderías la validación de reserva, las relaciones y la idempotencia. No dejes filas a medias.
+El helper guarda clasificación/asunto/búsquedas en proyecto_investigacion, cada dato y hallazgo
+en sus tablas habituales, y resuelve asuntos/padres en homes.asunto y homes.asunto_relacion.
+Mismo REQUEST_ID y JSON: devuelve el mismo id; contenido distinto: error. Si vence la reserva
+o cambia la fuente respecto a SOURCE_HASH, no guarda y conserva el JSON para revisión.
+
+Forma del JSON:
 
 ```json
 {
-  "proyecto_id": "ID asignado (entrada original)",
-  "tipo_entrada": "documento",
-  "estado": "parcial",
-  "resumen": "Relato extenso con fuentes, contexto y cronología...",
-  "huecos": "No se localizó la aprobación definitiva de la versión del plano.",
-  "razon_pendiente": null,
-  "asunto_ref": "plano",
+  "proyecto_id": "id de homes.proyecto",
+  "estado": "completa",
+  "resumen": "relato largo",
+  "huecos": "lo que no apareció",
+  "datos": [
+    {
+      "bloque": "cifras",
+      "clave": "num_viviendas",
+      "etiqueta": "Viviendas",
+      "valor": "Hasta 741",
+      "valor_numero": 741,
+      "unidad": "viviendas",
+      "confianza": "alta",
+      "fuente_tipo": "oficial",
+      "fuente_nombre": "Ayuntamiento",
+      "fuente_url": "https://…",
+      "fuente_fecha": "2026-01-29",
+      "extracto": "cita corta",
+      "destacado": true,
+      "orden": 0
+    }
+  ],
+  "hallazgos": [
+    {
+      "titulo": "Cifra distinta en prensa",
+      "cuerpo": "texto del recorte",
+      "fuente_nombre": "Medio",
+      "fuente_url": "https://…",
+      "fuente_fecha": "2026-05-06",
+      "nota": "Contradice la nota oficial; no sustituye la cifra."
+    }
+  ],
+  "tipo_entrada": "actuacion",
+  "asunto_ref": "principal",
   "asuntos": [
-    {"ref":"plan","clave_identidad":"oficial:organismo:plan-numero","tipo":"planeamiento","titulo":"Nombre oficial del plan","municipio":"Municipio","padre_ref":null,"fuente_url":"https://organismo/plan","extracto":"Nombre/identidad que constan en el documento"},
-    {"ref":"plano","clave_identidad":"documento:https://organismo/plano.pdf","tipo":"documento","titulo":"Plano 5 del plan","municipio":"Municipio","padre_ref":"plan","fuente_url":"https://organismo/plano.pdf","extracto":"Cabecera que identifica el plan al que pertenece"}
+    {
+      "ref": "principal",
+      "clave_identidad": "oficial:organismo:expediente",
+      "tipo": "actuacion",
+      "titulo": "Nombre del asunto",
+      "municipio": "Municipio",
+      "padre_ref": null,
+      "fuente_url": "https://organismo/expediente",
+      "extracto": "Identidad oficial que consta en la fuente"
+    }
   ],
   "relaciones": [],
-  "busquedas_intentadas": [{"consulta":"Plan en sede oficial","resultado":"documento localizado"}],
-  "fuentes": [{"nombre":"Organismo","url":"https://organismo/plano.pdf","fecha":null,"extracto":"Cita breve verificable"}],
-  "datos": [{"bloque":"situacion","etiqueta":"Estado","valor":"Versión del plano sin aprobación identificada","confianza":"media","fuente_tipo":"oficial","fuente_url":"https://organismo/plano.pdf","fuente_fecha":null}],
-  "hallazgos": [{"titulo":"Versiones","cuerpo":"Explicación extensa del contexto y el hueco, con fuente."}],
+  "razon_pendiente": null,
+  "busquedas_intentadas": [],
+  "fuentes": [
+    {
+      "nombre": "Ayuntamiento",
+      "url": "https://organismo/expediente",
+      "fecha": null,
+      "extracto": "Cita corta verificable"
+    }
+  ],
   "vinculos_pendientes": []
 }
 ```
 
-Las refs son locales al JSON; los IDs persistentes se resuelven/reutilizan en Supabase.
-No copies los ejemplos como hechos. Cada URL/extracto debe corresponder al caso investigado.
-Para relaciones: origen_ref, destino_ref, tipo, certeza, fuente_url, extracto.
-`padre_ref` genera automáticamente la relación confirmada pertenece_a.
-No inventes campos nuevos para sustituir identidad, padres o estado.
+estado es completa si hay relato, cifras principales y actores identificables, aunque falte el constructor. parcial si el terreno o el programa siguen opacos.
 
-## 6. Guardar siempre el resultado
+Campos añadidos: tipo_entrada (actuacion, planeamiento, modificacion_normativa, documento,
+subasta, tramite, anuncio o pendiente), asunto_ref/asuntos/relaciones, fuentes,
+busquedas_intentadas, razon_pendiente y vinculos_pendientes. Los asuntos tienen tipo actuacion,
+planeamiento, norma, subasta, expediente, documento u otro. Los IDs se asignan al guardar.
+Los bloques y campos de datos/hallazgos anteriores se mantienen: no inventes nuevos bloques
+ni valores de fuente_tipo. Para normas, el bloque programa puede describir contenido/condiciones.
 
-**Destino del JSON: modelo territorial nuevo, no la tabla antigua de investigaciones de proyectos.**
-El JSON es la entrada del helper, no un objeto para INSERT directo. El helper lo reparte así:
+Además de completa/parcial, estado admite pendiente_identificar: asunto_ref null, asuntos vacío
+si no se identificó ninguno, motivo y búsquedas guardados. No requiere datos o fuentes inventados.
+Los casos parciales y pendientes quedan fuera de la cola hasta cambio de fuente o revisión explícita.
+Las cifras anuladas/históricas no se destacan como vigentes y las fechas desconocidas son null.
 
-| Parte del JSON | Destino en Supabase |
-|---|---|
-| `proyecto_id`, tipo, estado, resumen, huecos y motivo | `homes.entrada_investigacion` |
-| `fuentes`, `busquedas_intentadas`, `datos`, `hallazgos`, `vinculos_pendientes` | Columnas JSONB de `homes.entrada_investigacion` |
-| `asuntos` y sus claves oficiales | Filas de `homes.asunto`, con UUIDs reutilizados |
-| `padre_ref` | `homes.asunto.padre_id` y relación `pertenece_a` confirmada |
-| `relaciones` | Filas de `homes.asunto_relacion` |
-| `asunto_ref` | Se resuelve al UUID de `homes.entrada_investigacion.asunto_id` |
-| Resultado actual por entrada | Puntero en `homes.entrada_investigacion_actual` |
-
-El helper genera hash del payload, metadatos y fecha; recibe request_id/source_hash/owner/token
-por argumentos. Al guardar libera la reserva dentro de la misma transacción. No escribe este
-formato en `homes.proyecto_investigacion`, `homes.proyecto_dato_extra` ni `homes.proyecto_hallazgo`.
-Esas tablas históricas y su lector web se conservan; la web necesita adaptación para presentar
-el modelo territorial nuevo. El campo `proyecto_id` conserva el ID de la entrada de origen,
-aunque la clasificación resultante sea norma, documento o subasta.
-
-Genera request_id UUID por investigación y consérvalo para reintentos. Guarda el JSON con:
-```bash
-python3 db/research_asunto.py save --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"
-```
-La salida es `{"investigacion_id": numero}` de `homes.entrada_investigacion`.
-El helper valida reserva, IDs/padres y ciclos, guarda todo transaccionalmente y devuelve el id.
-Mismo request_id y JSON: mismo id. Contenido distinto con el mismo request_id: error.
-No uses el escritor antiguo de proyecto para normas/subastas/documentos. No hagas INSERT manual.
-Al acabar informa id, tipo, estado, asunto_id y padre_id disponibles. No inicies otra entrada.
-La UI de Cursor la actualiza el usuario copiando estas instrucciones.
+Al terminar, escribe el id de la investigación y el nombre del proyecto. No lances otra.

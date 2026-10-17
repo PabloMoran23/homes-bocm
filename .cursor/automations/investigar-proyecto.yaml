@@ -19,7 +19,7 @@ model: default
 
 # El prompt operativo está en .cursor/prompts/investigar-proyecto.md
 # Hay que pegarlo en Instructions de la UI. La UI no lee este path sola.
-# Requiere migración aditiva 20261017140000_regional_research.sql y nuevo helper research_asunto.py.
+# Requiere 20261017140000 + 20261017160000; reserva con research_asunto.py y guarda con save_proyecto_info_extra.py.
 instructions_file: .cursor/prompts/investigar-proyecto.md
 
 sandbox:

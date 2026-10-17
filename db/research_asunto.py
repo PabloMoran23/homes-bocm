@@ -38,6 +38,16 @@ def validate(data):
         raise ValueError('Se requiere relato completo, también para casos pendientes')
     for key in ('datos','hallazgos','vinculos_pendientes','busquedas_intentadas','relaciones'):
         if not isinstance(data.get(key,[]),list):raise ValueError(f'{key} debe ser lista')
+    from save_proyecto_info_extra import BLOQUES, CONFIANZA, FUENTE
+    for fact in data.get('datos',[]):
+        if (not isinstance(fact,dict) or fact.get('bloque') not in BLOQUES
+            or fact.get('confianza') not in CONFIANZA or fact.get('fuente_tipo') not in FUENTE
+            or not fact.get('etiqueta') or not fact.get('valor')):
+            raise ValueError('Dato incompatible con proyecto_dato_extra')
+        if fact.get('fuente_fecha'):date.fromisoformat(fact['fuente_fecha'])
+    for finding in data.get('hallazgos',[]):
+        if not isinstance(finding,dict) or not finding.get('titulo') or not finding.get('cuerpo'):
+            raise ValueError('Hallazgo incompatible con proyecto_hallazgo')
     nodes=data.get('asuntos')
     if not isinstance(nodes,list):raise ValueError('asuntos debe ser lista')
     refs={n.get('ref') for n in nodes}
@@ -79,7 +89,7 @@ def context(project):
         fingerprint=row.pop('_research_source_hash')
         cur.execute('SELECT * FROM homes.asunto WHERE municipio=%s ORDER BY clave_identidad',(row.get('municipio'),))
         topics=[dict(x) for x in cur.fetchall()]
-        cur.execute('SELECT * FROM homes.entrada_investigacion_resumen WHERE proyecto_id=%s',(project,))
+        cur.execute('SELECT * FROM homes.proyecto_investigacion_resumen WHERE proyecto_id=%s',(project,))
         previous=cur.fetchone()
     return {'source_hash':fingerprint,'project':dict(row),'related':legacy_context(project),'asuntos_existentes':topics,
             'investigacion_anterior':dict(previous) if previous else None}
@@ -90,11 +100,11 @@ def claim(owner,ttl=600):
     with connection() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute('''SELECT p.* FROM homes.proyecto p
           LEFT JOIN homes.research_human_project_visits v ON v.proyecto_id=p.id
-          LEFT JOIN homes.entrada_investigacion_actual c ON c.proyecto_id=p.id
-          LEFT JOIN homes.entrada_investigacion i ON i.id=c.investigacion_id
+          LEFT JOIN homes.proyecto_investigacion_actual c ON c.proyecto_id=p.id
+          LEFT JOIN homes.proyecto_investigacion i ON i.id=c.investigacion_id
           WHERE (c.proyecto_id IS NULL OR c.revision_solicitada OR
                  i.source_hash IS DISTINCT FROM homes.research_entrada_source_hash(to_jsonb(p)))
-            AND NOT EXISTS(SELECT 1 FROM homes.entrada_investigacion_lease l
+            AND NOT EXISTS(SELECT 1 FROM homes.proyecto_investigacion_lease l
               WHERE l.proyecto_id=p.id AND l.expires_at>clock_timestamp())
           ORDER BY (coalesce(v.human_sessions,0)>0) DESC,
             COALESCE(p.num_viviendas_max,p.metric_num_viviendas_max,p.bocm_num_viviendas_max,0) DESC,
@@ -103,10 +113,10 @@ def claim(owner,ttl=600):
         p=cur.fetchone()
         if p is None:return None
         # A fresh snapshot after obtaining the project lock fences a just-committed claimant/save.
-        cur.execute('''SELECT EXISTS(SELECT 1 FROM homes.entrada_investigacion_lease
+        cur.execute('''SELECT EXISTS(SELECT 1 FROM homes.proyecto_investigacion_lease
              WHERE proyecto_id=%s AND expires_at>clock_timestamp()) AS busy,
-             EXISTS(SELECT 1 FROM homes.entrada_investigacion_actual c
-               JOIN homes.entrada_investigacion i ON i.id=c.investigacion_id
+             EXISTS(SELECT 1 FROM homes.proyecto_investigacion_actual c
+               JOIN homes.proyecto_investigacion i ON i.id=c.investigacion_id
                JOIN homes.proyecto p ON p.id=c.proyecto_id WHERE p.id=%s
                AND NOT c.revision_solicitada AND i.source_hash=homes.research_entrada_source_hash(to_jsonb(p))) AS done''',(p['id'],p['id']))
         checks=cur.fetchone()
@@ -114,8 +124,8 @@ def claim(owner,ttl=600):
         token=str(uuid.uuid4())
         cur.execute('SELECT homes.research_entrada_source_hash(to_jsonb(p)) AS h FROM homes.proyecto p WHERE id=%s',(p['id'],))
         fingerprint=cur.fetchone()['h']
-        cur.execute('''INSERT INTO homes.entrada_investigacion_lease VALUES (%s,%s,%s,clock_timestamp()+%s*interval '1 second')
-          ON CONFLICT(proyecto_id) DO UPDATE SET owner=EXCLUDED.owner,token=EXCLUDED.token,expires_at=EXCLUDED.expires_at''',(p['id'],owner,token,ttl))
+        cur.execute('''INSERT INTO homes.proyecto_investigacion_lease(proyecto_id,owner,token,expires_at) VALUES (%s,%s,%s,clock_timestamp()+%s*interval '1 second')
+          ON CONFLICT(proyecto_id) DO UPDATE SET owner=EXCLUDED.owner,token=EXCLUDED.token,expires_at=EXCLUDED.expires_at,investigacion_id=NULL,payload_sha256=NULL,retry_after=NULL,skip_reason=NULL''',(p['id'],owner,token,ttl))
         return {'proyecto_id':p['id'],'owner':owner,'token':token,'source_hash':fingerprint,'project':dict(p)}
 
 
@@ -123,26 +133,26 @@ def maintain(project,owner,token,ttl=600,release=False):
     if not 60<=ttl<=3600:raise ValueError('ttl inválido')
     with connection() as conn,conn.cursor() as cur:
         cur.execute('SELECT id FROM homes.proyecto WHERE id=%s FOR UPDATE',(project,))
-        cur.execute('''UPDATE homes.entrada_investigacion_lease SET expires_at=clock_timestamp()+%s*interval '1 second'
+        cur.execute('''UPDATE homes.proyecto_investigacion_lease SET expires_at=clock_timestamp()+%s*interval '1 second'
           WHERE proyecto_id=%s AND owner=%s AND token=%s AND expires_at>clock_timestamp() RETURNING proyecto_id''',
           (0 if release else ttl,project,owner,token))
         if not cur.fetchone():raise ValueError('Reserva perdida o caducada')
 
 
 def save(data,*,request_id,owner=None,token=None,unleased_test=False,source_hash=None):
-    validate(data)
     request_id=str(uuid.UUID(request_id))
     digest=hashlib.sha256(json.dumps(data,sort_keys=True,ensure_ascii=False,separators=(',',':')).encode()).hexdigest()
     with connection() as conn,conn.cursor() as cur:
         cur.execute('SELECT id FROM homes.proyecto WHERE id=%s FOR UPDATE',(data['proyecto_id'],))
         fingerprint=source(cur,data['proyecto_id'])
-        cur.execute('SELECT id,payload_sha256 FROM homes.entrada_investigacion WHERE request_id=%s',(request_id,))
+        cur.execute('SELECT id,payload_sha256 FROM homes.proyecto_investigacion WHERE request_id=%s',(request_id,))
         prior=cur.fetchone()
         if prior:
             if prior[1]!=digest:raise ValueError('Reintento con contenido distinto')
             return prior[0]
+        validate(data)
         if not unleased_test:
-            cur.execute('''SELECT 1 FROM homes.entrada_investigacion_lease WHERE proyecto_id=%s AND owner=%s
+            cur.execute('''SELECT 1 FROM homes.proyecto_investigacion_lease WHERE proyecto_id=%s AND owner=%s
               AND token=%s AND expires_at>clock_timestamp() FOR UPDATE''',(data['proyecto_id'],owner,token))
             if not cur.fetchone():raise ValueError('Reserva viva obligatoria')
             if source_hash is None:raise ValueError('source_hash del contexto obligatorio')
@@ -166,15 +176,19 @@ def save(data,*,request_id,owner=None,token=None,unleased_test=False,source_hash
                 old=cur.fetchone()[0]
                 if old and old!=parent:raise ValueError('Padre confirmado contradictorio')
                 cur.execute('UPDATE homes.asunto SET padre_id=%s WHERE id=%s',(parent,child))
-        cur.execute('''INSERT INTO homes.entrada_investigacion(request_id,proyecto_id,tipo_entrada,asunto_id,
-          estado,resumen,huecos,razon_pendiente,fuentes,busquedas_intentadas,datos,hallazgos,vinculos_pendientes,payload,
+        cur.execute("SELECT set_config('homes.research_owner',%s,true),set_config('homes.research_token',%s,true),set_config('homes.research_unleased_test',%s,true)",
+                    (owner or '',token or '','on' if unleased_test else 'off'))
+        cur.execute('''INSERT INTO homes.proyecto_investigacion(request_id,proyecto_id,tipo_entrada,asunto_id,
+          estado,resumen,huecos,razon_pendiente,fuentes,busquedas_intentadas,vinculos_pendientes,payload,
           payload_sha256,source_hash,execution_mode)
-          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
+          VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id''',
           (request_id,data['proyecto_id'],data['tipo_entrada'],ids.get(data.get('asunto_ref')),data['estado'],
            data['resumen'],data.get('huecos'),data.get('razon_pendiente'),Json(data['fuentes']),
-           Json(data.get('busquedas_intentadas',[])),Json(data.get('datos',[])),Json(data.get('hallazgos',[])),Json(data.get('vinculos_pendientes',[])),
+           Json(data.get('busquedas_intentadas',[])),Json(data.get('vinculos_pendientes',[])),
            Json(data),digest,fingerprint,'unleased_test' if unleased_test else 'leased'))
         inv=cur.fetchone()[0]
+        cur.execute('SELECT homes.research_insert_children(%s,%s,%s,%s)',
+                    (inv,data['proyecto_id'],Json(data.get('datos',[])),Json(data.get('hallazgos',[]))))
         relations=list(data.get('relaciones',[]))
         for n in data['asuntos']:
             if n.get('padre_ref'):
@@ -183,12 +197,12 @@ def save(data,*,request_id,owner=None,token=None,unleased_test=False,source_hash
         for r in relations:
             cur.execute('''INSERT INTO homes.asunto_relacion VALUES (%s,%s,%s,%s,%s,%s,%s)
               ON CONFLICT DO NOTHING''',(ids[r['origen_ref']],ids[r['destino_ref']],r['tipo'],r['certeza'],r['fuente_url'],r['extracto'],inv))
-        cur.execute('''INSERT INTO homes.entrada_investigacion_actual(proyecto_id,investigacion_id)
+        cur.execute('''INSERT INTO homes.proyecto_investigacion_actual(proyecto_id,investigacion_id)
           VALUES (%s,%s) ON CONFLICT(proyecto_id) DO UPDATE SET investigacion_id=EXCLUDED.investigacion_id,revision_solicitada=false''',(data['proyecto_id'],inv))
         if not unleased_test:
-            cur.execute('''UPDATE homes.entrada_investigacion_lease SET expires_at=clock_timestamp()
+            cur.execute('''UPDATE homes.proyecto_investigacion_lease SET expires_at=clock_timestamp(),investigacion_id=%s,payload_sha256=%s
               WHERE proyecto_id=%s AND owner=%s AND token=%s AND expires_at>clock_timestamp() RETURNING proyecto_id''',
-              (data['proyecto_id'],owner,token))
+              (inv,digest,data['proyecto_id'],owner,token))
             if not cur.fetchone():raise ValueError('Reserva caducada durante guardado')
         return inv
 
@@ -206,7 +220,7 @@ def main():
         out={'investigacion_id':save(json.loads(Path(a.file).read_text()),request_id=a.request_id,owner=a.owner,token=a.token,source_hash=a.source_hash)}
     elif a.action=='review':
         with connection() as conn,conn.cursor() as cur:
-            cur.execute('UPDATE homes.entrada_investigacion_actual SET revision_solicitada=true WHERE proyecto_id=%s RETURNING proyecto_id',(a.project,))
+            cur.execute('UPDATE homes.proyecto_investigacion_actual SET revision_solicitada=true WHERE proyecto_id=%s RETURNING proyecto_id',(a.project,))
             out={'revision_solicitada':cur.fetchone() is not None}
     else:maintain(a.project,a.owner,a.token,a.ttl,release=a.action=='release');out={'ok':True}
     print(json.dumps(out,default=str,ensure_ascii=False))

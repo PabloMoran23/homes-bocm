@@ -122,7 +122,7 @@ function BloqueList({ info, bloque }: { info: ProyectoInfoExtra; bloque: Proyect
   return (
     <section>
       <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-        {PROYECTO_INFO_BLOQUE_LABEL[bloque]}
+        {bloque === "programa" && info.tipoEntrada && info.tipoEntrada !== "actuacion" ? "Contenido y condiciones" : PROYECTO_INFO_BLOQUE_LABEL[bloque]}
       </h3>
       <div className="mt-1">
         {rows.map((dato) => (
@@ -199,6 +199,12 @@ export function ProyectoInfoTabPanel({
     return (
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Qué está pasando</h2>
+        {info.estado === "pendiente_identificar" ? (
+          <p className="mt-2 text-sm font-medium text-amber-800">Pendiente de identificar</p>
+        ) : null}
+        {info.estado === "pendiente_identificar" && info.razonPendiente ? (
+          <p className="mt-2 text-sm text-slate-600">{info.razonPendiente}</p>
+        ) : null}
         <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">{info.resumen}</p>
       </div>
     );

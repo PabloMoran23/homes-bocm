@@ -97,9 +97,16 @@ def validate(data: dict[str, Any]) -> None:
         _need(row, "cuerpo")
 
 
-def save(data: dict[str, Any], *, owner: str, token: str) -> int:
+def save(data: dict[str, Any], *, owner: str, token: str,
+         request_id: str | None = None, source_hash: str | None = None) -> int:
     import psycopg2
 
+    if request_id is not None or "tipo_entrada" in data:
+        if not request_id:
+            raise ValueError("El contrato ampliado requiere request_id")
+        from research_asunto import save as save_regional
+        return save_regional(data, request_id=request_id, source_hash=source_hash,
+                             owner=owner, token=token)
     validate(data)
     if not owner or not token:
         raise ValueError("Se requiere owner y token de reserva")
@@ -217,8 +224,11 @@ def main() -> None:
     parser.add_argument("--file", help="JSON de la investigación. Si falta, se lee stdin.")
     parser.add_argument("--owner", required=True, help="Propietario de la reserva")
     parser.add_argument("--token", required=True, help="Token de fencing de la reserva")
+    parser.add_argument("--request-id", help="UUID de investigación del contrato ampliado")
+    parser.add_argument("--source-hash", help="Versión del contexto investigado")
     args = parser.parse_args()
-    inv_id = save(_load(args.file), owner=args.owner, token=args.token)
+    inv_id = save(_load(args.file), owner=args.owner, token=args.token,
+                  request_id=args.request_id, source_hash=args.source_hash)
     print(inv_id)
 
 

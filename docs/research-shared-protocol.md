@@ -1,104 +1,106 @@
-# Investigación territorial: asuntos, documentos y seguimiento
+# Investigación compartida: mismas tablas, clasificación y asuntos
 
-El proceso clasifica e investiga cualquier entrada relevante para la región: actuación,
-planeamiento, modificación normativa, documento, subasta, trámite o anuncio. El nombre histórico
-`homes.proyecto` identifica la entrada de origen; **no obliga a interpretarla como obra/proyecto**.
-No modifica ni sustituye la política de actividad urbanística existente ni sus contadores.
+El prompt de Cursor parte del texto proporcionado por el usuario. Los apartados **Investigar,
+Resumen, Datos y Hallazgos se conservan literalmente** (salvo espacios del pegado). Solo se
+sustituyen la selección por reserva y el guardado sin validación, y se añaden campos y reglas
+para identificar planes, normas, documentos, subastas y casos sin información.
 
-## Modelo persistente
+## Un único historial activo
 
-- `homes.asunto`: identidad canónica UUID, clave estable, tipo, título, municipio, fuente y
-  `padre_id` confirmado. Los asuntos raíz tienen padre null. La BD rechaza ciclos.
-- `homes.asunto_relacion`: origen/destino, tipo (`pertenece_a`, `modifica`, `afecta_a`, `describe`,
-  `vinculado_a`), certeza y evidencia. Una relación posible nunca cambia el padre confirmado.
-- `homes.entrada_investigacion`: foto inmutable de la investigación de una entrada, tipo,
-  asunto_id, estado, relato, fuentes/búsquedas, datos/hallazgos, vínculos pendientes y payload.
-- `homes.entrada_investigacion_actual`: foto actual y señal explícita de revisión.
-- `homes.entrada_investigacion_lease`: reservas compartidas del nuevo proceso.
-- `homes.entrada_investigacion_resumen`: clasificación, asunto/padre, resultado y elegibilidad
-  por cambios de fuente, para inspección/integraciones posteriores.
+- `homes.proyecto_investigacion`: investigación, tipo de entrada, estado, asunto_id, motivo,
+  fuentes/búsquedas, vínculos pendientes, payload original y metadatos de idempotencia.
+- `homes.proyecto_dato_extra`: cada dato, con los seis bloques y campos habituales.
+- `homes.proyecto_hallazgo`: cada hallazgo, con los campos habituales.
+- `homes.asunto` y `homes.asunto_relacion`: identidades UUID reutilizadas, padre confirmado y
+  otros vínculos con evidencia. Los padres desconocidos permanecen null, sin inventarlos.
+- `homes.proyecto_investigacion_actual`, `_lease` y `_resumen`: puntero actual, reserva y vista
+  de seguimiento, sin otro historial de investigaciones.
 
-Identificar un plan y dos capítulos produce un asunto plan y dos asuntos documento cuyo
-padre_id apunta al mismo UUID. Dos fuentes del mismo plan deben reutilizar su clave oficial;
-no se fusiona por título parecido ni se atribuyen padres por proximidad. La clave determinista
-no resuelve por sí sola identidades semánticas redactadas con claves distintas: el investigador
-compara el catálogo y cita evidencia. Si existe un padre diferente confirmado, el guardado
-rechaza el conflicto en lugar de sobrescribirlo.
+El JSON conserva proyecto_id, estado, resumen, huecos, datos y hallazgos. Se añaden tipo_entrada,
+asunto_ref/asuntos/relaciones, fuentes, busquedas_intentadas, razon_pendiente y vinculos_pendientes.
+Las refs son locales al JSON; el helper las resuelve a IDs. `proyecto_id` sigue siendo el ID de
+la entrada de origen, aunque corresponda a un plano, norma o subasta.
 
-## Fallback sin información y no repetición
+El guardado mantiene su punto de entrada:
 
-`pendiente_identificar` conserva el motivo cuando no se logra vincular la entrada con un asunto.
-`parcial` conserva un asunto identificable con lagunas. Ambos **quedan procesados y fuera de la
-selección automática**, igual que `completa`. No se usan skip ni un retry_after de 24h.
+```bash
+python3 db/save_proyecto_info_extra.py --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"
+```
 
-Si no hay fuentes accesibles, `fuentes` puede estar vacío, pero son obligatorios búsquedas
-intentadas con consulta/resultado y huecos; si no hay asunto, también razon_pendiente. No se
-inventan citas para satisfacer el esquema. No se permite una investigación completa sin fuentes.
+Con REQUEST_ID/campos nuevos delega en el guardado ampliado y escribe las mismas tres tablas,
+además de los asuntos/relaciones, en una transacción. Sin esos argumentos conserva la ruta
+histórica para clientes anteriores. Mismo request_id y payload devuelve el mismo id; un payload
+distinto con el mismo request_id falla. Source hash del contexto y reserva se validan al guardar.
 
-Solo se reabre si cambia el contenido del registro fuente (fingerprint de su JSON, excluyendo
-updated_at) o por una petición explícita:
+## Fallback y no repetición
+
+`estado` admite completa, parcial y pendiente_identificar. Un caso sin identidad suficiente
+conserva motivo, huecos y búsquedas intentadas; si no hay fuentes accesibles puede tener
+fuentes/datos vacíos, sin citas inventadas. Los tres estados quedan procesados y no se vuelven
+a seleccionar por estar pendientes. Solo cambian por nueva fuente o revisión solicitada:
 
 ```bash
 python3 db/research_asunto.py review --project ID
 ```
 
-Esto evita ciclos automáticos de búsquedas infructuosas sin borrar la evidencia de lo intentado.
-Una investigación antigua en las tablas de proyectos no excluye la primera clasificación
-territorial. Las fotos previas de ambos sistemas permanecen intactas.
+Los selectores antiguos que excluyen cualquier fila de proyecto_investigacion también ven
+los resultados consolidados, incluidos los pendientes, y no los vuelven a seleccionar.
+La clasificación territorial completa requiere el contrato y helpers actualizados.
 
-## Adopción en Cursor
-
-1. Aplicar **la migración aditiva** `20261017140000_regional_research.sql`, que es autónoma
-   respecto de `20261017120000_research_leases.sql`. No hace falta desplegar el trigger antiguo
-   que bloquea el escritor de `proyecto_investigacion`. La nueva migración crea tablas/vistas
-   separadas y no altera el guardado antiguo ni la UI. Aplicarla una sola vez con el procedimiento
-   habitual, con `SUPABASE_DB_URL` ya exportada:
-   ```bash
-   psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20261017140000_regional_research.sql
-   ```
-2. El usuario copia **TODO** `.cursor/prompts/investigar-proyecto.md` a Instructions de la
-   automatización activa, con el checkout actualizado y psycopg2-binary disponible. El YAML
-   del repo no actualiza la UI. No se cambia la UI desde esta implementación.
-3. El nuevo contrato usa exclusivamente `research_asunto.py claim/context/renew/save` y
-   produce el JSON territorial. Los clientes antiguos pueden seguir creando fichas antiguas;
-   no participan en las nuevas reservas y no están cubiertos por su exclusión de trabajo.
-
-Selección: primero fichas visitadas por sesiones humanas del filtro `interesting` existente,
-excluyendo sesiones bot/admin completas; después viviendas/superficie/updated_at/id. Se usa
-el historial retenido, sin nueva ventana ni mínimo inventado. Las rutas se decodifican y se
-vinculan por alias exactos inequívocos (incluido BOCM y SIGMA), sin títulos aproximados.
+## Reserva y uso en Cursor
 
 ```bash
-python3 db/research_asunto.py claim --owner "cursor:UUID"
+python3 db/research_asunto.py claim --owner "cursor:UUID" --ttl 600
 python3 db/research_asunto.py context --project "$ID"
-python3 db/research_asunto.py renew --owner "$OWNER" --project "$ID" --token "$TOKEN"
-python3 db/research_asunto.py save --file resultado.json --request-id "$REQUEST_ID" --source-hash "$SOURCE_HASH" --owner "$OWNER" --token "$TOKEN"
+python3 db/research_asunto.py renew --project "$ID" --owner "$OWNER" --token "$TOKEN" --ttl 600
 ```
 
-Conserva el source_hash del contexto; el guardado rechaza una fuente cambiada durante la investigación.
-TTL por defecto 600s; renovar cada 120s. Al vencer se puede recuperar con token nuevo. Guardado
-normal requiere reserva viva y valida otra vez su vencimiento al finalizar. Un request_id y JSON
-idénticos devuelven el mismo id; cambiar el contenido de un reintento falla. Las identidades,
-padres, relaciones, foto y puntero actual se escriben en una transacción. Un error revierte todo.
-Los padres y relaciones deben incluir su URL/extracto; los desconocidos se guardan como vínculos
-pendientes, nunca como un padre ficticio. Se conserva la calidad de relato y evidencia del contrato.
+Claim devuelve id/owner/token/source_hash; conservar también source_hash del contexto.
+Selección atómica con bloqueo de proyecto y revalidación en snapshot fresco. Prioridad para
+fichas visitadas en sesiones humanas del filtro existing `interesting`, sin bots/admin; después
+viviendas, superficie, actualización e id. Sin nueva ventana ni umbral de visitas inventado.
+TTL 600s por defecto, renovar cada 120s. Ante abandono, `release` con id/owner/token. Una reserva
+vencida/reemplazada no puede guardar. Se verifica otra vez al finalizar la transacción.
 
-El helper Python admite `unleased_test=True` **solo para pruebas expresamente autorizadas**;
-lo deja registrado como execution_mode=unleased_test. El CLI de Cursor no ofrece esa omisión.
-No aporta exclusión frente a clientes antiguos. El ejecutor, cuota del 70%, configuración,
-pruebas de supervisor y logs se mantienen exclusivamente en local, fuera de esta PR.
+El usuario copia TODO `.cursor/prompts/investigar-proyecto.md` a Instructions de la UI activa,
+con el checkout y secretos de conexión actualizados. Pegar el MD no instala helpers ni cambia
+la rama main del checkout. No se modifica la UI desde esta implementación. El ejecutor Luna,
+capacidad/cuota del 70% y scripts de prueba siguen exclusivamente en local, fuera de Git/PR.
 
-## Verificación
+## Migraciones y preservación
+
+Se aplicó `20261017140000_regional_research.sql` para la prueba territorial inicial; la migración
+siguiente `20261017160000_unify_regional_investigations.sql` consolida sus resultados en las
+tablas habituales. Es transaccional y verifica conteos y payloads antes de retirar la tabla
+experimental del uso activo. Los nuevos IDs comunes mantienen el id experimental de origen en
+`entrada_legacy_id`; asunto_id, padre_id, fuentes, fechas y request_id se preservan. Las relaciones
+y punteros se actualizan a los IDs comunes. Se conserva una copia privada de recuperación,
+`entrada_investigacion_archivo_20261017`, bloqueada para escritura y excluida de todos los helpers.
+
+Los bloques experimentales se traducen a los seis bloques existentes; el dato original queda
+en raw_json y en el payload de la investigación. Datos basados solo en contexto/búsqueda, sin
+fuente publicable, quedan publicable=false. No se convierten en cifras oficiales ni KPIs.
+Los metadatos internos/raw_json no se exponen a anon/authenticated por permisos heredados.
+
+Las investigaciones antiguas mantienen IDs y contenido. Se inicia su seguimiento de cambios
+con un fingerprint tomado al consolidar; no afirma que la investigación histórica leyera esa
+misma versión de la fuente. El trigger de reserva antiguo se adapta si ya estaba instalado;
+la consolidación no lo instala donde no existía, para no romper al escritor activo de Cursor.
+
+La RPC web sigue devolviendo datos/hallazgos con su forma habitual y añade clasificación segura.
+El lector admite pendiente_identificar y muestra su motivo; en documentos/normas la sección
+programa se titula «Contenido y condiciones». Estos cambios de web se distribuyen con la PR,
+no se afirma que estén desplegados en producción antes de integrarla.
+
+## Pruebas
 
 ```bash
 TEST_REGIONAL_DB_URL=postgresql://.../base_descartable python3 -m unittest discover -s db -p 'test_regional_research_postgres.py' -v
+node web/scripts/test-proyecto-info-extra.mjs
 ```
 
-13 pruebas PostgreSQL: padres/IDs reutilizados, ciclos y conflicto de padre con rollback,
-idempotencia, reservas/fencing/concurrencia, relaciones posibles, reapertura por cambios/revisión
-rechazo de cambios de fuente durante la búsqueda y fallback sin información/fuentes que no se vuelve a seleccionar. La CI no importa código local.
-**La suite borra el schema homes y la tabla de analítica de su base de pruebas; usar solo una base desechable.**
-
-Los cambios de UI pública para presentar este nuevo historial no forman parte de esta entrega:
-la clasificación ya está persistida y consultable en Supabase; no se afirma que la ficha web
-antigua consuma automáticamente las nuevas tablas.
+Se comprueban migración con datos previos y guard activo, payload/IDs/relaciones, normalización
+conservadora de hechos, privacidad, reintentos, fachada de guardado histórica, reservas/ciclos,
+fallback sin repetición y conservación textual del núcleo del prompt del usuario. La suite web
+prueba compatibilidad con estados anteriores y renderizado de pendientes/contenido territorial.
+**La suite PostgreSQL borra homes y analítica en su base de pruebas: usar solo una base desechable.**
