@@ -26,10 +26,11 @@ function formatDay(value: string | null | undefined): string | null {
 }
 
 export function proyectoInfoTabs(info: ProyectoInfoExtra): { id: ProyectoInfoTabId; label: string }[] {
-  const tabs: { id: ProyectoInfoTabId; label: string }[] = [
-    { id: "relato", label: "Qué está pasando" },
-    { id: "datos", label: "Datos" },
-  ];
+  const tabs: { id: ProyectoInfoTabId; label: string }[] = [];
+  if (info.resumen.trim()) tabs.push({ id: "relato", label: "Qué está pasando" });
+  if (info.datos.some((dato) => DATOS_COLUMNAS.flat().includes(dato.bloque) && dato.clave !== "nombre_publico")) {
+    tabs.push({ id: "datos", label: "Datos" });
+  }
   if (info.datos.some((dato) => dato.bloque === "cronologia")) {
     tabs.push({ id: "cronologia", label: "Cronología" });
   }
@@ -195,16 +196,12 @@ export function ProyectoInfoTabPanel({
   tab: ProyectoInfoTabId;
   tramitacion?: SigmaVisorTramite[] | null;
 }) {
+  if (!proyectoInfoTabs(info).some((item) => item.id === tab)) return null;
+
   if (tab === "relato") {
     return (
       <div>
         <h2 className="text-lg font-semibold text-slate-900">Qué está pasando</h2>
-        {info.estado === "pendiente_identificar" ? (
-          <p className="mt-2 text-sm font-medium text-amber-800">Pendiente de identificar</p>
-        ) : null}
-        {info.estado === "pendiente_identificar" && info.razonPendiente ? (
-          <p className="mt-2 text-sm text-slate-600">{info.razonPendiente}</p>
-        ) : null}
         <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-slate-700">{info.resumen}</p>
       </div>
     );
@@ -223,12 +220,6 @@ export function ProyectoInfoTabPanel({
             </div>
           ))}
         </div>
-        {info.huecos ? (
-          <p className="text-sm leading-relaxed text-slate-600">
-            <span className="font-semibold text-slate-700">Aún no consta: </span>
-            {info.huecos}
-          </p>
-        ) : null}
       </div>
     );
   }
@@ -268,9 +259,7 @@ export function ProyectoInfoTabPanel({
               <DatoRow key={`${dato.orden}-${dato.etiqueta}`} dato={dato} />
             ))}
           </div>
-        ) : (
-          <p className="mt-3 text-sm text-slate-500">Sin recortes de prensa en la ficha.</p>
-        )}
+        ) : null}
       </div>
       {info.hallazgos.length > 0 ? (
         <div>

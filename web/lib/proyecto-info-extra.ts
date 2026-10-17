@@ -83,10 +83,10 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
   }
   const row = asRecord(value);
   if (!row) return null;
-  const resumen = asText(row.resumen);
+  const resumen = asText(row.resumen) || "";
   const proyectoId = asText(row.proyectoId);
   const estado = row.estado === "parcial" ? "parcial" : row.estado === "completa" ? "completa" : row.estado === "pendiente_identificar" ? "pendiente_identificar" : null;
-  if (!resumen || !proyectoId || !estado) return null;
+  if (!proyectoId || !estado) return null;
 
   const datos: ProyectoInfoDato[] = [];
   if (Array.isArray(row.datos)) {
@@ -138,6 +138,9 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
       });
     }
   }
+
+  // Internal workflow metadata alone must not replace the existing project view.
+  if (!resumen && !datos.length && !hallazgos.length) return null;
 
   return {
     id: typeof row.id === "number" ? row.id : 0,

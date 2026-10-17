@@ -28,10 +28,25 @@ const panel = load("../components/project-detail/ProyectoInfoExtraPanel.tsx", na
 const React = require("react");
 const { renderToStaticMarkup } = require("react-dom/server");
 const html = renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPanel, { info: pending, tab: "relato" }));
-assert.match(html, /Pendiente de identificar/);
-assert.match(html, /No se identifica el expediente/);
+assert.match(html, /Relato documentado/);
+assert.doesNotMatch(html, /Pendiente de identificar|No se identifica el expediente|pendiente_identificar/);
+for (const estado of ["completa", "parcial", "pendiente_identificar"]) {
+  const info = lib.parseProyectoInfoExtra({ ...base, estado, huecos: "Carencia interna", razonPendiente: "Motivo interno",
+    datos: [{ bloque: "programa", etiqueta: "Uso", valor: "Residencial", confianza: "alta", fuenteTipo: "oficial" }] });
+  const markup = ["relato", "datos"].map(tab => renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPanel, { info, tab }))).join("");
+  assert.match(markup, /Relato documentado/);
+  assert.match(markup, /Residencial/);
+  assert.doesNotMatch(markup, /Carencia interna|Motivo interno|Aún no consta|Pendiente de identificar/);
+}
+assert.equal(lib.parseProyectoInfoExtra({ ...base, resumen: "", estado: "pendiente_identificar", razonPendiente: "Sin información" }), null);
+const onlyNews = lib.parseProyectoInfoExtra({ ...base, resumen: "", hallazgos: [{ titulo: "Acuerdo publicado", cuerpo: "El pleno aprobó el plan" }] });
+assert.deepEqual(Array.from(panel.proyectoInfoTabs(onlyNews), tab => tab.id), ["prensa"]);
+assert.equal(renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPanel, { info: onlyNews, tab: "datos" })), "");
+const newsHtml = renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPanel, { info: onlyNews, tab: "prensa" }));
+assert.match(newsHtml, /Acuerdo publicado/);
+assert.doesNotMatch(newsHtml, /Sin recortes/);
 const info = lib.parseProyectoInfoExtra({ ...base, tipoEntrada: "planeamiento", datos: [{ bloque: "programa", etiqueta: "Normas", valor: "Condiciones del plan", confianza: "alta", fuenteTipo: "oficial" }] });
 const details = renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPanel, { info, tab: "datos" }));
 assert.match(details, /Contenido y condiciones/);
 assert.doesNotMatch(details, /Qué se va a construir/);
-console.log("Unified investigation reader: legacy states, persistent fallback and territorial content render correctly");
+console.log("Unified investigation reader: public content renders without internal workflow status or empty sections");
