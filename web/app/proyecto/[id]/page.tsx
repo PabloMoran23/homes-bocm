@@ -97,7 +97,7 @@ export default async function ProyectoPage({ params }: PageProps) {
     return (
       <>
         {directoryProject ? (
-          <ProjectTerritoryNavigation project={directoryProject} />
+          <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
         ) : breadcrumbLd ? (
           <JsonLd data={breadcrumbLd} />
         ) : null}
@@ -130,7 +130,7 @@ export default async function ProyectoPage({ params }: PageProps) {
   return (
     <>
       {directoryProject ? (
-        <ProjectTerritoryNavigation project={directoryProject} />
+        <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
       ) : breadcrumbLd ? (
         <JsonLd data={breadcrumbLd} />
       ) : null}
