@@ -211,7 +211,7 @@ class RegionalMigrationTest(unittest.TestCase):
                     c.execute("INSERT INTO homes.entrada_investigacion_actual VALUES ('document',%s,false)",(experimental_id,))
                     c.execute("INSERT INTO homes.asunto_relacion VALUES (%s,%s,'pertenece_a','confirmada',%s,'Plano del plan',%s)",(doc,plan,URL,experimental_id))
                     c.execute((ROOT/'supabase/migrations/20261017160000_unify_regional_investigations.sql').read_text())
-            c.execute((ROOT/'supabase/migrations/20261018190000_researched_project_titles.sql').read_text())
+                    c.execute((ROOT/'supabase/migrations/20261018190000_researched_project_titles.sql').read_text())
                     c.execute("SELECT id,resumen FROM homes.proyecto_investigacion WHERE proyecto_id='old'")
                     self.assertEqual(c.fetchone(),(old_id,'Legacy untouched'))
                     c.execute('SELECT id,payload FROM homes.proyecto_investigacion WHERE entrada_legacy_id=%s',(experimental_id,))
