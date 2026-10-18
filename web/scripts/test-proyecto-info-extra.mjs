@@ -50,3 +50,20 @@ const details = renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPa
 assert.match(details, /Contenido y condiciones/);
 assert.doesNotMatch(details, /Qué se va a construir/);
 console.log("Unified investigation reader: public content renders without internal workflow status or empty sections");
+
+const titled = lib.parseProyectoInfoExtra({ ...base,
+  titulo: "Estudio de Detalle para la ordenación de la manzana RU.2 del Sector AR Nuevo Tres Cantos (exp. 19PD0001)",
+  municipio: "Tres Cantos" });
+assert.equal(lib.proyectoTituloPublico(titled), "Estudio de Detalle para la ordenación de la manzana RU.2 del Sector AR Nuevo Tres Cantos");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Prolongación de calle Rosa dels Vents, en l’Alfàs del Pi", municipio: "L'Alfàs del Pi" })), "Prolongación de calle Rosa dels Vents, en l’Alfàs del Pi");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Urbanización de la calle Mayor", municipio: "Madrid" })), "Urbanización de la calle Mayor · Madrid");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "ru2memoria.pdf", municipio: "Tres Cantos" })), null);
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra(base)), null);
+assert.equal(lib.proyectoTituloPublico(null), null);
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Título formal", municipio: "Madrid", datos: [{bloque:"situacion",clave:"nombre_publico",etiqueta:"Nombre",valor:"Nombre conocido de Madrid",confianza:"alta",fuenteTipo:"oficial"}] })), "Nombre conocido de Madrid");
+console.log("Research titles use the identified subject and municipality, preserving fallbacks and removing file names and expediente references");
+
+const sigma = load("../lib/sigma-presentation.ts", name => name === "@/lib/project-display"
+  ? load("../lib/project-display.ts") : {});
+assert.equal(sigma.sigmaPickDisplayHeadline({ expedienteGrupo: "135/2020/00001", tfigAbrev: "MPG", visorH1: "PGOUM-97", publicTitle: "Plan General de Madrid: modificación en calle Mayor" }).title,
+  "Plan General de Madrid: modificación en calle Mayor");

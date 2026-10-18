@@ -11,7 +11,6 @@ import {
   ProyectoInfoLead,
   ProyectoInfoTabPanel,
   proyectoInfoTabs,
-  proyectoNombrePopular,
   type ProyectoInfoTabId,
 } from "@/components/project-detail/ProyectoInfoExtraPanel";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
@@ -39,7 +38,7 @@ import {
 } from "@/lib/sigma-user-labels";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaPrograma, SigmaProgramaExpedienteRef } from "@/lib/sigma-programa";
-import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
+import { proyectoTituloPublico, type ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import {
   loadSigmaNtiLinkedBundle,
@@ -84,8 +83,9 @@ export function SigmaExpedienteDetailView({
 
   const c = ficha.catalog;
   const tramCount = ficha.tramitacion.length;
-  const popular = infoExtra ? proyectoNombrePopular(infoExtra) : null;
+  const popular = infoExtra ? proyectoTituloPublico(infoExtra) : null;
   const presentation: SigmaPresentationInput = {
+    publicTitle: popular,
     expedienteGrupo: ficha.expedienteGrupo,
     source: c?.source,
     denominacion: popular || c?.EXP_TX_DENOM,
@@ -188,6 +188,10 @@ export function SigmaExpedienteDetailView({
         bocmFirstId={hasBocm ? ficha.bocmProyectos[0].id : null}
         bocmCount={ficha.bocmProyectos.length}
       />
+
+      {popular && ficha.catalog?.EXP_TX_DENOM ? (
+        <p className="mt-2 text-xs text-slate-500">Referencia de origen: {ficha.catalog.EXP_TX_DENOM}</p>
+      ) : null}
 
       {!infoExtra && programa ? (
         <div className="mt-6">

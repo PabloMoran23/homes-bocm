@@ -9,7 +9,6 @@ import {
   ProyectoInfoLead,
   ProyectoInfoTabPanel,
   proyectoInfoTabs,
-  proyectoNombrePopular,
   type ProyectoInfoTabId,
 } from "@/components/project-detail/ProyectoInfoExtraPanel";
 import { RelatedBoletines } from "@/components/project-detail/RelatedBoletines";
@@ -41,7 +40,7 @@ import {
   lookupSigmaNtiGrupo,
   type SigmaNtiLinkedBundle,
 } from "@/lib/sigma-nti-linked";
-import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
+import { proyectoTituloPublico, type ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import type { Project } from "@/lib/types";
 import type { MapPoint } from "./ProjectsMap";
@@ -214,6 +213,7 @@ export function ProjectDetailView({
   }, [p.categoriasTematicas]);
 
   const headline = projectHeadline(p);
+  const researchedTitle = proyectoTituloPublico(infoExtra);
   const visorH1 = p.sigmaVisorCabecera?.h1;
   const visorH2 = p.sigmaVisorCabecera?.h2;
   const tramCount = p.sigmaVisorTramitacion?.length ?? 0;
@@ -282,7 +282,7 @@ export function ProjectDetailView({
           </div>
 
           <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            {(infoExtra && proyectoNombrePopular(infoExtra)) || visorH1 || headline}
+            {researchedTitle || visorH1 || headline}
           </h1>
           {infoExtra ? (
             <p className="mt-2 text-sm text-slate-600">
@@ -296,6 +296,10 @@ export function ProjectDetailView({
             <p className="mt-2 text-base text-slate-600">
               {[p.municipio, p.nombreSector].filter(hasValue).join(" · ")}
             </p>
+          ) : null}
+
+          {researchedTitle && researchedTitle !== headline ? (
+            <p className="mt-2 text-xs text-slate-500">Referencia de origen: {headline}</p>
           ) : null}
 
           {!infoExtra && p.sigmaExpediente ? (

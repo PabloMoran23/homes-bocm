@@ -1,7 +1,8 @@
+import { cache } from "react";
 import { parseProyectoInfoExtra, type ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export async function loadProyectoInfoExtra(
+export const loadProyectoInfoExtra = cache(async function loadProyectoInfoExtra(
   ...ids: Array<string | null | undefined>
 ): Promise<ProyectoInfoExtra | null> {
   const supabase = getSupabaseServer();
@@ -21,4 +22,4 @@ export async function loadProyectoInfoExtra(
     if (parsed) return parsed;
   }
   return null;
-}
+});
