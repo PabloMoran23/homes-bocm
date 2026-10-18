@@ -1,0 +1,30 @@
+slug: badalona
+nombre: "Badalona"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.badalona.cat"
+  adapter: municipio.adapters.badalona:BadalonaAyuntamientoAdapter
+  config:
+    web_base: "https://www.badalona.cat"
+    sede_base: "https://seu.badalona.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-badalona/1.0"
+    max_crawl_pages: 35
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      arcgis_sectors_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Sectors/MapServer/0"
+      cod_ine_mun: "08015"
+  notes: |
+    Plone: planejament en tràmit / derivat / convenis (cards + PDFs).
+    Sede STA TAO: catálogo PTS_CATSERV (licencias como trámites).
+    Tablón PTS_TABLON local vacío; anuncios en E-Tauler seu.cat (801550006).
+    Geometría: AMB Planejament/Expedients layer 3 (polígonos por expediente, INE 08015).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
