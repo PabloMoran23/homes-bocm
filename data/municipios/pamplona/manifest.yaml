@@ -1,0 +1,30 @@
+slug: pamplona
+nombre: "Pamplona / Iruña"
+provincia: Navarra
+comunidad_autonoma: navarra
+
+portal:
+  base_url: "https://www.pamplona.es"
+  adapter: municipio.adapters.pamplona:PamplonaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pamplona/1.0"
+    centroid_lat: 42.81687
+    centroid_lon: -1.64323
+    geometry:
+      kind: sitna_wms_wfs
+      wfs_url: "https://sig.pamplona.es/uxogc/wfs"
+      type_name: "IDEN_Pol_Municipio"
+      wms_url: "https://sig.pamplona.es/uxogc/wms"
+      timeout_s: 12
+  notes: |
+    Drupal 10: actuaciones urbanísticas (proyectos, obras, gestión polígonos) + plan municipal.
+    GeoPamplona (sig.pamplona.es) capa Plan Municipal homologado (IDEN_Pol_Municipio).
+    Sede electrónica: trámites de licencia/obra (sin tablón público de concesiones).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

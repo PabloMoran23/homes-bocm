@@ -96,6 +96,10 @@ def _geocode_records(
         municipal_centroid = None
     cfg = manifest_geography_config(manifest)
     boundary = cfg.get("municipal_boundary") or official_boundary(manifest.nombre)
+    if not boundary and "/" in manifest.nombre:
+        boundary = official_boundary(manifest.nombre.replace(" / ", "/").strip())
+    if not boundary and "/" in manifest.nombre:
+        boundary = official_boundary(manifest.nombre.split("/")[0].strip())
     if boundary:
         cfg = {**cfg, "municipal_boundary": boundary}
     stats = {
