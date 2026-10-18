@@ -1,0 +1,25 @@
+slug: l-hospitalet-de-llobregat
+nombre: "L'Hospitalet de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.l-h.cat"
+  adapter: municipio.adapters.l_hospitalet_de_llobregat:LHospitaletDeLlobregatAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-l-hospitalet-de-llobregat/1.0"
+    sede_base: "https://seuelectronica.l-h.cat"
+    geoportal_base: "https://geoportal.l-h.cat"
+    carto_api: "https://geoportal.l-h.cat/CartoAPI.ashx"
+  notes: |
+    Proyectos: capa PLA_AMBITS (CartoAPI MapiaBox) + consultas públicas sede.
+    Licencias: trámites sede (Urbanisme i permisos d'obres); sin tablón masivo scrapeable (e-TAULER SPA).
+    Geometría: polígonos WGS84 desde CartoAPI layer PLA_AMBITS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
