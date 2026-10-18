@@ -1,0 +1,31 @@
+slug: terrassa
+nombre: "Terrassa"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://aoberta.terrassa.cat"
+  adapter: municipio.adapters.terrassa:TerrassaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-terrassa/1.0"
+    visor_url: "https://emap.terrassa.cat/mapGIS/?modul=POUM"
+    tramits_url: "https://aoberta.terrassa.cat/oficines/infoEntitatTramits.jsp?id=1899"
+    geometry:
+      kind: arcgis_mapserver
+      base_url: "http://emap.terrassa.cat/arcgis/rest/services/Territori/iurb_terrassa/MapServer"
+      layer_id: 4
+      crs: EPSG:4326
+  notes: |
+    Proyectos: capa ArcGIS «Sectors de planejament» (POUM 2021) en emap.terrassa.cat.
+    Licencias: trámites en sede aoberta (sin tablón histórico de concesiones).
+    seuelectronica.terrassa.cat protegido por Cloudflare (no scrapeable en CI).
+
+licencias:
+  enabled: true
+  notes: Trámites informativos de urbanismo (comunicación previa, informes de licencia).
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Sectores/instrumentos del POUM vía MapServer iurb_terrassa + visor e-map.
