@@ -1,0 +1,31 @@
+slug: cordoba
+nombre: "Córdoba"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.cordoba.es"
+  adapter: municipio.adapters.cordoba:CordobaAyuntamientoAdapter
+  config:
+    web_base: "https://www.cordoba.es"
+    gmu_base: "https://www.gmucordoba.es"
+    tablon_url: "https://www.gmucordoba.es/novedades/itemlist/category/2-tablon-de-anuncios"
+    info_publica_years: [2024, 2025, 2026]
+    tablon_max_pages: 2
+    fetch_gmu_item_details: false
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-cordoba/1.0"
+    centroid: [37.8882, -4.7794]
+  notes: |
+    Fuentes: transparencia Drupal (documentos en información pública por año,
+    acordeón en hub urbanismo), tablón Joomla GMU (edictos/expedientes),
+    sede electrónica (trámite licencia nueva planta + PDFs instrucción licencias).
+    Sin listado histórico público de licencias concedidas con coordenadas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
