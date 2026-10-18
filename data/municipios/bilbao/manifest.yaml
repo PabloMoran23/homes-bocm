@@ -1,0 +1,28 @@
+slug: bilbao
+nombre: Bilbao
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.bilbao.eus"
+  adapter: municipio.adapters.bilbao:BilbaoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bilbao/1.0 (+urbanismo open data)"
+    licitacion_years: [2023, 2024, 2025]
+    convenio_years: [2023, 2024]
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/PX_Bilbao_Metropolitano_inf/MapServer"
+    planeamiento_layer_ids: [119, 120, 121, 122, 134]
+    centroid_lat: 43.263012
+    centroid_lng: -2.934985
+  notes: |
+    Open Data: licitaciones/convenios JSON, RSS noticias urbanismo.
+    Geometría parcial vía capas PGOU Diputación Foral (ArcGIS REST, outSR=4326).
+    Sin tablón público de licencias concedidas; trámites informativos en sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
