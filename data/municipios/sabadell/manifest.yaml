@@ -1,0 +1,28 @@
+slug: sabadell
+nombre: "Sabadell"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://seu.sabadell.cat"
+  adapter: municipio.adapters.sabadell:SabadellAyuntamientoAdapter
+  config:
+    sede_base: "https://seu.sabadell.cat"
+    web_base: "https://web.sabadell.cat"
+    planol_url: "https://planol.sabadell.cat/Planol/inici?code=urban"
+    ide_record_url: "https://catalegs.ide.cat/geonetwork/srv/api/records/planejament-urbanistic-sabadell"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-sabadell/1.0"
+    cod_ine_mun: "08187"
+    centroid: [41.5463, 2.1086]
+  notes: |
+    Sede OpenSIAC (seu.sabadell.cat) + web PGMOS + Plànol municipal + metadades IDE.
+    Dominios *.sabadell.cat con timeout/SSL intermitente desde CI cloud; seeds PGMOS + IDE.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
