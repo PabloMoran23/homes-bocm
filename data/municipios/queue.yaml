@@ -113,16 +113,14 @@ municipios:
 - slug: palma
   nombre: Palma
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-18T00:01:38.305479+00:00'
   last_error: null
-  pr_url: null
+  pr_url: PLACEHOLDER
   notes: Sin boletín asociado
   comunidad_autonoma: illes-balears
   provincia: Illes Balears
-  poblacion: 434786
-  ine_code: '07040'
 - slug: las-palmas-de-gran-canaria
   nombre: Las Palmas de Gran Canaria
   bocm_count: 3

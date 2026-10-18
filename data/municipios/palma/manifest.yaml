@@ -1,0 +1,32 @@
+slug: palma
+nombre: "Palma"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+boletin_source_id: boib
+
+portal:
+  base_url: "https://palma.sedipualba.es"
+  adapter: municipio.adapters.palma:PalmaAyuntamientoAdapter
+  config:
+    sede_base: "https://palma.sedipualba.es"
+    liferay_base: "https://seuelectronica.palma.cat"
+    web_base: "https://www.palma.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-palma/1.0"
+    centroid: [39.5696, 2.6502]
+    geometry:
+      wfs_url: "https://geoportal.palma.es/geoserver/space/ows"
+      type_name: "space:INFRCATALOGOPGOU2021"
+  notes: |
+    Tablón y trámites Sedipualba (palma.sedipualba.es) accesibles desde red pública.
+    Sede Liferay (seuelectronica.palma.cat) y visor (palma.es / geoportal.palma.es)
+    requieren insecure_ssl; pueden bloquear IPs de datacenter (handshake lento).
+    Geometría: WFS IDE Palma catálogo PGOU 2021 (sin enlace directo a expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
