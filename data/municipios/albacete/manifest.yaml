@@ -1,0 +1,50 @@
+slug: albacete
+nombre: "Albacete"
+provincia: Albacete
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://gerenciaurbanismo.sedipualba.es"
+  adapter: municipio.adapters.albacete:AlbaceteAyuntamientoAdapter
+  config:
+    sede_base: "https://gerenciaurbanismo.sedipualba.es"
+    web_base: "https://gerencia-urbanismo.albacete.es"
+    tablon_rss: "https://gerenciaurbanismo.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://gerenciaurbanismo.sedipualba.es/tablondeanuncios/default.aspx"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-albacete/1.0"
+    centroid: [38.9942, -1.8585]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "02003"
+  notes: |
+    Gerencia Municipal de Urbanismo y Vivienda: sede Sedipualba (tablón RSS/HTML + catálogo trámites).
+    Web gerencia-urbanismo.albacete.es (Drupal) como semillas IP/planes — puede no responder en CI.
+    Geometría parcial: polígono PGOU municipal vía ArcGIS CLM (sin enlace parcela/expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-2.19, 38.66],
+              [-1.61, 38.66],
+              [-1.61, 39.20],
+              [-2.19, 39.20],
+              [-2.19, 38.66],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox PGOU CLM COD_INE=02003 (geoservicios.castillalamancha.es)"
