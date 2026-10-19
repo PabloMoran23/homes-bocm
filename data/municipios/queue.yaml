@@ -813,7 +813,7 @@ municipios:
 - slug: santa-coloma-de-gramenet
   nombre: Santa Coloma de Gramenet
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
