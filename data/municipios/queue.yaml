@@ -658,11 +658,11 @@ municipios:
 - slug: logrono
   nombre: Logroño
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-19T08:15:00+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/922
   notes: Sin boletín asociado
   comunidad_autonoma: la-rioja
   provincia: La Rioja
