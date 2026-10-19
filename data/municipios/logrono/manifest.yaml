@@ -1,0 +1,24 @@
+slug: logrono
+nombre: "Logroño"
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+
+portal:
+  base_url: "https://logrono.es"
+  adapter: municipio.adapters.logrono:LogronoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-logrono/1.0"
+    exposicion_delta: 20
+    exposicion_max_pages: 30
+  notes: |
+    Liferay: exposición pública (portlet es.logrono.exposicion.publica) con PDFs.
+    Últimas aprobaciones (planeamiento reciente). Sede IBM urbanismo (tablones) no scrapeados.
+    SIG GeoServer WFS (gis.logro-o.org) para UE y portales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
