@@ -1,0 +1,30 @@
+slug: mataro
+nombre: "Mataró"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.mataro.cat"
+  adapter: municipio.adapters.mataro:MataroAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mataro/1.0"
+    fetch_timeout_s: 90
+    sede_base: "https://seu.mataro.cat"
+    rss_url: "https://www.mataro.cat/rss.xml"
+    centroid: [41.533, 2.445]
+    seed_pages:
+      - "https://www.mataro.cat/ca/temes/urbanisme/el-planejament-urbanistic/planejament-en-periode-dexposicio-publica"
+      - "https://www.mataro.cat/es/temas/urbanismo/planificacion-urbanistica/planeamiento-urbanistico-en-exposicion-publica"
+      - "https://www.mataro.cat/es/temas/urbanismo/planificacion-urbanistica/planeamiento-urbanistico-en-exposicion-publica/documents-en-periode-d2019exposicio-publica-vigent-1"
+  notes: |
+    Web corporativa Plone (CA/ES): planeamiento en exposición pública e IP de proyectos.
+    Licencias: páginas de trámites + cita previa Gestorn; sin listado masivo público (sede lenta).
+    Geoportal mapes.mataro.cat / GeoMat: cartografía temática sin enlace a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
