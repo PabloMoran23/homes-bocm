@@ -758,16 +758,16 @@ municipios:
 - slug: dos-hermanas
   nombre: Dos Hermanas
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
-  last_error: null
-  pr_url: null
   notes: Sin boletín asociado
   comunidad_autonoma: andalucia
   provincia: Sevilla
   poblacion: 142519
   ine_code: '41038'
+  status: done
+  attempts: 1
+  last_run: '2026-10-19T16:15:00+00:00'
+  last_error: null
+  pr_url: null  # filled after PR
 - slug: parla
   nombre: Parla
   bocm_count: 25
