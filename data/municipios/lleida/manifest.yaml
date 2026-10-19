@@ -1,0 +1,25 @@
+slug: lleida
+nombre: "Lleida"
+provincia: Lleida
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://urbanisme.paeria.cat"
+  adapter: municipio.adapters.lleida:LleidaAyuntamientoAdapter
+  config:
+    seu_base: "https://seu.paeria.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lleida/1.0"
+    max_pages_per_category: 25
+    centroid: [41.6176, 0.6200]
+  notes: |
+    Registre de planejament (seu.paeria.cat, categories 7/154/8/328/337),
+    web Plone urbanisme.paeria.cat (RSS + semillas POUM/convenis/IP),
+    tràmits informatius licencias (tramits.paeria.cat).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
