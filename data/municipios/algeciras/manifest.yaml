@@ -1,0 +1,25 @@
+slug: algeciras
+nombre: "Algeciras"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.algeciras.es"
+  adapter: municipio.adapters.algeciras:AlgecirasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-algeciras/1.0 (+urbanismo research)"
+    web_base: "https://www.algeciras.es"
+    sede_base: "https://algeciras.sedelectronica.es"
+    centroid: [36.1408, -5.4562]
+  notes: |
+    Web municipal SagaSuite (transparencia urbanismo, PGOU, consultas públicas).
+    Sede espublico gestiona: tablón /board, catálogo /dossier, transparencia /transparency.
+    Visor Enmapa (algeciras.enmapa.com) sin API enlazable a expedientes desde el agente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
