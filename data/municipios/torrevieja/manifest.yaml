@@ -1,0 +1,49 @@
+slug: torrevieja
+nombre: "Torrevieja"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://torrevieja.es"
+  adapter: municipio.adapters.torrevieja:TorreviejaAyuntamientoAdapter
+  config:
+    web_base: "https://torrevieja.es"
+    sede_base: "https://torrevieja.sedelectronica.es"
+    board_url: "https://torrevieja.sedelectronica.es/board"
+    exposicion_url: "https://torrevieja.es/es/exposicion-publica"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-torrevieja/1.0"
+    centroid: [37.9787, -0.6822]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      cod_ine_mun: "03133"
+    seed_pages:
+      - "/es/temas/ciudad/urbanismo"
+      - "/es/ayuntamiento/consulta-publica-previa"
+      - "/es/urbanismo/informacion-urbanistica"
+  notes: |
+    Drupal 10 (torrevieja.es): taxonomía Exposición Pública + consulta pública previa.
+    Sede espublico gestiona: tablón /board y trámites licencia (dossier).
+    Geometría: ICV terramapas WFS InventarioSuSuz filtrado cod_ine_mun=03133.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-0.78, 37.86], [-0.52, 37.86], [-0.52, 38.10], [-0.78, 38.10], [-0.78, 37.86]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
