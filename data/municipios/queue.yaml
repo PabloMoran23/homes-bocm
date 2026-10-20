@@ -1090,9 +1090,9 @@ municipios:
 - slug: caceres
   nombre: Cáceres
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-20T18:20:00+00:00'
   last_error: null
   pr_url: null
   notes: Sin boletín asociado

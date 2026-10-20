@@ -1,0 +1,29 @@
+slug: caceres
+nombre: "Cáceres"
+provincia: Cáceres
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://www.ayto-caceres.es"
+  adapter: municipio.adapters.caceres:CaceresAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.caceres.es"
+    sig_base: "https://sig.caceres.es"
+    centroid: [39.4753, -6.3724]
+    request_delay_s: 0.35
+    sig_insecure_ssl: true
+    user_agent: "poc-bocm-caceres/1.0"
+    geometry:
+      kind: geoserver_wfs
+      wfs_url: "https://ide.caceres.es/geoserver/PGM2010/ows"
+      type_name: "PGM2010:alteraciones_plan"
+  notes: |
+    Web corporativa (WordPress/Enfold) + sede STA (tablón KEY=all, catálogo PTS_PC_012)
+    + SIG planeamiento (sig.caceres.es, certificado propio). Geometría vía WFS IDE cuando accesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
