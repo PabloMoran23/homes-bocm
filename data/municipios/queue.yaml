@@ -921,9 +921,9 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: '2026-10-20T02:04:40.392801+00:00'
+  last_run: '2026-10-20T02:12:47.105250+00:00'
   last_error: null
-  pr_url: PLACEHOLDER_PR
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/931
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Girona
