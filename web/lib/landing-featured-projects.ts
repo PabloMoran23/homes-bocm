@@ -35,17 +35,29 @@ const SELECTION = [
   },
 ];
 
+function municipalityLabel(
+  directory: ReturnType<typeof getProjectDirectory>,
+  value: string | null | undefined,
+): string {
+  if (!value) return "";
+  if (!value.includes("/")) return value;
+  const [province, slug] = value.split("/");
+  return directory.municipalities.find((item) => item.province === province && item.slug === slug)?.name ?? "";
+}
+
 export async function loadLandingFeaturedProjects(): Promise<FeaturedProject[]> {
   const projects = await loadProyectosInvestigados();
   const directory = getProjectDirectory();
   return SELECTION.flatMap(item => {
     const project = projects.find(project => project.proyectoId === item.id);
-    if (!project) return [];
     const record = directory.projectsById.get(item.id)
       ?? directory.projectsById.get(item.id.replace(/^bocm:/, ""));
+    // The RPC is live data. The directory is shipped with the app, so a
+    // database outage still renders the editorial selection.
+    if (!project && !record) return [];
     return [{
       ...item,
-      municipality: project.municipio || "",
+      municipality: municipalityLabel(directory, project?.municipio || record?.municipality),
       href: projectPath(record?.id ?? item.id),
     }];
   });
