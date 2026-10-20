@@ -919,11 +919,11 @@ municipios:
 - slug: girona
   nombre: Girona
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-20T02:04:40.392801+00:00'
   last_error: null
-  pr_url: null
+  pr_url: PLACEHOLDER_PR
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Girona
