@@ -1,0 +1,26 @@
+slug: san-fernando
+nombre: "San Fernando"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.sanfernando.es"
+  adapter: municipio.adapters.san_fernando:SanFernandoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-fernando/1.0"
+    insecure_ssl: true
+    web_base: "https://www.sanfernando.es"
+    include_historico_tablon: true
+    centroid: [36.4662, -6.1977]
+  notes: |
+    Sede propia (tablón edictos vigente + histórico) y web corporativa (visor PGOU/planeamiento).
+    Trámites urbanismo electrónicos en Visor.asp hidOptNav=125.
+    Visor GIS ArcGIS Hub (sin REST público por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
