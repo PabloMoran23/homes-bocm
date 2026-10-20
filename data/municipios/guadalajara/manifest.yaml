@@ -1,0 +1,30 @@
+slug: guadalajara
+nombre: "Guadalajara"
+provincia: Guadalajara
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.guadalajara.es"
+  adapter: municipio.adapters.guadalajara:GuadalajaraAyuntamientoAdapter
+  config:
+    web_base: "https://www.guadalajara.es"
+    sede_base: "https://sedeelectronica.guadalajara.es"
+    board_url: "https://sedeelectronica.guadalajara.es/board"
+    dossier_url: "https://sedeelectronica.guadalajara.es/dossier"
+    tablon_rss: "https://www.guadalajara.es/es/cargarTablonRss.do?maxResultadosIniciales=300"
+    pgou_url: "https://www.guadalajara.es/es/ayuntamiento/normativa/normas-urbanisticas/plan-de-ordenacion-urbana-de-guadalajara/"
+    tramites_urb_url: "https://www.guadalajara.es/es/sede-electronica/tramites/tramites-gestion-urbanistica/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-guadalajara/1.0"
+    centroid: [40.6286, -3.1618]
+  notes: |
+    Portal corporativo (RSS tablón + PGOU) y sede espublico gestiona (tablón /board, catálogo /dossier).
+    Sin WFS municipal enlazable a expedientes; geoportal ArcGIS Online (experiencias) sin REST público por código.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
