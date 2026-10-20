@@ -13,6 +13,12 @@ function load(path, customRequire = require) {
   return exports;
 }
 const lib = load("../lib/proyecto-info-extra.ts");
+const timeline = load("../lib/proyecto-timeline.ts");
+assert.equal(timeline.proyectoHitoFecha({ valor: "30 de junio de 1998", fuenteFecha: "2026-09-27" }).year, 1998);
+assert.equal(timeline.proyectoHitoFecha({ valor: "BOCM 29-01-2020" }).label, "29/01/2020");
+assert.equal(timeline.proyectoHitoFecha({ valor: "Pleno de marzo de 2023" }).year, 2023);
+assert.equal(timeline.proyectoHitoFecha({ valor: "Aprobación 2019-02-20" }).year, 2019);
+assert.equal(timeline.proyectoHitoFecha({ valor: "Sector consolidado", fuenteFecha: "2026-09-27" }).year, null);
 const base = { id: 1, proyectoId: "p1", resumen: "Relato documentado", estado: "completa", datos: [], hallazgos: [] };
 assert.equal(lib.parseProyectoInfoExtra(base).estado, "completa");
 assert.equal(lib.parseProyectoInfoExtra({ ...base, estado: "parcial" }).estado, "parcial");
@@ -22,6 +28,7 @@ assert.equal(pending.razonPendiente, "No se identifica el expediente");
 assert.equal(lib.parseProyectoInfoExtra({ ...base, estado: "invalid" }), null);
 const panel = load("../components/project-detail/ProyectoInfoExtraPanel.tsx", name => {
   if (name === "@/lib/proyecto-info-extra") return lib;
+  if (name === "@/lib/proyecto-timeline") return timeline;
   if (name.endsWith("TramitacionTimeline")) return { TramitacionTimeline: () => null };
   return require(name);
 });

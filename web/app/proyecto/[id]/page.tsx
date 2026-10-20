@@ -103,6 +103,7 @@ export default async function ProyectoPage({ params }: PageProps) {
         ) : null}
         <ProyectoViewTracker id={id} kind="bocm" />
         <ProjectDetailView
+          hasTerritoryNavigation={Boolean(directoryProject)}
           project={project}
           programa={programaCtx?.programa ?? null}
           programaRef={programaCtx?.ref ?? null}
@@ -136,6 +137,7 @@ export default async function ProyectoPage({ params }: PageProps) {
       ) : null}
       <ProyectoViewTracker id={id} kind="sigma" />
       <SigmaExpedienteDetailView
+        hasTerritoryNavigation={Boolean(directoryProject)}
         ficha={ficha}
         metric={metric}
         programa={programaCtx?.programa ?? null}

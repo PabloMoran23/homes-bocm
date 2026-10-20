@@ -4,9 +4,9 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
+import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
-  ProyectoInfoLead,
   ProyectoInfoTabPanel,
   proyectoInfoTabs,
   type ProyectoInfoTabId,
@@ -44,6 +44,11 @@ import { proyectoTituloPublico, type ProyectoInfoExtra } from "@/lib/proyecto-in
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import type { Project } from "@/lib/types";
 import type { MapPoint } from "./ProjectsMap";
+
+const ResearchTerritoryMap = dynamic(
+  () => import("./project-detail/ResearchTerritoryMap").then(m => m.ResearchTerritoryMap),
+  { ssr: false, loading: () => <div className="research-map-loading">Cargando mapa del territorio…</div> },
+);
 
 const ProjectsMap = dynamic(
   () => import("./ProjectsMap").then((m) => ({ default: m.ProjectsMap })),
@@ -132,12 +137,14 @@ export function ProjectDetailView({
   programaRef = null,
   clasificacionByExpediente = {},
   infoExtra = null,
+  hasTerritoryNavigation = false,
 }: {
   project: Project;
   programa?: SigmaPrograma | null;
   programaRef?: SigmaProgramaExpedienteRef | null;
   clasificacionByExpediente?: Record<string, SigmaClassification | null>;
   infoExtra?: ProyectoInfoExtra | null;
+  hasTerritoryNavigation?: boolean;
 }) {
   const [sectorGeoJson, setSectorGeoJson] = useState<SectorFeatureCollection | null>(null);
   const [proyectoGeo, setProyectoGeo] = useState<SectorFeatureCollection | null>(null);
@@ -239,8 +246,8 @@ export function ProjectDetailView({
       : null;
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
-      <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+    <main className={`mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 ${infoExtra ? "project-research" : "overflow-x-hidden"}`}>
+      {!hasTerritoryNavigation ? <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
           ← Mapa
         </Link>
@@ -255,9 +262,21 @@ export function ProjectDetailView({
             </Link>
           </>
         ) : null}
-      </nav>
+      </nav> : null}
 
-      {/* Hero */}
+      {infoExtra ? (
+        <ResearchProjectHero
+          title={researchedTitle || visorH1 || headline}
+          location={p.municipio || p.territorioLabel}
+          subtitle={headline.split(/\s[—–]\s/)[1] || Array.from(new Set([hasValue(p.sigmaFase) ? p.sigmaFase : null, hasValue(p.tipoInstrumento) ? p.tipoInstrumento : null].filter(Boolean))).join(" · ")}
+          info={infoExtra}
+          map={<ResearchTerritoryMap geo={sectorGeo} points={mapPoints} location={p.municipio || p.territorioLabel} />}
+          actions={<>
+            {p.pdfUrl ? <a href={p.pdfUrl} target="_blank" rel="noopener noreferrer">Documento BOCM ↗</a> : null}
+            {p.sigmaVisorUrl ? <a href={p.sigmaVisorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
+          </>}
+        />
+      ) : (
       <header className="portal-hero-bg mb-8 overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm">
         <div className="p-6 sm:p-8">
           <div className="flex flex-wrap gap-2">
@@ -401,23 +420,7 @@ export function ProjectDetailView({
         </div>
         ) : null}
       </header>
-
-      {infoExtra ? (
-        <div className="mb-6 grid items-stretch gap-3 lg:grid-cols-[minmax(0,1fr)_13.5rem]">
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <ProjectsMap
-              points={mapPoints}
-              sectorGeoJson={sectorGeo}
-              variant="detail"
-              heightClassName="h-[min(42vh,380px)]"
-              sectorCountLabel="ámbito"
-              hoverPopup={false}
-            />
-            <p className="border-t border-slate-100 px-3 py-2 text-xs text-slate-500">Ámbito del proyecto</p>
-          </div>
-          <ProyectoInfoLead info={infoExtra} stacked />
-        </div>
-      ) : null}
+      )}
 
       <div className={infoExtra ? "min-w-0" : "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {/* Sidebar */}
@@ -463,6 +466,11 @@ export function ProjectDetailView({
 
         {/* Main panel */}
         <div className="min-w-0">
+          {infoExtra ? (
+            <nav className="research-section-nav" aria-label="Secciones de la investigación" id="investigacion">
+              {visibleTabs.map((item) => <a key={item.id} href={`#seccion-${item.id}`}>{item.label}</a>)}
+            </nav>
+          ) : (
           <div
             className="mb-4 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-100/80 p-1"
             role="tablist"
@@ -484,8 +492,14 @@ export function ProjectDetailView({
               </button>
             ))}
           </div>
+          )}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          {(infoExtra ? visibleTabs : [{ id: activeTab, label: "" }]).map((section, sectionIndex) => {
+            const activeTab = section.id;
+            return (
+              <section key={section.id} id={infoExtra ? `seccion-${section.id}` : undefined} aria-label={infoExtra ? section.label : undefined} className={infoExtra ? "research-section" : "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"}>
+                {infoExtra ? <p className="research-section-kicker">{String(sectionIndex + 1).padStart(2, "0")} / {section.label}</p> : null}
+
             {infoExtra && (activeTab === "relato" || activeTab === "datos" || activeTab === "cronologia" || activeTab === "prensa") ? (
               <div className="space-y-8">
                 <ProyectoInfoTabPanel
@@ -691,7 +705,9 @@ export function ProjectDetailView({
                 <RelatedBoletines rows={p.sigmaBoletinMismaExpediente!} />
               </div>
             )}
-          </div>
+              </section>
+            );
+          })}
         </div>
       </div>
     </main>
