@@ -1,0 +1,24 @@
+slug: barakaldo
+nombre: "Barakaldo"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.barakaldo.eus"
+  adapter: municipio.adapters.barakaldo:BarakaldoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-barakaldo/1.0"
+    centroid: [43.2970, -2.9906]
+    sede_base: "https://www.barakaldo.eus/OficinaVirtualBarakaldo"
+    info_publica_url: "https://www.barakaldo.eus/portal/es/web/planeamiento-y-gestion/informacion-publica"
+  notes: |
+    Portal Liferay (noticias planeamiento) + sede SIBAE/Gonce (tablón AJAX buscarTablonAnuncios.do).
+    Tema tablón 24 Urbanismo; licencias urbanísticas sin filas públicas (trámites informativos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
