@@ -948,11 +948,11 @@ municipios:
 - slug: telde
   nombre: Telde
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
+  pr_url: PLACEHOLDER
   notes: Sin boletín asociado
   comunidad_autonoma: canarias
   provincia: Las Palmas

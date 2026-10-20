@@ -1,0 +1,28 @@
+slug: telde
+nombre: "Telde"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://www.telde.es"
+  adapter: municipio.adapters.telde:TeldeAyuntamientoAdapter
+  config:
+    web_base: "https://www.telde.es"
+    sede_base: "https://telde.sedelectronica.es"
+    board_url: "https://telde.sedelectronica.es/board"
+    dossier_url: "https://telde.sedelectronica.es/dossier"
+    sitcan_package: planeamiento-urbanistico-de-telde
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35026/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-telde/1.0"
+    centroid: [28.0048, -15.4167]
+  notes: |
+    WordPress (información pública urbanismo, transparencia) + sede espublico gestiona (tablón /board, catálogo /dossier).
+    SITCAN CKAN planeamiento-urbanistico-de-telde + GEOBDP Grafcan INE 35026 para geometría de instrumentos de planeamiento.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
