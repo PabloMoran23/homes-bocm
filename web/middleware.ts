@@ -11,6 +11,7 @@ import {
   isAdminPublicPath,
   isValidAdminSession,
 } from "@/lib/admin-auth";
+import { clientIpFrom, decideAccess } from "@/lib/bot-guard";
 
 function wwwRedirect(request: NextRequest): NextResponse | null {
   const host = request.headers.get("host") ?? "";
@@ -74,7 +75,32 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
   return NextResponse.redirect(login);
 }
 
+function botGuard(request: NextRequest): NextResponse | null {
+  const decision = decideAccess({
+    pathname: request.nextUrl.pathname,
+    userAgent: request.headers.get("user-agent"),
+    ip: clientIpFrom(request.headers),
+  });
+  if (decision.action === "allow") return null;
+
+  const headers = new Headers({
+    "cache-control": "private, no-store",
+    "cdn-cache-control": "no-store",
+    "content-type": "text/plain; charset=utf-8",
+    vary: "User-Agent",
+    "x-robots-tag": "noindex",
+  });
+  if (decision.action === "rate_limit") {
+    headers.set("retry-after", String(decision.retryAfterSec));
+    return new NextResponse("Too Many Requests", { status: 429, headers });
+  }
+  return new NextResponse("Forbidden", { status: 403, headers });
+}
+
 export async function middleware(request: NextRequest) {
+  const blocked = botGuard(request);
+  if (blocked) return blocked;
+
   const www = wwwRedirect(request);
   if (www) return www;
 
