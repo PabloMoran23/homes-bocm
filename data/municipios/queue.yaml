@@ -1127,6 +1127,8 @@ municipios:
   notes: Sin boletín asociado
   comunidad_autonoma: andalucia
   provincia: Cádiz
+  poblacion: 93338
+  ine_code: '11031'
 - slug: guadalajara
   nombre: Guadalajara
   bocm_count: 0
