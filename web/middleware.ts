@@ -62,6 +62,17 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
 
   if (isAdminPublicPath(pathname)) return NextResponse.next();
 
+  // Local screenshots of /admin/analitica?muestra=1. Production builds set
+  // NODE_ENV=production, so this branch is absent there. Bot blocking above
+  // is unchanged.
+  if (
+    process.env.NODE_ENV === "development" &&
+    pathname === "/admin/analitica" &&
+    request.nextUrl.searchParams.get("muestra") === "1"
+  ) {
+    return NextResponse.next();
+  }
+
   const ok = await isValidAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
   if (ok) return NextResponse.next();
 
