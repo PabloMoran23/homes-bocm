@@ -7,6 +7,10 @@ import { LandingTuZonaSection } from "@/components/LandingTuZonaSection";
 import { loadLandingFeaturedProjects } from "@/lib/landing-featured-projects";
 import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
 
+// Prerender at build, then refresh. A database outage falls back to the
+// checked-in dashboard snapshot instead of failing static generation.
+export const revalidate = 300;
+
 function titleCaseDistrito(name: string): string {
   const lower = name.toLowerCase().replace(/_/g, " ");
   return lower.charAt(0).toUpperCase() + lower.slice(1);
