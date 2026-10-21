@@ -1,0 +1,36 @@
+slug: badajoz
+nombre: "Badajoz"
+provincia: Badajoz
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://www.aytobadajoz.es"
+  adapter: municipio.adapters.badajoz:BadajozAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-badajoz/1.0 (+urbanismo research)"
+    sede_base: "https://sede.aytobadajoz.es"
+    tablon_urls:
+      - "https://sede.aytobadajoz.es/portal/tablonVirtual.do?campo=17&opc_id=175&ent_id=1&idioma=1&subseccion=ANU_ADMON"
+      - "https://sede.aytobadajoz.es/portal/tablonVirtual.do?campo=9&opc_id=175&ent_id=1&idioma=1&subseccion=ANU_ADMON"
+      - "https://sede.aytobadajoz.es/portal/tablonVirtual.do?opc_id=175&ent_id=1&idioma=1&subseccion=ANU_ADMON"
+    pgm_pages:
+      - "https://www.aytobadajoz.es/es/ayto/pgm/planeamiento-en-tramite"
+      - "https://www.aytobadajoz.es/es/ayto/pgm/publicacion"
+      - "https://www.aytobadajoz.es/es/ayto/pgm/memorias"
+      - "https://www.aytobadajoz.es/es/ayto/pgm/planespecial"
+      - "https://www.aytobadajoz.es/es/ayto/pgm/programa"
+    licencias_info_url: "https://www.aytobadajoz.es/es/ayto/pgm"
+    centroid: [38.8794, -6.9707]
+  notes: |
+    Sede STA tablón virtual (subsección ANU_ADMON): expedientes de planeamiento
+    (estudios de detalle, PGM, reparcelaciones, programas de ejecución, etc.).
+    Web corporativa PGM (PDFs planeamiento en trámite, planes especiales).
+    Licencias de obra: sin listado público en tablón; trámites vía sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
