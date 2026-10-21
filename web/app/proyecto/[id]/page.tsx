@@ -32,6 +32,15 @@ type PageProps = {
 
 export const revalidate = 600;
 
+// Ids are not known at build. An empty list still opts the segment into ISR
+// fallback (dynamicParams stays true). Without this, Next treats the route as
+// fully dynamic and sends private, no-store on every request.
+export function generateStaticParams() {
+  return [];
+}
+
+export const dynamicParams = true;
+
 async function projectId(params: PageProps["params"]): Promise<string> {
   const { id } = await params;
   // Next can supply encoded IDs to the page and decoded IDs to metadata.
