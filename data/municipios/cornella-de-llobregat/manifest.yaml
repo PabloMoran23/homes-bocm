@@ -1,0 +1,31 @@
+slug: cornella-de-llobregat
+nombre: "Cornellà de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.cornella.cat"
+  adapter: municipio.adapters.cornella_de_llobregat:CornelladeLlobregatAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cornella-de-llobregat/1.0"
+    fetch_timeout_s: 45
+    govern_timeout_s: 12
+    cod_ine_mun: "08073"
+    centroid: [41.357, 2.070]
+    plone_roots:
+      - "https://www.cornella.cat/files/contenidos/Urbanisme"
+      - "https://www.cornella.cat/files/contenidos/InfoPublica"
+    govern_seeds:
+      - "http://governobert.cornella.cat/normativa-municipal-en-tramit"
+      - "http://governobert.cornella.cat/altres"
+  notes: |
+    Web corporativa Plone (Urbanisme, InfoPublica) + governobert (anuncis/normativa en tràmit).
+    Seu-e transparència (urbanisme) y RPUC/MUC Gencat. Seuelectronica para trámites (lento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

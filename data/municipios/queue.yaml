@@ -989,11 +989,11 @@ municipios:
 - slug: cornella-de-llobregat
   nombre: Cornellà de Llobregat
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T00:25:06.750827+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/945
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
