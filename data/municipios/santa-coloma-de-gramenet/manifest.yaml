@@ -1,0 +1,39 @@
+slug: santa-coloma-de-gramenet
+nombre: "Santa Coloma de Gramenet"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.gramenet.cat"
+  adapter: municipio.adapters.santa_coloma_de_gramenet:SantaColomaDeGramenetAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-coloma-de-gramenet/1.0"
+    wfs_base: "https://www.gramenet.cat/geoserver/gramenetgis/wfs"
+    centroid: [41.4515, 2.2081]
+  notes: |
+    Web TYPO3 (expedientes urbanísticos por categorías) + Geoportal Nexus
+    (config en /geoportal/assets/applicationProperties/config.json).
+    GeoServer WFS gramenetgis: capas eu_expurb_vigents_* y tramitación con polígonos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.186, 41.432]
+            - [2.224, 41.432]
+            - [2.224, 41.475]
+            - [2.186, 41.475]
+            - [2.186, 41.432]
+      crs: EPSG:4326
+      axis_order: xy
+      source: gramenetgis:dt_terme_municipal (bbox aproximado)
