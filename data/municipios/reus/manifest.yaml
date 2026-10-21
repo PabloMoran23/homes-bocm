@@ -1,0 +1,28 @@
+slug: reus
+nombre: "Reus"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.reus.cat"
+  adapter: municipio.adapters.reus:ReusAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-reus/1.0"
+    seu_timeout_s: 18
+    max_sitemap_pages: 60
+    centroid: [41.1542, 1.1081]
+    geometry:
+      search_url: "https://geoportal.reus.cat/apps/giscube-admin/plugins/mapiareus_search/search/"
+  notes: |
+    Web corporativa Drupal (reus.cat): planejament, convocatòries i notícies urbanístiques.
+    Sede seu.reus.cat (mòdul urbanismeCategoriaPublic + tràmits) — pot tenir timeout des de alguns entorns.
+    Geoportal Mapia: cerca de parcel·les (ref. cadastral / CF****) per geometria parcial.
+    RPUC Generalitat: expedient PGOU 267316.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
