@@ -1,0 +1,39 @@
+slug: sant-boi-de-llobregat
+nombre: "Sant Boi de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.santboi.cat"
+  adapter: municipio.adapters.sant_boi_de_llobregat:SantBoiDeLlobregatAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-boi-de-llobregat/1.0"
+    centroid: [41.3436, 2.0369]
+  notes: |
+    Drupal 10: índices /planejament-urbanistic/* (en tràmit, exposició, vigents, suspesos)
+    con fichas (metadatos + PDFs seu.santboi.cat/docexp). Gestió i convenis en acordeón.
+    Licencias: trámites informativos tramits.santboi.cat; concesiones en e-Tauler (SPA).
+    Visor autoconsulta ArcGIS Experience Builder; MapServer qualificacions sense enlace a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [1.998, 41.318]
+            - [2.078, 41.318]
+            - [2.078, 41.370]
+            - [1.998, 41.370]
+            - [1.998, 41.318]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado (IGN nameunit sin resultado para Sant Boi de Llobregat)"
