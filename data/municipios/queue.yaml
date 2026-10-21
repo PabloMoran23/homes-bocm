@@ -1147,11 +1147,11 @@ municipios:
 - slug: orihuela
   nombre: Orihuela
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-21T16:03:27.832354+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/960
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Alicante
