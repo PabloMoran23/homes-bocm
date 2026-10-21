@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { fetchStaticJson } from "@/lib/fetch-static-json";
 import { rpcDominio } from "@/lib/dominio-cache";
 import type { MadridPresentacion, ProyectoInvestigado } from "@/lib/madrid-presentacion";
@@ -18,9 +19,25 @@ function asText(value: unknown): string | null {
   return trimmed || null;
 }
 
+const loadCachedProyectosInvestigados = unstable_cache(
+  async (): Promise<unknown> => {
+    const { data, error, missing } = await rpcDominio<unknown>("list_proyectos_investigados");
+    if (missing) throw new Error("supabase-missing");
+    if (error || data == null) return null;
+    return data;
+  },
+  ["list-proyectos-investigados-v1"],
+  { revalidate: 600 },
+);
+
 export async function loadProyectosInvestigados(): Promise<ProyectoInvestigado[]> {
-  const { data, error } = await rpcDominio<unknown>("list_proyectos_investigados");
-  if (error || data == null) return [];
+  let data: unknown;
+  try {
+    data = await loadCachedProyectosInvestigados();
+  } catch {
+    return [];
+  }
+  if (data == null) return [];
   let rows: unknown = data;
   if (typeof rows === "string") {
     try {
