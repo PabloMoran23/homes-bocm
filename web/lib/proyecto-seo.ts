@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { loadProyectoInfoExtra } from "@/lib/load-proyecto-info-extra";
 import { proyectoTituloPublico } from "@/lib/proyecto-info-extra";
 import { loadProjectById } from "@/lib/load-project";
@@ -12,7 +13,7 @@ function trimTitle(title: string, max = 72): string {
 }
 
 /** Título visible en metadata y breadcrumbs JSON-LD de `/proyecto/[id]`. */
-export async function getProyectoPageTitle(id: string): Promise<string | null> {
+export const getProyectoPageTitle = cache(async function getProyectoPageTitle(id: string): Promise<string | null> {
   const project = await loadProjectById(id);
   if (project) {
     const info = await loadProyectoInfoExtra(id, project.id, project.sigmaExpediente);
@@ -38,7 +39,7 @@ export async function getProyectoPageTitle(id: string): Promise<string | null> {
     organo: ficha.catalog?.ORG_TX_DESC,
   });
   return trimTitle(title);
-}
+});
 
 export async function getProyectoPageDescription(id: string): Promise<string | undefined> {
   const project = await loadProjectById(id);

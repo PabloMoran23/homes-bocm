@@ -44,6 +44,7 @@ import { proyectoTituloPublico, type ProyectoInfoExtra } from "@/lib/proyecto-in
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 import type { Project } from "@/lib/types";
 import type { MapPoint } from "./ProjectsMap";
+import { WhenIdle } from "./WhenIdle";
 
 const ResearchTerritoryMap = dynamic(
   () => import("./project-detail/ResearchTerritoryMap").then(m => m.ResearchTerritoryMap),
@@ -270,7 +271,7 @@ export function ProjectDetailView({
           location={p.municipio || p.territorioLabel}
           subtitle={headline.split(/\s[—–]\s/)[1] || Array.from(new Set([hasValue(p.sigmaFase) ? p.sigmaFase : null, hasValue(p.tipoInstrumento) ? p.tipoInstrumento : null].filter(Boolean))).join(" · ")}
           info={infoExtra}
-          map={<ResearchTerritoryMap geo={sectorGeo} points={mapPoints} location={p.municipio || p.territorioLabel} />}
+          map={<WhenIdle delayMs={4000} fallback={<div className="research-map-loading">Cargando mapa del territorio…</div>}><ResearchTerritoryMap geo={sectorGeo} points={mapPoints} location={p.municipio || p.territorioLabel} /></WhenIdle>}
           actions={<>
             {p.pdfUrl ? <a href={p.pdfUrl} target="_blank" rel="noopener noreferrer">Documento BOCM ↗</a> : null}
             {p.sigmaVisorUrl ? <a href={p.sigmaVisorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
@@ -427,14 +428,19 @@ export function ProjectDetailView({
         {infoExtra ? null : (
         <aside className="space-y-5 lg:sticky lg:top-6 lg:self-start">
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <ProjectsMap
-              points={mapPoints}
-              sectorGeoJson={sectorGeo}
-              dataScope="full"
-              variant="detail"
-              heightClassName="min-h-[220px] h-[min(32vh,320px)]"
-              hoverPopup={false}
-            />
+            <WhenIdle
+              delayMs={4000}
+              fallback={<div className="flex h-[min(32vh,320px)] items-center justify-center text-sm text-slate-500">Cargando mapa…</div>}
+            >
+              <ProjectsMap
+                points={mapPoints}
+                sectorGeoJson={sectorGeo}
+                dataScope="full"
+                variant="detail"
+                heightClassName="min-h-[220px] h-[min(32vh,320px)]"
+                hoverPopup={false}
+              />
+            </WhenIdle>
           </div>
 
           {bocmVsSigma ? (

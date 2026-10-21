@@ -1,5 +1,5 @@
+import { DeferredLandingAreaMap } from "@/components/DeferredLandingAreaMap";
 import { LandingAddressForm } from "@/components/LandingAddressForm";
-import { LandingAreaMap } from "@/components/LandingAreaMap";
 
 export function LandingTuZonaSection() {
   return <section className="landing-area-section" aria-labelledby="landing-tu-zona-heading">
@@ -7,6 +7,6 @@ export function LandingTuZonaSection() {
       <div className="landing-area-benefits"><span><b>01</b> Localiza una dirección</span><span><b>02</b> Delimita el área de estudio</span><span><b>03</b> Consulta las actuaciones y sus fuentes</span></div>
       <LandingAddressForm submitLabel="Consultar entorno" showSecondaryLink={false} />
     </div>
-    <LandingAreaMap />
+    <DeferredLandingAreaMap />
   </section>;
 }

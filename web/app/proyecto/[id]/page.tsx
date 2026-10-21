@@ -30,6 +30,8 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+export const revalidate = 600;
+
 async function projectId(params: PageProps["params"]): Promise<string> {
   const { id } = await params;
   // Next can supply encoded IDs to the page and decoded IDs to metadata.

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
 import { fetchStaticJson } from "@/lib/fetch-static-json";
 import { normalizeResumenContenido, resumenContenidoFromVisorFicha } from "@/lib/normalize-resumen-contenido";
@@ -435,7 +436,7 @@ function pickVisorParsed(ficha: SigmaFicha): VisorParsed {
   };
 }
 
-export async function loadSigmaFichaBySlug(slug: string): Promise<SigmaFicha | null> {
+export const loadSigmaFichaBySlug = cache(async function loadSigmaFichaBySlug(slug: string): Promise<SigmaFicha | null> {
   const grupo = sigmaFichaGrupoFromSlug(slug);
   const [{ byGrupo: cat, syncAt }, { byGrupo: viso, generatedAt }, bocm, fromSupabase] =
     await Promise.all([
@@ -481,7 +482,7 @@ export async function loadSigmaFichaBySlug(slug: string): Promise<SigmaFicha | n
     ...staticVisor,
     clasificacion,
   };
-}
+});
 
 /** Lista slugs para sitemap o pruebas (opcional). */
 export async function listSigmaFichaSlugs(): Promise<string[]> {

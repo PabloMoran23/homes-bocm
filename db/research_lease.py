@@ -12,8 +12,10 @@ from save_proyecto_info_extra import _db_url
 
 @contextmanager
 def connection():
+    # 8s, not 15s: a runaway investigación query must release the tiny
+    # instance before it queues the public RPCs (anon timeout is 3s).
     conn = psycopg2.connect(_db_url(), connect_timeout=10,
-                            options='-c statement_timeout=15000 -c lock_timeout=5000')
+                            options='-c statement_timeout=8000 -c lock_timeout=3000')
     try:
         with conn:
             yield conn
