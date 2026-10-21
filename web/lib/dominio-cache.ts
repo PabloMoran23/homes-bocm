@@ -25,9 +25,14 @@ export async function rpcDominio<T = unknown>(
   if (!supabase) {
     return { data: null, error: "Supabase no configurado", missing: true };
   }
-  const { data, error } = await supabase.rpc(name, args);
-  if (error) {
-    return { data: null, error: error.message, missing: false };
+  try {
+    const { data, error } = await supabase.rpc(name, args);
+    if (error) {
+      return { data: null, error: error.message, missing: false };
+    }
+    return { data: data as T, error: null, missing: false };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Error de Supabase";
+    return { data: null, error: message, missing: false };
   }
-  return { data: data as T, error: null, missing: false };
 }

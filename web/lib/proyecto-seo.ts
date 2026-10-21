@@ -1,3 +1,6 @@
+import { cache } from "react";
+import { loadProyectoInfoExtra } from "@/lib/load-proyecto-info-extra";
+import { proyectoTituloPublico } from "@/lib/proyecto-info-extra";
 import { loadProjectById } from "@/lib/load-project";
 import { loadSigmaFichaBySlug } from "@/lib/load-sigma-ficha";
 import { normalizeResumenContenido } from "@/lib/normalize-resumen-contenido";
@@ -10,14 +13,19 @@ function trimTitle(title: string, max = 72): string {
 }
 
 /** Título visible en metadata y breadcrumbs JSON-LD de `/proyecto/[id]`. */
-export async function getProyectoPageTitle(id: string): Promise<string | null> {
+export const getProyectoPageTitle = cache(async function getProyectoPageTitle(id: string): Promise<string | null> {
   const project = await loadProjectById(id);
   if (project) {
-    return trimTitle(projectHeadline(project));
+    const info = await loadProyectoInfoExtra(id, project.id, project.sigmaExpediente);
+    return proyectoTituloPublico(info) || trimTitle(projectHeadline(project));
   }
 
   const ficha = await loadSigmaFichaBySlug(id);
   if (!ficha) return null;
+
+  const info = await loadProyectoInfoExtra(id, ficha.expedienteGrupo);
+  const researchedTitle = proyectoTituloPublico(info);
+  if (researchedTitle) return researchedTitle;
 
   const { title } = sigmaPickDisplayHeadline({
     expedienteGrupo: ficha.expedienteGrupo,
@@ -31,7 +39,7 @@ export async function getProyectoPageTitle(id: string): Promise<string | null> {
     organo: ficha.catalog?.ORG_TX_DESC,
   });
   return trimTitle(title);
-}
+});
 
 export async function getProyectoPageDescription(id: string): Promise<string | undefined> {
   const project = await loadProjectById(id);

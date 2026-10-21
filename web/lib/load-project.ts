@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { fetchStaticJson } from "./fetch-static-json";
 import { loadCmPortalProjectById } from "./load-cm-portal-project";
 import { ensureProject } from "./ensure-project";
@@ -35,7 +36,7 @@ async function loadProjectFromSupabase(id: string): Promise<Project | null> {
   return projectFromDominioRow(data as Record<string, unknown>);
 }
 
-export async function loadProjectById(id: string): Promise<Project | null> {
+export const loadProjectById = cache(async function loadProjectById(id: string): Promise<Project | null> {
   const decoded = decodeURIComponent(id);
   const fromDb = await loadProjectFromSupabase(decoded);
   if (fromDb) return fromDb;
@@ -43,4 +44,4 @@ export async function loadProjectById(id: string): Promise<Project | null> {
   const fromBocm = map.get(decoded);
   if (fromBocm) return fromBocm;
   return loadCmPortalProjectById(decoded);
-}
+});

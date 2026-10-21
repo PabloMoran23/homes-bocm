@@ -11,6 +11,7 @@ import {
   isAdminPublicPath,
   isValidAdminSession,
 } from "@/lib/admin-auth";
+import { clientIpFrom, decideAccess } from "@/lib/bot-guard";
 
 function wwwRedirect(request: NextRequest): NextResponse | null {
   const host = request.headers.get("host") ?? "";
@@ -61,6 +62,17 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
 
   if (isAdminPublicPath(pathname)) return NextResponse.next();
 
+  // Local screenshots of /admin/analitica?muestra=1. Production builds set
+  // NODE_ENV=production, so this branch is absent there. Bot blocking above
+  // is unchanged.
+  if (
+    process.env.NODE_ENV === "development" &&
+    pathname === "/admin/analitica" &&
+    request.nextUrl.searchParams.get("muestra") === "1"
+  ) {
+    return NextResponse.next();
+  }
+
   const ok = await isValidAdminSession(request.cookies.get(ADMIN_COOKIE)?.value);
   if (ok) return NextResponse.next();
 
@@ -74,7 +86,33 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
   return NextResponse.redirect(login);
 }
 
+async function botGuard(request: NextRequest): Promise<NextResponse | null> {
+  const decision = await decideAccess({
+    pathname: request.nextUrl.pathname,
+    userAgent: request.headers.get("user-agent"),
+    ip: clientIpFrom(request.headers),
+    headers: request.headers,
+  });
+  if (decision.action === "allow") return null;
+
+  const headers = new Headers({
+    "cache-control": "private, no-store",
+    "cdn-cache-control": "no-store",
+    "content-type": "text/plain; charset=utf-8",
+    vary: "User-Agent",
+    "x-robots-tag": "noindex",
+  });
+  if (decision.action === "rate_limit") {
+    headers.set("retry-after", String(decision.retryAfterSec));
+    return new NextResponse("Too Many Requests", { status: 429, headers });
+  }
+  return new NextResponse("Forbidden", { status: 403, headers });
+}
+
 export async function middleware(request: NextRequest) {
+  const blocked = await botGuard(request);
+  if (blocked) return blocked;
+
   const www = wwwRedirect(request);
   if (www) return www;
 

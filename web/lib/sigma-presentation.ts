@@ -12,6 +12,7 @@ import { sigmaFaseShortLabel, sigmaTipoActuacion } from "@/lib/sigma-user-labels
 import type { SigmaVisorFicha, SigmaVisorTramite } from "@/lib/types";
 
 export type SigmaPresentationInput = {
+  publicTitle?: string | null;
   expedienteGrupo: string;
   source?: string | null;
   denominacion?: string | null;
@@ -116,7 +117,9 @@ export function sigmaPickDisplayHeadline(input: SigmaPresentationInput): SigmaDi
     (h2 ? shortenVisorH2(h2) : null);
 
   let title: string;
-  if (isSigmaLocationDenom(denom)) {
+  if (input.publicTitle?.trim()) {
+    title = input.publicTitle.trim();
+  } else if (isSigmaLocationDenom(denom)) {
     title = denom!;
   } else if (tipo && denom && !isSigmaPlanCodeTitle(denom)) {
     title = denom;
