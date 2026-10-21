@@ -207,7 +207,7 @@ export function toDashboardView(report: AnalyticsReport, query: ResolvedAnalytic
       label: "Parte de personas",
       value: mixTotal ? formatPercent(humanShare, 0) : "—",
       detail: mixTotal
-        ? `${formatPercent(mix.bot / mixTotal, 0)} bots · ${formatPercent(mix.admin / mixTotal, 0)} admin`
+        ? `${formatPercent(mix.bot / mixTotal, 0)} bots · ${formatPercent(mix.admin / mixTotal, 0)} admin · personas con actividad`
         : "Sin sesiones en este corte",
       delta:
         mixTotal === 0 && previousMixTotal === 0
