@@ -1,0 +1,26 @@
+slug: santiago-de-compostela
+nombre: "Santiago de Compostela"
+provincia: Santiago de Compostela
+comunidad_autonoma: galicia
+boletin_source_id: dog
+
+portal:
+  base_url: "https://sede.santiagodecompostela.gal"
+  adapter: municipio.adapters.santiago_de_compostela:SantiagoDeCompostelaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.santiagodecompostela.gal"
+    siotuga_inventario: "https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=15078&lang=es_ES"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santiago-de-compostela/1.0"
+    centroid: [42.8805, -8.5456]
+  notes: |
+    Sede electrónica STA/TAO: tablón (dataset PTS2_TABLON embebido) y catálogo (CATSERV, tema AMB_14 Urbanismo).
+    Planeamiento: inventario SIOTUGA Xunta (INE 15078) vía query_document.php (sesión + token).
+    Web corporativa santiagodecompostela.gal inaccesible o muy lenta desde entornos cloud (timeout).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

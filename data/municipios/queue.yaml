@@ -856,11 +856,11 @@ municipios:
 - slug: santiago-de-compostela
   nombre: Santiago de Compostela
   bocm_count: 1
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-20T08:20:00+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/936
   notes: ''
   boletin_source_id: dog
   comunidad_autonoma: galicia
