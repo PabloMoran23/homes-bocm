@@ -1,0 +1,24 @@
+slug: vigo
+nombre: "Vigo"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://sede.vigo.org"
+  adapter: municipio.adapters.vigo:VigoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vigo/1.0"
+    centroid_lat: 42.2406
+    centroid_lon: -8.7207
+  notes: |
+    Taboleiro sede: expedientes en exposición pública (Gerencia Municipal de Urbanismo).
+    Trámites OB/CP en catálogo de procedimientos (sin tablón de concesiones).
+    PGOM/documentación en hoxe.vigo.org; visor mapas.vigo.org / ArcGIS Hub (sin join por código expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
