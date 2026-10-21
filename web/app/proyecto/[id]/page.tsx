@@ -30,6 +30,8 @@ type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+export const revalidate = 600;
+
 async function projectId(params: PageProps["params"]): Promise<string> {
   const { id } = await params;
   // Next can supply encoded IDs to the page and decoded IDs to metadata.
@@ -97,12 +99,13 @@ export default async function ProyectoPage({ params }: PageProps) {
     return (
       <>
         {directoryProject ? (
-          <ProjectTerritoryNavigation project={directoryProject} />
+          <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
         ) : breadcrumbLd ? (
           <JsonLd data={breadcrumbLd} />
         ) : null}
         <ProyectoViewTracker id={id} kind="bocm" />
         <ProjectDetailView
+          hasTerritoryNavigation={Boolean(directoryProject)}
           project={project}
           programa={programaCtx?.programa ?? null}
           programaRef={programaCtx?.ref ?? null}
@@ -130,12 +133,13 @@ export default async function ProyectoPage({ params }: PageProps) {
   return (
     <>
       {directoryProject ? (
-        <ProjectTerritoryNavigation project={directoryProject} />
+        <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
       ) : breadcrumbLd ? (
         <JsonLd data={breadcrumbLd} />
       ) : null}
       <ProyectoViewTracker id={id} kind="sigma" />
       <SigmaExpedienteDetailView
+        hasTerritoryNavigation={Boolean(directoryProject)}
         ficha={ficha}
         metric={metric}
         programa={programaCtx?.programa ?? null}

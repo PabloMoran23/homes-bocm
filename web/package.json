@@ -18,6 +18,7 @@
     "verify:production": "node scripts/verify-production.mjs",
     "start": "next start",
     "lint": "eslint",
+    "test:bot-guard": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-bot-guard.mjs",
     "test:map": "node scripts/test-portal-map-data.mjs",
     "build:province-previews": "node scripts/build-province-previews.mjs",
     "check:province-previews": "node scripts/build-province-previews.mjs --check",

@@ -13,6 +13,12 @@ function load(path, customRequire = require) {
   return exports;
 }
 const lib = load("../lib/proyecto-info-extra.ts");
+const timeline = load("../lib/proyecto-timeline.ts");
+assert.equal(timeline.proyectoHitoFecha({ valor: "30 de junio de 1998", fuenteFecha: "2026-09-27" }).year, 1998);
+assert.equal(timeline.proyectoHitoFecha({ valor: "BOCM 29-01-2020" }).label, "29/01/2020");
+assert.equal(timeline.proyectoHitoFecha({ valor: "Pleno de marzo de 2023" }).year, 2023);
+assert.equal(timeline.proyectoHitoFecha({ valor: "Aprobación 2019-02-20" }).year, 2019);
+assert.equal(timeline.proyectoHitoFecha({ valor: "Sector consolidado", fuenteFecha: "2026-09-27" }).year, null);
 const base = { id: 1, proyectoId: "p1", resumen: "Relato documentado", estado: "completa", datos: [], hallazgos: [] };
 assert.equal(lib.parseProyectoInfoExtra(base).estado, "completa");
 assert.equal(lib.parseProyectoInfoExtra({ ...base, estado: "parcial" }).estado, "parcial");
@@ -22,6 +28,7 @@ assert.equal(pending.razonPendiente, "No se identifica el expediente");
 assert.equal(lib.parseProyectoInfoExtra({ ...base, estado: "invalid" }), null);
 const panel = load("../components/project-detail/ProyectoInfoExtraPanel.tsx", name => {
   if (name === "@/lib/proyecto-info-extra") return lib;
+  if (name === "@/lib/proyecto-timeline") return timeline;
   if (name.endsWith("TramitacionTimeline")) return { TramitacionTimeline: () => null };
   return require(name);
 });
@@ -50,3 +57,20 @@ const details = renderToStaticMarkup(React.createElement(panel.ProyectoInfoTabPa
 assert.match(details, /Contenido y condiciones/);
 assert.doesNotMatch(details, /Qué se va a construir/);
 console.log("Unified investigation reader: public content renders without internal workflow status or empty sections");
+
+const titled = lib.parseProyectoInfoExtra({ ...base,
+  titulo: "Estudio de Detalle para la ordenación de la manzana RU.2 del Sector AR Nuevo Tres Cantos (exp. 19PD0001)",
+  municipio: "Tres Cantos" });
+assert.equal(lib.proyectoTituloPublico(titled), "Estudio de Detalle para la ordenación de la manzana RU.2 del Sector AR Nuevo Tres Cantos");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Prolongación de calle Rosa dels Vents, en l’Alfàs del Pi", municipio: "L'Alfàs del Pi" })), "Prolongación de calle Rosa dels Vents, en l’Alfàs del Pi");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Urbanización de la calle Mayor", municipio: "Madrid" })), "Urbanización de la calle Mayor · Madrid");
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "ru2memoria.pdf", municipio: "Tres Cantos" })), null);
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra(base)), null);
+assert.equal(lib.proyectoTituloPublico(null), null);
+assert.equal(lib.proyectoTituloPublico(lib.parseProyectoInfoExtra({ ...base, titulo: "Título formal", municipio: "Madrid", datos: [{bloque:"situacion",clave:"nombre_publico",etiqueta:"Nombre",valor:"Nombre conocido de Madrid",confianza:"alta",fuenteTipo:"oficial"}] })), "Nombre conocido de Madrid");
+console.log("Research titles use the identified subject and municipality, preserving fallbacks and removing file names and expediente references");
+
+const sigma = load("../lib/sigma-presentation.ts", name => name === "@/lib/project-display"
+  ? load("../lib/project-display.ts") : {});
+assert.equal(sigma.sigmaPickDisplayHeadline({ expedienteGrupo: "135/2020/00001", tfigAbrev: "MPG", visorH1: "PGOUM-97", publicTitle: "Plan General de Madrid: modificación en calle Mayor" }).title,
+  "Plan General de Madrid: modificación en calle Mayor");

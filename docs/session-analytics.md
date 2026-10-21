@@ -19,7 +19,7 @@ La recepción exige mismo origen, lista cerrada de eventos/propiedades, tamaño 
 1. Aplicar `supabase/migrations/20261012120000_session_analytics.sql` usando la conexión PostgreSQL de servidor.
 2. Generar un secreto aleatorio de al menos 32 bytes. Registrar SHA-256 hexadecimal en `homes_analytics_private.config` y poner el valor original en `ANALYTICS_RPC_KEY` del servidor.
 3. Configurar `NEXT_PUBLIC_SESSION_ANALYTICS=1`, `ADMIN_PANEL_PASSWORD` robusta y `CRON_SECRET` en Vercel Production. Nunca usar NEXT_PUBLIC para secretos.
-4. Desplegar. Vercel ejecuta `/api/analytics/retention` diariamente a las 03:15 UTC con CRON_SECRET. Borra solo eventos de más de 90 días y límites caducados. Cada escritura e informe también aplica retención.
+4. Desplegar. Vercel ejecuta `/api/analytics/retention` diariamente a las 03:15 UTC con CRON_SECRET. Borra solo eventos de más de 90 días y límites caducados. La ingesta y los informes antiguos también aplican esa retención. El panel nuevo (`homes_analytics_dashboard`) no borra filas.
 
 Desactivar `NEXT_PUBLIC_SESSION_ANALYTICS` y volver a desplegar detiene la recogida ; mantener la tarea de retención mientras existan datos. No hay backfill de visitas previas.
 
@@ -29,4 +29,8 @@ Desactivar `NEXT_PUBLIC_SESSION_ANALYTICS` y volver a desplegar detiene la recog
 
 ## Filtros del panel
 
-El filtro de sesiones se combina con periodo y origen y se aplica antes de calcular todos los indicadores y limitar los últimos 50 recorridos. «Con actividad, sin bots ni admin» requiere varias páginas, una acción real (abrir una ficha no cuenta por sí solo) o al menos 10 segundos activos acumulados por página. Excluye sesiones marcadas como bot/administrador, rutas de administración y más de 100 vistas. No demuestra que sean personas. También permite consultar todas, bots, administradores y sin bots ni admin; ningún filtro borra datos. Aplicar `20261013190000_analytics_session_filters.sql` antes de publicar.
+`/admin/analitica` lee `homes_analytics_dashboard` (`20261020150000_analytics_dashboard.sql`). Hay que aplicar esa migración antes de que el panel tenga datos; hasta entonces muestra que falta. La función agrega en la base de datos, no devuelve eventos en bruto y no borra filas. Caduca a los 3 segundos.
+
+La URL guarda el periodo (`24h`, `7d`, `30d`, `90d` o `custom` con `from`/`to`), el tipo (`all`, `human`, `bot`, `admin`), el origen y la sección. `human` son sesiones sin marca de bot ni de administrador: el valor guardado sigue siendo `unclassified`. Los enlaces antiguos `days=7|30|90` y `traffic=unclassified|interesting` se leen como ese periodo y como personas. La comparación usa el periodo inmediatamente anterior, de la misma duración. Por debajo de 48 horas la serie es horaria; si no, diaria. El aviso de bots ignora el filtro de tipo para no esconder un pico.
+
+Abrir una ficha no cuenta como acción. El rebote aproximado es una sola página, sin acción y con menos de 10 segundos activos. No hay dispositivo en los eventos, y `/ubicacion` agrupa todas las direcciones.

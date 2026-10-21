@@ -6,12 +6,11 @@ import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
 import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { SigmaMetricsPanel } from "@/components/detail/SigmaMetricsCards";
+import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
-  ProyectoInfoLead,
   ProyectoInfoTabPanel,
   proyectoInfoTabs,
-  proyectoNombrePopular,
   type ProyectoInfoTabId,
 } from "@/components/project-detail/ProyectoInfoExtraPanel";
 import { TramitacionTimeline } from "@/components/project-detail/TramitacionTimeline";
@@ -39,7 +38,7 @@ import {
 } from "@/lib/sigma-user-labels";
 import type { SigmaClassification } from "@/lib/sigma-classification";
 import type { SigmaPrograma, SigmaProgramaExpedienteRef } from "@/lib/sigma-programa";
-import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
+import { proyectoTituloPublico, type ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 import type { SigmaExpedienteMetric } from "@/lib/sigma-metrics";
 import {
   loadSigmaNtiLinkedBundle,
@@ -48,6 +47,13 @@ import {
 } from "@/lib/sigma-nti-linked";
 import type { SigmaFicha } from "@/lib/types";
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
+
+import { WhenIdle } from "./WhenIdle";
+
+const ResearchTerritoryMap = dynamic(
+  () => import("./project-detail/ResearchTerritoryMap").then(m => m.ResearchTerritoryMap),
+  { ssr: false, loading: () => <div className="research-map-loading">Cargando mapa del territorio…</div> },
+);
 
 const ProjectsMap = dynamic(
   () => import("./ProjectsMap").then((m) => ({ default: m.ProjectsMap })),
@@ -70,6 +76,7 @@ export function SigmaExpedienteDetailView({
   programaRef = null,
   clasificacionByExpediente = {},
   infoExtra = null,
+  hasTerritoryNavigation = false,
 }: {
   ficha: SigmaFicha;
   metric?: SigmaExpedienteMetric | null;
@@ -77,6 +84,7 @@ export function SigmaExpedienteDetailView({
   programaRef?: SigmaProgramaExpedienteRef | null;
   clasificacionByExpediente?: Record<string, SigmaClassification | null>;
   infoExtra?: ProyectoInfoExtra | null;
+  hasTerritoryNavigation?: boolean;
 }) {
   const [ntiBundle, setNtiBundle] = useState<SigmaNtiLinkedBundle | null>(null);
   const [tab, setTab] = useState<TabId>(infoExtra ? "datos" : "resumen");
@@ -84,8 +92,9 @@ export function SigmaExpedienteDetailView({
 
   const c = ficha.catalog;
   const tramCount = ficha.tramitacion.length;
-  const popular = infoExtra ? proyectoNombrePopular(infoExtra) : null;
+  const popular = infoExtra ? proyectoTituloPublico(infoExtra) : null;
   const presentation: SigmaPresentationInput = {
+    publicTitle: popular,
     expedienteGrupo: ficha.expedienteGrupo,
     source: c?.source,
     denominacion: popular || c?.EXP_TX_DENOM,
@@ -174,13 +183,23 @@ export function SigmaExpedienteDetailView({
   };
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8">
-      <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+    <main className={`mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 ${infoExtra ? "project-research" : "overflow-x-hidden"}`}>
+      {!hasTerritoryNavigation ? <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <DetailBreadcrumbLink href="/explore">Mapa</DetailBreadcrumbLink>
         <span className="text-slate-300">/</span>
         <span className="truncate text-slate-700">{breadcrumbTitle}</span>
-      </nav>
+      </nav> : null}
 
+      {infoExtra ? (
+        <ResearchProjectHero
+          title={popular || breadcrumbTitle}
+          location="Proyecto urbanístico"
+          subtitle={c?.FAS_TX_DENOM}
+          info={infoExtra}
+          map={<WhenIdle delayMs={4000} fallback={<div className="research-map-loading">Cargando mapa del territorio…</div>}><ResearchTerritoryMap geo={sigmaGeo} location="Ámbito del proyecto" /></WhenIdle>}
+          actions={visorUrl ? <a href={visorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
+        />
+      ) : (
       <SigmaProjectHero
         presentation={presentation}
         clasificacion={ficha.clasificacion}
@@ -188,6 +207,11 @@ export function SigmaExpedienteDetailView({
         bocmFirstId={hasBocm ? ficha.bocmProyectos[0].id : null}
         bocmCount={ficha.bocmProyectos.length}
       />
+      )}
+
+      {popular && ficha.catalog?.EXP_TX_DENOM ? (
+        <p className="mt-2 text-xs text-slate-500">Referencia de origen: {ficha.catalog.EXP_TX_DENOM}</p>
+      ) : null}
 
       {!infoExtra && programa ? (
         <div className="mt-6">
@@ -209,29 +233,6 @@ export function SigmaExpedienteDetailView({
         </div>
       ) : null}
 
-      {infoExtra ? (
-        <div className="mt-6 grid items-stretch gap-3 lg:grid-cols-[minmax(0,1fr)_13.5rem]">
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            {sigmaGeo ? (
-              <ProjectsMap
-                points={[]}
-                sectorGeoJson={sigmaGeo}
-                variant="detail"
-                heightClassName="h-[min(42vh,380px)]"
-                sectorCountLabel="ámbito"
-                hoverPopup={false}
-              />
-            ) : (
-              <div className="flex h-[min(42vh,380px)] items-center justify-center text-sm text-slate-500">
-                Cargando ámbito…
-              </div>
-            )}
-            <p className="border-t border-slate-100 px-3 py-2 text-xs text-slate-500">Ámbito del proyecto</p>
-          </div>
-          <ProyectoInfoLead info={infoExtra} stacked />
-        </div>
-      ) : null}
-
       <div className={infoExtra ? "mt-6 min-w-0" : "mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {infoExtra ? null : (
         <aside className="min-w-0 space-y-5 lg:sticky lg:top-6 lg:self-start">
@@ -240,14 +241,19 @@ export function SigmaExpedienteDetailView({
               <p className="border-b border-[var(--portal-paper-deep)] bg-[var(--portal-accent-soft)]/70 px-3 py-2 text-xs font-semibold text-[var(--portal-accent)]">
                 Ámbito del proyecto
               </p>
-              <ProjectsMap
-                points={[]}
-                sectorGeoJson={sigmaGeo}
-                variant="detail"
-                heightClassName="min-h-[220px] h-[min(32vh,320px)]"
-                sectorCountLabel="ámbito"
-                hoverPopup={false}
-              />
+              <WhenIdle
+                delayMs={4000}
+                fallback={<div className="flex min-h-[220px] h-[min(32vh,320px)] items-center justify-center text-sm text-slate-500">Cargando mapa…</div>}
+              >
+                <ProjectsMap
+                  points={[]}
+                  sectorGeoJson={sigmaGeo}
+                  variant="detail"
+                  heightClassName="min-h-[220px] h-[min(32vh,320px)]"
+                  sectorCountLabel="ámbito"
+                  hoverPopup={false}
+                />
+              </WhenIdle>
               <p className="border-t border-slate-100 px-3 py-2 text-[11px] text-slate-500">
                 Polígono aproximado del planeamiento urbanístico.
               </p>
@@ -276,6 +282,11 @@ export function SigmaExpedienteDetailView({
         )}
 
         <div className="min-w-0">
+          {infoExtra ? (
+            <nav className="research-section-nav" aria-label="Secciones de la investigación" id="investigacion">
+              {tabs.map((item) => <a key={item.id} href={`#seccion-${item.id}`}>{item.label}</a>)}
+            </nav>
+          ) : (
           <div
             className="mb-4 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-100/80 p-1"
             role="tablist"
@@ -297,8 +308,14 @@ export function SigmaExpedienteDetailView({
               </button>
             ))}
           </div>
+          )}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          {(infoExtra ? tabs : [{ id: activeTab, label: "" }]).map((section, sectionIndex) => {
+            const activeTab = section.id;
+            return (
+              <section key={section.id} id={infoExtra ? `seccion-${section.id}` : undefined} aria-label={infoExtra ? section.label : undefined} className={infoExtra ? "research-section" : "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"}>
+                {infoExtra ? <p className="research-section-kicker">{String(sectionIndex + 1).padStart(2, "0")} / {section.label}</p> : null}
+
             {infoExtra && (activeTab === "relato" || activeTab === "datos" || activeTab === "cronologia" || activeTab === "prensa") ? (
               <div className="space-y-8">
                 <ProyectoInfoTabPanel
@@ -415,7 +432,9 @@ export function SigmaExpedienteDetailView({
                 </ul>
               </div>
             )}
-          </div>
+              </section>
+            );
+          })}
         </div>
       </div>
 

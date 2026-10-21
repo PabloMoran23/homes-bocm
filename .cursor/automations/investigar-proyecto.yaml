@@ -6,7 +6,8 @@ description: >
 
 trigger:
   - type: cron
-    schedule: "0 8 * * *"
+    # 02:15 UTC is 03:15 or 04:15 in Madrid, outside the hours the site is read.
+    schedule: "15 2 * * *"
 
 repository:
   github: PabloMoran23/homes-bocm

@@ -51,6 +51,8 @@ export type ProyectoInfoExtra = {
   estado: "completa" | "parcial" | "pendiente_identificar";
   tipoEntrada?: string | null;
   asuntoId?: string | null;
+  titulo?: string | null;
+  municipio?: string | null;
   padreId?: string | null;
   razonPendiente?: string | null;
   resumen: string;
@@ -149,6 +151,8 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
     estado,
     tipoEntrada: asText(row.tipoEntrada),
     asuntoId: asText(row.asuntoId),
+    titulo: asText(row.titulo),
+    municipio: asText(row.municipio),
     padreId: asText(row.padreId),
     razonPendiente: asText(row.razonPendiente),
     resumen,
@@ -156,4 +160,22 @@ export function parseProyectoInfoExtra(raw: unknown): ProyectoInfoExtra | null {
     datos,
     hallazgos,
   };
+}
+
+/** Use the identified subject, never infer a title from an unfinished summary. */
+export function proyectoTituloPublico(info: ProyectoInfoExtra | null | undefined): string | null {
+  if (!info) return null;
+  const popular = info.datos.find((dato) => dato.clave === "nombre_publico")?.valor;
+  for (const value of [popular, info.titulo]) {
+    if (!value?.trim() || /\.(?:pdf|docx?|xlsx?|zip)(?:$|[\s)])/i.test(value)) continue;
+    const title = value.replace(/\s*\((?:exp(?:ediente|te|\.)?|ref(?:erencia|\.)?)\s*[:.]?\s*[^)]*\)/gi, "")
+      .replace(/\s+/g, " ").trim();
+    if (!title) continue;
+    const normalize = (text: string) => text.toLowerCase().normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").replace(/[’']/g, "");
+    const municipality = info.municipio?.trim();
+    return municipality && !normalize(title).includes(normalize(municipality))
+      ? `${title} · ${municipality}` : title;
+  }
+  return null;
 }

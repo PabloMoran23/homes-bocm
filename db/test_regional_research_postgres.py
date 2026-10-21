@@ -47,6 +47,7 @@ class RegionalTest(unittest.TestCase):
             c.execute((ROOT/'supabase/migrations/20260926160000_proyecto_info_extra.sql').read_text())
             c.execute((ROOT/'supabase/migrations/20261017140000_regional_research.sql').read_text())
             c.execute((ROOT/'supabase/migrations/20261017160000_unify_regional_investigations.sql').read_text())
+            c.execute((ROOT/'supabase/migrations/20261018190000_researched_project_titles.sql').read_text())
 
     @classmethod
     def tearDownClass(cls):cls.conn.close();cls.env.stop()
@@ -63,6 +64,13 @@ class RegionalTest(unittest.TestCase):
 
     def save(self,data=None,**kw):
         return r.save(data or payload(),request_id=kw.pop('request_id',str(uuid.uuid4())),unleased_test=True,**kw)
+
+    def test_public_reader_uses_the_identified_subject_title(self):
+        self.save(payload('p1', True))
+        info=self.sql("SELECT homes.get_proyecto_info_extra('p1')")[0][0]
+        self.assertEqual(info['titulo'],'Plano p1')
+        self.assertEqual(info['municipio'],'Municipio')
+        self.assertEqual(self.sql("SELECT denominacion FROM homes.proyecto WHERE id='p1'"),[('Plano 1',)])
 
     def test_parent_ids_and_reuse_across_documents(self):
         self.save(payload('p1',True));self.save(payload('p2',True))
@@ -203,6 +211,7 @@ class RegionalMigrationTest(unittest.TestCase):
                     c.execute("INSERT INTO homes.entrada_investigacion_actual VALUES ('document',%s,false)",(experimental_id,))
                     c.execute("INSERT INTO homes.asunto_relacion VALUES (%s,%s,'pertenece_a','confirmada',%s,'Plano del plan',%s)",(doc,plan,URL,experimental_id))
                     c.execute((ROOT/'supabase/migrations/20261017160000_unify_regional_investigations.sql').read_text())
+                    c.execute((ROOT/'supabase/migrations/20261018190000_researched_project_titles.sql').read_text())
                     c.execute("SELECT id,resumen FROM homes.proyecto_investigacion WHERE proyecto_id='old'")
                     self.assertEqual(c.fetchone(),(old_id,'Legacy untouched'))
                     c.execute('SELECT id,payload FROM homes.proyecto_investigacion WHERE entrada_legacy_id=%s',(experimental_id,))
