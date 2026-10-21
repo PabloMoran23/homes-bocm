@@ -617,11 +617,11 @@ municipios:
 - slug: tarragona
   nombre: Tarragona
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-21T20:01:23.103491+00:00'
+  last_run: '2026-10-21T20:16:32.915650+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/969
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Tarragona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-21T20:01:23.122623+00:00'
+updated_at: '2026-10-21T20:16:32.923778+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
