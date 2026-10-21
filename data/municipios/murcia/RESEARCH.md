@@ -42,3 +42,8 @@ Los trámites informativos no se exportan como licencias. Las fechas del tablón
 se conservan como fecha_publicacion, sin presumir fecha de concesión; las fechas
 con precisión anual se conservan como año, sin inventar el 1 de enero. Se restaura
 la cola completa de main y se deja su actualización al post-merge.
+
+La revisión en vivo detectó anuncios ajenos al urbanismo capturados por palabras
+genéricas (expediente, proyecto, aprobación). Se exige ahora contexto urbanístico.
+Se omiten las geometrías WFS con topología inválida, conservando el anuncio
+sin asignarle un polígono incorrecto.

@@ -16,6 +16,7 @@ from urllib.parse import urljoin
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from shapely.geometry import shape
 
 WEB_BASE = "https://www.murcia.es"
 SEDE_BASE = "https://sede.murcia.es"
@@ -192,6 +193,8 @@ class MurciaAyuntamientoAdapter(AyuntamientoAdapter):
                 code = str(props.get("nombre_cod") or "").strip()
                 if not code or not isinstance(geom, dict):
                     continue
+                if not shape(geom).is_valid:
+                    continue
                 key = _norm_text(code)
                 if key not in mapping:
                     mapping[key] = {
@@ -336,7 +339,12 @@ class MurciaAyuntamientoAdapter(AyuntamientoAdapter):
                             "source": "ayuntamiento",
                         }
                     )
-                if RE_PROYECTO.search(title):
+                urban_context = re.search(
+                    r"urban|planeam|plan (?:parcial|especial|general)|pgou|pgmo|"
+                    r"reparcel|estudio de detalle|viviendas?|suelo|sector [A-Z0-9-]+",
+                    title, re.I,
+                )
+                if RE_PROYECTO.search(title) and urban_context:
                     rec: dict[str, Any] = {
                         "id": _stable_id("proy", url),
                         "municipio": MUNICIPIO,
