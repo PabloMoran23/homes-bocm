@@ -1,0 +1,42 @@
+slug: a-coruna
+nombre: "A Coruña"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.coruna.gal"
+  adapter: municipio.adapters.a_coruna:ACorunaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.coruna.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-a-coruna/1.0"
+    centroid: [43.3623, -8.4115]
+    geometry:
+      kind: arcgis_mapserver
+      base_url: "https://ide.coruna.gal/server/rest/services/Publica/PGM13_WMS_DESARROLLO/MapServer"
+      layer_id: 0
+  notes: |
+    Urbanismo20 en coruna.gal (exposición pública, planeamiento vigente, convenios).
+    Sede OpenSIAC (tablón edictos). Visor IDE desarrollo PGOM (ArcGIS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    # IGN nameunit=«A Coruña» devuelve 0 features en algunos entornos; bbox aproximado del término.
+    municipal_boundary:
+      crs: EPSG:4326
+      axis_order: xy
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-8.55, 43.25]
+            - [-8.30, 43.25]
+            - [-8.30, 43.45]
+            - [-8.55, 43.45]
+            - [-8.55, 43.25]
