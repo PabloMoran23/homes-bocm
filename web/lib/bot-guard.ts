@@ -6,12 +6,13 @@
  * reuses the same idea as `app/api/analytics/route.ts` (bot / crawler / spider /
  * headless) and applies it to the User-Agent before those RPCs.
  *
- * Googlebot and Bingbot are allowed by User-Agent. Reverse DNS is not done here:
- * the Edge runtime has no DNS API, and a DNS-over-HTTPS lookup would either add a
- * network hop on every crawl or fail open and still trust spoofed agents. Vercel
- * Bot Protection is what verifies those crawlers. A spoofed Googlebot still shares
- * the per-IP rate limit below.
+ * Googlebot and Bingbot are allowed only when the IP is in the published crawler
+ * ranges, or when Vercel sets `x-vercel-verified-bot` (it strips that header from
+ * clients). A User-Agent that only claims those bots is blocked. Social preview
+ * bots stay on the User-Agent allow list. UptimeRobot is allowed.
  */
+
+import { ipInSearchBotRanges, refreshSearchBotRanges } from "./search-bot-ranges";
 
 type BotRule = {
   /** Lowercase substring matched against the User-Agent. */
@@ -80,8 +81,8 @@ const BLOCKED_BOTS: readonly BotRule[] = [
   { token: "postmanruntime" },
 ];
 
-/** Search and preview agents. Checked only after the block list, so `Applebot-Extended` stays blocked. */
-const ALLOWED_UA_TOKENS = [
+/** Claimed Google crawlers. Allowed only after an IP or platform check. */
+const GOOGLE_CLAIM_TOKENS = [
   "googlebot",
   "storebot-google",
   "google-inspectiontool",
@@ -90,10 +91,13 @@ const ALLOWED_UA_TOKENS = [
   "mediapartners-google",
   "feedfetcher-google",
   "apis-google",
-  "bingbot",
-  "adidxbot",
-  "bingpreview",
-  "msnbot",
+] as const;
+
+const BING_CLAIM_TOKENS = ["bingbot", "adidxbot", "bingpreview", "msnbot"] as const;
+
+/** Preview and other agents. Checked only after the block list, so `Applebot-Extended` stays blocked. */
+const ALLOWED_UA_TOKENS = [
+  "uptimerobot",
   "duckduckbot",
   "applebot",
   "yandexbot",
@@ -137,11 +141,15 @@ export type AccessDecision =
   | { action: "block" }
   | { action: "rate_limit"; retryAfterSec: number };
 
-export function classifyUserAgent(userAgent: string | null | undefined): "allow" | "block" {
+export type UserAgentClass = "allow" | "block" | "verify-google" | "verify-bing";
+
+export function classifyUserAgent(userAgent: string | null | undefined): UserAgentClass {
   const ua = (userAgent ?? "").trim().toLowerCase();
   if (!ua) return "block";
   if (BLOCKED_BOTS.some((rule) => ua.includes(rule.token))) return "block";
   if (SCRIPTED_RE.test(ua)) return "block";
+  if (GOOGLE_CLAIM_TOKENS.some((token) => ua.includes(token))) return "verify-google";
+  if (BING_CLAIM_TOKENS.some((token) => ua.includes(token))) return "verify-bing";
   if (ALLOWED_UA_TOKENS.some((token) => ua.includes(token))) return "allow";
   if (UNKNOWN_BOT_RE.test(ua)) return "block";
   return "allow";
@@ -163,6 +171,38 @@ export function isHeavyRoute(pathname: string): boolean {
 }
 
 type HeaderSource = { get(name: string): string | null };
+
+function platformVerifiedBot(headers: HeaderSource | undefined): boolean {
+  const value = headers?.get("x-vercel-verified-bot")?.trim().toLowerCase();
+  return value === "1" || value === "true";
+}
+
+type CacheStorageLike = { open(name: string): Promise<CacheLike> };
+type CacheLike = {
+  match(request: string): Promise<{ text(): Promise<string> } | undefined>;
+  put(request: string, response: Response): Promise<void>;
+};
+
+async function sharedHeavyLimit(
+  ip: string,
+  now: number,
+): Promise<{ allowed: boolean; retryAfterSec: number } | null> {
+  const cachesApi = (globalThis as { caches?: CacheStorageLike }).caches;
+  if (!cachesApi?.open) return null;
+  const windowStart = Math.floor(now / HEAVY_ROUTE_WINDOW_MS);
+  const retryAfterSec = Math.max(1, Math.ceil((HEAVY_ROUTE_WINDOW_MS - (now % HEAVY_ROUTE_WINDOW_MS)) / 1000));
+  const key = `https://homes-bot-limit.internal/${encodeURIComponent(ip)}/${windowStart}`;
+  try {
+    const cache = await cachesApi.open("homes-bot-limit");
+    const hit = await cache.match(key);
+    const count = hit ? Number(await hit.text()) : 0;
+    if (count >= HEAVY_ROUTE_MAX_REQUESTS) return { allowed: false, retryAfterSec };
+    await cache.put(key, new Response(String(count + 1)));
+    return { allowed: true, retryAfterSec: 0 };
+  } catch {
+    return null;
+  }
+}
 
 /**
  * Prefer Vercel-set client IPs. The left-most `x-forwarded-for` value is
@@ -218,18 +258,36 @@ export function createFixedWindowLimiter(limit: number, windowMs: number) {
 
 const heavyRouteLimiter = createFixedWindowLimiter(HEAVY_ROUTE_MAX_REQUESTS, HEAVY_ROUTE_WINDOW_MS);
 
-export function decideAccess(input: {
+export async function decideAccess(input: {
   pathname: string;
   userAgent: string | null;
   ip: string;
   now?: number;
+  headers?: HeaderSource;
   limiter?: ReturnType<typeof createFixedWindowLimiter>;
-}): AccessDecision {
-  if (classifyUserAgent(input.userAgent) === "block") return { action: "block" };
+}): Promise<AccessDecision> {
+  const kind = classifyUserAgent(input.userAgent);
+  if (kind === "block") return { action: "block" };
+  if (kind === "verify-google" || kind === "verify-bing") {
+    refreshSearchBotRanges(input.now);
+    const vendor = kind === "verify-google" ? "google" : "bing";
+    const verified = platformVerifiedBot(input.headers) || ipInSearchBotRanges(vendor, input.ip || "");
+    if (!verified) return { action: "block" };
+    return { action: "allow" };
+  }
   if (!isHeavyRoute(input.pathname)) return { action: "allow" };
 
+  const now = input.now ?? Date.now();
+  if (!input.limiter) {
+    const shared = await sharedHeavyLimit(input.ip || "unknown", now);
+    if (shared) {
+      if (!shared.allowed) return { action: "rate_limit", retryAfterSec: shared.retryAfterSec };
+      return { action: "allow" };
+    }
+  }
+
   const limiter = input.limiter ?? heavyRouteLimiter;
-  const result = limiter.check(input.ip || "unknown", input.now ?? Date.now());
+  const result = limiter.check(input.ip || "unknown", now);
   if (!result.allowed) return { action: "rate_limit", retryAfterSec: result.retryAfterSec };
   return { action: "allow" };
 }
