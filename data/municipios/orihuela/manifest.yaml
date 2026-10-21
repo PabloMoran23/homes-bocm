@@ -1,0 +1,35 @@
+slug: orihuela
+nombre: "Orihuela"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://orihuela.sedeelectronica.es"
+  adapter: municipio.adapters.orihuela:OrihuelaAyuntamientoAdapter
+  config:
+    web_base: "https://www.orihuela.es"
+    sede_base: "https://orihuela.sedeelectronica.es"
+    board_url: "https://orihuela.sedeelectronica.es/board"
+    info_url: "https://orihuela.sedeelectronica.es/info.1"
+    dossier_url: "http://orihuela.sedeelectronica.es/dossier"
+    plan_url: "https://plangeneral.orihuela.es/pg90.html"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-orihuela/1.0"
+    insecure_ssl: true
+    centroid: [38.0846, -0.9445]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "03099"
+  notes: |
+    Sede espublico gestiona (orihuela.sedeelectronica.es): tablón /board + inicio /info.1.
+    Catálogo trámites vía http://orihuela.sedeelectronica.es/dossier (evita bucle redirect HTTPS).
+    PGOU en plangeneral.orihuela.es; noticias WP orihuela.es; formularios licencias.
+    Geometría: ICV WFS InventarioSuSuz (cod_ine_mun=03099, ~137 sectores).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
