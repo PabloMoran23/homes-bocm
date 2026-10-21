@@ -1,0 +1,28 @@
+slug: cartagena
+nombre: "Cartagena"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://urbanismo.cartagena.es/urbanismo"
+  adapter: municipio.adapters.cartagena:CartagenaAyuntamientoAdapter
+  config:
+    web_base: "https://www.cartagena.es"
+    urbanismo_base: "https://urbanismo.cartagena.es/urbanismo"
+    sede_base: "https://cartagena.sedipualba.es"
+    tablon_rss: "https://cartagena.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://cartagena.sedipualba.es/tablondeanuncios/"
+    catalogo_urbanismo: "https://cartagena.sedipualba.es/catalogoservicios.aspx?area=980&ambito="
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cartagena/1.0"
+    centroid: [37.6057, -0.9910]
+  notes: |
+    Portal SIU urbanismo.cartagena.es (listas IP/PL/ED/UA + GeoVisor CQBox EPSG:25830).
+    Sede Sedipualba: tablón RSS + catálogo trámites área Urbanismo (980).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
