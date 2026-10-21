@@ -48,6 +48,8 @@ import {
 import type { SigmaFicha } from "@/lib/types";
 import type { SectorFeatureCollection } from "@/lib/sector-geo";
 
+import { WhenIdle } from "./WhenIdle";
+
 const ResearchTerritoryMap = dynamic(
   () => import("./project-detail/ResearchTerritoryMap").then(m => m.ResearchTerritoryMap),
   { ssr: false, loading: () => <div className="research-map-loading">Cargando mapa del territorio…</div> },
@@ -194,7 +196,7 @@ export function SigmaExpedienteDetailView({
           location="Proyecto urbanístico"
           subtitle={c?.FAS_TX_DENOM}
           info={infoExtra}
-          map={<ResearchTerritoryMap geo={sigmaGeo} location="Ámbito del proyecto" />}
+          map={<WhenIdle delayMs={4000} fallback={<div className="research-map-loading">Cargando mapa del territorio…</div>}><ResearchTerritoryMap geo={sigmaGeo} location="Ámbito del proyecto" /></WhenIdle>}
           actions={visorUrl ? <a href={visorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
         />
       ) : (
@@ -239,14 +241,19 @@ export function SigmaExpedienteDetailView({
               <p className="border-b border-[var(--portal-paper-deep)] bg-[var(--portal-accent-soft)]/70 px-3 py-2 text-xs font-semibold text-[var(--portal-accent)]">
                 Ámbito del proyecto
               </p>
-              <ProjectsMap
-                points={[]}
-                sectorGeoJson={sigmaGeo}
-                variant="detail"
-                heightClassName="min-h-[220px] h-[min(32vh,320px)]"
-                sectorCountLabel="ámbito"
-                hoverPopup={false}
-              />
+              <WhenIdle
+                delayMs={4000}
+                fallback={<div className="flex min-h-[220px] h-[min(32vh,320px)] items-center justify-center text-sm text-slate-500">Cargando mapa…</div>}
+              >
+                <ProjectsMap
+                  points={[]}
+                  sectorGeoJson={sigmaGeo}
+                  variant="detail"
+                  heightClassName="min-h-[220px] h-[min(32vh,320px)]"
+                  sectorCountLabel="ámbito"
+                  hoverPopup={false}
+                />
+              </WhenIdle>
               <p className="border-t border-slate-100 px-3 py-2 text-[11px] text-slate-500">
                 Polígono aproximado del planeamiento urbanístico.
               </p>

@@ -1,7 +1,8 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { DeferredLandingMap } from "@/components/DeferredLandingMap";
 import { LandingMunicipioSearch } from "@/components/LandingMunicipioSearch";
 import { LandingDashboardSection } from "@/components/LandingDashboardSection";
-import { LandingMapBackground } from "@/components/LandingMapBackground";
 import { LandingFeaturedProjects } from "@/components/LandingFeaturedProjects";
 import { LandingTuZonaSection } from "@/components/LandingTuZonaSection";
 import { loadLandingFeaturedProjects } from "@/lib/landing-featured-projects";
@@ -16,19 +17,12 @@ function titleCaseDistrito(name: string): string {
   return lower.charAt(0).toUpperCase() + lower.slice(1);
 }
 
-export default async function Home() {
-  const [featuredProjects, dashboardStats] = await Promise.all([loadLandingFeaturedProjects(), loadMadridDashboardStats()]);
-
-  const planesCount = dashboardStats?.sigma?.total;
-  const licenciasCount = dashboardStats?.licencias?.totalRows;
-  const latestLicenciasYear = dashboardStats?.licencias?.seriesByYear?.at(-1);
-  const topDistritos = dashboardStats?.licencias?.topDistrito?.slice(0, 3) ?? [];
-
+export default function Home() {
   return (
     <main className="flex-1">
       <section className="landing-search-hero">
         <div className="landing-search-map" aria-hidden="true" inert>
-          <LandingMapBackground />
+          <DeferredLandingMap />
         </div>
         <div className="landing-search-wash" aria-hidden="true" />
         <div className="landing-search-content">
@@ -42,20 +36,15 @@ export default async function Home() {
         <div className="landing-search-caption"><span>Obras · Planeamiento · Proyectos</span><span>Explora lo que cambia ↓</span></div>
       </section>
 
-      <LandingFeaturedProjects projects={featuredProjects} />
+      <Suspense fallback={null}>
+        <HomeFeatured />
+      </Suspense>
 
       <LandingTuZonaSection />
 
-      <LandingDashboardSection
-        planesCount={planesCount}
-        licenciasCount={licenciasCount}
-        latestLicenciasYear={latestLicenciasYear?.year}
-        latestLicenciasTotal={latestLicenciasYear?.total}
-        topDistritos={topDistritos.map((d) => ({
-          name: titleCaseDistrito(d.name),
-          count: d.count,
-        }))}
-      />
+      <Suspense fallback={null}>
+        <HomeDashboard />
+      </Suspense>
 
       <section className="landing-business" aria-labelledby="landing-business-heading">
         <header className="landing-section-heading"><div><p className="landing-eyebrow">Homes para profesionales</p><h2 id="landing-business-heading">Del territorio<br />a tu mesa de trabajo.</h2></div><p>Una base documental para los equipos que estudian, desarrollan y transforman el suelo.</p></header>
@@ -70,5 +59,30 @@ export default async function Home() {
       </section>
 
     </main>
+  );
+}
+
+async function HomeFeatured() {
+  const featuredProjects = await loadLandingFeaturedProjects();
+  return <LandingFeaturedProjects projects={featuredProjects} />;
+}
+
+async function HomeDashboard() {
+  const dashboardStats = await loadMadridDashboardStats();
+  const planesCount = dashboardStats?.sigma?.total;
+  const licenciasCount = dashboardStats?.licencias?.totalRows;
+  const latestLicenciasYear = dashboardStats?.licencias?.seriesByYear?.at(-1);
+  const topDistritos = dashboardStats?.licencias?.topDistrito?.slice(0, 3) ?? [];
+  return (
+    <LandingDashboardSection
+      planesCount={planesCount}
+      licenciasCount={licenciasCount}
+      latestLicenciasYear={latestLicenciasYear?.year}
+      latestLicenciasTotal={latestLicenciasYear?.total}
+      topDistritos={topDistritos.map((d) => ({
+        name: titleCaseDistrito(d.name),
+        count: d.count,
+      }))}
+    />
   );
 }
