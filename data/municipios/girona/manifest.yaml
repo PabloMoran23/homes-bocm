@@ -1,0 +1,31 @@
+slug: girona
+nombre: "Girona"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://web.girona.cat"
+  adapter: municipio.adapters.girona:GironaAyuntamientoAdapter
+  config:
+    web_base: "https://web.girona.cat"
+    seu_base: "https://seu.girona.cat"
+    request_delay_s: 0.35
+    max_geometry_details: 40
+    geometry_min_year: 2020
+    arcgis_identify_layer: "27"
+    user_agent: "poc-bocm-girona/1.0"
+    centroid: [41.979, 2.821]
+  notes: |
+    Liferay ProxyController (planejament PGOU vigent) + seu OpenCMS (trámites obras).
+    UMAT visor + ArcGIS MapServer identify para polígonos (partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  notes: |
+    Enlace UMAT en ficha de expediente → identify terra.girona.cat capa Qualificació Zones (27).
