@@ -1,0 +1,28 @@
+slug: vitoria-gasteiz
+nombre: "Vitoria-Gasteiz"
+provincia: Álava
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.vitoria-gasteiz.org"
+  adapter: municipio.adapters.vitoria_gasteiz:VitoriaGasteizAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vitoria-gasteiz/1.0"
+    expedientes_url: "https://www.vitoria-gasteiz.org/wb021/was/contenidoAction.do?idioma=es&uid=u_16dc2b57_134cb3b30bd__7fe9"
+    planeamiento_desarrollo_url: "https://www.vitoria-gasteiz.org/wb021/was/contenidoAction.do?idioma=es&uid=u6bf57c84_13f2c50cf68__7fa9"
+    convenios_url: "https://www.vitoria-gasteiz.org/wb021/was/contenidoAction.do?idioma=es&uid=u8d5a2c5_13f83da3e15__7fc4"
+    centroid: [42.8467, -2.6716]
+    geometry:
+      obra_layer: "https://www.vitoria-gasteiz.org/arcgis/rest/services/internet/10_u15grupo04/MapServer/10"
+      ambitos_layer: "https://www.vitoria-gasteiz.org/arcgis/rest/services/internet/10_pgou_wms_6_7_omv/MapServer/0"
+  notes: |
+    PGOU expedientes en tramitación + planeamiento de desarrollo (portal j38).
+    Licencias: capa ArcGIS Proyecto obra + trámites sede (sin tablón de concesiones).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
