@@ -18,6 +18,17 @@ El helper selecciona y reserva atómicamente; prioriza fichas visitadas por sesi
 (excluyendo bots/admin) y luego viviendas, superficie y actualización. No uses el SELECT
 antiguo para seleccionar sin reserva. Los casos procesados —también parciales o sin información—
 no vuelven a seleccionarse hasta cambio de fuente o revisión solicitada expresamente.
+Hay como máximo dos reservas vivas a la vez. El cron es a las 02:15 UTC (de madrugada en Madrid):
+no lances varias investigaciones en paralelo ni en horario de lectura del sitio.
+
+No ejecutes `SELECT DISTINCT ON (asunto_id)` uniendo `proyecto_investigacion_actual`,
+`proyecto_investigacion` y `asunto` para un municipio entero: esa consulta tarda más de 10s
+y satura la base. `asuntos_existentes` del contexto ya es esa lista, recortada. Si necesitas
+otra clave, búscalo así en vez de escanear las tablas:
+
+```bash
+python3 db/research_asunto.py lookup --municipio "Madrid" --query "clave o título"
+```
 
 ```bash
 python3 db/research_asunto.py context --project "$ID"
@@ -41,7 +52,8 @@ qué plan/norma los contiene; para subastas, el bien, procedimiento y resultado 
 No des por ejecutada una subasta solo porque haya pasado su fecha. Adapta las preguntas de
 terreno/construcción a ese tipo sin inventar obras ni cifras que no correspondan.
 
-Reutiliza las claves de asuntos_existentes cuando la identidad esté confirmada. Cada asunto
+Reutiliza las claves de asuntos_existentes cuando la identidad esté confirmada. No completes
+esa lista con un escaneo propio del municipio. Cada asunto
 usa una clave estable con organismo y número oficial, o su URL oficial canónica. Las refs son
 locales al JSON y el helper las resuelve a UUIDs persistentes. padre_ref identifica pertenencia
 confirmada a otra ref del JSON; si no consta el padre, déjalo null y conserva el vínculo pendiente.

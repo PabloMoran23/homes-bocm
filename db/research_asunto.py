@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import uuid
 from urllib.parse import urlparse
@@ -15,6 +16,9 @@ TIPOS={'actuacion','planeamiento','norma','subasta','expediente','documento','ot
 ENTRADAS={'actuacion','planeamiento','modificacion_normativa','documento','subasta','tramite','anuncio','pendiente'}
 ESTADOS={'completa','parcial','pendiente_identificar'}
 RELACIONES={'pertenece_a','modifica','afecta_a','describe','vinculado_a'}
+# One or two investigations at a time. Parallel cloud agents were enough
+# to keep the smallest instance busy on 18 Oct.
+MAX_ACTIVE=max(1,int(os.environ.get('HOMES_RESEARCH_MAX_ACTIVE','2')))
 
 
 def source(cur,project):
@@ -81,23 +85,69 @@ def validate(data):
         evidence(r)
 
 
+def _asuntos(cur,municipio,limit=200):
+    """Current investigations for a municipio, slim columns, capped.
+
+    Uses homes.asuntos_investigados_municipio once that migration is applied.
+    Before then, a bounded read of asunto (no extracto, no full-table join).
+    """
+    if not municipio:return []
+    cur.execute('SAVEPOINT asuntos_lookup')
+    try:
+        cur.execute('SELECT * FROM homes.asuntos_investigados_municipio(%s,%s)',(municipio,limit))
+        rows=cur.fetchall()
+        cur.execute('RELEASE SAVEPOINT asuntos_lookup')
+        return [dict(x) for x in rows]
+    except Exception:
+        cur.execute('ROLLBACK TO SAVEPOINT asuntos_lookup')
+        cur.execute('''SELECT id::text AS asunto_id,clave_identidad,tipo,titulo,padre_id::text,
+              NULL::bigint AS investigacion_id,NULL::text AS proyecto_id,NULL::text AS estado
+            FROM homes.asunto WHERE lower(municipio)=lower(%s)
+            ORDER BY clave_identidad LIMIT %s''',(municipio,limit))
+        return [dict(x) for x in cur.fetchall()]
+
+
 def context(project):
     with connection() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute('SELECT p.*,homes.research_entrada_source_hash(to_jsonb(p)) AS _research_source_hash FROM homes.proyecto p WHERE id=%s',(project,))
         row=cur.fetchone()
         if row is None:raise ValueError('Entrada no existe')
         fingerprint=row.pop('_research_source_hash')
-        cur.execute('SELECT * FROM homes.asunto WHERE municipio=%s ORDER BY clave_identidad',(row.get('municipio'),))
-        topics=[dict(x) for x in cur.fetchall()]
+        topics=_asuntos(cur,row.get('municipio'))
         cur.execute('SELECT * FROM homes.proyecto_investigacion_resumen WHERE proyecto_id=%s',(project,))
         previous=cur.fetchone()
     return {'source_hash':fingerprint,'project':dict(row),'related':legacy_context(project),'asuntos_existentes':topics,
             'investigacion_anterior':dict(previous) if previous else None}
 
 
+def lookup(municipio,query,limit=40):
+    if not municipio or not query or len(query.strip())<3:raise ValueError('municipio y consulta (3+ caracteres)')
+    like='%'+query.strip()+'%'
+    with connection() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute('SAVEPOINT asuntos_lookup')
+        try:
+            cur.execute('''SELECT * FROM homes.asuntos_investigados_municipio(%s,500) s
+              WHERE s.clave_identidad ILIKE %s OR s.titulo ILIKE %s
+              ORDER BY s.clave_identidad LIMIT %s''',(municipio,like,like,limit))
+            rows=cur.fetchall()
+            cur.execute('RELEASE SAVEPOINT asuntos_lookup')
+        except Exception:
+            cur.execute('ROLLBACK TO SAVEPOINT asuntos_lookup')
+            cur.execute('''SELECT id::text AS asunto_id,clave_identidad,tipo,titulo,padre_id::text
+              FROM homes.asunto WHERE lower(municipio)=lower(%s)
+                AND (clave_identidad ILIKE %s OR titulo ILIKE %s)
+              ORDER BY clave_identidad LIMIT %s''',(municipio,like,like,limit))
+            rows=cur.fetchall()
+    return [dict(x) for x in rows]
+
+
 def claim(owner,ttl=600):
     if not owner or not 60<=ttl<=3600:raise ValueError('owner/ttl inválido')
     with connection() as conn,conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute('SELECT pg_advisory_xact_lock(17140002)')
+        cur.execute('''SELECT count(*) AS n FROM homes.proyecto_investigacion_lease
+          WHERE expires_at>clock_timestamp()''')
+        if cur.fetchone()['n']>=MAX_ACTIVE:return None
         cur.execute('''SELECT p.* FROM homes.proyecto p
           LEFT JOIN homes.research_human_project_visits v ON v.proyecto_id=p.id
           LEFT JOIN homes.proyecto_investigacion_actual c ON c.proyecto_id=p.id
@@ -209,12 +259,16 @@ def save(data,*,request_id,owner=None,token=None,unleased_test=False,source_hash
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('action',choices=['claim','context','renew','release','save','review'])
+    p.add_argument('action',choices=['claim','context','lookup','renew','release','save','review'])
     p.add_argument('--owner');p.add_argument('--token');p.add_argument('--project');p.add_argument('--file')
+    p.add_argument('--municipio');p.add_argument('--query')
     p.add_argument('--request-id');p.add_argument('--source-hash');p.add_argument('--ttl',type=int,default=600)
     a=p.parse_args()
     if a.action=='claim':out=claim(a.owner,a.ttl)
     elif a.action=='context':out=context(a.project)
+    elif a.action=='lookup':
+        if not a.municipio or not a.query:p.error('--municipio y --query obligatorios')
+        out=lookup(a.municipio,a.query)
     elif a.action=='save':
         if not a.file or not a.request_id or not a.source_hash:p.error('--file, --request-id y --source-hash obligatorios')
         out={'investigacion_id':save(json.loads(Path(a.file).read_text()),request_id=a.request_id,owner=a.owner,token=a.token,source_hash=a.source_hash)}
