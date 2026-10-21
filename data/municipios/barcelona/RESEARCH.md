@@ -54,3 +54,10 @@ El Ayuntamiento publica planeamiento, gestión urbanística y calificaciones en 
 - Módulo: `municipio/adapters/barcelona.py`
 - IDs: `barcelona-proy-{sha256[:14]}`, `barcelona-lic-{sha256[:14]}`
 - User-Agent: `poc-bocm-barcelona/1.0`
+
+## Revisión previa al merge (2026-10-21)
+
+Las páginas informativas se conservan como fuentes en esta investigación, pero
+no se exportan como licencias. Sin listado público de concesiones, el adapter
+devuelve cero licencias y mantiene la cobertura parcial explícita. La cola
+se marca como terminada exclusivamente en el post-merge.

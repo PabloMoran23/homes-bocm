@@ -334,36 +334,9 @@ class BarcelonaAyuntamientoAdapter(AyuntamientoAdapter):
         return out
 
     def _licencias_informativas(self) -> list[dict[str, Any]]:
-        seeds = [
-            (
-                "Consulta de licencias de obra por parcela (PIU)",
-                PIU_PORTAL,
-            ),
-            (
-                "Información urbanística y trámites de licencias",
-                "https://ajuntament.barcelona.cat/urbanisme-accio-climatica-mobilitat-pla-barris-serveis-urbans/es/ambitos-tematicos/urbanismo/informacion-urbanistica",
-            ),
-            (
-                "Sede electrónica — trámites municipales",
-                SEDE_BASE,
-            ),
-        ]
-        out: list[dict[str, Any]] = []
-        for titulo, url in seeds:
-            out.append(
-                {
-                    "id": _stable_id("lic", url),
-                    "fecha_concesion": None,
-                    "tipo": titulo,
-                    "distrito": "Barcelona",
-                    "lat": 41.3874,
-                    "lon": 2.1686,
-                    "coordinates_crs": "EPSG:4326",
-                    "source": "ayuntamiento",
-                    "url": url,
-                }
-            )
-        return out
+        # El PIU permite consultar por parcela, pero no publica un listado
+        # de concesiones. Las páginas de trámites no son licencias.
+        return []
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         path.parent.mkdir(parents=True, exist_ok=True)
