@@ -1,0 +1,27 @@
+slug: el-ejido
+nombre: "El Ejido"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.elejido.es/oficinavirtual"
+  adapter: municipio.adapters.el_ejido:ElEjidoAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.elejido.es/oficinavirtual"
+    tablon_list_url: "https://sede.elejido.es/oficinavirtual/tablonanuncios/listadoanuncios.php"
+    tablon_areas: ["2", "16"]
+    tablon_page_size: 50
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-ejido/1.0"
+    centroid: [36.7763, -2.8146]
+  notes: |
+    Oficina Virtual propia (PHP): tablón listadoanuncios.php (áreas Urbanismo=2 y
+    Desarrollo Urbanístico=16) + catálogo de procedimientos + urbanismo.elejido.es.
+    SITUA Junta (INE 04051) para PGOU. Callejero con GeoJSON de calles sin enlace a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
