@@ -1,0 +1,31 @@
+slug: toledo
+nombre: "Toledo"
+provincia: Toledo
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.toledo.es"
+  adapter: municipio.adapters.toledo:ToledoAyuntamientoAdapter
+  config:
+    web_base: "https://www.toledo.es"
+    sede_base: "https://sede.toledo.es/eAdmin"
+    a2_base: "https://a2.toledo.es"
+    tablon_url: "https://sede.toledo.es/eAdmin/Tablon.do?action=verAnuncios"
+    rss_urbanismo: "https://www.toledo.es/category/urbanismo/feed/"
+    urbanismo_hub: "https://www.toledo.es/servicios-municipales/urbanismo/"
+    centroid: [39.8628, -4.0273]
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-toledo/1.0"
+    max_urb_pages: 10
+  notes: |
+    WordPress corporativo (categoría Urbanismo + PDFs en posts).
+    Tablón digital sede eAdmin (Tablon.do, ISO-8859-1).
+    Catálogo trámites ALHAJA en a2.toledo.es (licencias informativas).
+    Geometría por expediente no expuesta en portal municipal; ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
