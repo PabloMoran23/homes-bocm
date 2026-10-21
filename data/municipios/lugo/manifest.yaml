@@ -1,0 +1,28 @@
+slug: lugo
+nombre: "Lugo"
+provincia: Lugo
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.lugo.gal"
+  adapter: municipio.adapters.lugo:LugoAyuntamientoAdapter
+  config:
+    web_base: "https://concellodelugo.gal"
+    sede_base: "https://www.lugo.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lugo/1.0"
+    max_tablon_pages: 25
+    max_siotuga_desarrollo: 40
+    centroid: [43.0097, -7.5568]
+  notes: |
+    Sede electrónica IMC (www.lugo.gal): tablón POST /portal/publicaciones.
+    Web corporativa Drupal (concellodelugo.gal): urbanismo y noticias.
+    Planeamiento inventariado en SIOTUGA (INE 27028, PGOM + ~190 instrumentos desarrollo).
+    Visor «Urbanismo en Red» (urbanismoenred.lugo.es). Sin listado público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
