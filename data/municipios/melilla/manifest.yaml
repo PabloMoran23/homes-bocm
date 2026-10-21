@@ -1,0 +1,26 @@
+slug: melilla
+nombre: "Melilla"
+provincia: Melilla
+comunidad_autonoma: melilla
+
+portal:
+  base_url: "https://sede.melilla.es"
+  adapter: municipio.adapters.melilla:MelillaAyuntamientoAdapter
+  config:
+    web_base: "https://www.melilla.es/melillaportal"
+    sede_base: "https://sede.melilla.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-melilla/1.0"
+    centroid: [35.2923, -2.9381]
+  notes: |
+    Portal institucional melilla.es (EADmin) con PGOU, planeamiento y trámites DGVU.
+    Sede STA: tablón PTS2_TABLON (JSON embebido) y catálogo CATSERV.
+    Visor Urbanismo en Red (urbithings.com/Melilla.maps) sin API REST pública enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
