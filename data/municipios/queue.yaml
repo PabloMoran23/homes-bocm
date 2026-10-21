@@ -99,11 +99,11 @@ municipios:
 - slug: palma
   nombre: Palma
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-18T00:17:15.359782+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/904
   notes: Sin boletín asociado
   comunidad_autonoma: illes-balears
   provincia: Illes Balears
