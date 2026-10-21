@@ -1100,12 +1100,12 @@ municipios:
 - slug: velez-malaga
   nombre: Vélez-Málaga
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-21T10:15:00+00:00'
   last_error: null
-  pr_url: null
-  notes: Sin boletín asociado
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/950
+  notes: Portal Tetraware tablón urbanismo; sede STA 403 CI
   comunidad_autonoma: andalucia
   provincia: Málaga
 - slug: valdemoro
