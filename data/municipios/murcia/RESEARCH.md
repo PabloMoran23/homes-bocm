@@ -35,3 +35,10 @@
 - Carpeta ciudadana / estado de expediente requiere autenticación.
 - infourb usa HTTP en `urbanismo.murcia.es` (redirección desde portal).
 - Tablón mezcla edictos no urbanísticos; el adapter filtra por regex.
+
+## Revisión previa al merge (2026-10-21)
+
+Los trámites informativos no se exportan como licencias. Las fechas del tablón
+se conservan como fecha_publicacion, sin presumir fecha de concesión; las fechas
+con precisión anual se conservan como año, sin inventar el 1 de enero. Se restaura
+la cola completa de main y se deja su actualización al post-merge.

@@ -107,7 +107,7 @@ def _fecha_from_blob(text: str) -> str | None:
         return d
     years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return str(max(years))
     return None
 
 
@@ -325,7 +325,8 @@ class MurciaAyuntamientoAdapter(AyuntamientoAdapter):
                     licencias.append(
                         {
                             "id": _stable_id("lic", url),
-                            "fecha_concesion": item.get("fecha"),
+                            "fecha_concesion": None,
+                            "fecha_publicacion": item.get("fecha"),
                             "tipo": "licencia / comunicación (tablón)",
                             "distrito": None,
                             "lat": None,
@@ -398,59 +399,8 @@ class MurciaAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _collect_licencias_tramites(self) -> list[dict[str, Any]]:
-        seeds = [
-            (URBANISMO_TRAMITES_URL, "urbanismo sede"),
-            (LICENCIA_ORDINARIA_URL, "licencia ordinaria"),
-            (LICENCIA_OBRA_MENOR_URL, "obra menor"),
-        ]
-        rows: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        for url, tipo in seeds:
-            if url in seen:
-                continue
-            seen.add(url)
-            try:
-                html = self._fetch(url)
-            except urllib.error.URLError:
-                continue
-            title_m = re.search(r"<h1[^>]*>([^<]+)</h1>", html, re.I)
-            title = _clean_title(title_m.group(1)) if title_m else tipo
-            rows.append(
-                {
-                    "id": _stable_id("lic", url),
-                    "fecha_concesion": None,
-                    "tipo": tipo,
-                    "distrito": None,
-                    "lat": None,
-                    "lon": None,
-                    "titulo": title[:500],
-                    "url": url,
-                    "source": "ayuntamiento",
-                    "nota": "Trámite electrónico; sin listado público de concesiones",
-                }
-            )
-            for m in re.finditer(r'<a[^>]+href="(/ficha-procedimiento/\d+)"[^>]*>([^<]{5,200})</a>', html, re.I):
-                href, link_title = m.group(1), _clean_title(m.group(2))
-                if not RE_LICENCIA.search(link_title):
-                    continue
-                proc_url = self._abs_url(href)
-                if proc_url in seen:
-                    continue
-                seen.add(proc_url)
-                rows.append(
-                    {
-                        "id": _stable_id("lic", proc_url),
-                        "fecha_concesion": None,
-                        "tipo": "trámite licencia",
-                        "distrito": None,
-                        "lat": None,
-                        "lon": None,
-                        "titulo": link_title[:500],
-                        "url": proc_url,
-                        "source": "ayuntamiento",
-                    }
-                )
-        return rows
+        # Los formularios de solicitud no acreditan una concesión.
+        return []
 
     def _collect_proyectos(self) -> list[dict[str, Any]]:
         seen: set[str] = set()
