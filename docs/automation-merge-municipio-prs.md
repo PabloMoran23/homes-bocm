@@ -1,58 +1,66 @@
-# Automation: merge de PRs municipio (babysitter)
+# Revisión e integración por lotes de municipios
 
-Cursor Automation que cada **3 días** revisa PRs abiertas de onboarding, valida adapters, mergea las aptas y deja el post-merge en **GitHub Actions**.
+El onboarding se revisa por lotes. La cola se conserva desde `main` hasta que la
+extracción, la validación geográfica y el sync hayan terminado correctamente.
 
-## Archivos
-
-| Archivo | Rol |
-|---------|-----|
-| `.cursor/automations/merge-municipio-prs.yaml` | Cron + repo |
-| `.cursor/prompts/merge-municipio-prs.md` | Prompt (pegar en UI) |
-| `.github/workflows/municipio-post-merge.yml` | **Post-merge en push a main** (queue + pipeline + Supabase) |
-| `.github/workflows/validate-municipio-pr.yml` | CI estático en cada PR |
-| `municipio/merge_babysitter.py` | Inventario PRs (`merge-review`) |
-| `scripts/post-merge-municipio.sh` | Lógica post-merge (usada por GHA) |
-| `scripts/ci/detect-municipio-push-slugs.sh` | Detecta slugs en push |
-
-## Secretos GitHub (ya configurados)
-
-| Secret | Uso |
-|--------|-----|
-| `SUPABASE_DB_URL` | Pipeline + sync en `municipio-post-merge.yml` |
-
-No hace falta pasar la URL a Cursor Automations.
-
-## Activar babysitter en Cursor
-
-1. [cursor.com/automations](https://cursor.com/automations) → **nueva automation**
-2. Repo `PabloMoran23/homes-bocm`, rama `main`
-3. Cron: `0 9 */3 * *`
-4. Pega `.cursor/prompts/merge-municipio-prs.md`
-5. **Sin** `SUPABASE_DB_URL` en Secrets de Cursor
-
-## Flujo completo
-
-```
-[Onboard / 4h]     claim → adapter → PR (sin queue.yaml)
-[Merge bot / 3d]   validate → gh pr merge
-[GitHub Actions]   push main → municipio-post-merge → queue done + sync
-[Admin /admin]     export-admin (local) muestra estado
-```
-
-## Workflow `Municipio post-merge`
-
-**Trigger:** push a `main` que toque `data/municipios/**/manifest.yaml` o `municipio/adapters/**`
-
-**Manual:**
+## Inventario del backlog
 
 ```bash
-gh workflow run municipio-post-merge.yml -f slug=coin
-gh run list --workflow=municipio-post-merge.yml
+python tools/review_municipio_backlog.py --fetch --output output/backlog-review.json
 ```
 
-## Comandos locales
+Las señales del inventario requieren revisión: una fecha de metadatos puede ser
+correcta aunque contenga `datetime.now`. Ausencia de señales no equivale a aprobación.
+Excluir duplicados ya presentes en main, cambios fuera de alcance y conflictos
+semánticos. Los alias territoriales requieren revisión específica.
+
+## Preparación de un lote
+
+1. Trabajar en una rama aislada, agrupando solo PRs revisadas. Preservar los
+   commits originales mediante merges y conservar únicamente los archivos
+   municipales aprobados; descartar los cambios de `queue.yaml` de las PRs.
+2. No presentar formularios como licencias ni completar fechas anuales con días
+   inventados. `municipio.onboarding_snapshot.reviewed_records` sirve para los
+   adapters revisados; no altera automáticamente todos los adapters existentes.
+3. Declarar el CRS de salida comprobando la petición o transformación del adapter.
+   Desactivar `geocode.jitter_missing` en los municipios nuevos: los puntos alrededor
+   del centro municipal no demuestran la ubicación de un proyecto.
+4. Ejecutar la extracción aislada con un plazo por municipio:
 
 ```bash
-PYTHONPATH=. python3 -m municipio merge-review
-./scripts/post-merge-municipio.sh coin   # solo local; en prod usa GHA
+python scripts/ci/municipio_batch.py run 'slug-uno slug-dos' --workers 4 --timeout 600
 ```
+
+Cada proceso obtiene una sola instantánea completa, en lugar de repetir backfill
+más update. Los fallos no impiden validar los otros municipios. El dry-run nunca
+actualiza la cola ni escribe en Supabase. Revisar `output/municipio-batch/`.
+
+5. Incluir en la PR de integración solamente los municipios aptos y conservar
+   aparte el informe de bloqueos. La CI valida todos los manifests y también
+   las modificaciones que solo toquen el adapter.
+6. Fusionar la PR de integración con un **merge**, conservando los commits fuente.
+   Esto permite a GitHub reconocer las PRs originales integradas. No usar squash
+   para esta PR agregada ni marcar como integradas PRs que se hayan excluido.
+
+## Publicación posterior
+
+El workflow `Municipio post-merge` detecta todos los slugs desde el rango completo
+del push y desde los adapters modificados. Ejecuta cuatro procesos concurrentes,
+con un límite de diez minutos por municipio. Solo publica instantáneas con
+proyectos, coordenadas, paridad suficiente y sin geografía en cuarentena.
+
+Cada worker publica un municipio de forma independiente. Solo el proceso padre
+marca como `done` las publicaciones confirmadas; un fallo conserva pendientes
+las entradas correspondientes y no elimina los éxitos de los otros workers.
+La cola se guarda incluso si parte del lote falla, y los logs e informes quedan
+adjuntos como artifact de Actions. Un workflow fallido puede contener municipios
+publicados correctamente: consultar el resumen individual.
+
+Para reintentar los fallidos, el dispatch admite una lista separada por comas:
+
+```bash
+gh workflow run municipio-post-merge.yml -f 'slug=slug-uno,slug-dos'
+```
+
+No es necesario pasar credenciales de Supabase al agente local. La publicación
+utiliza el secret del repositorio en GitHub Actions.

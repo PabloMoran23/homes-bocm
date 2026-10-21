@@ -1,5 +1,4 @@
 name: Municipio post-merge
-
 on:
   push:
     branches: [main]
@@ -9,17 +8,14 @@ on:
   workflow_dispatch:
     inputs:
       slug:
-        description: "Slug del municipio (vacío = detectar desde diff del checkout)"
+        description: "Slugs separados por coma o espacios (vacío = detectar cambios)"
         required: false
         type: string
-
 permissions:
   contents: write
-
 concurrency:
   group: municipio-post-merge
   cancel-in-progress: false
-
 jobs:
   detect:
     runs-on: ubuntu-latest
@@ -29,29 +25,34 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Detect municipio slugs
+      - name: Detect every changed municipality
         id: detect
         env:
           MANUAL_SLUG: ${{ github.event_name == 'workflow_dispatch' && inputs.slug || '' }}
+          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: |
-          chmod +x scripts/ci/detect-municipio-push-slugs.sh
-          scripts/ci/detect-municipio-push-slugs.sh
-
-      - name: Slugs summary
-        run: echo "Slugs=${{ steps.detect.outputs.slugs }}"
-
+          python3 - <<'PY'
+          import json, os, sys
+          sys.path.insert(0, 'scripts/ci')
+          from municipio_batch import changed_slugs, parse_slugs
+          manual = os.environ.get('MANUAL_SLUG', '').strip()
+          before = os.environ.get('GITHUB_EVENT_BEFORE') or 'HEAD^'
+          if set(before) == {'0'}:
+              before = 'HEAD^'
+          slugs = parse_slugs(manual) if manual else changed_slugs(before)
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('slugs=' + json.dumps(slugs) + '\n')
+          print(json.dumps(slugs))
+          PY
   post-merge:
     needs: detect
     if: needs.detect.outputs.slugs != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 120
-
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -59,51 +60,37 @@ jobs:
           cache-dependency-path: |
             requirements-municipio.txt
             db/requirements-supabase.txt
-
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-municipio.txt
-          pip install -r db/requirements-supabase.txt
-
+        run: pip install -r requirements-municipio.txt -r db/requirements-supabase.txt
       - name: Resolve merged PR URL
         id: pr
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          chmod +x scripts/ci/find-pr-url-for-commit.sh
-          scripts/ci/find-pr-url-for-commit.sh
-
-      - name: Post-merge pipeline (all slugs)
+        run: bash scripts/ci/find-pr-url-for-commit.sh
+      - name: Validate and publish with bounded concurrency
+        id: publish
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
           SLUGS_JSON: ${{ needs.detect.outputs.slugs }}
           PR_URL: ${{ steps.pr.outputs.url }}
-        run: |
-          chmod +x scripts/post-merge-municipio.sh
-          python3 - <<'PY'
-          import json, os, subprocess
-
-          slugs = json.loads(os.environ["SLUGS_JSON"])
-          pr_url = os.environ.get("PR_URL") or ""
-          for slug in slugs:
-              cmd = ["./scripts/post-merge-municipio.sh", slug]
-              if pr_url:
-                  cmd.append(pr_url)
-              print("Running:", " ".join(cmd), flush=True)
-              subprocess.run(cmd, check=True)
-          PY
-
-      - name: Commit queue.yaml
+        run: python scripts/ci/municipio_batch.py run "$SLUGS_JSON" --workers 4 --timeout 600 --publish --pr-url "$PR_URL"
+      - name: Commit successfully published queue entries
+        if: ${{ always() && steps.publish.outcome != 'skipped' }}
         run: |
           if git diff --quiet -- data/municipios/queue.yaml; then
-            echo "queue.yaml sin cambios"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/municipios/queue.yaml
-          git commit -m "chore(municipio): update queue after post-merge [skip ci]"
+          git commit -m "chore(municipio): update validated batch queue [skip ci]"
           git pull --rebase origin main
           git push
+      - name: Save per-municipality results and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: municipio-batch-${{ github.run_id }}
+          path: output/municipio-batch/
+          if-no-files-found: ignore
