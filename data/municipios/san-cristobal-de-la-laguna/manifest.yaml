@@ -1,0 +1,29 @@
+slug: san-cristobal-de-la-laguna
+nombre: "San Cristóbal de La Laguna"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://www.lalaguna.es"
+  adapter: municipio.adapters.san_cristobal_de_la_laguna:SanCristobalDeLaLagunaAyuntamientoAdapter
+  config:
+    portal_base: "https://www.lalaguna.es"
+    sede_base: "https://sede.aytolalaguna.es"
+    drupal_base: "https://www.urbanismolalaguna.es"
+    sitcan_package: planeamiento-urbanistico-de-san-cristobal-de-la-laguna
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38023/"
+    edictos_rss: "https://sede.aytolalaguna.es/publico/sindicacion/edictos/RSS"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-cristobal-de-la-laguna/1.0"
+    centroid: [28.4853, -16.3147]
+  notes: |
+    Portal OpenCMS (lalaguna.es) + Gerencia Drupal (urbanismolalaguna.es) +
+    sede Galileo (tablón/RSS) + SITCAN CKAN + GEOBDP Grafcan (INE 38023).
+    Visor PGO histórico: maps.urbanismolalaguna.org (sin query por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
