@@ -54,6 +54,9 @@ const GOOGLE = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/b
 const BING = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)";
 const GOOGLE_IP = "192.178.4.10";
 const BING_IP = "157.55.39.10";
+// First host of 142.250.32.0/27 from user-triggered-fetchers-google.json.
+// That prefix is not in the other three Google lists.
+const GOOGLE_FETCHER_IP = "142.250.32.1";
 
 const ALLOWED = [
   CHROME,
@@ -150,6 +153,16 @@ async function main() {
   assert.equal(
     (await decideAccess({
       pathname: "/proyecto/abc",
+      userAgent: GOOGLE,
+      ip: GOOGLE_FETCHER_IP,
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
       userAgent: BING,
       ip: BING_IP,
       now,
@@ -166,7 +179,7 @@ async function main() {
       now: now + 1000,
       limiter,
     })).action,
-    "allow",
+    "block",
   );
   assert.equal(
     (await decideAccess({
