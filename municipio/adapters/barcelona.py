@@ -13,6 +13,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid
+from shapely.geometry import shape
 
 PIU_PORTAL = "https://ajuntament.barcelona.cat/informaciourbanistica/cerca/es/"
 PIU_SERVICE = (
@@ -182,6 +183,8 @@ class BarcelonaAyuntamientoAdapter(AyuntamientoAdapter):
                 merged["coordinates"].append(wgs["coordinates"])
             elif merged["type"] == "MultiPolygon" and wgs["type"] == "MultiPolygon":
                 merged["coordinates"].extend(wgs["coordinates"])
+        if merged is not None and not shape(merged).is_valid:
+            return None, url
         return merged, url
 
     def _load_darreres_meta(self) -> dict[str, dict[str, str]]:

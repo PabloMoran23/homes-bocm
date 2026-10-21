@@ -61,3 +61,8 @@ Las páginas informativas se conservan como fuentes en esta investigación, pero
 no se exportan como licencias. Sin listado público de concesiones, el adapter
 devuelve cero licencias y mantiene la cobertura parcial explícita. La cola
 se marca como terminada exclusivamente en el post-merge.
+
+En la consulta en vivo se detectaron polígonos con topología inválida. Se
+rechazan antes de asignar coordenadas, conservando el expediente sin geometría.
+El catálogo contiene registros sin referencia de expediente: el clasificador
+común los conserva como pendientes, sin contarlos como actividad acreditada.
