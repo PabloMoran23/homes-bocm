@@ -7,6 +7,7 @@ on:
     paths:
       - 'municipio/**'
       - 'db/ingest.py'
+      - 'db/reprocess_project_semantics.py'
       - 'db/requirements-supabase.txt'
       - 'db/test_geography_postgres.py'
       - 'data/municipios/**'
