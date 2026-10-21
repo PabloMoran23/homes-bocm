@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
-import {
+import { register } from "node:module";
+register(new URL("./ts-resolve-hook.mjs", import.meta.url).href, import.meta.url);
+
+const {
   HEAVY_ROUTE_MAX_REQUESTS,
   classifyUserAgent,
   clientIpFrom,
   createFixedWindowLimiter,
   decideAccess,
   isHeavyRoute,
-} from "../lib/bot-guard.ts";
+} = await import("../lib/bot-guard.ts");
 
 const CHROME =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
@@ -47,16 +50,17 @@ const BLOCKED = [
   "   ",
 ];
 
+const GOOGLE = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+const BING = "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)";
+const GOOGLE_IP = "192.178.4.10";
+const BING_IP = "157.55.39.10";
+
 const ALLOWED = [
   CHROME,
   SAFARI,
   FIREFOX,
   CUBOT,
-  "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-  "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/120.0.0.0 Safari/537.36",
-  "Googlebot-Image/1.0",
-  "Mozilla/5.0 (compatible; Google-InspectionTool/1.0;)",
-  "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
+  "Mozilla/5.0 (compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)",
   "DuckDuckBot/1.1; (+http://duckduckgo.com/duckduckbot.html)",
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)",
   "Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)",
@@ -72,6 +76,10 @@ const ALLOWED = [
 for (const ua of BLOCKED) assert.equal(classifyUserAgent(ua), "block", ua || "(empty)");
 for (const ua of ALLOWED) assert.equal(classifyUserAgent(ua), "allow", ua);
 assert.equal(classifyUserAgent(null), "block");
+assert.equal(classifyUserAgent(GOOGLE), "verify-google");
+assert.equal(classifyUserAgent("Googlebot-Image/1.0"), "verify-google");
+assert.equal(classifyUserAgent("Mozilla/5.0 (compatible; Google-InspectionTool/1.0;)"), "verify-google");
+assert.equal(classifyUserAgent(BING), "verify-bing");
 
 assert.equal(isHeavyRoute("/proyecto/101"), true);
 assert.equal(isHeavyRoute("/ubicacion/11000001"), true);
@@ -96,67 +104,123 @@ assert.equal(
   "198.51.100.9",
 );
 
-const limiter = createFixedWindowLimiter(HEAVY_ROUTE_MAX_REQUESTS, 60_000);
-const now = 1_700_000_000_000;
-for (let i = 0; i < HEAVY_ROUTE_MAX_REQUESTS; i += 1) {
-  const decision = decideAccess({
+async function main() {
+  const limiter = createFixedWindowLimiter(HEAVY_ROUTE_MAX_REQUESTS, 60_000);
+  const now = 1_700_000_000_000;
+  for (let i = 0; i < HEAVY_ROUTE_MAX_REQUESTS; i += 1) {
+    const decision = await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: CHROME,
+      ip: "203.0.113.10",
+      now,
+      limiter,
+    });
+    assert.equal(decision.action, "allow");
+  }
+  const limited = await decideAccess({
     pathname: "/proyecto/abc",
     userAgent: CHROME,
     ip: "203.0.113.10",
-    now,
+    now: now + 1000,
     limiter,
   });
-  assert.equal(decision.action, "allow");
+  assert.equal(limited.action, "rate_limit");
+  if (limited.action === "rate_limit") assert.ok(limited.retryAfterSec >= 1 && limited.retryAfterSec <= 60);
+
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: GOOGLE,
+      ip: "203.0.113.10",
+      now,
+      limiter,
+    })).action,
+    "block",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: GOOGLE,
+      ip: GOOGLE_IP,
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: BING,
+      ip: BING_IP,
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: GOOGLE,
+      ip: "203.0.113.10",
+      headers: new Headers({ "x-vercel-verified-bot": "1" }),
+      now: now + 1000,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/",
+      userAgent: "Mozilla/5.0 (compatible; UptimeRobot/2.0; http://www.uptimerobot.com/)",
+      ip: "203.0.113.50",
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: CHROME,
+      ip: "203.0.113.11",
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/",
+      userAgent: CHROME,
+      ip: "203.0.113.10",
+      now,
+      limiter,
+    })).action,
+    "allow",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: "curl/8.7.1",
+      ip: "203.0.113.12",
+      now,
+      limiter,
+    })).action,
+    "block",
+  );
+  assert.equal(
+    (await decideAccess({
+      pathname: "/proyecto/abc",
+      userAgent: CHROME,
+      ip: "203.0.113.10",
+      now: now + 60_000,
+      limiter,
+    })).action,
+    "allow",
+  );
+
+  console.log("bot-guard ok");
 }
-const limited = decideAccess({
-  pathname: "/proyecto/abc",
-  userAgent: "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
-  ip: "203.0.113.10",
-  now: now + 1000,
-  limiter,
-});
-assert.equal(limited.action, "rate_limit");
-if (limited.action === "rate_limit") assert.ok(limited.retryAfterSec >= 1 && limited.retryAfterSec <= 60);
 
-assert.equal(
-  decideAccess({
-    pathname: "/proyecto/abc",
-    userAgent: CHROME,
-    ip: "203.0.113.11",
-    now,
-    limiter,
-  }).action,
-  "allow",
-);
-assert.equal(
-  decideAccess({
-    pathname: "/",
-    userAgent: CHROME,
-    ip: "203.0.113.10",
-    now,
-    limiter,
-  }).action,
-  "allow",
-);
-assert.equal(
-  decideAccess({
-    pathname: "/proyecto/abc",
-    userAgent: "curl/8.7.1",
-    ip: "203.0.113.12",
-    now,
-    limiter,
-  }).action,
-  "block",
-);
-assert.equal(
-  decideAccess({
-    pathname: "/proyecto/abc",
-    userAgent: CHROME,
-    ip: "203.0.113.10",
-    now: now + 60_000,
-    limiter,
-  }).action,
-  "allow",
-);
-
-console.log("bot-guard ok");
+await main();

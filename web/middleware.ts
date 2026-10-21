@@ -86,11 +86,12 @@ async function adminGate(request: NextRequest): Promise<NextResponse | null> {
   return NextResponse.redirect(login);
 }
 
-function botGuard(request: NextRequest): NextResponse | null {
-  const decision = decideAccess({
+async function botGuard(request: NextRequest): Promise<NextResponse | null> {
+  const decision = await decideAccess({
     pathname: request.nextUrl.pathname,
     userAgent: request.headers.get("user-agent"),
     ip: clientIpFrom(request.headers),
+    headers: request.headers,
   });
   if (decision.action === "allow") return null;
 
@@ -109,7 +110,7 @@ function botGuard(request: NextRequest): NextResponse | null {
 }
 
 export async function middleware(request: NextRequest) {
-  const blocked = botGuard(request);
+  const blocked = await botGuard(request);
   if (blocked) return blocked;
 
   const www = wwwRedirect(request);
