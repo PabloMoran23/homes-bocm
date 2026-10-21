@@ -1,0 +1,27 @@
+slug: murcia
+nombre: "Murcia"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://sede.murcia.es"
+  adapter: municipio.adapters.murcia:MurciaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-murcia/1.0"
+    max_tablon_pages: 8
+  notes: |
+    Sede Drupal: tablón de anuncios (edictos planeamiento y licencias en PDF).
+    infourb/Ultimas.aspx: publicaciones oficiales PGMO y planeamiento de desarrollo.
+    Geometría parcial: WFS GeoServer callejero.murcia.es urbanismo:sectores (join por código en título).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  centroid_lat: 38.0838
+  centroid_lng: -1.1294
