@@ -1341,12 +1341,12 @@ municipios:
 - slug: paterna
   nombre: Paterna
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:36:49.523039+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 5 geography records quarantined; run 39635920590
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Paterna
@@ -3677,12 +3677,12 @@ municipios:
 - slug: paiporta
   nombre: Paiporta
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:36:39.411640+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 2 geography records quarantined; run 39635920590
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Paiporta
@@ -4352,12 +4352,12 @@ municipios:
 - slug: pilar-de-la-horadada
   nombre: Pilar de la Horadada
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:40:36.105550+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 1 geography records quarantined; run 39635920590
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Pilar de la Horadada
@@ -14091,12 +14091,12 @@ municipios:
 - slug: polop
   nombre: Polop
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:42:56.130047+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 10 geography records quarantined; run 39635920590
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
   provincia: Polop
@@ -29322,12 +29322,12 @@ municipios:
 - slug: piedrahita
   nombre: Piedrahíta
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:36:07.655596+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 3 geography records quarantined; run 39635920590
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Piedrahíta, Ávila
@@ -32262,12 +32262,12 @@ municipios:
 - slug: navas-de-oro
   nombre: Navas de Oro
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:35:34.917193+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 5 geography records quarantined; run 39635920590
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Navas de Oro (Segovia)
@@ -38748,12 +38748,12 @@ municipios:
 - slug: palacios-del-sil
   nombre: Palacios del Sil
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:35:45.124799+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 3 geography records quarantined; run 39635920590
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Palacios del Sil (León)
@@ -48058,12 +48058,12 @@ municipios:
 - slug: olombrada
   nombre: Olombrada
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:35:22.058329+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 1 geography records quarantined; run 39635920590
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Olombrada-Segovia
@@ -58162,12 +58162,12 @@ municipios:
 - slug: padiernos
   nombre: Padiernos
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-21T16:35:11.868011+00:00'
   last_error: null
-  pr_url: null
-  notes: ''
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/961
+  notes: Validated batch publication; 2 geography records quarantined; run 39635920590
   boletin_source_id: bocyl
   comunidad_autonoma: castilla-y-leon
   provincia: Padiernos (Ávila)
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-21T16:14:58.870522+00:00'
+updated_at: '2026-10-21T16:42:56.142256+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
