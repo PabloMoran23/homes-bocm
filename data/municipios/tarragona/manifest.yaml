@@ -1,0 +1,25 @@
+slug: tarragona
+nombre: "Tarragona"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.tarragona.cat"
+  adapter: municipio.adapters.tarragona:TarragonaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tarragona/1.0"
+    sede_base: "https://seu.tarragona.cat"
+    fetch_timeout_s: 180
+    centroid: [41.1189, 1.2445]
+  notes: |
+    Web Plone (tarragona.cat) + sede STA (seu.tarragona.cat): tablón PTS2_TABLON,
+    secciones de planejament (PG vigent, en tràmit, projectes d'urbanització) y
+    RSS Actualitat d'Urbanisme. Catálogo de trámites para licencias informativas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
