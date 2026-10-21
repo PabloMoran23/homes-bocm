@@ -91,7 +91,6 @@ async function botGuard(request: NextRequest): Promise<NextResponse | null> {
     pathname: request.nextUrl.pathname,
     userAgent: request.headers.get("user-agent"),
     ip: clientIpFrom(request.headers),
-    headers: request.headers,
   });
   if (decision.action === "allow") return null;
 

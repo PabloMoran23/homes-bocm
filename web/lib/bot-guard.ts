@@ -7,9 +7,9 @@
  * headless) and applies it to the User-Agent before those RPCs.
  *
  * Googlebot and Bingbot are allowed only when the IP is in the published crawler
- * ranges, or when Vercel sets `x-vercel-verified-bot` (it strips that header from
- * clients). A User-Agent that only claims those bots is blocked. Social preview
- * bots stay on the User-Agent allow list. UptimeRobot is allowed.
+ * ranges. A User-Agent that only claims those bots is blocked. The
+ * `x-vercel-verified-bot` header is not consulted: clients can send it.
+ * Social preview bots stay on the User-Agent allow list. UptimeRobot is allowed.
  */
 
 import { ipInSearchBotRanges, refreshSearchBotRanges } from "./search-bot-ranges";
@@ -172,11 +172,6 @@ export function isHeavyRoute(pathname: string): boolean {
 
 type HeaderSource = { get(name: string): string | null };
 
-function platformVerifiedBot(headers: HeaderSource | undefined): boolean {
-  const value = headers?.get("x-vercel-verified-bot")?.trim().toLowerCase();
-  return value === "1" || value === "true";
-}
-
 type CacheStorageLike = { open(name: string): Promise<CacheLike> };
 type CacheLike = {
   match(request: string): Promise<{ text(): Promise<string> } | undefined>;
@@ -263,16 +258,17 @@ export async function decideAccess(input: {
   userAgent: string | null;
   ip: string;
   now?: number;
+  /** Ignored. `x-vercel-verified-bot` is client-supplied and must not allow a bot. */
   headers?: HeaderSource;
   limiter?: ReturnType<typeof createFixedWindowLimiter>;
 }): Promise<AccessDecision> {
+  void input.headers;
   const kind = classifyUserAgent(input.userAgent);
   if (kind === "block") return { action: "block" };
   if (kind === "verify-google" || kind === "verify-bing") {
     refreshSearchBotRanges(input.now);
     const vendor = kind === "verify-google" ? "google" : "bing";
-    const verified = platformVerifiedBot(input.headers) || ipInSearchBotRanges(vendor, input.ip || "");
-    if (!verified) return { action: "block" };
+    if (!ipInSearchBotRanges(vendor, input.ip || "")) return { action: "block" };
     return { action: "allow" };
   }
   if (!isHeavyRoute(input.pathname)) return { action: "allow" };
