@@ -1,64 +1,45 @@
 name: Validate municipio PR
-
 on:
   pull_request:
     branches: [main]
     paths:
       - "data/municipios/**"
       - "municipio/adapters/**"
-
+      - "scripts/ci/municipio_batch.py"
+      - "scripts/ci/test_municipio_batch.py"
+      - ".github/workflows/validate-municipio-pr.yml"
+      - ".github/workflows/municipio-post-merge.yml"
+permissions:
+  contents: read
 jobs:
   static:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v3
-        id: filter
         with:
-          filters: |
-            municipio:
-              - "data/municipios/**"
-              - "municipio/adapters/**"
-
-      - name: Detect slug from manifest
-        id: slug
-        if: steps.filter.outputs.municipio == 'true'
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements-municipio.txt
+      - name: Test batch isolation and validation
         run: |
-          set -euo pipefail
-          SLUG=""
-          while IFS= read -r f; do
-            case "$f" in
-              data/municipios/*/manifest.yaml)
-                SLUG=$(basename "$(dirname "$f")")
-                ;;
-            esac
-          done < <(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
-          if [ -z "$SLUG" ] || [ "$SLUG" = "_template" ]; then
-            echo "No se detectó slug de municipio nuevo en la PR"
-            exit 0
-          fi
-          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
-          echo "Detected slug: $SLUG"
-
-      - name: Static PR check
-        if: steps.slug.outputs.slug != ''
-        run: |
-          chmod +x scripts/check-municipio-pr-static.sh
-          ./scripts/check-municipio-pr-static.sh "${{ steps.slug.outputs.slug }}"
-
-      - name: Install municipio deps
-        if: steps.slug.outputs.slug != ''
-        run: pip install -r requirements-municipio.txt
-
-      - name: Validate adapter imports
-        if: steps.slug.outputs.slug != ''
+          python -m unittest discover -s scripts/ci -p 'test_municipio_batch.py'
+          python -m unittest municipio.test_onboarding_snapshot
+      - name: Validate every changed municipality
         env:
-          SLUG: ${{ steps.slug.outputs.slug }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          PYTHONPATH=. python3 -c "
+          python3 - <<'PY'
+          import json, os, subprocess, sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts/ci')
+          from municipio_batch import changed_slugs
           from municipio.manifest import load_manifest
-          m = load_manifest('$SLUG')
-          assert m.portal.adapter
-          print('manifest OK:', m.nombre)
-          "
+          slugs = changed_slugs(os.environ['BASE_SHA'])
+          for slug in slugs:
+              subprocess.run(['bash', 'scripts/check-municipio-pr-static.sh', slug], check=True)
+              manifest = load_manifest(slug)
+              assert manifest.portal.adapter
+          print(json.dumps({'checked': slugs}))
+          PY

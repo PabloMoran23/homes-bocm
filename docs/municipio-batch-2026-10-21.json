@@ -1,0 +1,1287 @@
+{
+  "date": "2026-10-21",
+  "audited_open_prs": 132,
+  "tested": 20,
+  "approved": [
+    {
+      "number": 805,
+      "slug": "navas-de-oro",
+      "projects": 53,
+      "coordinates": 18,
+      "quarantined": 5
+    },
+    {
+      "number": 814,
+      "slug": "olombrada",
+      "projects": 22,
+      "coordinates": 2,
+      "quarantined": 1
+    },
+    {
+      "number": 818,
+      "slug": "padiernos",
+      "projects": 12,
+      "coordinates": 9,
+      "quarantined": 2
+    },
+    {
+      "number": 819,
+      "slug": "paiporta",
+      "projects": 15,
+      "coordinates": 14,
+      "quarantined": 2
+    },
+    {
+      "number": 821,
+      "slug": "palacios-del-sil",
+      "projects": 12,
+      "coordinates": 1,
+      "quarantined": 3
+    },
+    {
+      "number": 826,
+      "slug": "paterna",
+      "projects": 118,
+      "coordinates": 26,
+      "quarantined": 6
+    },
+    {
+      "number": 834,
+      "slug": "piedrahita",
+      "projects": 32,
+      "coordinates": 29,
+      "quarantined": 3
+    },
+    {
+      "number": 835,
+      "slug": "pilar-de-la-horadada",
+      "projects": 71,
+      "coordinates": 46,
+      "quarantined": 1
+    },
+    {
+      "number": 837,
+      "slug": "polop",
+      "projects": 165,
+      "coordinates": 1,
+      "quarantined": 10
+    }
+  ],
+  "held": [
+    {
+      "number": 806,
+      "slug": "navas-de-riofrio",
+      "rows": 25,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [
+        {
+          "line": 15,
+          "id": "navas-de-riofrio-proy-0d633e00463a4e",
+          "errors": {
+            "geometry": "outside_municipality_scope"
+          }
+        }
+      ],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 808,
+      "slug": "nerja",
+      "rows": 24,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 811,
+      "slug": "ojen",
+      "rows": 7,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 816,
+      "slug": "orcera",
+      "rows": 14,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 817,
+      "slug": "ourense",
+      "rows": 28,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 820,
+      "slug": "pajara",
+      "rows": 438,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [
+        {
+          "line": 1,
+          "id": "pajara-proy-8d07748d4f5593",
+          "errors": {
+            "geometry": "unknown_crs"
+          }
+        },
+        {
+          "line": 2,
+          "id": "pajara-proy-0e8a7180fef169",
+          "errors": {
+            "geometry": "unknown_crs"
+          }
+        },
+        {
+          "line": 3,
+          "id": "pajara-proy-046287bd7a0691",
+          "errors": {
+            "geometry": "unknown_crs"
+          }
+        }
+      ],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 823,
+      "slug": "palmera",
+      "rows": 10,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [
+        {
+          "line": 1,
+          "id": "palmera-proy-6644ec942bd1a2",
+          "errors": {
+            "geometry": "outside_municipality_scope"
+          }
+        },
+        {
+          "line": 2,
+          "id": "palmera-proy-019ca03d14fe20",
+          "errors": {
+            "geometry": "outside_municipality_scope"
+          }
+        },
+        {
+          "line": 3,
+          "id": "palmera-proy-dbb766763b222c",
+          "errors": {
+            "geometry": "outside_municipality_scope"
+          }
+        }
+      ],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 827,
+      "slug": "paterna-de-rivera",
+      "rows": 46,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 829,
+      "slug": "peligros",
+      "rows": 53,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 831,
+      "slug": "peniscola",
+      "rows": 50,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [
+        {
+          "line": 1,
+          "id": "peniscola-proy-1a1d0cc7d00c98",
+          "errors": {
+            "geometry": "invalid_topology"
+          }
+        },
+        {
+          "line": 2,
+          "id": "peniscola-proy-4998e9189eaed5",
+          "errors": {
+            "geometry": "invalid_topology"
+          }
+        },
+        {
+          "line": 4,
+          "id": "peniscola-proy-0f5effb9d27de9",
+          "errors": {
+            "geometry": "invalid_topology"
+          }
+        }
+      ],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    },
+    {
+      "number": 832,
+      "slug": "perales-de-tajuna-y-tielmes",
+      "rows": 35,
+      "coords": 0,
+      "geometry": 0,
+      "errors": [
+        {
+          "line": 1,
+          "id": "perales-de-tajuna-y-tielmes-proy-31ab6c03b05c73",
+          "errors": {
+            "geometry": "municipal_boundary_unavailable"
+          }
+        },
+        {
+          "line": 2,
+          "id": "perales-de-tajuna-y-tielmes-proy-36ab4a4a28767c",
+          "errors": {
+            "geometry": "municipal_boundary_unavailable"
+          }
+        },
+        {
+          "line": 3,
+          "id": "perales-de-tajuna-y-tielmes-proy-032c7f5946fb34",
+          "errors": {
+            "geometry": "municipal_boundary_unavailable"
+          }
+        }
+      ],
+      "status": "held",
+      "reason": "Insufficient project/coordinate coverage"
+    }
+  ],
+  "unreviewed": [
+    {
+      "number": 952,
+      "slug": "fuengirola",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "7ddecd972519b345c8b8645f92df741474a831fd"
+    },
+    {
+      "number": 951,
+      "slug": "sant-boi-de-llobregat",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "1fe33c165866c5f4b39ca9ebdab1a4e6cffd8fb3"
+    },
+    {
+      "number": 950,
+      "slug": "velez-malaga",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "3625fb891f6873d6c425a4f89f60292157c02d44"
+    },
+    {
+      "number": 949,
+      "slug": "melilla",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "7f0fc4042c25b96f59b79403c4c235e18ab679a0"
+    },
+    {
+      "number": 948,
+      "slug": "toledo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "00a25ec65d49ef49d68ebf7c0111110440475009"
+    },
+    {
+      "number": 947,
+      "slug": "torrent-46244",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "328124c57f9b4a65c68bfb5882d6ca34a7914672"
+    },
+    {
+      "number": 946,
+      "slug": "el-ejido",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "c6a95f85160581d3728771b717392ebbd928b843"
+    },
+    {
+      "number": 945,
+      "slug": "cornella-de-llobregat",
+      "flags": [],
+      "head": "27288a948bc2312c847c6d4623b7f9c48971b0bd"
+    },
+    {
+      "number": 944,
+      "slug": "guadalajara",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d922b73f0d8b3291d63031c18144658ebb08b6c7"
+    },
+    {
+      "number": 943,
+      "slug": "san-fernando",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "bef8ded22108a2ddc43c7deaab7b41f8235e16a1"
+    },
+    {
+      "number": 942,
+      "slug": "caceres",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "1f80df2ef3e4b56fec00954caf700a5587ef4299"
+    },
+    {
+      "number": 941,
+      "slug": "sant-cugat-del-valles",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "3f2fc476363f5997018448c5b6b663a09efb65da"
+    },
+    {
+      "number": 939,
+      "slug": "torrevieja",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "700558e9eb89f5b2b301e7af57358b88904f26ad"
+    },
+    {
+      "number": 938,
+      "slug": "lorca",
+      "flags": [
+        "date_review"
+      ],
+      "head": "f12490fc59a90a1d8acba1c910c530d119a6b7db"
+    },
+    {
+      "number": 937,
+      "slug": "lugo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d4095cb1f0c3822531e17cd4f2cdff37601cf642"
+    },
+    {
+      "number": 936,
+      "slug": "santiago-de-compostela",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d303432b7373e935cb6079015211f0c6bd694309"
+    },
+    {
+      "number": 934,
+      "slug": "barakaldo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "9930172fadda51302bbe8a1d118990ad1abca558"
+    },
+    {
+      "number": 932,
+      "slug": "telde",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "2504f6766af392cb074229d8b3676c2777da6307"
+    },
+    {
+      "number": 931,
+      "slug": "girona",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "9ea874350f5ee6cd4fa8ab165a8773073254103e"
+    },
+    {
+      "number": 930,
+      "slug": "reus",
+      "flags": [
+        "date_review"
+      ],
+      "head": "8e24fa8d309fe45793ec39e3e86771fa64a5d1c3"
+    },
+    {
+      "number": 929,
+      "slug": "santa-coloma-de-gramenet",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d1cc079da325e11c641aedc9a04f5a62e67ef0db"
+    },
+    {
+      "number": 928,
+      "slug": "algeciras",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "fd73358c4f938012337ffc4b2ba57900dca53314"
+    },
+    {
+      "number": 927,
+      "slug": "mataro",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "fec48cd1d85c93dad42bf786a4745482ba03cb6e"
+    },
+    {
+      "number": 926,
+      "slug": "dos-hermanas",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "3a63dd9ecbdbda8098a16b6c6b4fe1cf071cc8d8"
+    },
+    {
+      "number": 925,
+      "slug": "tarragona",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "9bebeed0b079ec388559ebe82a5b6f3a892c3e74"
+    },
+    {
+      "number": 924,
+      "slug": "lleida",
+      "flags": [
+        "procedure_licenses"
+      ],
+      "head": "0f9f094e280aa732cd90f8a447f7dccbc5931e06"
+    },
+    {
+      "number": 923,
+      "slug": "badajoz",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "ee0864dd4ede9a28e22ca50e3565a8cc91822b7c"
+    },
+    {
+      "number": 922,
+      "slug": "logrono",
+      "flags": [
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "d7b8630aa5f626845050620f572221a7dd7df4e0"
+    },
+    {
+      "number": 921,
+      "slug": "marbella",
+      "flags": [
+        "date_review"
+      ],
+      "head": "f4c7bac2b71e9bd58b22d801e479a823853f3978"
+    },
+    {
+      "number": 920,
+      "slug": "san-cristobal-de-la-laguna",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "f0cf37b073920263fbd4de885eb33c6d954fef71"
+    },
+    {
+      "number": 919,
+      "slug": "albacete",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "2ecb0fcea3e94fb470637e1f9554280d6d3fbc0a"
+    },
+    {
+      "number": 918,
+      "slug": "santander",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "9d080d120c7dc6cb221ea847128d599242afe728"
+    },
+    {
+      "number": 917,
+      "slug": "pamplona",
+      "flags": [
+        "extra_files",
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "2feafa2386ccaf2c181396fed849e0447d93dee8"
+    },
+    {
+      "number": 916,
+      "slug": "cartagena",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "c9c60d1a2a296b187b6ee508676cb02e2cbcfb73"
+    },
+    {
+      "number": 915,
+      "slug": "sabadell",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "7506a54825975a85883b867709908f2e85283b0a"
+    },
+    {
+      "number": 912,
+      "slug": "badalona",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "cbc17b82f4baa337dfa10ae42c542cdde8b2e84c"
+    },
+    {
+      "number": 911,
+      "slug": "terrassa",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "fc820db0a6fc2fc0b8448b249cf6679218430f1c"
+    },
+    {
+      "number": 910,
+      "slug": "a-coruna",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "c99352c2f3b369e2f0b7ae1d2f5ba0cf98248451"
+    },
+    {
+      "number": 909,
+      "slug": "vitoria-gasteiz",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "ca32cfecdbb8534da1ae93e9f1101abccdaefeaf"
+    },
+    {
+      "number": 908,
+      "slug": "l-hospitalet-de-llobregat",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "a7ecee06153c52526b647e808e063c1705295059"
+    },
+    {
+      "number": 907,
+      "slug": "vigo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "066fb5f9143da7455643102671aae158b5f3b0e9"
+    },
+    {
+      "number": 906,
+      "slug": "cordoba",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "36779f5c2ea19a3573ebf26fc39cf19109068bea"
+    },
+    {
+      "number": 905,
+      "slug": "bilbao",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "39cd0723ea14f21ba96573334d21bd22164a8944"
+    },
+    {
+      "number": 904,
+      "slug": "palma",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d184561e814b7aaa444f2ee0e692908606089d74"
+    },
+    {
+      "number": 902,
+      "slug": "zaragoza",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "650ca063874692cb4326feacca91d64079fd548e"
+    },
+    {
+      "number": 901,
+      "slug": "barcelona",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "dbcee494c102b3ec3f1f408fd6c07403011319f5"
+    },
+    {
+      "number": 900,
+      "slug": "santervas-de-la-vega",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "48894033047d946bb2cfe2edc64c5c36ec33cf31"
+    },
+    {
+      "number": 899,
+      "slug": "santas-martas",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "fd9d251e9d2b9851c9576874da1023a2bcf202b6"
+    },
+    {
+      "number": 898,
+      "slug": "santa-ursula",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "536f7306cfa9156951dbc9e77ca9181da499989c"
+    },
+    {
+      "number": 897,
+      "slug": "santa-pola",
+      "flags": [
+        "date_review"
+      ],
+      "head": "1b4fdb92c14f0b7856a6e30cd528dd2034113df7"
+    },
+    {
+      "number": 895,
+      "slug": "santa-maria-la-real-de-nieva",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "dc8c37ab816f6c87f03e324475597134a2e19aa8"
+    },
+    {
+      "number": 894,
+      "slug": "santa-lucia-de-tirajana",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "dc292bafa49e3edf0116ef16f8cffcefea61bb5f"
+    },
+    {
+      "number": 893,
+      "slug": "santa-fe",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "0c02b417d475b4aec3f64ef746bced378749739c"
+    },
+    {
+      "number": 892,
+      "slug": "santa-cruz-de-pinares",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "120a9cece615bafa9fd09828eb1f33d5105f1d28"
+    },
+    {
+      "number": 891,
+      "slug": "sant-joan-dalacant",
+      "flags": [
+        "ambiguous_scope",
+        "extra_files"
+      ],
+      "head": "9262d5c799ba115c13787d461d10eae1e18acd2c"
+    },
+    {
+      "number": 890,
+      "slug": "sanchonuno",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "ea93593d941b9941a1a935455b01a544e36b1323"
+    },
+    {
+      "number": 889,
+      "slug": "sancedo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "f5b7e3af1ad43e66bbe7954fc1c570348c616478"
+    },
+    {
+      "number": 888,
+      "slug": "san-sebastian-de-los-ballesteros",
+      "flags": [
+        "date_review"
+      ],
+      "head": "270114b0853f3f1f75d1fe16d5abe05af356f8ed"
+    },
+    {
+      "number": 887,
+      "slug": "san-sebastian",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "7aa5cb45e0011adbcb4952ce9a6acf8154f54195"
+    },
+    {
+      "number": 886,
+      "slug": "san-pedro-de-rozados",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "fdfc98f5da88f94ecb16f9bbb4cdd6096626f802"
+    },
+    {
+      "number": 885,
+      "slug": "san-miguel-del-arroyo",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "c6a504859688a3eedfe8b7d4607b215778e8e96b"
+    },
+    {
+      "number": 884,
+      "slug": "san-miguel-de-cornezuelo",
+      "flags": [
+        "extra_files",
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "44f7ace5f68e5e84b3d388cabe5556485b5544d1"
+    },
+    {
+      "number": 883,
+      "slug": "san-martin-del-rey-aurelio",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "d7625655d188cabf0887dcb476de8c8d7c532675"
+    },
+    {
+      "number": 882,
+      "slug": "san-juan-del-puerto",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "96f02a442cafe8dad29a47e2359baa34f8cac6e5"
+    },
+    {
+      "number": 881,
+      "slug": "san-juan-de-la-rambla",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "0a6f0fba3d8d5a72ac4a4c136260f350b5022e46"
+    },
+    {
+      "number": 880,
+      "slug": "san-juan-de-la-ar",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "f69b19d47d56048f332f81590e771052cfc3a0ec"
+    },
+    {
+      "number": 879,
+      "slug": "san-juan-de-aznalfarache",
+      "flags": [
+        "date_review"
+      ],
+      "head": "e7d09af10bba245a2a7753606cec4cd2e490da87"
+    },
+    {
+      "number": 878,
+      "slug": "san-agustin-del-guadalix-pedrezuela-guadalix-de-la-sierra-venturada-y-cabanillas-de-la-sierra",
+      "flags": [
+        "date_review"
+      ],
+      "head": "a40463245de7fc667c799caa10cd983ae8bda649"
+    },
+    {
+      "number": 877,
+      "slug": "san-agustin-de-guadalix",
+      "flags": [
+        "ambiguous_scope"
+      ],
+      "head": "97fd85f62b9d585a0bd448156217d3164fc0b0db"
+    },
+    {
+      "number": 876,
+      "slug": "rute",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "5d0e901f248c4122641f1b3068c6c90a3dc9eed6"
+    },
+    {
+      "number": 875,
+      "slug": "ruente",
+      "flags": [
+        "date_review"
+      ],
+      "head": "1e154cc9a7d3c678c1453e00f218572f08a0de1f"
+    },
+    {
+      "number": 873,
+      "slug": "rota",
+      "flags": [
+        "date_review"
+      ],
+      "head": "a9ce8798c8de9595b4918e849a994ca915334bc6"
+    },
+    {
+      "number": 872,
+      "slug": "rosinos-de-la-requejada",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "e7f375dfe4ae0db699640b5e086624e9b6e6cb00"
+    },
+    {
+      "number": 871,
+      "slug": "roquetas-de-mar",
+      "flags": [
+        "date_review"
+      ],
+      "head": "3d1be8bcde7a6a7f9a0be1e15c20e98a9df58cc0"
+    },
+    {
+      "number": 870,
+      "slug": "rocafort",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "10aff64f4801fc8c0895dcad9c84c3ad08d4790c"
+    },
+    {
+      "number": 869,
+      "slug": "rivilla-de-barajas",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "560126cad8f1fc5ccffaeb6ba8da8d5b7f0d415f"
+    },
+    {
+      "number": 868,
+      "slug": "riofrio",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "5966e9271608cf715edaab9822fcadb3d0ce4fe3"
+    },
+    {
+      "number": 867,
+      "slug": "riaza",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "4021e51acf943350831591d9777ec56913d03306"
+    },
+    {
+      "number": 866,
+      "slug": "respenda-de-la-pena",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "64532d881eb092c2368221590a7c1e8c4c11e8f5"
+    },
+    {
+      "number": 865,
+      "slug": "requena",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "210a0e3bc312e28a68fb0c29892041a3be3fd2da"
+    },
+    {
+      "number": 864,
+      "slug": "renera",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "17f0877e8d8a1d870ffd071e843bd1ac6a2442e4"
+    },
+    {
+      "number": 849,
+      "slug": "renedo-de-esgueva",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "71ae8a42d07ec7f1f41b3ac333a2e9433d821272"
+    },
+    {
+      "number": 848,
+      "slug": "remondo",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "c8c1ed4962a1b66e4cd8ec78a7d3ccd6c24ed585"
+    },
+    {
+      "number": 847,
+      "slug": "quatretonda",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "9d0887c80192f4fa0e54dbc07f3d029eda514020"
+    },
+    {
+      "number": 846,
+      "slug": "puntallana",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "e8680eaa72acb2919a175b70697319398ca7a6f7"
+    },
+    {
+      "number": 845,
+      "slug": "puig-de-santa-maria",
+      "flags": [
+        "ambiguous_scope"
+      ],
+      "head": "97be2da89cf55778afbe6a8cbc97849614d23dca"
+    },
+    {
+      "number": 844,
+      "slug": "puerto-de-la-cruz",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "834978768195625b8a8defa91d183626ae0c7173"
+    },
+    {
+      "number": 843,
+      "slug": "puente-del-congosto",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "d1536abc92e9b38542f20d07f4a73eab5e14adb5"
+    },
+    {
+      "number": 842,
+      "slug": "puebla-de-sanabria",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "a77b28be432f5cdb88ab6013cb3632bb994b70c8"
+    },
+    {
+      "number": 841,
+      "slug": "prado-del-rey",
+      "flags": [
+        "date_review"
+      ],
+      "head": "85b61ea7362fda90e614e2fc9b0dc244a2f5f8a1"
+    },
+    {
+      "number": 840,
+      "slug": "pozoblanco",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "01e55a00a5ee6c4649e551bd1f8a1c0c9d931e99"
+    },
+    {
+      "number": 839,
+      "slug": "potries",
+      "flags": [
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "93df44d378670dbd0f1bf0cb316a2225436868e4"
+    },
+    {
+      "number": 838,
+      "slug": "pomar-de-valdivia",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "2ab4d3e5b6957beffa883fb5de26458aed3fa2ff"
+    },
+    {
+      "number": 836,
+      "slug": "pilona",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "e58f00e5c8ccd9934c2d73445c48d8e0850b16c8"
+    },
+    {
+      "number": 833,
+      "slug": "peromingo",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "a024f3a59dbc7a87948bb8c35f74c3eb92ff0253"
+    },
+    {
+      "number": 830,
+      "slug": "penaranda-de-duero",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "5b4eff782e183b0e22b2013a166bc105767b8c18"
+    },
+    {
+      "number": 828,
+      "slug": "patones-de-abajo",
+      "flags": [],
+      "head": "dda8fb8ebbce4019553f22af272423698a859945"
+    },
+    {
+      "number": 825,
+      "slug": "paredes-de-nava",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "b66f02af3c5a0c2f4734873d27a47cbd9f9a02a0"
+    },
+    {
+      "number": 824,
+      "slug": "paracuellos-del-jarama",
+      "flags": [
+        "ambiguous_scope"
+      ],
+      "head": "8f2138b475545c535fc749070097083180d93522"
+    },
+    {
+      "number": 822,
+      "slug": "palazuelos-de-eresma",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "59b36f14e21ac461bf56a33e8532b7aa119550b2"
+    },
+    {
+      "number": 815,
+      "slug": "onzonilla-y-vega-de-infanzones",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "0241529d0d4b000d4bc066f6d5f947c61a489fed"
+    },
+    {
+      "number": 813,
+      "slug": "olmedo-de-las-fuentes",
+      "flags": [],
+      "head": "ab6e80899d338d3ba044fa10eb6e631986eb4d9b"
+    },
+    {
+      "number": 812,
+      "slug": "olmedo",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "e648b8bbeb2a647a4f8fecffde682b34f0e4e364"
+    },
+    {
+      "number": 810,
+      "slug": "norena",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "e797892a27e7d2acae10931bfdefeb35e581166e"
+    },
+    {
+      "number": 809,
+      "slug": "noceda-del-bierzo",
+      "flags": [
+        "procedure_licenses",
+        "date_review",
+        "fuzzy_geometry"
+      ],
+      "head": "1562ef588cafc72619dfbf0cdf92d285f437364f"
+    },
+    {
+      "number": 807,
+      "slug": "navatejera",
+      "flags": [],
+      "head": "b6b23390a6bd234362355ddde036ac5774c4d5cf"
+    },
+    {
+      "number": 804,
+      "slug": "galende",
+      "flags": [
+        "already_present",
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "329301d8d8d84f2d40442c520d656eede76eeeef"
+    },
+    {
+      "number": 789,
+      "slug": "moraleja-de-enmedio-y-batres",
+      "flags": [
+        "ambiguous_scope"
+      ],
+      "head": "8cb08d2b383055fb43d65f4549645310af689103"
+    },
+    {
+      "number": 787,
+      "slug": "lachar",
+      "flags": [
+        "already_present",
+        "date_review"
+      ],
+      "head": "1f38829d36b4d917218522533ac278b4ceb004f8"
+    },
+    {
+      "number": 693,
+      "slug": "el-palmar-de-troya",
+      "flags": [
+        "already_present",
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "ad4c06d1a832ee70b02469bc55997982c0702bf9"
+    },
+    {
+      "number": 551,
+      "slug": "quart-de-poblet",
+      "flags": [
+        "already_present",
+        "procedure_licenses",
+        "date_review"
+      ],
+      "head": "f0de69699437d2abee069d928f53ca7a076be3f7"
+    },
+    {
+      "number": 468,
+      "slug": "antas",
+      "flags": [
+        "already_present",
+        "date_review"
+      ],
+      "head": "00fde0a3742465b297ea2866ccd50f5457b1bf43"
+    }
+  ]
+}
