@@ -1,0 +1,30 @@
+slug: marbella
+nombre: "Marbella"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://informacionpublica.marbella.es"
+  adapter: municipio.adapters.marbella:MarbellaAyuntamientoAdapter
+  config:
+    info_publica_base: "https://informacionpublica.marbella.es"
+    urbanismo_web: "https://urbanismo.marbella.es"
+    sede_base: "https://marbella.sedelectronica.es"
+    board_url: "https://marbella.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-marbella/1.0"
+    centroid: [36.5101, -4.8854]
+  notes: |
+    Fuentes: Portal de Información Pública (Joomla/YOOtheme, ámbito Urbanismo y Ecología)
+    + delegación urbanismo.marbella.es + tablón sede espublico gestiona.
+    Consulta de expedientes en sede requiere identificación electrónica.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
