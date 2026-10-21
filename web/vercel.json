@@ -3,7 +3,10 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["fra1"],
-  "crons": [{ "path": "/api/analytics/retention", "schedule": "15 3 * * *" }],
+  "crons": [
+    { "path": "/api/analytics/retention", "schedule": "15 3 * * *" },
+    { "path": "/api/cron/refresh-portal-snapshots", "schedule": "22 4 * * *" }
+  ],
   "env": {
     "NEXT_PUBLIC_EDITION": "public",
     "NEXT_PUBLIC_MAP_SCOPE": "cm",

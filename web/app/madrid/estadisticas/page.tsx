@@ -12,8 +12,8 @@ import type { EspanaPresentacion } from "@/lib/madrid-presentacion";
 import type { DataSummary } from "@/lib/types";
 import { withCanonical } from "@/lib/seo";
 
-/** Evita HTML estático vacío si el JSON no existía en un build anterior. */
-export const dynamic = "force-dynamic";
+/** El JSON de presentación está en el repo. Los RPC viven en snapshot y se revalidan. */
+export const revalidate = 600;
 
 export const metadata: Metadata = withCanonical("/madrid/estadisticas", {
   title: "Estadísticas de licencias urbanísticas en Madrid por distrito",
