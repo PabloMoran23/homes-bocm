@@ -1,0 +1,26 @@
+slug: talavera-de-la-reina
+nombre: "Talavera de la Reina"
+provincia: Toledo
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://urbanismo.talavera.es"
+  adapter: municipio.adapters.talavera_de_la_reina:TalaveraDeLaReinaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-talavera-de-la-reina/1.0"
+    sede_base: "https://sede.talavera.org"
+    web_base: "https://talavera.es"
+    centroid: [39.9635, -4.8308]
+  notes: |
+    WordPress urbanismo.talavera.es (WP File Download: expedientes en información pública y PGOU/POM).
+    Sede SIAL ADMÓNDIGITAL (entidad 45165): tablón edictos vía POST opcion=5.
+    Formularios licencias en impresos-documentacion-y-solicitudes (enlaces talavera.es/download).
+    Visor: mapas PDF y galería ArcGIS JCCM; sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
