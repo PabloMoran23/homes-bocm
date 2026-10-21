@@ -1,0 +1,47 @@
+slug: santander
+nombre: "Santander"
+provincia: Cantabria
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://www.santander.es"
+  adapter: municipio.adapters.santander:SantanderAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santander/1.0"
+    centroid: [43.4623, -3.8099]
+    web_base: "https://www.santander.es"
+    sede_base: "https://sede.santander.es"
+    siucan_mapserver: "https://geoservicios.cantabria.es/inspire/rest/services/Urbanismo/MapServer"
+  notes: |
+    Drupal 7 PGS (información pública + estudios de detalle / en vigor).
+    Tablón de edictos sede (views Drupal) para exposición pública y licencias esporádicas.
+    Geometría partial vía SIUCAN (capa Sectores, NomMuni=Santander).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.92, 43.41],
+              [-3.74, 43.41],
+              [-3.74, 43.49],
+              [-3.92, 43.49],
+              [-3.92, 43.41],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+  notes: |
+    Límite aproximado (bbox) para validación cuando IGN no responde en CI.
+    Geometría de sectores vía SIUCAN Cantabria MapServer capa Sectores.
