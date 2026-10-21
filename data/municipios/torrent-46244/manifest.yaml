@@ -1,0 +1,59 @@
+slug: torrent-46244
+nombre: "Torrent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://torrent.es"
+  adapter: municipio.adapters.torrent_46244:Torrent46244AyuntamientoAdapter
+  config:
+    sede_base: "https://torrent.sedelectronica.es"
+    board_url: "https://torrent.sedelectronica.es/board"
+    web_base: "https://torrent.es"
+    urbanismo_url: "https://torrent.es/urbanismo-y-vivienda/"
+    planeamiento_url: "https://torrent.es/urbanismo-y-vivienda/planeamiento/"
+    tablon_urbanismo_url: "https://torrent.es/urbanismo-y-vivienda/tablon-de-anuncios-urbanismo/"
+    estado_planes_url: "https://torrent.es/urbanismo-y-vivienda/planeamiento/estado-tramitacion-planeamiento/"
+    geo_urbanismo_url: "https://geo.torrent.es/"
+    tramite_licencias_url: "https://torrent.es/tramites/consulta-de-expedientes-de-la-seccion-de-licencias/"
+    visor_gva_url: "https://visor.gva.es/visor/?capas=spaicv0702_plan_zonificacion"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-torrent-46244/1.0"
+    centroid: [39.437, -0.465]
+    cod_ine_mun: "46244"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    WordPress (torrent.es) con repositorio torrentPublic + sede espublico gestiona.
+    Tablón urbanismo web (PDFs IP/PRI/PGOU) + tablón sede /board.
+    Geo Urbanismo Neobora (geo.torrent.es) sin API REST pública.
+    Geometría partial: ICV WFS zonificación + InventarioSuSuz (cod_ine_mun 46244).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-0.62, 39.38]
+            - [-0.43, 39.38]
+            - [-0.43, 39.47]
+            - [-0.62, 39.47]
+            - [-0.62, 39.38]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado IGN 46244 (nombre Torrent ambiguo en IGN)"
