@@ -1,0 +1,46 @@
+slug: sant-cugat-del-valles
+nombre: "Sant Cugat del Vallès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://seu.santcugat.cat/seu"
+  adapter: municipio.adapters.sant_cugat_del_valles:SantCugatDelVallesAyuntamientoAdapter
+  config:
+    sede_base: "https://seu.santcugat.cat/seu"
+    web_base: "https://www.santcugat.cat"
+    tablon_urbanisme: "https://seu.santcugat.cat/seu/Tablon.aspx?id_grupo=18"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-cugat-del-valles/1.0"
+    centroid: [41.4725, 2.0860]
+    wfs_url: "https://geo.santcugat.cat/geoserver/wfs"
+    wfs_boundary_type: "stcugatgufons:PLANOL_MUNICIPIS_G5"
+  notes: |
+    Seu electrònica (ASP.NET): tabló T101 Urbanisme id_grupo=18 (DetalleTablon + Tablon_ver_doc).
+    Tràmits llicències d'obres: Procedimientos.aspx?id_grupo=507.
+    Geoportal https://geociutat.santcugat.cat/ (Mapia); GeoServer geo.santcugat.cat (GetFeature HTTP 401 sin credenciales).
+    Web santcugat.cat (obres-en-projecte) a menudo inaccesible por timeout SSL desde cloud.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - - [1.978, 41.418]
+          - [2.145, 41.418]
+          - [2.145, 41.535]
+          - [1.978, 41.535]
+          - [1.978, 41.418]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado término municipal (IGN api-features intermitente en cloud)"
