@@ -1,0 +1,28 @@
+slug: velez-malaga
+nombre: "Vélez-Málaga"
+provincia: "Málaga"
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.velezmalaga.es"
+  adapter: municipio.adapters.velez_malaga:VelezMalagaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-velez-malaga/1.0"
+    centroid: [36.7810, -4.1025]
+    web_base: "https://www.velezmalaga.es"
+    sede_base: "https://sede.velezmalaga.es"
+    tablon_url: "https://www.velezmalaga.es/?mod=urbanismo-infraestructuras-operativos&pos=1&tag=tablon-de-anuncios"
+    max_tablon_pages: 40
+    licencias_info_url: "https://www.velezmalaga.es/index.php?mod=urbanismo-infraestructuras-operativos&tag=solicitudes-de-urbanismo-en-la-sede-electronica"
+  notes: |
+    Tablón Tetraware (urbanismo-infraestructuras-operativos) con expedientes PLAN/PA.
+    Sede STA (PTS2_TABLON, catálogo) devuelve 403 desde CI; catálogo se intenta como fallback.
+    Visor GIS municipal anunciado 2024-2025 sin URL REST pública; PRP Málaga no enlazado por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
