@@ -681,11 +681,11 @@ municipios:
 - slug: mataro
   nombre: Mataró
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-19T18:23:31.973591+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/927
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
