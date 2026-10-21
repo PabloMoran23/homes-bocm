@@ -1,0 +1,28 @@
+slug: fuengirola
+nombre: "Fuengirola"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.fuengirola.es"
+  adapter: municipio.adapters.fuengirola:FuengirolaAyuntamientoAdapter
+  config:
+    web_base: "https://www.fuengirola.es"
+    sede_base: "https://sede.fuengirola.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-fuengirola/1.0"
+    centroid: [36.5397, -4.6263]
+  notes: |
+    Sede STA (TAO): tablón PTS2_TABLON KEY=all (~400 anuncios), catálogo CATSERV
+    (trámites urbanismo/licencias) y trámite «Expedientes de Planeamiento» con PDFs
+    (estudios de detalle SUNC/API, reparcelaciones, convenios).
+    Web concejalía urbanismo (informativa). GIS municipal (Esri) sin visor/API pública
+    enlazada a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
