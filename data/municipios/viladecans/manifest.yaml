@@ -1,0 +1,29 @@
+slug: viladecans
+nombre: "Viladecans"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.viladecans.cat"
+  adapter: municipio.adapters.viladecans:ViladecansAyuntamientoAdapter
+  config:
+    web_base: "https://www.viladecans.cat"
+    sede_base: "https://seuelectronica.viladecans.cat"
+    request_delay_s: 0.35
+    user_agent: "Mozilla/5.0 (compatible; poc-bocm-viladecans/1.0)"
+    sede_insecure_ssl: true
+    sede_timeout_s: 25
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      cod_ine_mun: "08301"
+  notes: |
+    Drupal: planejament en tramitació (h2 + PDFs), tràmits en línia (llicències).
+    Sede STA T-Systems: CATALOGO/CATSERV, tablón PTS2_TABLON (puede no responder desde algunas redes).
+    Geometría: AMB Planejament/Expedients (INE 08301). Plànol municipal ArcGIS (adreces/POI, sin join a expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
