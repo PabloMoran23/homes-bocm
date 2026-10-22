@@ -1477,11 +1477,11 @@ municipios:
 - slug: sanlucar-de-barrameda
   nombre: Sanlúcar de Barrameda
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-22T20:17:09.478092+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/981
   notes: Sin boletín asociado
   comunidad_autonoma: andalucia
   provincia: Cádiz
