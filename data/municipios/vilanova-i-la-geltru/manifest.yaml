@@ -1,0 +1,26 @@
+slug: vilanova-i-la-geltru
+nombre: "Vilanova i la Geltrú"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.vilanova.cat"
+  adapter: municipio.adapters.vilanova_i_la_geltru:VilanovaILaGeltruAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vilanova-i-la-geltru/1.0"
+    insecure_ssl: true
+    sede_sta: "https://tramitacio.vilanova.cat"
+    centroid: [41.2241, 1.7260]
+  notes: |
+    Web municipal (www.vilanova.cat /espai_public/*) con PDFs de planejament i POUM.
+    Sede STA TAO (tramitacio.vilanova.cat): catálogo CATSERV (trámites obra/licencias).
+    Tablón PTS2_TABLON carga filas vía AJAX (dataset no embebido en HTML inicial).
+    SIG MapServer (gis.vilanova.cat/mapserv?map=urbanisme) sin enlace a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
