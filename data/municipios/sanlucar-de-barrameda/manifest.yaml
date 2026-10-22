@@ -1,0 +1,38 @@
+slug: sanlucar-de-barrameda
+nombre: "Sanlúcar de Barrameda"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.gmusanlucar.es"
+  adapter: municipio.adapters.sanlucar_de_barrameda:SanlucarDeBarramedaAyuntamientoAdapter
+  config:
+    gmu_base: "https://www.gmusanlucar.es"
+    ayt_base: "https://www.sanlucardebarrameda.es"
+    sede_gmu_url: "https://sede.sanlucardebarrameda.es/portal/entidades.do?ent_id=3&idioma=1"
+    sede_tramites_url: "https://sede.sanlucardebarrameda.es/sede/catalogoTramites.do?ent_id=3&idioma=1"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf"
+    ine_code: "11032"
+    request_delay_s: 0.35
+    max_anuncios_pages: 8
+    user_agent: "poc-bocm-sanlucar-de-barrameda/1.0"
+    centroid: [36.7781, -6.3527]
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-6.48, 36.68], [-6.22, 36.68], [-6.22, 36.92], [-6.48, 36.92], [-6.48, 36.68]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
+  notes: |
+    Fuentes: GMU Drupal (tablón /anuncios, planeamiento vigente, índice PGOU) +
+    ayuntamiento Drupal 11 (tablón virtual /es/anuncios) + sede GMU (catálogo trámites).
+    Sin tablón espublico; licencias históricas no listadas en abierto.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
