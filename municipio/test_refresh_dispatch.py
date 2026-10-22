@@ -53,7 +53,7 @@ class ReviewTest(TestCase):
     def test_refresh_workflow_keeps_legacy_schedule(self):
         root=Path(__file__).resolve().parents[1]
         legacy=(root/'.github/workflows/refresh-municipios.yml').read_text()
-        self.assertIn('17 4 * * *',legacy)
+        self.assertIn('17 */4 * * *',legacy)
         self.assertIn('python3 -m municipio schedule run',legacy)
         self.assertNotIn('refresh_dispatch',legacy)
 

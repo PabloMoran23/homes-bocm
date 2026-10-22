@@ -58,8 +58,13 @@ class ReplayTest(unittest.TestCase):
         with self.conn.cursor() as cur:
             cur.execute("SELECT fase, bocm_pub_date, fecha_aprob FROM homes.proyecto WHERE id='live:1'")
             self.assertEqual(cur.fetchone(), (None, None, None))
-            cur.execute("SELECT COUNT(*) FROM homes.proyecto_semantica_version WHERE proyecto_id='live:1'")
+            cur.execute("SELECT COUNT(*) FROM homes.proyectos_historico WHERE proyecto_id='live:1'")
             self.assertEqual(cur.fetchone()[0], 2)
+        with self.conn:
+            save_proyectos([row], conn=self.conn)
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM homes.proyectos_historico WHERE proyecto_id='live:1'")
+            self.assertEqual(cur.fetchone()[0], 3)
 
     def test_repeat_source_change_rule_change_and_atomic_recovery(self):
         with self.conn:
@@ -87,9 +92,9 @@ class ReplayTest(unittest.TestCase):
         with self.conn.cursor() as cur:
             cur.execute("SELECT COUNT(*) FROM homes.proyecto")
             self.assertEqual(cur.fetchone()[0], 1)
-            cur.execute("SELECT COUNT(*) FROM homes.proyecto_semantica_version")
+            cur.execute("SELECT COUNT(*) FROM homes.proyectos_historico")
             self.assertEqual(cur.fetchone()[0], 3)
-            cur.execute("SELECT source_record FROM homes.proyecto_semantica_version ORDER BY created_at LIMIT 1")
+            cur.execute("SELECT source_record FROM homes.proyectos_historico ORDER BY created_at, id LIMIT 1")
             self.assertEqual(cur.fetchone()[0]["fecha"], "2026-10-14")
 
 

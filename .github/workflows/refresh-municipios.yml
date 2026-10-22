@@ -2,8 +2,8 @@ name: Refresh municipios
 
 on:
   schedule:
-    # Diario 04:17 UTC. Cada corrida refresca un lote; en ~15 días cubre el censo.
-    - cron: "17 4 * * *"
+    # Cada 4 horas, minuto 17 UTC. Cada corrida refresca hasta 20 municipios vencidos.
+    - cron: "17 */4 * * *"
   workflow_dispatch:
     inputs:
       interval_days:
@@ -13,7 +13,7 @@ on:
       limit:
         description: "Municipios por corrida"
         type: string
-        default: "16"
+        default: "20"
       slugs:
         description: "Slugs separados por coma (vacío = due-queue automático)"
         type: string
@@ -52,17 +52,12 @@ jobs:
           pip install -r requirements-municipio.txt
           pip install -r db/requirements-supabase.txt
 
-      - name: Reprocess municipal semantic contracts
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: python3 db/reprocess_project_semantics.py
-
       - name: Refresh due municipios
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
           INTERVAL_DAYS: ${{ github.event.inputs.interval_days || '15' }}
-          LIMIT: ${{ github.event.inputs.limit || '16' }}
+          LIMIT: ${{ github.event.inputs.limit || '20' }}
           SLUGS: ${{ github.event.inputs.slugs || '' }}
           FORCE: ${{ github.event.inputs.force || 'false' }}
         run: |
@@ -89,6 +84,11 @@ jobs:
           fi
           "${CMD_DUE[@]}"
           "${CMD_RUN[@]}"
+
+      - name: Reprocess municipal semantic contracts
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: python3 db/reprocess_project_semantics.py
 
       - name: Reclassify changed entities and check activity
         env:

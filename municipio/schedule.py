@@ -1,7 +1,7 @@
 """Cadencia de scrapers municipales: due-queue sobre last_ingest_at.
 
 No lanza los ~240 municipios de golpe (timeout de GitHub Actions y un fallo
-bloquearía el resto). Un cron diario elige los más viejos / nunca ingestados
+bloquearía el resto). Un cron cada 4 horas elige los más viejos / nunca ingestados
 y corre un lote.
 
 Fuente del timestamp: homes.municipio.last_ingest_at (Supabase), no queue.yaml.
@@ -23,7 +23,7 @@ if str(DB_DIR) not in sys.path:
     sys.path.insert(0, str(DB_DIR))
 
 DEFAULT_INTERVAL_DAYS = 15
-DEFAULT_LIMIT = 16
+DEFAULT_LIMIT = 20
 DEFAULT_STEP = "update"
 SKIP_SLUGS = {"madrid"}
 

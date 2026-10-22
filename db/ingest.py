@@ -644,8 +644,40 @@ def portal_proyecto_row(rec: dict[str, Any], *, slug: str, nombre: str) -> dict[
     return row
 
 
+def _semantic_identity(row: dict[str, Any]) -> tuple[str, str, str] | None:
+    raw = row.get("raw_features_json")
+    raw = raw.adapted if isinstance(raw, Json) else raw
+    derived = raw.get("_semantic_contract") if isinstance(raw, dict) else None
+    if not isinstance(derived, dict):
+        return None
+    try:
+        return (derived["source_hash"], derived["contract_version"], derived["template_version"])
+    except KeyError:
+        return None
+
+
+def _rows_to_write(cur, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """New projects and real changes. An identical served state is left untouched."""
+    keyed = [(row, _semantic_identity(row)) for row in rows]
+    tracked = [row["id"] for row, ident in keyed if ident is not None]
+    if not tracked:
+        return rows
+    cur.execute(
+        f"""SELECT id,
+                   raw_features_json->'_semantic_contract'->>'source_hash',
+                   raw_features_json->'_semantic_contract'->>'contract_version',
+                   raw_features_json->'_semantic_contract'->>'template_version'
+            FROM {SCHEMA}.proyecto
+            WHERE id = ANY(%s)""",
+        (tracked,),
+    )
+    current = {project_id: (source_hash, contract_version, template_version)
+               for project_id, source_hash, contract_version, template_version in cur.fetchall()}
+    return [row for row, ident in keyed if ident is None or current.get(row["id"]) != ident]
+
+
 def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
-    """Persist source + rule versions atomically with the canonical upsert."""
+    """Append one history row per project being written. Caller already dropped unchanged rows."""
     versions = []
     for row in rows:
         raw = row.get("raw_features_json")
@@ -656,9 +688,9 @@ def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
                              derived["template_version"], Json(source_record(raw)), Json(derived)))
     if versions:
         cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
-        execute_values(cur, f"""INSERT INTO {SCHEMA}.proyecto_semantica_version
+        execute_values(cur, f"""INSERT INTO {SCHEMA}.proyectos_historico
                          (proyecto_id, source_hash, contract_version, template_version, source_record, derivation)
-                         VALUES %s ON CONFLICT DO NOTHING""", versions, page_size=100)
+                         VALUES %s""", versions, page_size=100)
 
 
 def _classify_saved(conn, table: str, ids: list[str]) -> None:
@@ -688,7 +720,6 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
             derived = apply_project_semantics(original, row)
             row["raw_features_json"] = Json({**original, "_semantic_contract": derived})
     cols = [c for c in _PROYECTO_UPSERT_COLS]
-    tuples = [tuple(r.get(c) for c in cols) for r in ready]
     sql = f"""
         INSERT INTO {SCHEMA}.proyecto ({", ".join(cols)}) VALUES %s
         ON CONFLICT (id) DO UPDATE SET
@@ -783,11 +814,15 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
           updated_at = EXCLUDED.updated_at
     """
     with _owned_conn(conn) as c, c.cursor() as cur:
+        ready = _rows_to_write(cur, ready)
+        if not ready:
+            return 0
+        tuples = [tuple(r.get(c) for c in cols) for r in ready]
         ensure_schema(c)
         execute_values(cur, sql, tuples, page_size=100)
         save_semantic_versions(cur, ready)
         _classify_saved(c, "proyecto", [str(r["id"]) for r in ready])
-    return len(tuples)
+    return len(ready)
 
 
 # ---------------------------------------------------------------------------

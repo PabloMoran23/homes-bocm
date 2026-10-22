@@ -4,7 +4,7 @@ Este cambio es una infraestructura candidata, **no acredita todavía el SLA real
 
 ## Capacidad y ejecución
 
-`refresh-municipios.yml` conserva exactamente el cron diario y la ruta legacy de la base: este draft **no sustituye ni activa** el refresco operativo. Mantener el legado no demuestra que cumpla 15 días: sigue siendo una carencia abierta de H08.
+`refresh-municipios.yml` refresca hasta 20 municipios vencidos cada 4 horas, por la ruta legacy de la base: este draft **no sustituye ni activa** el refresco operativo. Mantener el legado no demuestra que cumpla 15 días: sigue siendo una carencia abierta de H08.
 
 El dimensionamiento candidato contempla despachos a :17 de cada hora cuando exista evidencia y se apruebe una activación futura; ese cron aún **no está configurado**. Tres trabajos secuenciales por despacho, cada uno con timeout duro de 12 minutos y lease de 15 minutos. El runner reserva 50 minutos incluyendo instalación, descarga de artefacto y limpieza. Son 72 intentos por 24 horas rodantes y 14,4 horas/día de trabajo de fuentes si todos agotan el timeout (hasta 20 horas/día de runner con el límite de 50 minutos/despacho); el coste y la disponibilidad de minutos Actions requieren validación operativa. El cron de Actions puede retrasarse o saltarse; no constituye una garantía de disponibilidad.
 

@@ -6,7 +6,7 @@ Scrapers periódicos (ayuntamientos, boletines, Madrid) → `db/ingest.py` → S
 fetch_history.py / parse_history_nightly.py   → boletines → homes.publicacion
 python -m municipio run --municipio <slug> --step all  → homes.proyecto / licencia
 python -m municipio run --municipio madrid --step update  → SIGMA/visor/licencias
-python -m municipio schedule run --interval-days 15 --limit 16  → lote due (cron GHA diario)
+python -m municipio schedule run --interval-days 15 --limit 20  → lote due (cron GHA cada 4 h)
 ```
 
 El POC original (scripts `0_`, `1_`, `2_`, dashboard) está en [`junk/`](./junk/).

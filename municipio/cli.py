@@ -113,8 +113,8 @@ def main(argv: list[str] | None = None) -> int:
         sp.add_argument(
             "--limit",
             type=int,
-            default=16,
-            help="Máximo de municipios por corrida (default 16)",
+            default=20,
+            help="Máximo de municipios por corrida (default 20)",
         )
         sp.add_argument("--include-madrid", action="store_true", help="Incluir Madrid capital")
         sp.add_argument(

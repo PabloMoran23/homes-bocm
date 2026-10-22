@@ -204,7 +204,7 @@ class GeographyPostgresTest(unittest.TestCase):
         with self.conn:
             self.assertEqual(replay(self.conn)["reprocessed"], 0)
         with self.conn.cursor() as cur:
-            cur.execute("SELECT lat,lng,fase_normalizada,raw_features_json, (SELECT COUNT(*) FROM homes.proyecto_semantica_version) FROM homes.proyecto WHERE id='legacy:1'")
+            cur.execute("SELECT lat,lng,fase_normalizada,raw_features_json, (SELECT COUNT(*) FROM homes.proyectos_historico) FROM homes.proyecto WHERE id='legacy:1'")
             lat, lng, phase, raw, versions = cur.fetchone()
             self.assertEqual((lat, lng, phase, versions), (None, None, "informacion_publica", 1))
             self.assertEqual(raw["_geography_quarantine"]["original"]["lat"], 4000000)
