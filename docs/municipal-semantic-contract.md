@@ -16,7 +16,7 @@ El exportador conserva sus campos anteriores y añade `fechaPublicacion`, `descr
 
 ## Validación
 
-CI `project-semantics.yml` prueba alias y casos ambiguos por contrato, más PostgreSQL 16 aislado: ingesta repetida, eliminación de campos, cambio de fuente, cambio de plantilla, fallo transaccional y recuperación, cardinalidad de proyectos e historial.
+Las pruebas locales `db/test_project_semantics.py` y `db/test_project_semantics_postgres.py` cubren alias y casos ambiguos por contrato, más PostgreSQL 16 aislado: ingesta repetida, eliminación de campos, cambio de fuente, cambio de plantilla, fallo transaccional y recuperación, cardinalidad de proyectos e historial.
 
 ## Límites pendientes de #851
 

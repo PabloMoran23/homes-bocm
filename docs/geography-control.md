@@ -56,13 +56,9 @@ Un histórico sin declaración CRS queda en cola hasta recuperar el original con
 su declaración: ejecutar el adaptador/backfill correspondiente y el pipeline
 normal. No añadir EPSG por intuición al histórico.
 
-El workflow `geography-control.yml` separa dos certificaciones locales (unittest
-y PostgreSQL/PostGIS desechable) del control operativo. Los PRs solo ejecutan
-las pruebas, sin secretos de producción, acceso a fuentes ni scan de la DB.
-El job readonly y su artefacto de cola se ejecutan exclusivamente por schedule o
-workflow_dispatch, y fallan si quedan controles incompletos o cuarentenas.
 Un CRS desconocido se rechaza sin pedir límites por red innecesariamente.
 El pipeline diario municipal ya ejecuta enrich, geocode y sync para cada lote.
+Esas comprobaciones se lanzan en local; no hay workflow de Actions para este control.
 
 ## Pendiente operativo
 
@@ -71,8 +67,8 @@ identificados en el corte, ejecutar su backfill/replay e ingesta, revisar una
 muestra visual por adaptador y desplegar la cuarentena/constraints en el entorno
 autorizado. La migración ya se probó en PostgreSQL 16.15/PostGIS 3.4.2 local,
 incluido el replay real de #857 sobre un outlier histórico y el UPDATE raw H01.
-Con secreto DB configurado, el control diario lee producción en una sesión
-readonly y encola originales y causas por ID, incluyendo los nuevos casos.
+Con secreto DB configurado, `geography_replay --database` lee producción en una
+sesión readonly y encola originales y causas por ID, incluyendo los nuevos casos.
 Sin ese secreto, cubre los JSONL disponibles en checkout; no certifica
 producción. La cola no reemplaza la recuperación/backfill inicial de fuentes.
 

@@ -50,15 +50,8 @@ class ReviewTest(TestCase):
         self.assertTrue(result['reviewed'])
         self.assertFalse(result['written'])
 
-    def test_candidate_has_no_schedule_and_requires_explicit_opt_in(self):
+    def test_refresh_workflow_keeps_legacy_schedule(self):
         root=Path(__file__).resolve().parents[1]
-        import yaml
-        data=yaml.safe_load((root/'.github/workflows/refresh-review-candidate.yml').read_text())
-        # YAML1.1 reads `on` as True, YAML1.2 as string.
-        events=data.get('on',data.get(True))
-        self.assertNotIn('schedule',events)
-        self.assertFalse(events['workflow_dispatch']['inputs']['activate_candidate']['default'])
-        self.assertIn('inputs.activate_candidate == true',data['jobs']['candidate']['if'])
         legacy=(root/'.github/workflows/refresh-municipios.yml').read_text()
         self.assertIn('17 4 * * *',legacy)
         self.assertIn('python3 -m municipio schedule run',legacy)

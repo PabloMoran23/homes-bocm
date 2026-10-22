@@ -108,7 +108,7 @@ gh pr checks NUMBER
 gh pr view NUMBER --json mergeable,reviewDecision,statusCheckRollup
 ```
 
-Espera/reintenta si checks `pending`. Merge solo si workflow **Validate municipio PR** (estático) está verde.
+Espera/reintenta si checks `pending`. No hay workflow de validación del municipio en Actions; el gate es el script local del paso anterior.
 
 ---
 

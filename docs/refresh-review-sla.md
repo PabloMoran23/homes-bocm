@@ -4,7 +4,7 @@ Este cambio es una infraestructura candidata, **no acredita todavía el SLA real
 
 ## Capacidad y ejecución
 
-`refresh-municipios.yml` conserva exactamente el cron diario y la ruta legacy de la base: este draft **no sustituye ni activa** el refresco operativo. `refresh-review-candidate.yml` no tiene cron; solo permite ejecución manual con `activate_candidate=true`, cuyo valor predeterminado es false y cuyo guard condiciona todo el job. Mantener el legado no demuestra que cumpla 15 días: sigue siendo una carencia abierta de H08.
+`refresh-municipios.yml` conserva exactamente el cron diario y la ruta legacy de la base: este draft **no sustituye ni activa** el refresco operativo. Mantener el legado no demuestra que cumpla 15 días: sigue siendo una carencia abierta de H08.
 
 El dimensionamiento candidato contempla despachos a :17 de cada hora cuando exista evidencia y se apruebe una activación futura; ese cron aún **no está configurado**. Tres trabajos secuenciales por despacho, cada uno con timeout duro de 12 minutos y lease de 15 minutos. El runner reserva 50 minutos incluyendo instalación, descarga de artefacto y limpieza. Son 72 intentos por 24 horas rodantes y 14,4 horas/día de trabajo de fuentes si todos agotan el timeout (hasta 20 horas/día de runner con el límite de 50 minutos/despacho); el coste y la disponibilidad de minutos Actions requieren validación operativa. El cron de Actions puede retrasarse o saltarse; no constituye una garantía de disponibilidad.
 
@@ -28,7 +28,7 @@ Cada runner de fuente habilitada debe devolver `review_complete: true` solamente
 
 Nunca reemplaza los outputs canónicos del checkout con el staging; timeout o muerte del hijo descartan esa captura. Un fallo durante sincronización o una expiración revierte los cambios canónicos junto con el historial y el checkpoint. Repetir la publicación con el mismo token confirmado es rechazado antes de escribir.
 
-Los adaptadores existentes **no implementan de forma general este contrato** y varios capturan errores de HTTP devolviendo `ok`. Por eso este draft falla cerrado y produce incumplimientos visibles; aún no puede sustituir operativamente todo el refresco existente y su workflow permanece opt-in sin cron. No añadir la marca a todos los adaptadores sin pruebas de paginación y fuentes: eso ocultaría el problema.
+Los adaptadores existentes **no implementan de forma general este contrato** y varios capturan errores de HTTP devolviendo `ok`. Por eso este draft falla cerrado y produce incumplimientos visibles; aún no puede sustituir operativamente todo el refresco existente. No añadir la marca a todos los adaptadores sin pruebas de paginación y fuentes: eso ocultaría el problema.
 
 ## Validación y trabajo pendiente
 

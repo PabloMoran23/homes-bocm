@@ -40,7 +40,7 @@ forma parte de la versión efectiva. Cambiar reglas de código exige incrementar
    sobre históricos inválidos; si no, el worker registra el fallo y conserva el
    rollout anterior hasta corregir y reintentar. Ejecutar el replay GIS antes de
    la última clasificación H01. Repetir H01 tras otros replay que cambien evidencia.
-6. Los workflows refresh-web-data, refresh-municipios y sync-supabase ejecutan
+6. Los workflows refresh-web-data y refresh-municipios ejecutan
    este comando automáticamente. Los exportadores tienen preflight obligatorio:
    si el control está inactivo o la versión actual aún no está activa, fallan con
    un mensaje explícito para ejecutar el worker y no publican legado como si
@@ -87,8 +87,8 @@ search_ubicaciones se mantiene porque consulta inmuebles, no actividad.
 ## Validación y límites
 
 Pruebas deterministas y transaccionales en `municipio/test_entity_policy.py` y
-`db/test_entity_reprocess.py`; CI levanta PostgreSQL 16. La prueba de integración
-exige H01_TEST_DB_URL en localhost y crea/elimina su propia DB temporal.
+`db/test_entity_reprocess.py`. La prueba de integración exige H01_TEST_DB_URL
+en localhost y crea/elimina su propia DB temporal.
 
 `audit_entity_activity.py` prepara 200 candidatos elegibles sin mostrar decisión
 ni reason_code del clasificador. El workflow conserva la muestra como artefacto.

@@ -27,7 +27,7 @@ municipio_only_path() {
     scripts/post-merge-municipio.sh|scripts/check-municipio-pr-static.sh|scripts/validate-municipio-onboard.sh|scripts/local-merge-municipio-batch.sh) return 0 ;;
     scripts/ci/municipio_batch.py|scripts/ci/test_municipio_batch.py) return 0 ;;
     requirements-municipio.txt) return 0 ;;
-    .github/workflows/municipio-post-merge.yml|.github/workflows/validate-municipio-pr.yml) return 0 ;;
+    .github/workflows/municipio-post-merge.yml) return 0 ;;
     docs/automation-onboard-municipio.md|docs/automation-merge-municipio-prs.md|docs/geography-control.md) return 0 ;;
     tools/review_municipio_backlog.py) return 0 ;;
   esac

@@ -42,7 +42,7 @@ APIs en público: `/api/boletin-area`, `/api/geocode-address`, `/api/nti-asset`.
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - Opcional al tener dominio: `NEXT_PUBLIC_SITE_URL=https://tu-dominio.es`
 3. Deploy automático en cada push a `main`, salvo cambios **solo** de pipeline
-   municipio (adapters, `data/municipios/`, cola, workflows de validación/post-merge):
+   municipio (adapters, `data/municipios/`, cola, workflow de post-merge):
    `web/scripts/vercel-should-build.sh` + `ignoreCommand` en `vercel.json` omiten el build.
 
 `vercel.json` fija edición pública y omite `build-data` en Vercel; los JSON/GeoJSON
