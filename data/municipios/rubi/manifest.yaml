@@ -1,0 +1,26 @@
+slug: rubi
+nombre: "Rubí"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.rubi.cat"
+  adapter: municipio.adapters.rubi:RubiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rubi/1.0"
+    sede_base: "https://seu.rubi.cat"
+    fetch_timeout_s: 120
+    centroid: [41.4923, 2.0324]
+  notes: |
+    Web Plone (rubi.cat): sección Urbanisme, microsite POUM (documentación y fases),
+    notas de prensa y PDFs en area-de-serveis-territorials/poum.
+    Seu propia (seu.rubi.cat): catálogo de trámites (obras/licencias informativas).
+    Sin tablón STA público tipo opensiac; sin listado de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
