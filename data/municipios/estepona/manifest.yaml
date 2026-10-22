@@ -1,0 +1,28 @@
+slug: estepona
+nombre: "Estepona"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://estepona.sedelectronica.es"
+  adapter: municipio.adapters.estepona:EsteponaAyuntamientoAdapter
+  config:
+    sede_base: "https://estepona.sedelectronica.es"
+    board_url: "https://estepona.sedelectronica.es/board"
+    transparencia_wp_url: "https://transparencia.estepona.es/visual/informacion-urbanistica-y-territorial/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=29051"
+    sites_visor_url: "https://sites.estepona.es/VisorWebGIS/#/SITEstepona"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-estepona/1.0"
+    centroid: [36.4276, -5.1459]
+  notes: |
+    Fuentes: tablón sede espublico gestiona, portal transparencia (WP + sede),
+    SITUA (cid=29051) y visor SITES (planeamiento/callejero).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
