@@ -240,12 +240,56 @@ def save_municipio(row: dict[str, Any], *, conn=None) -> str:
 
 
 def clear_last_ingest_at(slug: str, *, conn=None) -> None:
-    """Quita la marca de ingest para que el cron diario vuelva a coger el municipio."""
+    """Quita la marca de ingest. No vuelve a encolar: un fallo va a la dead letter."""
     with _owned_conn(conn) as c, c.cursor() as cur:
         cur.execute(
             f"UPDATE {SCHEMA}.municipio SET last_ingest_at = NULL, updated_at = %s WHERE slug = %s",
             (_now(), slug),
         )
+
+
+def _ensure_dead_letter(cur) -> None:
+    cur.execute((DB_DIR / "schema_refresh_dead_letter.sql").read_text(encoding="utf-8"))
+
+
+def park_dead_letter(slug: str, *, step: str, error: str, conn=None) -> None:
+    """Aparta el municipio. El cron deja de elegirlo."""
+    slug = str(slug or "").strip()
+    if not slug:
+        return
+    with _owned_conn(conn) as c, c.cursor() as cur:
+        _ensure_dead_letter(cur)
+        cur.execute(
+            f"""INSERT INTO {SCHEMA}.municipio_dead_letter (slug, failed_step, error)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (slug) DO UPDATE
+                  SET failed_step = EXCLUDED.failed_step,
+                      error = EXCLUDED.error,
+                      created_at = now()""",
+            (slug, step, error[:4000]),
+        )
+
+
+def fetch_dead_letter_slugs(*, conn=None) -> set[str]:
+    if not available():
+        return set()
+    try:
+        with _owned_conn(conn) as c, c.cursor() as cur:
+            _ensure_dead_letter(cur)
+            cur.execute(f"SELECT slug FROM {SCHEMA}.municipio_dead_letter")
+            return {row[0] for row in cur.fetchall()}
+    except Exception as exc:
+        print(f"aviso schedule: no se pudo leer la dead letter ({exc})", flush=True)
+        return set()
+
+
+def release_dead_letter(slug: str, *, conn=None) -> None:
+    slug = str(slug or "").strip()
+    if not slug or not available():
+        return
+    with _owned_conn(conn) as c, c.cursor() as cur:
+        _ensure_dead_letter(cur)
+        cur.execute(f"DELETE FROM {SCHEMA}.municipio_dead_letter WHERE slug = %s", (slug,))
 
 
 def touch_last_ingest_at(slug: str, *, conn=None) -> None:

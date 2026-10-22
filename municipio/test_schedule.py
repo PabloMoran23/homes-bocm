@@ -14,14 +14,14 @@ NOW = datetime(2026, 8, 19, 12, 0, tzinfo=UTC)
 
 class DuePlanTest(TestCase):
     def test_failed_refresh_remains_partial_and_next_municipio_runs(self) -> None:
-        plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, now=NOW)
+        plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, dead_letters=set(), now=NOW)
         error = "https://example.org/urbanismo: timeout after 3 attempts"
         with patch("municipio.schedule.due_plan", return_value=plan), patch(
             "municipio.schedule.load_manifest"
         ), patch("municipio.schedule.run", side_effect=[
             {"steps": {"proyectos_update": {"error": error, "type": "TimeoutError"}}},
             {"steps": {"proyectos_update": {"rows": 1}}},
-        ]):
+        ]), patch("ingest.release_dead_letter"):
             result = run_due()
         self.assertEqual(result["status"], "partial")
         self.assertEqual((result["ok"], result["failed"]), (1, 1))
@@ -38,6 +38,7 @@ class DuePlanTest(TestCase):
                 "getafe": NOW - timedelta(days=20),
             },
             now=NOW,
+            dead_letters=set(),
         )
         picked = [r["slug"] for r in plan["picked"]]
         self.assertEqual(picked, ["alcala-de-henares", "getafe"])
@@ -52,6 +53,7 @@ class DuePlanTest(TestCase):
             slugs=["madrid", "mostoles"],
             timestamps={},
             now=NOW,
+            dead_letters=set(),
         )
         self.assertNotIn("madrid", [r["slug"] for r in plan["picked"]])
         forced = due_plan(
@@ -61,6 +63,7 @@ class DuePlanTest(TestCase):
             timestamps={},
             now=NOW,
             include_madrid=True,
+            dead_letters=set(),
         )
         self.assertIn("madrid", [r["slug"] for r in forced["picked"]])
 
@@ -71,6 +74,7 @@ class DuePlanTest(TestCase):
             slugs=["mostoles"],
             timestamps={"mostoles": NOW - timedelta(days=1)},
             now=NOW,
+            dead_letters=set(),
         )
         self.assertEqual(plan["picked"], [])
         self.assertEqual(plan["fresh_total"], 1)
@@ -83,5 +87,28 @@ class DuePlanTest(TestCase):
             timestamps={"mostoles": NOW - timedelta(days=1)},
             now=NOW,
             force=True,
+            dead_letters=set(),
         )
         self.assertEqual([r["slug"] for r in plan["picked"]], ["mostoles"])
+
+    def test_dead_letter_is_not_picked_unless_forced(self) -> None:
+        plan = due_plan(
+            interval_days=15,
+            limit=5,
+            slugs=["oviedo", "leon"],
+            timestamps={},
+            now=NOW,
+            dead_letters={"oviedo"},
+        )
+        self.assertEqual([r["slug"] for r in plan["picked"]], ["leon"])
+        self.assertEqual(plan["skipped"][0]["reason"], "dead_letter")
+        forced = due_plan(
+            interval_days=15,
+            limit=5,
+            slugs=["oviedo"],
+            timestamps={},
+            now=NOW,
+            force=True,
+            dead_letters={"oviedo"},
+        )
+        self.assertEqual([r["slug"] for r in forced["picked"]], ["oviedo"])

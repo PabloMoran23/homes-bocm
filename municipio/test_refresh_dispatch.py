@@ -61,10 +61,11 @@ class ReviewTest(TestCase):
         from municipio.orchestrator import RUNNERS, run
         def timeout(manifest):
             raise TimeoutError('legacy timeout')
-        with patch.dict(RUNNERS,{'enrich_geometry':timeout}), patch('municipio.orchestrator.defer_manifest') as defer:
+        with patch.dict(RUNNERS,{'enrich_geometry':timeout}), patch('municipio.orchestrator.park_manifest') as park:
             result=run(self.manifest,'enrich_geometry')
-        self.assertEqual(result['retry'],'next_day')
-        defer.assert_called_once_with(self.manifest)
+        self.assertEqual(result['retry'],'dead_letter')
+        park.assert_called_once()
+        self.assertEqual(park.call_args.kwargs['step'], 'enrich_geometry')
 
     def test_staging_orchestrator_rejects_sync_steps(self):
         from municipio.orchestrator import run

@@ -80,6 +80,18 @@ def _load_timestamps() -> dict[str, datetime]:
         return {}
 
 
+def _load_dead_letters() -> set[str]:
+    try:
+        from ingest import fetch_dead_letter_slugs
+    except Exception:
+        return set()
+    try:
+        return fetch_dead_letter_slugs()
+    except Exception as exc:
+        print(f"aviso schedule: no se pudo leer la dead letter ({exc})", flush=True)
+        return set()
+
+
 def _age_days(ts: datetime | None, *, now: datetime) -> float | None:
     if ts is None:
         return None
@@ -95,11 +107,13 @@ def due_plan(
     timestamps: dict[str, datetime] | None = None,
     now: datetime | None = None,
     force: bool = False,
+    dead_letters: set[str] | None = None,
 ) -> dict[str, Any]:
     """Municipios a refrescar: nunca ingestados primero, luego los más viejos."""
     now = now or datetime.now(UTC)
     available = slugs or list_manifest_slugs()
     stamps = timestamps if timestamps is not None else _load_timestamps()
+    dead = dead_letters if dead_letters is not None else _load_dead_letters()
     due: list[dict[str, Any]] = []
     fresh: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
@@ -113,6 +127,9 @@ def due_plan(
             continue
         if not enabled and not force_madrid:
             skipped.append({"slug": slug, "reason": cfg.get("notes") or "schedule.enabled=false"})
+            continue
+        if slug in dead and not force:
+            skipped.append({"slug": slug, "reason": "dead_letter"})
             continue
         interval = int(cfg.get("interval_days") or interval_days)
         ts = stamps.get(slug)
@@ -232,6 +249,11 @@ def run_due(
         out["results"].append(row)
         if ok:
             out["ok"] += 1
+            try:
+                from ingest import release_dead_letter
+                release_dead_letter(slug)
+            except Exception as exc:
+                print(f"aviso schedule: no se pudo quitar {slug} de la dead letter ({exc})", flush=True)
             print(f"  OK {slug}", flush=True)
         else:
             out["failed"] += 1

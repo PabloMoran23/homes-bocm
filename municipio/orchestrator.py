@@ -7,7 +7,7 @@ from municipio import licencias_runner, proyectos_runner, validate
 from municipio.enrich_geometry import enrich_manifest
 from municipio.geocode import geocode_manifest
 from municipio.manifest import MunicipioManifest, load_manifest
-from municipio.sync_supabase import defer_manifest, sync_manifest
+from municipio.sync_supabase import park_manifest, sync_manifest
 
 Step = str  # licencias_backfill | licencias_update | proyectos_backfill | proyectos_update | enrich_geometry | geocode | sync_supabase | validate | all
 
@@ -65,10 +65,9 @@ def _is_timeout(exc: BaseException) -> bool:
 
 
 def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = False) -> dict[str, Any]:
-    """Run pipeline steps; staging never syncs or changes DB freshness marks.
+    """Run pipeline steps. A failed step parks the municipality and stops the run.
 
-    Staging errors belong to the durable queue. Legacy callers keep their
-    original timeout deferral and sync behavior by default.
+    Staging never syncs and does not write the dead letter.
     """
     steps = _steps_for(step)
     if staging and "sync_supabase" in steps:
@@ -78,8 +77,8 @@ def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = Fals
     for name in steps:
         if name == "sync_supabase" and timed_out:
             results["steps"][name] = {
-                "status": "deferred",
-                "reason": "timeout; se reintenta al día siguiente",
+                "status": "skipped",
+                "reason": "dead_letter",
             }
             continue
         if name == "validate":
@@ -93,15 +92,15 @@ def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = Fals
             results["steps"][name] = RUNNERS[name](manifest)
         except Exception as e:
             results["steps"][name] = {"error": str(e), "type": type(e).__name__}
-            if _is_timeout(e):
-                timed_out = True
+            timed_out = True
+            if not staging:
+                try:
+                    park_manifest(manifest, step=name, error=str(e))
+                except Exception as exc:
+                    results["dead_letter_error"] = str(exc)
+            break
     if timed_out:
-        results["retry"] = "durable_queue" if staging else "next_day"
-        if not staging:
-            try:
-                defer_manifest(manifest)
-            except Exception as exc:
-                results["defer_error"] = str(exc)
+        results["retry"] = "durable_queue" if staging else "dead_letter"
     return results
 
 

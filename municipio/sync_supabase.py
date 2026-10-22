@@ -15,13 +15,13 @@ if str(DB_DIR) not in sys.path:
 from ingest import sync_municipio_output  # noqa: E402
 
 
-def defer_manifest(manifest: MunicipioManifest) -> None:
-    """Timeout: no cuenta como ingest. El cron del día siguiente lo vuelve a coger."""
+def park_manifest(manifest: MunicipioManifest, *, step: str, error: str) -> None:
+    """El municipio agotó los reintentos. No vuelve al cron."""
     if not (os.environ.get("SUPABASE_DB_URL") or os.environ.get("DATABASE_URL")):
         return
-    from ingest import clear_last_ingest_at
+    from ingest import park_dead_letter
 
-    clear_last_ingest_at(manifest.slug)
+    park_dead_letter(manifest.slug, step=step, error=error)
 
 
 def sync_manifest(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict[str, Any]:
