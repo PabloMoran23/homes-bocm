@@ -1216,11 +1216,11 @@ municipios:
 - slug: manresa
   nombre: Manresa
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-22T04:01:08.225116+00:00'
+  last_run: '2026-10-22T04:12:32.299772+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/973
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-22T04:01:08.239942+00:00'
+updated_at: '2026-10-22T04:12:32.306345+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
