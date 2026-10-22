@@ -1461,11 +1461,11 @@ municipios:
 - slug: castelldefels
   nombre: Castelldefels
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-22T18:03:12.388719+00:00'
+  last_run: '2026-10-22T18:08:00.806269+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/980
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-22T18:03:12.402295+00:00'
+updated_at: '2026-10-22T18:08:00.812662+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
