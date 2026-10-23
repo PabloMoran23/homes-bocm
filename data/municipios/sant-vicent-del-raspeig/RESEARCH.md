@@ -54,6 +54,7 @@
 - **Limitaciones:**
   - Tablón y PDFs WordPress sin geometría enlazada por expediente.
   - CQL server-side en ICV no fiable; filtro `cod_ine_mun` en cliente (paginación ~8k features).
+  - Los 6 polígonos ICV con `cod_ine_mun=03132` caen **fuera** del polígono municipal IGN (centroides ~38.61°N); el orquestador los cuarentena (`outside_municipality_scope`). Posible desalineación catálogo ICV vs. límite administrativo.
   - `www.santvicentdelraspeig.es` falla verificación TLS (SAN); usar `raspeig.es`.
 
 ## Limitaciones generales

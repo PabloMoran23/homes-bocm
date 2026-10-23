@@ -167,7 +167,12 @@ def _gml_feature_to_geojson(feat: ET.Element) -> dict[str, Any] | None:
     pos = poly.find(".//gml:posList", _GML_NS)
     if pos is None or not (pos.text or "").strip():
         return None
-    srs = (poly.get("{http://www.opengis.net/gml/3.2}srsName") or "").upper()
+    srs = (
+        poly.get("{http://www.opengis.net/gml/3.2}srsName")
+        or poly.get("{http://www.opengis.net/gml}srsName")
+        or poly.get("srsName")
+        or ""
+    ).upper()
     crs = "EPSG:4326" if "4326" in srs else "EPSG:25830"
     return _gml_poslist_to_polygon(pos.text.strip(), crs=crs)
 
