@@ -1,0 +1,28 @@
+slug: ferrol
+nombre: "Ferrol"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.ferrol.gal"
+  adapter: municipio.adapters.ferrol:FerrolAyuntamientoAdapter
+  config:
+    web_base: "https://www.ferrol.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ferrol/1.0"
+    wayback_fallback: true
+    prefer_wayback: false
+    direct_timeout_s: 12
+    sede_insecure_ssl: true
+    centroid: [43.4833, -8.2333]
+  notes: |
+    Tabla Sede/PlaneamentoUrbanistico + inventario SIOTUGA (INE 15036).
+    Licencias: catálogo trámites Urbanismo (sin tablón de concesiones).
+    Red cloud: timeout a ferrol.gal → fallback archive.org.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
