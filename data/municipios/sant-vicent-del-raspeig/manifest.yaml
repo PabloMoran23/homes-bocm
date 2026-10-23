@@ -1,0 +1,39 @@
+slug: sant-vicent-del-raspeig
+nombre: "Sant Vicent del Raspeig / San Vicente del Raspeig"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://raspeig.es"
+  adapter: municipio.adapters.sant_vicent_del_raspeig:SantVicentDelRaspeigAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-vicent-del-raspeig/1.0"
+    cod_ine_mun: "03132"
+    centroid: [38.3964, -0.5255]
+    sede_base: "https://raspeig.sedipualba.es"
+    fetch_web_seeds: true
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    WordPress Elementor (raspeig.es; www.santvicentdelraspeig.es certificado CN=raspeig.org).
+    Sede sedipualba: tablón RSS + catálogo Urbanismo (área 1216) con trámites URB*.
+    ICV WFS InventarioSuSuz cod_ine_mun 03132 (~6 sectores SUZ/UE con polígono).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
