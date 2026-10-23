@@ -1819,11 +1819,11 @@ municipios:
 - slug: san-bartolome-de-tirajana
   nombre: San Bartolomé de Tirajana
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-23T20:08:00.130044+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/993
   notes: Sin boletín asociado
   comunidad_autonoma: canarias
   provincia: Las Palmas
@@ -92749,7 +92749,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-21T18:02:19.712935+00:00'
+updated_at: '2026-10-23T20:08:00.138301+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
