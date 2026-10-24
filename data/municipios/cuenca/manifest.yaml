@@ -1,0 +1,48 @@
+slug: cuenca
+nombre: "Cuenca"
+provincia: Cuenca
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://gerenciaurbanismo.cuenca.es"
+  adapter: municipio.adapters.cuenca:CuencaAyuntamientoAdapter
+  config:
+    gmu_base: "https://gerenciaurbanismo.cuenca.es"
+    ayto_impresos: "https://ayuntamiento.cuenca.es/impresos-y-formularios"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cuenca/1.0"
+    centroid: [40.0704, -2.1374]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "16078"
+  notes: |
+    Gerencia Municipal de Urbanismo (portal DNN cuenca.es): PGOU/planes especiales PDFs,
+    requisitos tramites (tablaIP), tablón anuncios (vacío en listado). Sede sede.cuenca.es
+    sin tablón urbanístico indexable. Geometría parcial: polígono PGOU vía ArcGIS CLM.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-2.36, 39.82],
+              [-1.69, 39.82],
+              [-1.69, 40.54],
+              [-2.36, 40.54],
+              [-2.36, 39.82],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox municipio Cuenca + ArcGIS CLM COD_INE=16078"
