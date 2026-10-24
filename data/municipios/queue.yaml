@@ -1999,11 +1999,11 @@ municipios:
 - slug: alzira
   nombre: Alzira
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-24T20:26:17.143184+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1005
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Valencia
