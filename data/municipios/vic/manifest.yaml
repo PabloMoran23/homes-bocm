@@ -1,0 +1,26 @@
+slug: vic
+nombre: "Vic"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.vic.cat"
+  adapter: municipio.adapters.vic:VicAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vic/1.0"
+    sede_base: "https://seuelectronica.vic.cat"
+    dossier_url: "https://seuelectronica.vic.cat/dossier.0"
+    board_url: "https://seuelectronica.vic.cat/board"
+    centroid: [41.9301, 2.2542]
+  notes: |
+    Web Plone (vic.cat): taules de planejament vigent (RSS) i en tràmit (HTML).
+    Sede espublico gestiona: tauler d'anuncis (/board) i catàleg de tràmits (/dossier.0).
+    PIU (informaciourbanistica.vic.cat) i Enmapa (guia.vic.cat) sense API enlazable a expedients.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
