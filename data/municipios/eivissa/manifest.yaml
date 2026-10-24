@@ -1,0 +1,29 @@
+slug: eivissa
+nombre: "Eivissa"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://eivissa.sedelectronica.es"
+  adapter: municipio.adapters.eivissa:EivissaAyuntamientoAdapter
+  config:
+    web_base: "https://www.eivissa.es"
+    sede_base: "https://eivissa.sedelectronica.es"
+    board_url: "https://eivissa.sedelectronica.es/board"
+    transparency_urbanismo_url: "https://eivissa.sedelectronica.es/transparency/c43909b2-2063-4114-bcec-56c8a94fd737/"
+    pgou_url: "https://www.eivissa.es/pla-general-de-ordenacio-urbana-2023"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-eivissa/1.0"
+    centroid: [38.9067, 1.4206]
+    bans_max_pages: 4
+  notes: |
+    Liferay www.eivissa.es + sede espublico gestiona.
+    Tablón /board, transparencia normativa urbanística (enlaces BOIB), bans d'urbanisme,
+    página PGOU 2023 con documentos PDF.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
