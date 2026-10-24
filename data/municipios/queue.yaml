@@ -1841,11 +1841,11 @@ municipios:
 - slug: vila-real
   nombre: Vila-real
   bocm_count: 1
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-24T00:15:27.368908+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/995
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
