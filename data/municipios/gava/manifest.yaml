@@ -1,0 +1,29 @@
+slug: gava
+nombre: "Gavà"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.gavaciutat.cat"
+  adapter: municipio.adapters.gava:GavaAyuntamientoAdapter
+  config:
+    web_base: "https://www.gavaciutat.cat"
+    sede_base: "https://eseu.gava.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-gava/1.0"
+    sede_insecure_ssl: true
+    max_crawl_pages: 45
+    centroid: [41.2988, 1.9930]
+    catalogo_url: "https://eseu.gava.cat/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS_CATSERV&lang=CA"
+  notes: |
+    Liferay gavaciutat.cat: planejament en exposició/aprovat, plans parcials/especials, PGM.
+    Sede STA eseu.gava.cat: catálogo CATSERV (trámites licencias/obras); tablón PTS2_TABLON (ordenanzas).
+    Agenda urbana agendaurbana.gava.cat no accesible desde entorno cloud.
+    AMB Expedients INE 08114: 0 features (sin geometría GIS enlazable).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
