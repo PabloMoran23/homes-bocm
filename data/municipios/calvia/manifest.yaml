@@ -1,0 +1,30 @@
+slug: calvia
+nombre: "Calvià"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.calvia.com"
+  adapter: municipio.adapters.calvia:CalviaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-calvia/1.0"
+    web_base: "https://www.calvia.com"
+    centroid: [39.5657, 2.5062]
+    geometry:
+      wfs_url: "https://ide.idelma.cat/geoserver/M011_Calvia/wfs"
+      exp_type_name: "M011_Calvia:M011_EXP_OBRA"
+      sector_type_name: "M011_Calvia:M011_SECTORS_URBANISTICS"
+      page_size: 1000
+      max_features: 2500
+  notes: |
+    Plone calvia.com: RSS planeamiento (tramitación, PGOU revisión, vigente) y anuncios.
+    Licencias de obra: WFS IDELMA M011_EXP_OBRA (~20k puntos georreferenciados).
+    Visores SITMUN (sitmun.idelma.cat) PGOU vigente/tramitación; sin join expediente↔polígono en listados RSS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
