@@ -1961,11 +1961,11 @@ municipios:
 - slug: figueres
   nombre: Figueres
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-24T14:02:28.885437+00:00'
+  last_run: '2026-10-24T14:11:30.687465+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1002
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Girona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-24T14:02:28.898537+00:00'
+updated_at: '2026-10-24T14:11:30.695205+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
