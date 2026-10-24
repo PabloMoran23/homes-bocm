@@ -1,0 +1,31 @@
+slug: merida
+nombre: "Mérida"
+provincia: Badajoz
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://merida.es"
+  adapter: municipio.adapters.merida:MeridaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-merida/1.0"
+    sede_base: "https://sede.merida.es"
+    seed_pages:
+      - "https://merida.es/servicios-municipales/urbanismo/planeamiento-pgou/"
+      - "https://merida.es/servicios-municipales/urbanismo/nuevo-pgm/"
+      - "https://merida.es/servicios-municipales/urbanismo/plan-proteccion-casco-historico/"
+      - "https://merida.es/servicios-municipales/urbanismo/tramites/"
+    catalogo_tramites_url: "https://sede.merida.es/sede/catalogoTramites.do?opcion=detalle&idApl=2&ent_id=2&idioma=1"
+    tramites_url: "https://merida.es/servicios-municipales/urbanismo/tramites/"
+    centroid: [38.9161, -6.3437]
+  notes: |
+    Web WordPress (descargas.merida.es/urbanismo, DOE, acuerdos junta/pleno) +
+    sede STA catálogo de trámites (licencias informativas, sin tablón de concedidas).
+    Tablón electrónico JSON (opc_id=268) devuelve error desde automatización; documentado en RESEARCH.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
