@@ -1574,11 +1574,11 @@ municipios:
 - slug: irun
   nombre: Irun
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-23T06:07:35.422760+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/986
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Gipuzkoa
