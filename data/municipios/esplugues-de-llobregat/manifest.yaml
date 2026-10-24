@@ -1,0 +1,31 @@
+slug: esplugues-de-llobregat
+nombre: "Esplugues de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.esplugues.cat"
+  adapter: municipio.adapters.esplugues_de_llobregat:EspluguesDeLlobregatAyuntamientoAdapter
+  config:
+    web_base: "https://www.esplugues.cat"
+    sede_base: "https://sede.esplugues.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-esplugues-de-llobregat/1.0"
+    insecure_ssl: true
+    wp_categories: [188]
+    wp_max_pages: 3
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      cod_ine_mun: "08077"
+  notes: |
+    WordPress municipal (urbanisme, notícies cat. 188, CIDO Diputació).
+    Sede Indenova (sede.esplugues.cat): STA catálogo + tabló virtual (pestanya 4/8).
+    Visor Enmapa (esplugues.enmapa.com) detrás de Cloudflare; geometría vía AMB Geoportal.
+    AMB Planejament/Expedients layer 3 — INE 08077 (184 expedients amb polígon).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
