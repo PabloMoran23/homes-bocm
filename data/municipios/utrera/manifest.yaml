@@ -1,0 +1,28 @@
+slug: utrera
+nombre: "Utrera"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.utrera.org"
+  adapter: municipio.adapters.utrera:UtreraAyuntamientoAdapter
+  config:
+    wp_base: "https://www.utrera.org"
+    transp_base: "https://transparencia.utrera.org"
+    sede_base: "https://utrera.sedelectronica.es"
+    board_url: "https://utrera.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-utrera/1.0"
+    centroid: [37.185, -5.781]
+  notes: |
+    WordPress Extra (servicios urbanismo + búsqueda PGOU/planes) + transparencia Divi (PGOU 2015)
+    + PDFs PGOU 2002/2015. Sede espublico /board deshabilitada; sede.utrera.org no accesible desde cloud.
+    Licencias: LicytalPub Diputación Sevilla CIF P4109500I. Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
