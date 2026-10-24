@@ -83,6 +83,7 @@ class ContractTest(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self, *args): pass
             def execute(self, *args): pass
+            def fetchall(self): return []
         class Connection:
             def cursor(self): return Cursor()
         from ingest import _PROYECTO_UPSERT_COLS
@@ -104,13 +105,14 @@ class ContractTest(unittest.TestCase):
             def __enter__(self): return self
             def __exit__(self, *args): pass
             def execute(self, *args): pass
+            def fetchall(self): return []
         class Connection:
             def cursor(self): return Cursor()
         with patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"), patch("ingest._classify_saved"):
             self.assertEqual(save_proyectos([row], conn=Connection()), 1)
         sql = execute.call_args_list[0].args[1]
         self.assertIn("fecha_aprob = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'", sql)
-        self.assertIn("ON CONFLICT DO NOTHING", execute.call_args_list[1].args[1])
+        self.assertIn("INSERT INTO homes.proyectos_historico", execute.call_args_list[1].args[1])
 
 
 if __name__ == "__main__":

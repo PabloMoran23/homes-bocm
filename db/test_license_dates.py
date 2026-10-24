@@ -53,6 +53,8 @@ class LicenseDateTests(unittest.TestCase):
         class Cursor:
             def __enter__(self): return self
             def __exit__(self, *_): pass
+            def execute(self, *args): pass
+            def fetchall(self): return []
         class Conn:
             def cursor(self): return Cursor()
         with patch.object(ingest, "ensure_schema"), patch.object(ingest, "_classify_saved"), patch.object(ingest, "_next_licencia_ids", return_value={"same-key": 42}), patch.object(ingest, "execute_values") as execute:

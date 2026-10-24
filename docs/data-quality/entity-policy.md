@@ -40,8 +40,12 @@ forma parte de la versión efectiva. Cambiar reglas de código exige incrementar
    sobre históricos inválidos; si no, el worker registra el fallo y conserva el
    rollout anterior hasta corregir y reintentar. Ejecutar el replay GIS antes de
    la última clasificación H01. Repetir H01 tras otros replay que cambien evidencia.
-6. Los workflows refresh-web-data y refresh-municipios ejecutan
-   este comando automáticamente. Los exportadores tienen preflight obligatorio:
+6. El workflow refresh-web-data ejecuta este comando automáticamente.
+   refresh-municipios clasifica en la ingesta solo los proyectos y licencias
+   nuevos o modificados del lote, sin ejecutar el worker global ni activar un
+   rollout histórico. Los registros idénticos no consumen la cola pendiente.
+   El worker global queda disponible como mantenimiento explícito.
+   Los exportadores tienen preflight obligatorio:
    si el control está inactivo o la versión actual aún no está activa, fallan con
    un mensaje explícito para ejecutar el worker y no publican legado como si
    estuviera controlado. Las RPC y artefactos desplegados previos siguen sirviendo

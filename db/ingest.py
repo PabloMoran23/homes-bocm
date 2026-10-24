@@ -873,6 +873,33 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
 # Licencia
 # ---------------------------------------------------------------------------
 
+def _license_rows_to_write(cur, rows: list[tuple]) -> list[tuple]:
+    """Filter before INSERT: its BEFORE trigger would enqueue even a no-op conflict."""
+    cur.execute(f"""SELECT licencia_key, anio_dataset, fecha_alta, fecha_concesion,
+                   tipo_expediente, objeto, unidad, lat, lng,
+                   raw_json - '_entity_policy' - '_semantic_contract',
+                   inmueble_id, municipio_slug, fuente, id_origen
+            FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)
+            ORDER BY licencia_key FOR UPDATE""", ([row[1] for row in rows],))
+    current = {row[0]: tuple(row[1:]) for row in cur.fetchall()}
+    ready = []
+    for row in rows:
+        previous = current.get(row[1])
+        raw = row[14].adapted
+        raw = {key: value for key, value in raw.items()
+               if key not in ("_entity_policy", "_semantic_contract")}
+        candidate = [row[i] for i in (3, 4, 5, 7, 10, 11, 12, 13)]
+        candidate += [raw, row[2], row[16], row[17], row[18]]
+        # Match the upsert's COALESCE behavior for optional fields.
+        if previous is not None:
+            for index in (3, 4, 5, 9, 12):
+                if candidate[index] is None:
+                    candidate[index] = previous[index]
+        if previous != tuple(candidate):
+            ready.append(row)
+    return ready
+
+
 def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
     ready = [r for r in rows if r and (r.get("id") or r.get("licencia_key") or r.get("id_origen"))]
     if not ready:
@@ -945,10 +972,15 @@ def save_licencias(rows: list[dict[str, Any]], *, conn=None) -> int:
               fuente = EXCLUDED.fuente,
               id_origen = COALESCE(EXCLUDED.id_origen, {SCHEMA}.licencia.id_origen),
               updated_at = EXCLUDED.updated_at
+            RETURNING id
         """
-        execute_values(cur, sql, tuples, page_size=200)
-        _classify_saved(c, "licencia", [str(id_map[k]) for k in keys])
-    return len(tuples)
+        tuples = _license_rows_to_write(cur, tuples)
+        if not tuples:
+            return 0
+        # Clasificar únicamente las filas escritas, incluidas todas las páginas.
+        written = execute_values(cur, sql, tuples, page_size=200, fetch=True)
+        _classify_saved(c, "licencia", [str(row[0]) for row in written])
+    return len(written)
 
 
 def save_inmuebles(rows: list[dict[str, Any]], *, conn=None) -> dict[str, int]:

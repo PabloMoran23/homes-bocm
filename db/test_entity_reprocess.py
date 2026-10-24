@@ -193,6 +193,38 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.scalar("UPDATE homes.proyecto SET updated_at=now(), num_viviendas_max=123 WHERE id='valid' RETURNING id")
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
 
+    def test_municipal_writes_leave_unrelated_backlog_and_identical_rows_untouched(self):
+        self.add("unrelated")
+        self.scalar("INSERT INTO homes.entity_reprocess_queue(entity_table,entity_id) VALUES ('proyecto','unrelated') RETURNING entity_id")
+        record = {"id": "incremental-license", "titulo": "Obras de viviendas",
+                  "expediente": "2026/12", "url": "https://example/12",
+                  "municipio_slug": "madrid", "fuente": "ayuntamiento",
+                  "estado": "concedida", "fecha_concesion": "2026-10-14"}
+        self.assertEqual(save_licencias([record], conn=self.conn), 1)
+        first = self.scalar("SELECT raw_json FROM homes.licencia WHERE licencia_key='incremental-license'")
+        self.assertEqual(first["_entity_policy"]["version"], POLICY_VERSION)
+        # An old timestamp proves a repeat does not execute an UPDATE, even
+        # though the source lacks the classifier's stored active snapshot.
+        self.scalar("UPDATE homes.licencia SET updated_at='2000-01-01' WHERE licencia_key='incremental-license' RETURNING id")
+        self.assertEqual(save_licencias([record], conn=self.conn), 0)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue WHERE entity_table='licencia'"), 0)
+        self.assertEqual(self.scalar("SELECT extract(year FROM updated_at) FROM homes.licencia WHERE licencia_key='incremental-license'"), 2000)
+        self.assertEqual(save_licencias([{**record, "titulo": "Formulario de obras"}], conn=self.conn), 1)
+        self.assertEqual(self.scalar("SELECT raw_json->'_entity_policy'->>'entity_type' FROM homes.licencia WHERE licencia_key='incremental-license'"), "tramite_reutilizable")
+        self.add("municipal-new")
+        self.assertEqual(self.scalar("SELECT array_agg(entity_id) FROM homes.entity_reprocess_queue"), ["unrelated"])
+
+    def test_incremental_license_classification_includes_all_insert_pages(self):
+        rows = [{"id": f"paged-{i}", "titulo": "Obras de viviendas",
+                 "fuente": "ayuntamiento", "municipio_slug": "madrid",
+                 "expediente": f"2026/{i}", "url": f"https://example/{i}"}
+                for i in range(205)]
+        self.assertEqual(save_licencias(rows, conn=self.conn), 205)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia WHERE raw_json->'_entity_policy'->>'version'=%s", (POLICY_VERSION,)), 205)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+        self.assertEqual(save_licencias(rows, conn=self.conn), 0)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+
     def test_licenses_do_not_promote_date_or_foreign_categories(self):
         common = {"titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid"}
         save_licencias([{**common, "id": "request", "fecha": "2026-10-14"},

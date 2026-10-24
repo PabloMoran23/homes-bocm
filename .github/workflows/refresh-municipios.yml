@@ -85,12 +85,5 @@ jobs:
           "${CMD_DUE[@]}"
           "${CMD_RUN[@]}"
 
-      - name: Reprocess municipal semantic contracts
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: python3 db/reprocess_project_semantics.py
-
-      - name: Reclassify changed entities and check activity
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: python3 db/entity_reprocess.py
+      # La ingesta deriva los contratos y clasifica solo los registros escritos
+      # del lote municipal. Los replay históricos se ejecutan por separado.
