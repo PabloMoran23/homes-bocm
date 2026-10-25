@@ -1,0 +1,25 @@
+slug: santurtzi
+nombre: "Santurtzi"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.santurtzi.eus"
+  adapter: municipio.adapters.santurtzi:SanturtziAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santurtzi/1.0"
+    centroid: [43.3283, -3.0315]
+    bizkaia_municipio_id: "82"
+    tablon_max_pages: 6
+  notes: |
+    Portal SharePoint (tablón transparencia: urbanismo y obras) + sede/trámites en santurtzi.eus.
+    Instrumentos de planeamiento vía Registro PUR Diputación Foral (municipio id 82).
+    Licencias: trámites informativos; concesiones en tablón si publicadas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
