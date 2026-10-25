@@ -2151,11 +2151,11 @@ municipios:
 - slug: lloret-de-mar
   nombre: Lloret de Mar
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-25T16:02:58.762247+00:00'
+  last_run: '2026-10-25T16:26:34.762329+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1015
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Girona
