@@ -1,0 +1,49 @@
+slug: puerto-del-rosario
+nombre: "Puerto del Rosario"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.puertodelrosario.org"
+  adapter: municipio.adapters.puerto_del_rosario:PuertoDelRosarioAyuntamientoAdapter
+  config:
+    web_base: "https://www.puertodelrosario.org"
+    transparencia_base: "https://transparencia.puertodelrosario.org"
+    sede_base: "https://puertodelrosario.sedelectronica.es"
+    sitcan_package: planeamiento-urbanistico-de-puerto-del-rosario
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35017/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puerto-del-rosario/1.0"
+    centroid: [28.4993, -13.8657]
+  notes: |
+    WordPress corporativo (SiteGround captcha en CI) + transparencia Drupal + sede espublico.
+    SITCAN planeamiento-urbanistico-de-puerto-del-rosario + GEOBDP Grafcan INE 35017.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-14.2, 28.3],
+              [-13.5, 28.3],
+              [-13.5, 28.8],
+              [-14.2, 28.8],
+              [-14.2, 28.3],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Puerto del Rosario (Fuerteventura)"
