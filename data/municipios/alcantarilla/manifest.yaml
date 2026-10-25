@@ -1,0 +1,34 @@
+slug: alcantarilla
+nombre: "Alcantarilla"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://www.alcantarilla.es"
+  adapter: municipio.adapters.alcantarilla:AlcantarillaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alcantarilla/1.0"
+    web_base: "https://www.alcantarilla.es"
+    sede_base: "https://alcantarilla.sedipualba.es"
+    pgou_url: "https://www.alcantarilla.es/areas/desarrollo-urbano/plan-de-ordenacion-urbana-de-alcantarilla/"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Alcantarilla%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30003"
+    centroid: [37.9692, -1.2171]
+  notes: |
+    WordPress municipal + sede sedipualba (tablón RSS/home) + PGMO/PGOU en SharePoint.
+    Geometría parcial vía WFS planeamiento SITMURCIA (ámbitos por municipio).
+
+licencias:
+  enabled: true
+  notes: Trámites informativos sedipualba (catálogo URBANISMO); sin listado público de concesiones.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
