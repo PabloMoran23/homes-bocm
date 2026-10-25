@@ -1,0 +1,25 @@
+slug: blanes
+nombre: "Blanes"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.blanes.cat"
+  adapter: municipio.adapters.blanes:BlanesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-blanes/1.0"
+    sede_base: "https://seu.blanes.cat"
+    centroid: [41.6744, 2.7904]
+  notes: |
+    Web municipal Lotus Domino (docweb/urbanisme.*, oiapdocs.nsf PDFs).
+    Projectes aprovats + planejament en tràmit. Sede STA (seu.blanes.cat) catálogo
+    de trámites URBANISME. Edictes vía e-Tauler (edictes.blanes.cat SPA).
+    RPUC municipi 17023 (sin API REST pública para scrape).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
