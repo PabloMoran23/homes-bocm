@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DeferredLandingMap } from "@/components/DeferredLandingMap";
@@ -11,6 +12,13 @@ import { loadMadridDashboardStats } from "@/lib/load-madrid-dashboard";
 // Prerender at build, then refresh. A database outage falls back to the
 // checked-in dashboard snapshot instead of failing static generation.
 export const revalidate = 300;
+
+// Solo `alternates`: `withCanonical` también fijaría `openGraph`, y en Next el
+// `openGraph` de la página reemplaza entero al del layout (título, descripción…).
+// metadataBase (layout) resuelve "/" a https://homes-urbanismo.es/.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 function titleCaseDistrito(name: string): string {
   const lower = name.toLowerCase().replace(/_/g, " ");
