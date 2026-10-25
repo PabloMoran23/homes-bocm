@@ -1,0 +1,26 @@
+slug: lloret-de-mar
+nombre: "Lloret de Mar"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.lloret.cat"
+  adapter: municipio.adapters.lloret_de_mar:LloretDeMarAyuntamientoAdapter
+  config:
+    seu_base: "https://seu.lloret.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lloret-de-mar/1.0"
+    categories: [7, 8, 34]
+    max_pages_per_category: 30
+    centroid: [41.6999, 2.8457]
+  notes: |
+    Web corporativa Plone (lloret.cat, secció planejament / exposició pública) +
+    seu electrònica seu.lloret.cat (registre publicacions urbanisme, categories 7/8/34)
+    i catàleg de tràmits tramits.lloret.org (GWT, sense llistat de llicències concedides).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
