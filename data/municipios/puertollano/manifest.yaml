@@ -1,0 +1,54 @@
+slug: puertollano
+nombre: "Puertollano"
+provincia: Ciudad Real
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://puertollano.sedelectronica.es"
+  adapter: municipio.adapters.puertollano:PuertollanoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puertollano/1.0"
+    sede_base: "https://puertollano.sedelectronica.es"
+    web_base: "https://www.puertollano.es"
+    board_url: "https://puertollano.sedelectronica.es/board"
+    dossier_url: "https://puertollano.sedelectronica.es/dossier"
+    transparency_url: "https://puertollano.sedelectronica.es/transparency"
+    obras_csv_url: "https://datosabiertos.puertollano.es/dataset/26778018-9e2b-440c-8f84-d14d96b4ebd7/resource/76b6aec2-b147-42d0-a974-e0fbe58d3588/download/obras.csv"
+    centroid: [38.6862, -4.1073]
+    geometry:
+      kind: arcgis_mapserver
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "13071"
+  notes: |
+    Sede espublico gestiona (tablón /board, trámites /dossier, transparencia).
+    Portal datos abiertos CKAN: conjunto Obras (CSV con expediente y coordenadas).
+    PGOU municipal vía ArcGIS JCCM Planeamiento_Municipal (COD_INE 13071).
+    Gobierno abierto (convocatorias JGL/Pleno PDF) sin API estable; licencias puntuales en orden del día.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-4.30, 38.52],
+              [-3.88, 38.52],
+              [-3.88, 38.74],
+              [-4.30, 38.74],
+              [-4.30, 38.52],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Puertollano + PGOU CLM COD_INE=13071"
