@@ -3,10 +3,12 @@
 #   exit 0 → skip deployment
 #   exit 1 → run build
 #
-# Skip only when git can list every file changed since the last successful
-# deployment and all of them are municipio-pipeline paths. If the previous
-# SHA is missing, that commit is not in the clone, the diff fails, or the
-# diff is empty, deploy.
+# Deploy only when a changed path is under web/, or is a file the production
+# build reads outside web/ (prebuild of `npm run build:public`):
+#   tests/license-date-cases.json  (web/scripts/test-license-dates.mjs)
+#   db/statistics_scope.py         (web/scripts/test-statistics-scope.mjs)
+# Any other diff is a skip. If the previous SHA is missing, that commit is
+# not in the clone, the diff fails, or the diff is empty, deploy.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -78,7 +80,7 @@ fi
 diff_err=$(mktemp)
 trap - ERR
 set +e
-diff_out=$(git diff --name-only "$BEFORE" "$AFTER" 2>"$diff_err")
+diff_out=$(git -c core.quotepath=false diff --name-status --find-renames "$BEFORE" "$AFTER" 2>"$diff_err")
 diff_status=$?
 set -e
 trap on_err ERR
@@ -92,39 +94,37 @@ if [ "$diff_status" -ne 0 ]; then
 fi
 rm -f "$diff_err"
 
-files=()
-while IFS= read -r line || [ -n "$line" ]; do
-  [ -n "$line" ] || continue
-  files+=("$line")
-done <<< "$diff_out"
-
-if [ "${#files[@]}" -eq 0 ]; then
-  deploy "empty diff ${BEFORE}..${AFTER}"
-fi
-
-municipio_only_path() {
+# `git diff --name-only` hides the old path of a rename. A rename out of web/
+# would otherwise look like a docs-only change and skip a build that lost a page.
+affects_build() {
   local f="$1"
   case "$f" in
-    data/municipios/*) return 0 ;;
-    municipio/*) return 0 ;;
-    scripts/post-merge-municipio.sh|scripts/check-municipio-pr-static.sh|scripts/validate-municipio-onboard.sh|scripts/local-merge-municipio-batch.sh) return 0 ;;
-    scripts/ci/municipio_batch.py|scripts/ci/test_municipio_batch.py) return 0 ;;
-    requirements-municipio.txt) return 0 ;;
-    .github/workflows/municipio-post-merge.yml) return 0 ;;
-    docs/automation-onboard-municipio.md|docs/automation-merge-municipio-prs.md|docs/geography-control.md) return 0 ;;
-    tools/review_municipio_backlog.py) return 0 ;;
-  esac
-  case "$f" in
-    docs/municipio-batch*) return 0 ;;
+    web|web/*) return 0 ;;
+    tests/license-date-cases.json|db/statistics_scope.py) return 0 ;;
   esac
   return 1
 }
 
-for f in "${files[@]}"; do
-  if ! municipio_only_path "$f"; then
-    deploy "${f}"
+changed=0
+reason=""
+while IFS=$'\t' read -r status path1 path2 || [ -n "${status:-}" ]; do
+  [ -n "${status:-}" ] || continue
+  changed=$((changed + 1))
+  if [ -z "$reason" ]; then
+    if affects_build "$path1"; then
+      reason=$path1
+    elif [ -n "${path2:-}" ] && affects_build "$path2"; then
+      reason=$path2
+    fi
   fi
-done
+done <<< "$diff_out"
 
-echo "vercel-should-build: skip municipio-only (${#files[@]} files)"
+if [ "$changed" -eq 0 ]; then
+  deploy "empty diff ${BEFORE}..${AFTER}"
+fi
+if [ -n "$reason" ]; then
+  deploy "${reason}"
+fi
+
+echo "vercel-should-build: skip (no changes under web/, ${changed} files)"
 exit 0
