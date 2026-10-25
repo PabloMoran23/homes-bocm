@@ -2129,11 +2129,11 @@ municipios:
 - slug: alcantarilla
   nombre: Alcantarilla
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-25T12:06:36.371938+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1013
   notes: Sin boletín asociado
   comunidad_autonoma: murcia
   provincia: Murcia
