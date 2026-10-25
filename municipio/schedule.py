@@ -10,7 +10,13 @@ Madrid capital se excluye: tiene refresh-web-data.yml.
 
 from __future__ import annotations
 
+import json
+import math
+import multiprocessing
+import os
+import signal
 import sys
+import tempfile
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -25,7 +31,61 @@ if str(DB_DIR) not in sys.path:
 DEFAULT_INTERVAL_DAYS = 15
 DEFAULT_LIMIT = 20
 DEFAULT_STEP = "update"
+DEFAULT_TIMEOUT_SECONDS = 30 * 60
 SKIP_SLUGS = {"madrid"}
+
+
+def _run_worker(slug: str, step: str, result_path: str) -> None:
+    # A separate process group also bounds subprocesses launched by adapters.
+    os.setsid()
+    try:
+        payload = {"result": run(load_manifest(slug), step)}
+    except Exception as exc:
+        payload = {"error": f"{type(exc).__name__}: {exc}"}
+    Path(result_path).write_text(json.dumps(payload, default=str), encoding="utf-8")
+
+
+def _stop_worker(child) -> None:
+    try:
+        os.killpg(child.pid, signal.SIGTERM)
+    except ProcessLookupError:
+        child.terminate()
+    child.join(2)
+    # Kill remaining descendants even if the worker handled SIGTERM and exited.
+    try:
+        os.killpg(child.pid, signal.SIGKILL)
+    except ProcessLookupError:
+        pass
+    if child.is_alive():
+        child.kill()
+    child.join()
+
+
+def _run_bounded(slug: str, step: str, timeout_seconds: float) -> dict[str, Any]:
+    with tempfile.TemporaryDirectory(prefix="municipio-result-") as tmp:
+        result_path = Path(tmp) / "result.json"
+        # The scheduler has no open DB connection here. Fork is supported by
+        # the Linux Actions runner and keeps worker startup inexpensive.
+        child = multiprocessing.get_context("fork").Process(
+            target=_run_worker, args=(slug, step, str(result_path)),
+        )
+        try:
+            child.start()
+            child.join(timeout_seconds)
+            if child.is_alive():
+                _stop_worker(child)
+                raise TimeoutError(f"municipio_timeout: {slug} exceeded {timeout_seconds:g} seconds ({step})")
+            if child.exitcode != 0 or not result_path.is_file():
+                raise RuntimeError(f"municipio_worker_exit: {slug}: {child.exitcode}")
+            payload = json.loads(result_path.read_text(encoding="utf-8"))
+            if "error" in payload:
+                raise RuntimeError(payload["error"])
+            return payload["result"]
+        finally:
+            if child.pid is not None:
+                if child.is_alive():
+                    _stop_worker(child)
+                child.close()
 
 
 def _parse_ts(raw: Any) -> datetime | None:
@@ -187,7 +247,10 @@ def run_due(
     slugs: list[str] | None = None,
     dry_run: bool = False,
     force: bool = False,
+    timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
 ) -> dict[str, Any]:
+    if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
+        raise ValueError("timeout_seconds must be finite and greater than zero")
     plan = due_plan(
         interval_days=interval_days,
         limit=limit,
@@ -211,6 +274,7 @@ def run_due(
         },
         "step": step,
         "dry_run": dry_run,
+        "timeout_seconds": timeout_seconds,
         "results": [],
         "ok": 0,
         "failed": 0,
@@ -223,7 +287,7 @@ def run_due(
         slug = item["slug"]
         print(f"==> schedule {slug}", flush=True)
         try:
-            result = run(load_manifest(slug), step)
+            result = _run_bounded(slug, step, timeout_seconds)
         except Exception as exc:
             row = {
                 "slug": slug,
@@ -231,6 +295,16 @@ def run_due(
                 "error": str(exc),
                 "type": type(exc).__name__,
             }
+            try:
+                from ingest import park_dead_letter
+                park_dead_letter(
+                    slug, step="schedule_timeout" if isinstance(exc, TimeoutError) else step,
+                    error=str(exc),
+                )
+                row["retry"] = "dead_letter"
+            except Exception as park_exc:
+                row["dead_letter_error"] = str(park_exc)
+                print(f"  DLQ FAIL {slug}: {park_exc}", flush=True)
             out["results"].append(row)
             out["failed"] += 1
             print(f"  FAIL {slug}: {exc}", flush=True)

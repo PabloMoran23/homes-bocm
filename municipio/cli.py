@@ -125,6 +125,8 @@ def main(argv: list[str] | None = None) -> int:
             help="Restringir a estos slugs (repetible)",
         )
     run_p.add_argument("--step", default="update", help="Paso del orquestador (default: update)")
+    run_p.add_argument("--timeout-minutes", type=float, default=30,
+                       help="Tiempo máximo por municipio antes de enviarlo a DLQ (default: 30)")
     run_p.add_argument("--dry-run", action="store_true", help="Solo mostrar el lote, no scrapear")
     run_p.add_argument(
         "--force",
@@ -173,6 +175,7 @@ def main(argv: list[str] | None = None) -> int:
                 slugs=slugs,
                 dry_run=args.dry_run,
                 force=args.force,
+                timeout_seconds=args.timeout_minutes * 60,
             )
             print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
             if payload.get("failed"):

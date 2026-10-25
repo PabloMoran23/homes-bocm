@@ -14,6 +14,10 @@ on:
         description: "Municipios por corrida"
         type: string
         default: "20"
+      timeout_minutes:
+        description: "Minutos máximos por municipio antes de enviarlo a DLQ"
+        type: string
+        default: "30"
       slugs:
         description: "Slugs separados por coma (vacío = due-queue automático)"
         type: string
@@ -58,6 +62,7 @@ jobs:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
           INTERVAL_DAYS: ${{ github.event.inputs.interval_days || '15' }}
           LIMIT: ${{ github.event.inputs.limit || '20' }}
+          TIMEOUT_MINUTES: ${{ github.event.inputs.timeout_minutes || '30' }}
           SLUGS: ${{ github.event.inputs.slugs || '' }}
           FORCE: ${{ github.event.inputs.force || 'false' }}
         run: |
@@ -67,7 +72,7 @@ jobs:
             exit 1
           fi
           CMD_DUE=(python3 -m municipio schedule due --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}")
-          CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update)
+          CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update --timeout-minutes "${TIMEOUT_MINUTES}")
           if [ -n "${SLUGS}" ]; then
             IFS=',' read -ra parts <<< "${SLUGS}"
             for slug in "${parts[@]}"; do
