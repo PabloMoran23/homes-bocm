@@ -2264,11 +2264,11 @@ municipios:
 - slug: el-vendrell
   nombre: El Vendrell
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-10-26T10:08:57.740127+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1026
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Tarragona
