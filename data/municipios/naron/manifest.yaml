@@ -1,0 +1,42 @@
+slug: naron
+nombre: "Narón"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.naron.gal"
+  adapter: municipio.adapters.naron:NaronAyuntamientoAdapter
+  config:
+    sede_base: "https://sedeelectronica.naron.es"
+    siotuga_inventario: "https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=15054&lang=es_ES"
+    request_delay_s: 0.35
+    sede_timeout_s: 12
+    user_agent: "poc-bocm-naron/1.0"
+    max_siotuga_plans: 120
+    centroid: [43.4983, -8.1528]
+  notes: |
+    Web corporativa Bootstrap (naron.gal) con PXOM enlazado a SIOTUGA Xunta.
+    Transparencia WordPress (transparencia.naron.gal): normativa urbanística y BOP.
+    Sede OpenSIAC (sedeelectronica.naron.es): tablón y trámites; frecuentes timeouts desde red cloud.
+    Planeamiento inventariado en SIOTUGA INE 15054 (~22 desarrollo + 7 PXOM + histórico).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      crs: EPSG:4326
+      axis_order: xy
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-8.28, 43.43]
+            - [-8.05, 43.43]
+            - [-8.05, 43.56]
+            - [-8.28, 43.56]
+            - [-8.28, 43.43]
