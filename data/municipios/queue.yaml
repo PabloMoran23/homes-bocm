@@ -2303,11 +2303,11 @@ municipios:
 - slug: llucmajor
   nombre: Llucmajor
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-26T12:10:27.666403+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1027
   notes: Sin boletín asociado
   comunidad_autonoma: illes-balears
   provincia: Illes Balears
