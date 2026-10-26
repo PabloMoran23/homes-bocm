@@ -1,0 +1,24 @@
+slug: ripollet
+nombre: "Ripollet"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://seu-e.cat/ca/web/ripollet"
+  adapter: municipio.adapters.ripollet:RipolletAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ripollet/1.0"
+    fetch_timeout_s: 60
+    cod_ine_mun: "08179"
+    centroid: [41.4964, 2.1570]
+  notes: |
+    Seu-e AOC (transparència + catàleg tràmits). Urbanisme i tauler d'edictes en govern obert.
+    Web corporativa www.ripollet.cat (Varnish 503 des de cloud). Visors AMB/MUC/RPUC enllaçats.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
