@@ -2347,9 +2347,9 @@ municipios:
 - slug: naron
   nombre: Narón
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-10-26T20:01:47.242875+00:00'
   last_error: null
   pr_url: null
   notes: Sin boletín asociado
