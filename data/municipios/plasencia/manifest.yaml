@@ -1,0 +1,24 @@
+slug: plasencia
+nombre: "Plasencia"
+provincia: Cáceres
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://www.plasencia.es/web/"
+  adapter: municipio.adapters.plasencia:PlasenciaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.plasencia.es"
+    request_delay_s: 0.35
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-plasencia/1.0"
+    centroid: [40.0310, -6.0884]
+  notes: |
+    Joomla (transparencia/PGM) + sede STA T-Systems (tablón PTS2_TABLON + catálogo CATSERV).
+    Sin visor urbanístico municipal enlazable; geometría vía centroide en manifest.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
