@@ -2325,9 +2325,9 @@ municipios:
 - slug: basauri
   nombre: Basauri
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-10-26T16:30:07.535824+00:00'
   last_error: null
   pr_url: null
   notes: Sin boletín asociado
