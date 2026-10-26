@@ -1,0 +1,25 @@
+slug: igualada
+nombre: "Igualada"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.igualada.cat"
+  adapter: municipio.adapters.igualada:IgualadaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-igualada/1.0"
+    fetch_timeout_s: 90
+    centroid: [41.581, 1.617]
+    tramits_urbanisme_url: "https://tramits.igualada.cat/Ciutadania/TramitsTemes.aspx?IdTema=22"
+  notes: |
+    Web corporativa Plone (CA): secció Urbanisme amb arxius e-tauler (PDFs per projecte/IP).
+    e-Tràmits (tramits.igualada.cat) — tràmits de llicències/obres sense llistat de concessions.
+    Tauler d'edictes a seu-e.cat (Liferay, càrrega dinàmica). RPUC 08102 per metadades expedient.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
