@@ -1,0 +1,30 @@
+slug: antequera
+nombre: "Antequera"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.antequera.es"
+  adapter: municipio.adapters.antequera:AntequeraAyuntamientoAdapter
+  config:
+    web_base: "https://www.antequera.es"
+    sede_base: "https://antequera.sedelectronica.es"
+    board_url: "https://antequera.sedelectronica.es/board/"
+    urbanismo_tablon: "https://www.antequera.es/ayuntamiento/tablon-de-anuncios/Urbanismo/"
+    establec_info: "https://www.antequera.es/ayuntamiento/tablon-de-anuncios/Establecimientos-y-Actividades-Recreativas/Informacion/"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=29015"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-antequera/1.0"
+    centroid: [37.0194, -4.5612]
+  notes: |
+    SAGA Suite: tablón Solr Urbanismo (PROYA) + Establecimientos/Información (APER).
+    PGOU y transparencia en /normativa/. Sede espublico (board) + sede.antequera.es (SWAL).
+    SITUADIFUSION Junta de Andalucía (INE 29015).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
