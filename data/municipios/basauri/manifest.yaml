@@ -1,0 +1,31 @@
+slug: basauri
+nombre: "Basauri"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.basauri.eus"
+  adapter: municipio.adapters.basauri:BasauriAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-basauri/1.0 (+urbanismo Drupal+sede STA)"
+    catalogo_url: "https://sede.basauri.eus/sede/index.php?catalogo=1&idioma=es"
+    tablon_url: "https://karpeta.basauri.eus/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=BAS_TABLON&lang=es"
+    karpeta_insecure_ssl: true
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/PX_Bilbao_Metropolitano_inf/MapServer"
+    planeamiento_layer_ids: [119, 120, 121, 122, 134]
+    geometry_enrich: true
+    centroid_lat: 43.2367
+    centroid_lng: -2.8872
+  notes: |
+    Portal corporativo Drupal 10 (gestión urbanística, PGOU, planeamiento PDFs, convenios).
+    Sede sede.basauri.eus: catálogo de trámites (iframe sede/index.php?catalogo=1).
+    Tablón de anuncios en karpeta.basauri.eus (STA); puede requerir insecure_ssl.
+    Geometría: intento vía capas PGOU Diputación Foral (geo.bizkaia ArcGIS); sin visor municipal enlazado a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
