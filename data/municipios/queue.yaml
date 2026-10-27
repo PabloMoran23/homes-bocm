@@ -2404,7 +2404,7 @@ municipios:
   attempts: 1
   last_run: '2026-10-27T04:02:27.807407+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1035
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Gipuzkoa
