@@ -1,0 +1,28 @@
+slug: montcada-i-reixac
+nombre: "Montcada i Reixac"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.montcada.cat"
+  adapter: municipio.adapters.montcada_i_reixac:MontcadaIReixacAyuntamientoAdapter
+  config:
+    web_base: "https://www.montcada.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-montcada-i-reixac/1.0"
+    max_crawl_pages: 80
+    tauler_url: "https://tauler.seu.cat/inici.do?idens=812520002"
+    ine_mun: "08124"
+    centroid: [41.4836, 2.1874]
+  notes: |
+    CMS municipal: /ajuntament/planejament, /ajuntament/gestio-urbanistica, /temes/urbanisme.
+    PDFs en /media/repository/publicacions/ i anuncis_i_edictes.
+    e-TAULER (AOC) idens=812520002 — edictes sense API pública.
+    Visors referencia: MUC (08124), RPUC, geoportal AMB (sense join per expedient).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
