@@ -1,0 +1,27 @@
+slug: ecija
+nombre: "Écija"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.ecija.es"
+  adapter: municipio.adapters.ecija:EcijaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ecija.es"
+    sede_base: "https://ecija.sedelectronica.es"
+    board_url: "https://ecija.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ecija/1.0"
+    centroid: [37.5422, -5.0826]
+  notes: |
+    WordPress ecija.es (noticias ATU/PEPRICCHA/UPR) + sede espublico gestiona
+    (tablón /board/, transparencia urbanismo, catálogo /dossier) + impresos modelos I-xx.
+    SITUA Junta (INE 41038). IDE municipal Kosmo/WMS en IP pública sin join a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
