@@ -1,0 +1,27 @@
+slug: don-benito
+nombre: "Don Benito"
+provincia: Badajoz
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://sede.donbenito.es"
+  adapter: municipio.adapters.don_benito:DonBenitoAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.donbenito.es"
+    web_base: "https://www.donbenito.es"
+    edictos_rss: "https://sede.donbenito.es/publico/sindicacion/edictos/RSS"
+    ordenanzas_rss: "https://sede.donbenito.es/publico/sindicacion/ordenanzas/RSS"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-don-benito/1.0"
+    centroid: [38.9563, -5.8616]
+  notes: |
+    Sede Galileo GIYS: edictos RSS/HTML, catálogo URBANISMO, informe urbanístico.
+    Sin listado público de licencias concedidas; trámites informativos.
+    IDE Extremadura WMS regional sin join a expediente municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
