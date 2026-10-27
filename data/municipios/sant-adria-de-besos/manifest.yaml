@@ -1,0 +1,46 @@
+slug: sant-adria-de-besos
+nombre: "Sant Adrià de Besòs"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.sant-adria.cat"
+  adapter: municipio.adapters.sant_adria_de_besos:SantAdriaDeBesosAyuntamientoAdapter
+  config:
+    web_base: "https://www.sant-adria.cat"
+    sede_base: "https://seu.sant-adria.net"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-adria-de-besos/1.0"
+    max_crawl_pages: 40
+    centroid: [41.326, 2.115]
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      arcgis_sectors_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Sectors/MapServer/0"
+      cod_ine_mun: "08169"
+  notes: |
+    Plone: secció Territori → Urbanisme (IP planejament, publicitat, convenis).
+    Sede STA TAO (seu.sant-adria.net): catálogo CATSERV; tablón PTS2_TABLON vacío.
+    Seu-e AOC: classificació urbanisme (tràmits informatius).
+    Geometría: AMB Planejament/Expedients (CODI_INE 08169).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.08, 41.31]
+            - [2.22, 41.31]
+            - [2.22, 41.36]
+            - [2.08, 41.36]
+            - [2.08, 41.31]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado término municipal (IGN intermitente en cloud)"
