@@ -2606,13 +2606,13 @@ municipios:
   nombre: la Vila Joiosa / Villajoyosa
   bocm_count: 0
   status: done
-  attempts: 0
-  last_run: null
+  attempts: 1
+  last_run: '2026-10-27T22:25:35.732915+00:00'
   last_error: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1043
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Alicante
-  pr_url: null
 - slug: tomelloso
   nombre: Tomelloso
   bocm_count: 0
