@@ -1,0 +1,46 @@
+slug: aguilas
+nombre: "Águilas"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://aguilas.sedelectronica.es"
+  adapter: municipio.adapters.aguilas:AguilasAyuntamientoAdapter
+  config:
+    web_base: "https://www.ayuntamientodeaguilas.org"
+    sede_base: "https://aguilas.sedelectronica.es"
+    board_url: "https://aguilas.sedelectronica.es/board"
+    procedimientos_url: "https://www.ayuntamientodeaguilas.org/procedimientos"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-aguilas/1.0"
+    centroid: [37.4068, -1.5825]
+    transparencia_seeds:
+      - "https://transparencia.ayuntamientodeaguilas.org/obras-publicas-y-urbanismo/"
+      - "https://transparencia.ayuntamientodeaguilas.org/obras-publicas-y-urbanismo/plan-general-de-ordenacion-urbana/"
+      - "https://transparencia.ayuntamientodeaguilas.org/obras-publicas-y-urbanismo/convenios-urbanisticos/"
+  notes: |
+    Sede espublico gestiona: tablón /board (edictos BORM, recepción urbanización).
+    Web municipal: catálogo procedimientos filtro OBRAS.
+    Transparencia WP: PGOU, convenios urbanísticos (PDFs enlazados).
+    Sin visor municipal enlazable; WFS CARM plu_ze_37 sin features para Águilas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-1.72, 37.32], [-1.42, 37.32], [-1.42, 37.50], [-1.72, 37.50], [-1.72, 37.32]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
