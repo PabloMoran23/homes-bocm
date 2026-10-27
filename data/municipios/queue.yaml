@@ -2605,14 +2605,14 @@ municipios:
 - slug: la-vila-joiosa
   nombre: la Vila Joiosa / Villajoyosa
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
   last_run: null
   last_error: null
-  pr_url: null
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Alicante
+  pr_url: null
 - slug: tomelloso
   nombre: Tomelloso
   bocm_count: 0

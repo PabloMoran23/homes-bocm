@@ -1,0 +1,25 @@
+slug: la-vila-joiosa
+nombre: "la Vila Joiosa / Villajoyosa"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.villajoyosa.com"
+  adapter: municipio.adapters.la_vila_joiosa:LaVilaJoiosaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-vila-joiosa/1.0"
+    sede_base: "https://sede.villajoyosa.com"
+    sede_insecure_ssl: true
+    centroid: [38.5051, -0.2329]
+  notes: |
+    Web municipal WordPress (noticias urbanismo) + sede STA (T-Systems PTS2_TABLON).
+    Catálogo de trámites STA (CATSERV) vacío. Registro planeamiento GVA 03139.
+    geometry_status: unavailable (sin visor expediente ni WFS enlazable).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
