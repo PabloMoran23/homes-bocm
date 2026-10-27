@@ -1,0 +1,25 @@
+slug: vilagarcia-de-arousa
+nombre: "Vilagarcía de Arousa"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://sede.vilagarcia.gal"
+  adapter: municipio.adapters.vilagarcia_de_arousa:VilagarciaDeArousaAyuntamientoAdapter
+  config:
+    web_base: "https://vilagarcia.es"
+    sede_base: "https://sede.vilagarcia.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vilagarcia-de-arousa/1.0"
+    max_siotuga_desarrollo: 45
+    centroid: [42.5953, -8.7647]
+  notes: |
+    Sede Cividas/PrimeFaces (tablón anuncios + transparencia planeamiento + catálogo).
+    Planeamiento vigente vía SIOTUGA (INE 36060). Sin visor GIS municipal enlazable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
