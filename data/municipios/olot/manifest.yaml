@@ -1,0 +1,27 @@
+slug: olot
+nombre: "Olot"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.olot.cat"
+  adapter: municipio.adapters.olot:OlotAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olot/1.0"
+    web_base: "https://www.olot.cat"
+    tramits_urbanisme_url: "https://www.olot.cat/tramits/cataleg-de-tramits?filtre_221=S&cat_221=151"
+    enrich_details: true
+    max_detail_fetches: 80
+    centroid: [42.181, 2.490]
+  notes: |
+    CMS iDisc (d2web): llistats de figures de planejament (pln369/371/373) amb fitxes i PDF /files/doc*.
+    Tràmits: catàleg filtrat Urbanisme (cat 151) + OAC tramits.olot.cat + e-TAULER seu.cat.
+    Geoportal Enmapa (sig.olot.cat) sense enllaç a expedient — geometria no automatizable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
