@@ -1,6 +1,6 @@
 slug: mieres
 nombre: "Mieres"
-provincia: Mieres
+provincia: Asturias
 comunidad_autonoma: asturias
 
 portal:
@@ -15,6 +15,7 @@ portal:
     wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
     wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
     wfs_municipio_id: "33037"
+    max_rpgur_pages: 10
   notes: |
     WordPress mieres.es (urbanismo, PGOU PDFs) + sede STA TAO (tablón dataset_PTS2_TABLON).
     Registro regional RPGUR — 64 instrumentos vigentes concejo MIERES (idConcejo=37).
@@ -27,3 +28,17 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      crs: EPSG:4326
+      axis_order: xy
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-5.98, 43.12]
+            - [-5.62, 43.12]
+            - [-5.62, 43.38]
+            - [-5.98, 43.38]
+            - [-5.98, 43.12]

@@ -1,7 +1,7 @@
 # Mieres — investigación portal ayuntamiento
 
-Municipio: **Mieres** (`mieres`) — Asturias / provincia Mieres  
-Boletín: BOPA (`boletin_source_id: bopa`, 3 entradas históricas)
+Municipio: **Mieres** (`mieres`; cola duplicada `mieres-33037` sin boletín, mismo término INE 33037) — Asturias  
+Boletín: BOPA (`boletin_source_id: bopa`, entradas históricas en slug `mieres`)
 
 ## URLs base y páginas semilla
 
@@ -17,7 +17,7 @@ Boletín: BOPA (`boletin_source_id: bopa`, 3 entradas históricas)
 | Detalle instrumento | `gestionConsulta?method=retrieve&idInstrumento=N` | Metadatos, fechas BOPA, enlace visor |
 | Visor urbanístico | http://visorrpgur.asturias.es:8092/Visor_Urbanismo_RPGUR/Visor/VisorRPGUR.php?id_instrumento=1487 | Mapa interactivo (HTML/JS) |
 | Sede electrónica | https://sedeelectronica.ayto-mieres.es | STA TAO — tablón (`PTS2_TABLON`), trámites |
-| Tablón anuncios | `.../doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON` | `dataset_PTS2_TABLON` embebido (~87 anuncios) |
+| Tablón anuncios | `.../doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON` | `dataset_PTS2_TABLON` embebido (~87 anuncios vigentes) |
 
 ## Cómo se listan expedientes / proyectos
 
