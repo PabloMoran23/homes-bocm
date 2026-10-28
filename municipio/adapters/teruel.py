@@ -53,7 +53,6 @@ RE_PDF_ANCHOR = re.compile(
 )
 RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
-RE_BOP = re.compile(r"(?i)bop[^0-9]*(\d{1,2})[-/](\d{1,2})[-/](\d{4})|(\d{1,2})[-/](\d{1,2})[-/](\d{4})")
 
 
 def _stable_id(kind: str, key: str) -> str:
@@ -79,16 +78,6 @@ def _fecha_from_text(text: str) -> str | None:
     if years:
         return f"{max(years)}-01-01"
     return None
-
-
-def _xml_date(obj: dict[str, Any] | None) -> str | None:
-    if not obj or not isinstance(obj, dict):
-        return None
-    try:
-        y, mo, d = int(obj["year"]), int(obj["month"]), int(obj["day"])
-        return datetime(y, mo, d).strftime("%Y-%m-%d")
-    except (KeyError, TypeError, ValueError):
-        return None
 
 
 def _clean_title(text: str) -> str:
