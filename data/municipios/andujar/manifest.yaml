@@ -1,0 +1,34 @@
+slug: andujar
+nombre: "Andújar"
+provincia: Jaén
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.andujar.es"
+  adapter: municipio.adapters.andujar:AndujarAyuntamientoAdapter
+  config:
+    web_base: "https://www.andujar.es"
+    sede_base: "https://sede.andujar.es"
+    request_delay_s: 0.35
+    portal_timeout_s: 25
+    insecure_ssl: true
+    user_agent: "poc-bocm-andujar/1.0"
+    centroid: [38.0392, -4.0507]
+    web_seeds:
+      - "https://www.andujar.es/areas-municipales/servicios-infraestructuras-y-urbanismo"
+      - "https://www.andujar.es/areas-municipales/servicios-infraestructuras-y-urbanismo?tx_news_pi1=266"
+    sede_seeds:
+      - "https://sede.andujar.es/"
+      - "https://sede.andujar.es/Editors/DlgTramiteSede.aspx"
+  notes: |
+    Web TYPO3 (área Servicios, Infraestructuras y Urbanismo) + sede ASP.NET propia.
+    Planeamiento publicado en BOJA (PGOU, sector NS-2) y consulta SITUADIFUSION.
+    Licencias vía catálogo de trámites sede (sin tablón espublico público scrapeable).
+    geometry_status: partial (VITUA regional; sin visor municipal ArcGIS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
