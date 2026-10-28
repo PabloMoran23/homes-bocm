@@ -1,0 +1,33 @@
+slug: azuqueca-de-henares
+nombre: "Azuqueca de Henares"
+provincia: Guadalajara
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.azuqueca.es"
+  adapter: municipio.adapters.azuqueca_de_henares:AzuquecaDeHenaresAyuntamientoAdapter
+  config:
+    web_base: "https://www.azuqueca.es"
+    sede_base: "https://azuqueca.sedelectronica.es"
+    board_url: "https://azuqueca.sedelectronica.es/board"
+    dossier_url: "https://azuqueca.sedelectronica.es/dossier"
+    seed_urls:
+      - "https://www.azuqueca.es/servicios/urbanismo/planeamiento"
+      - "https://www.azuqueca.es/servicios/urbanismo/gestion-y-ejecucion"
+      - "https://www.azuqueca.es/servicios/urbanismo/informacion-de-interes"
+    licencias_page: "https://www.azuqueca.es/servicios/urbanismo/licencias-declaraciones-y-comunicaciones"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-azuqueca-de-henares/1.0"
+    centroid: [40.5686, -3.2625]
+  notes: |
+    CMS Liferay: POM, planes parciales SUR-R*, estudios de detalle y modificaciones en /documents PDF.
+    Sede espublico gestiona: tablón /board y catálogo /dossier.
+    Trámites de licencia como páginas informativas en portal (/-/licencia-...).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
