@@ -1,0 +1,22 @@
+# Alias de cola — ejecutar pipeline con slug `mieres` (mismo adapter).
+slug: mieres-33037
+nombre: "Mieres"
+provincia: Asturias
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.mieres.es"
+  adapter: municipio.adapters.mieres:MieresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mieres/1.0"
+    canonical_slug: mieres
+  notes: |
+    Duplicado de cola CCAA sin boletín. Ver data/municipios/mieres/manifest.yaml.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento

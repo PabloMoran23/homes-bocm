@@ -56,8 +56,13 @@ RE_FECHA_DMY = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
 RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 RE_EXPEDIENTE = re.compile(r"\b(C-\d{4}/\d{2,4}|\d{4,6}[A-Z]?/\d{4})\b")
 RE_DOC_LINK = re.compile(
-    r'href="((?:https?://(?:www\.)?mieres\.es)?/wp-content/uploads/[^"]+\.pdf[^"]*)"',
+    r'href="((?:https?://(?:www\.)?mieres\.es)?(?:/wp-content/uploads|/documents)[^"]+\.pdf[^"]*)"',
     re.I,
+)
+RE_NOISE = re.compile(
+    r"(?i)(proceso selectivo|oposici[oó]n|plaza de|empleo p[uú]blico|"
+    r"plantilla de personal|bolsa de|subvenci[oó]n|padrones? de|"
+    r"calendario fiscal|jurado de mieres|elecciones sindicales)",
 )
 RE_RPGUR_ROW = re.compile(
     r'idInstrumento=(\d+).*?<td>\s*([^<]*?)\s*</td>\s*<td>\s*([^<]*?)\s*</td>\s*'
@@ -497,6 +502,8 @@ class MieresAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _tablon_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
         titulo = row.get("titulo") or ""
+        if RE_NOISE.search(titulo):
+            return None
         if not RE_PROYECTO.search(titulo) and not RE_LICENCIA.search(titulo):
             return None
         if RE_LICENCIA.search(titulo) and not RE_PROYECTO.search(titulo):
