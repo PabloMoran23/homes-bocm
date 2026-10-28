@@ -2774,11 +2774,11 @@ municipios:
 - slug: cieza
   nombre: Cieza
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-28T22:00:52.672984+00:00'
+  last_run: '2026-10-28T22:13:31.018547+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/compare/main...automation/municipio-cieza
   notes: Sin boletín asociado
   comunidad_autonoma: murcia
   provincia: Murcia
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-28T22:00:52.691212+00:00'
+updated_at: '2026-10-28T22:13:31.026309+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
