@@ -1,0 +1,38 @@
+slug: yecla
+nombre: "Yecla"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://yecla.sedipualba.es"
+  adapter: municipio.adapters.yecla:YeclaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-yecla/1.0"
+    sede_base: "https://yecla.sedipualba.es"
+    web_base: "https://yecla.es"
+    tablon_url: "https://yecla.sedipualba.es/tablondeanuncios/default.aspx?pub=false"
+    tablon_rss: "https://yecla.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    catalogo_urbanismo: "https://yecla.sedipualba.es/catalogoservicios.aspx?area=589&ambito=1"
+    pgou_page: "https://yecla.es/obras-y-urbanismo/plan-general-de-ordenacion-urbana/"
+    ov_forms_url: "https://ov.yecla.es/WebOFICINAVIRTUAL/Vista/Paginas/WebFormTramite.aspx?T=35"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Yecla%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30073"
+    centroid: [38.6132, -1.1148]
+  notes: |
+    Sede Sedipualba (tablón HTML + RSS) + WordPress yecla.es (PGOU PDFs) + OV formularios.
+    Geometría parcial vía WFS SITMURCIA plu_ze_37_mun_uso_suelo (ámbitos PGOU Yecla).
+
+licencias:
+  enabled: true
+  notes: Tablón PMH/BOII + páginas informativas OV/sede (sin registro público de concesiones).
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
