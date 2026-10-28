@@ -1,0 +1,27 @@
+slug: cambrils
+nombre: "Cambrils"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.cambrils.cat"
+  adapter: municipio.adapters.cambrils:CambrilsAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cambrils/1.0"
+    tramits_base: "https://tramits.cambrils.cat"
+    tramits_timeout_s: 12
+    fetch_timeout_s: 90
+    centroid: [41.0742, 1.0529]
+  notes: |
+    Web Plone (cambrils.cat): carpeta «Informació pública» d'urbanisme (paginació Plone),
+    POUM-21 (PDFs) i tràmits/llicències (formularis PDF + enllaços OAC).
+    Seu: tramits.cambrils.cat (OAC/AOC) — tauler d'anuncis enllaça al catàleg i consulta d'expedients.
+    Geoportal mapes.cambrils.cat (visor municipal; sense join automàtic a expedients del web).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
