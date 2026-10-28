@@ -1,0 +1,39 @@
+slug: cieza
+nombre: "Cieza"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://cieza.sedipualba.es"
+  adapter: municipio.adapters.cieza:CiezaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cieza/1.0"
+    sede_base: "https://cieza.sedipualba.es"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Cieza%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30019"
+    centroid: [38.239, -1.419]
+  notes: |
+    Sede Sedipualba: tablón RSS/HTML, catálogo trámites (Obras 1147, Planeamiento 1159).
+    Web www.cieza.es no accesible desde el entorno del agente (timeout); sede como fuente principal.
+    Geometría parcial: WFS SITMURCIA plu_ze_37_mun_uso_suelo filtrado Municipio=Cieza.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    axis_order: xy
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-1.595, 38.161], [-1.319, 38.161], [-1.319, 38.376], [-1.595, 38.376], [-1.595, 38.161]]
+      crs: EPSG:4326
+      axis_order: xy
