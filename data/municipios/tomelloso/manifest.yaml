@@ -1,0 +1,26 @@
+slug: tomelloso
+nombre: "Tomelloso"
+provincia: Ciudad Real
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.tomelloso.es"
+  adapter: municipio.adapters.tomelloso:TomellosoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tomelloso/1.0"
+    insecure_ssl: true
+    etablon_entidad: "037"
+    centroid: [39.1575, -3.0211]
+  notes: |
+    Webflow: información urbanística y gobierno abierto (w-dyn-item + PDFs CDN).
+    Tablón Diputación Ciudad Real eTablon (entidad 037) para edictos recientes.
+    Sede: catálogo de trámites de licencias (informativo, sin concesiones publicadas).
+    Visor ArcGIS municipal (PGOU); sin enlace expediente→geometría.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
