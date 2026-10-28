@@ -2702,11 +2702,11 @@ municipios:
 - slug: yecla
   nombre: Yecla
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-28T08:03:16.541065+00:00'
+  last_run: '2026-10-28T08:06:26.244529+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1048
   notes: Sin boletín asociado
   comunidad_autonoma: murcia
   provincia: Murcia
