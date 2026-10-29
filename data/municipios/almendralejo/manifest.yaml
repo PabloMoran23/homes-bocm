@@ -1,0 +1,41 @@
+slug: almendralejo
+nombre: "Almendralejo"
+provincia: Badajoz
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://www.almendralejo.es"
+  adapter: municipio.adapters.almendralejo:AlmendralejoAyuntamientoAdapter
+  config:
+    sede_base: "https://almendralejo.sedelectronica.es"
+    wfs_base: "https://mapas.almendralejo.es/geoserver/ows"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-almendralejo/1.0"
+    centroid: [38.6845, -6.4065]
+    transparency_urls:
+      - "https://almendralejo.sedelectronica.es/transparency/7acc26a6-c6e6-4bb1-81e0-52583f315bf4/"
+      - "https://almendralejo.sedelectronica.es/transparency/4c518d06-0b9d-49ba-a2ad-30d98ace7e59/"
+  notes: |
+    Web PHP corporativa (concejalía urbanismo) + sede espublico gestiona (tablón /board,
+    catálogo /dossier, transparencia actas) + geoportal Enmapa (GeoServer WFS).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-6.55, 38.64], [-6.28, 38.64], [-6.28, 38.76], [-6.55, 38.76], [-6.55, 38.64]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
