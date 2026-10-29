@@ -2946,11 +2946,11 @@ municipios:
 - slug: castro-urdiales
   nombre: Castro-Urdiales
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-29T18:05:13.830464+00:00'
+  last_run: '2026-10-29T18:09:34.071380+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1063
   notes: Sin boletín asociado
   comunidad_autonoma: cantabria
   provincia: Cantabria
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-29T18:05:13.847250+00:00'
+updated_at: '2026-10-29T18:09:34.077985+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
