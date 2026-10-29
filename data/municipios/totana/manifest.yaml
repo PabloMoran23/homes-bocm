@@ -1,0 +1,31 @@
+slug: totana
+nombre: "Totana"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://totana.sedelectronica.es"
+  adapter: municipio.adapters.totana:TotanaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-totana/1.0"
+    web_base: "https://www.totana.es"
+    sede_base: "https://totana.sedelectronica.es"
+    board_url: "https://totana.sedelectronica.es/board"
+    rss_urbanismo: "https://www.totana.es/noticiasrss.asp?area=1"
+    transparency_url: "https://totana.sedelectronica.es/transparency"
+    cod_ine: "30039"
+    centroid: [37.7692, -1.5023]
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Totana%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+  notes: |
+    Web municipal ASP (totana.es) + sede espublico gestiona (tablón /board, transparencia urbanismo).
+    RSS área Urbanismo (noticiasrss.asp?area=1). Consulta expedientes requiere login.
+    WFS SITMURCIA plu_ze_37 sin polígonos para Totana (0 features); geometría vía centroide municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
