@@ -1,0 +1,42 @@
+slug: salt
+nombre: "Salt"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.viladesalt.cat"
+  adapter: municipio.adapters.salt:SaltAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-salt/1.0"
+    fetch_timeout_s: 45
+    cod_ine_mun: "17155"
+    centroid: [41.974, 2.790]
+    idens: "1715570005"
+  notes: |
+    Web corporativa WordPress Avada (viladesalt.cat): planejament en tràmit, derivat vigent,
+    convenis, suspensió llicències (seccions h2 + enllaços BPM / PDF / e-Tauler).
+    Seu-e (AOC): catàleg tràmits urbanisme + formularis OB* llicències/comunicats d'obres.
+    Visor planejament: mapes.salt.cat (SPA; sovint inaccessible des de xarxa cloud).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.730, 41.945]
+            - [2.850, 41.945]
+            - [2.850, 42.005]
+            - [2.730, 42.005]
+            - [2.730, 41.945]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado municipio Salt (Girona)"
