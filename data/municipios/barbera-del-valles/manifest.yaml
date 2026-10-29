@@ -1,0 +1,42 @@
+slug: barbera-del-valles
+nombre: "Barberà del Vallès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.bdv.cat"
+  adapter: municipio.adapters.barbera_del_valles:BarberaDelVallesAyuntamientoAdapter
+  config:
+    web_base: "https://www.bdv.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-barbera-del-valles/1.0"
+    licencia_tramites_url: "https://www.bdv.cat/es/tramites/urbanismo-y-obras"
+    centroid: [41.5119, 2.1246]
+  notes: |
+    Web Drupal 7 (bdv.cat): hub planeamiento-y-gestion-urbanistica + sitemap de actuaciones urbanísticas.
+    Sede eAdministració (bdv.eadministracio.cat) y seu-e.cat (Liferay) para trámites telemáticos.
+    RPUC/MUC Gencat (INE 08252) como referencia de expedientes y cartografía supramunicipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - - [2.075, 41.485]
+          - [2.155, 41.485]
+          - [2.155, 41.545]
+          - [2.075, 41.545]
+          - [2.075, 41.485]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado término municipal (MUC/RPUC 08252; visor sin API por expediente)"

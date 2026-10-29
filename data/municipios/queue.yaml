@@ -527,11 +527,6 @@ municipios:
   nombre: Santander
   bocm_count: 0
   status: done
-  attempts: 1
-  last_run: '2026-10-19T00:02:04.459988+00:00'
-  last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/918
-  notes: Sin boletín asociado
   attempts: 0
   last_run: null
   last_error: null
@@ -566,7 +561,7 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: "2026-10-19T06:10:00+00:00"
+  last_run: '2026-10-19T06:10:00+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/921
   notes: Sin boletín asociado
@@ -710,7 +705,7 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: "2026-10-19T22:08:26+00:00"
+  last_run: '2026-10-19T22:08:26+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/929
   notes: Sin boletín asociado
@@ -1018,7 +1013,7 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: "2026-10-21T04:19:09+00:00"
+  last_run: '2026-10-21T04:19:09+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/947
   notes: Sin boletín asociado
@@ -1096,7 +1091,7 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: "2026-10-21T08:15:00+00:00"
+  last_run: '2026-10-21T08:15:00+00:00'
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/949
   notes: Sin boletín asociado
@@ -2884,9 +2879,9 @@ municipios:
 - slug: barbera-del-valles
   nombre: Barberà del Vallès
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: in_progress
+  attempts: 1
+  last_run: '2026-10-29T16:01:42.768463+00:00'
   last_error: null
   pr_url: null
   notes: Sin boletín asociado
@@ -92749,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-21T18:02:19.712935+00:00'
+updated_at: '2026-10-29T16:01:42.784044+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
