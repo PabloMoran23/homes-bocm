@@ -1,0 +1,38 @@
+slug: calafell
+nombre: "Calafell"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://calafell.cat"
+  adapter: municipio.adapters.calafell:CalafellAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-calafell/1.0"
+    cod_ine_mun: "43037"
+    centroid: [41.196, 1.571]
+  notes: |
+    Drupal calafell.cat: registre de gestió urbanística i planejament en tràmit (expand-box + PDFs).
+    Transparència seu-e (normativa, mapa interactiu). RPUC/MUC Gencat (43037). Licencias: tràmits seu-e.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [1.540, 41.130]
+            - [1.690, 41.130]
+            - [1.690, 41.240]
+            - [1.540, 41.240]
+            - [1.540, 41.130]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado costa Tarragona (Calafell)"
