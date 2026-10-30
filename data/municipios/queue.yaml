@@ -2993,11 +2993,11 @@ municipios:
 - slug: illescas
   nombre: Illescas
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-30T08:04:25.544792+00:00'
+  last_run: '2026-10-30T08:18:17.545420+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1066
   notes: Sin boletín asociado
   comunidad_autonoma: castilla-mancha
   provincia: Toledo
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-30T08:04:25.557665+00:00'
+updated_at: '2026-10-30T08:18:17.551982+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
