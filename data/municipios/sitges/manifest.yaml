@@ -1,0 +1,27 @@
+slug: sitges
+nombre: "Sitges"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.sitges.cat"
+  adapter: municipio.adapters.sitges:SitgesAyuntamientoAdapter
+  config:
+    seu_base: "https://seu.sitges.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sitges/1.0"
+    max_pages: 12
+    page_size: 10
+    categories: [235, 236, 234, 233, 20, 24]
+    centroid: [41.2354, 1.8114]
+  notes: |
+    Registre de publicacions urbanisme (seu.sitges.cat, mòdul urbanismeCategoriaPublic),
+    darreres publicacions (/registrePublic/ultims), tauler d'anuncis (categoria Urbanisme),
+    referències MUC/RPUC Generalitat (municipi INE 08270).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
