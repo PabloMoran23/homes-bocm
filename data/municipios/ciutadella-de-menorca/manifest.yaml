@@ -1,0 +1,30 @@
+slug: ciutadella-de-menorca
+nombre: "Ciutadella de Menorca"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.ajciutadella.org"
+  adapter: municipio.adapters.ciutadella_de_menorca:CiutadellaDeMenorcaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ajciutadella.org"
+    carpeta_base: "https://www.carpetaciutadana.org/ciutadella"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ciutadella-de-menorca/1.0"
+    centroid: [40.0021, 3.8383]
+    geometry:
+      wfs_url: "https://ide.cime.es/geoserver/urbanisme/wfs"
+      type_name: "urbanisme:or015pod_gestio_zofs"
+      max_features: 250
+  notes: |
+    Web municipal IIS/DevExpress (Contingut.aspx, Tauler/edictesX.aspx TIPO=02).
+    Carpeta ciutadana (carpetaciutadana.org/ciutadella) espejo del tauler y trámites.
+    Trámites urbanismo: GesServeis/Tramits.aspx?IDSERVEI=22.
+    Geometría partial: WFS IDE CIME capa POD Ciutadella àmbits gestió (sin enlace expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
