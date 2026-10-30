@@ -1,0 +1,30 @@
+slug: leioa
+nombre: Leioa
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.leioa.net"
+  adapter: municipio.adapters.leioa:LeioaAyuntamientoAdapter
+  config:
+    sede_base: "https://udaletxean.leioa.eus"
+    transp_base: "https://leioazabalik.leioa.net"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-leioa/1.0"
+    centroid_lat: 43.3289
+    centroid_lon: -2.9885
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/PX_Bilbao_Metropolitano_inf/MapServer"
+    planeamiento_layer_ids: [100, 120]
+    geometry_enrich: true
+    geometry_max_rows: 5
+  notes: |
+    Sede STA (T-Systems): tablón dataset_PTS_TABLON + catálogo CATSERV.
+    Portal transparencia Liferay: tabla HTML expedientes urbanismo en IP.
+    PGOU y planos en leioazabalik.leioa.net.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
