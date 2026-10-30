@@ -3029,11 +3029,11 @@ municipios:
 - slug: leioa
   nombre: Leioa
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-30T12:02:42.655788+00:00'
+  last_run: '2026-10-30T12:22:08.269748+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1068
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Bizkaia
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-30T12:02:42.671813+00:00'
+updated_at: '2026-10-30T12:22:08.276915+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
