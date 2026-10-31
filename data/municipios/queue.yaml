@@ -3137,11 +3137,11 @@ municipios:
 - slug: alcazar-de-san-juan
   nombre: Alcázar de San Juan
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-31T02:01:57.433701+00:00'
+  last_run: '2026-10-31T02:07:44.450304+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1075
   notes: Sin boletín asociado
   comunidad_autonoma: castilla-mancha
   provincia: Ciudad Real
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-31T02:01:57.448337+00:00'
+updated_at: '2026-10-31T02:07:44.460610+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
