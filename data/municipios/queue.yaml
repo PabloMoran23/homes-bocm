@@ -3259,11 +3259,11 @@ municipios:
 - slug: hellin
   nombre: Hellín
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-31T14:01:28.090078+00:00'
+  last_run: '2026-10-31T14:06:08.955879+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1081
   notes: Sin boletín asociado
   comunidad_autonoma: castilla-mancha
   provincia: Albacete
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-31T14:01:28.108138+00:00'
+updated_at: '2026-10-31T14:06:08.962542+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
