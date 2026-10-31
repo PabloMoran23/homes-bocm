@@ -1,0 +1,45 @@
+slug: salou
+nombre: "Salou"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.salou.cat"
+  adapter: municipio.adapters.salou:SalouAyuntamientoAdapter
+  config:
+    web_base: "https://www.salou.cat"
+    sede_base: "https://seu.salou.cat/siac"
+    tablon_url: "https://seu.salou.cat/siac/Tablon.aspx"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-salou/1.0"
+    cod_ine_mun: "43148"
+    max_plone_pages: 45
+    enrich_tablon: false
+    centroid: [41.076, 1.141]
+  notes: |
+    Web Plone (minisite Urbanisme i planejament) + sede SIAC (Tablon.aspx, Procedimientos.aspx,
+    Publicaciones.aspx?t=ET). Sin listado público de concesiones de licencia con coords.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - - [1.108, 41.045]
+          - [1.175, 41.045]
+          - [1.175, 41.115]
+          - [1.108, 41.115]
+          - [1.108, 41.045]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado término municipal Salou (INE 43148)"
