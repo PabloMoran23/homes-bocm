@@ -1,0 +1,28 @@
+slug: culleredo
+nombre: "Culleredo"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://sedeelectronica.culleredo.es"
+  adapter: municipio.adapters.culleredo:CulleredoAyuntamientoAdapter
+  config:
+    web_base: "https://www.culleredo.es"
+    sede_catalog: "https://sede.culleredo.es"
+    sede_opensiac: "https://sedeelectronica.culleredo.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-culleredo/1.0"
+    insecure_ssl: true
+    max_siotuga_desarrollo: 120
+    centroid: [43.2878, -8.3896]
+  notes: |
+    Web Drupal (urbanredes, nodos 8162–8164) + sede Sedipualba (catálogo URB.*).
+    Certificado SSL sedeelectronica/sede.culleredo requiere insecure_ssl.
+    Planeamiento inventariado en SIOTUGA (INE 15031). Tablón OpenSIAC sin infopublica activa.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
