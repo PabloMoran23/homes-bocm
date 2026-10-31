@@ -1,0 +1,45 @@
+slug: mao
+nombre: "Maó"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.ajmao.org"
+  adapter: municipio.adapters.mao:MaoAyuntamientoAdapter
+  config:
+    web_base: "https://www.ajmao.org"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mao/1.0"
+    centroid: [39.8886, 4.2614]
+    geometry:
+      kind: ide_cime_wfs
+      wfs_urbanisme_url: "https://ide.cime.es/geoserver/urbanisme/wfs"
+      wfs_parcel_url: "https://ide.cime.es/geoserver2/base_referencia/wfs"
+      solurba_type: "urbanisme:or032pgo_solurba_su"
+      parcel_type: "base_referencia:ca007ins_parcela"
+      municipio_ine: "07032"
+  notes: |
+    Web municipal ajmao.org (ASP.NET + DevExpress tablón edictesx.aspx).
+    Urbanismo: Publicacions/Area.aspx?ID=29 + PGOU 2012 + gesserveis trámites.
+    Carpeta ciutadana (carpetaciutadana.org/mao) para consulta expedientes autenticada.
+    IDE Menorca (ide.cime.es): WFS PGOU or032pgo_solurba_su + parcelas catastro ca007ins_parcela.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[3.95, 39.82], [4.38, 39.82], [4.38, 40.06], [3.95, 40.06], [3.95, 39.82]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
