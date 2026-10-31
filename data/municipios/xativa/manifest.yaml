@@ -1,0 +1,29 @@
+slug: xativa
+nombre: "Xàtiva"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.xativa.es"
+  adapter: municipio.adapters.xativa:XativaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-xativa/1.0"
+    centroid: [38.9866, -0.5225]
+    sede_base: "https://xativa.sedelectronica.es"
+    board_url: "https://xativa.sedelectronica.es/board"
+    insecure_ssl: true
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      cod_ine_mun: "46245"
+  notes: |
+    Web municipal (Drupal) + sede espublico gestiona (/board, /dossier).
+    Visor gvSIG Online público. Geometría parcial vía ICV GVA WFS (cod_ine_mun=46245).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
