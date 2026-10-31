@@ -3123,11 +3123,11 @@ municipios:
 - slug: xirivella
   nombre: Xirivella
   bocm_count: 1
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-10-31T00:05:15.865076+00:00'
+  last_run: '2026-10-31T00:34:07.007757+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1074
   notes: ''
   boletin_source_id: dogv
   comunidad_autonoma: comunitat-valenciana
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-10-31T00:05:15.899672+00:00'
+updated_at: '2026-10-31T00:34:07.020161+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
