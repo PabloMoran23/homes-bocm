@@ -1,0 +1,52 @@
+slug: alcazar-de-san-juan
+nombre: "Alcázar de San Juan"
+provincia: Ciudad Real
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://alcazardesanjuan.es"
+  adapter: municipio.adapters.alcazar_de_san_juan:AlcazarDeSanJuanAyuntamientoAdapter
+  config:
+    web_base: "https://alcazardesanjuan.es"
+    sede_base: "https://sede.alcazardesanjuan.es"
+    tablon_url: "https://sede.alcazardesanjuan.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS_TABLON"
+    catalogo_url: "https://sede.alcazardesanjuan.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO"
+    seed_pages:
+      - "https://alcazardesanjuan.es/ordenacion-territorial-y-urbanistica/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alcazar-de-san-juan/1.0"
+    centroid: [39.3022, -3.2637]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "13005"
+  notes: |
+    Portal WordPress (transparencia urbanismo + PDFs PGOU/estudios de detalle).
+    Sede STA T-Systems/TAO: tablón PTS_TABLON (dataset embebido) + catálogo CATSERV.
+    Geometría parcial: polígono PGOU municipal vía ArcGIS CLM (sin enlace parcela/expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.37, 39.10],
+              [-3.09, 39.10],
+              [-3.09, 39.48],
+              [-3.37, 39.48],
+              [-3.37, 39.10],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox PGOU CLM COD_INE=13005 (geoservicios.castillalamancha.es)"
