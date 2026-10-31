@@ -1,0 +1,41 @@
+slug: xirivella
+nombre: Xirivella
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: https://www.xirivella.es
+  adapter: municipio.adapters.xirivella:XirivellaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: poc-bocm-xirivella/1.0
+    centroid: [39.465, -0.416]
+    cod_ine_mun: "46248"
+    wfs_max_startindex: 2400
+    wfs_as_proyectos: false
+    fetch_web_seeds: false
+    sede_base: https://sede.xirivella.es
+    geometry:
+      kind: icv_wfs
+      wfs_url: https://terramapas.icv.gva.es/0702_Planeamiento
+      type_name: ms:InventarioSuSuz
+  notes: |
+    Drupal 11 (portalesmunicipales) + sede Sedipualb@ sede.xirivella.es
+    (tablón RSS, catálogo urbanismo área 1614) + transparencia Governalia.
+    ICV WFS InventarioSuSuz cod_ine_mun 46110 (geometría parcial por sector).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
