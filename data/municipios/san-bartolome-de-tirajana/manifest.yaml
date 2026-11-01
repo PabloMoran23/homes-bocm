@@ -1,0 +1,27 @@
+slug: san-bartolome-de-tirajana
+nombre: "San Bartolomé de Tirajana"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.maspalomas.com"
+  adapter: municipio.adapters.san_bartolome_de_tirajana:SanBartolomeDeTirajanaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.maspalomas.com"
+    edictos_rss: "https://sede.maspalomas.com/publico/sindicacion/edictos/RSS"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-bartolome-de-tirajana/1.0"
+    centroid: [27.923, -15.573]
+  notes: |
+    Joomla: tablón exposición pública (PDFs por expediente PGOU/PAMU/planes parciales).
+    Sede Galileo GIYS: PGOU 1994/0550 (PLANGRAL), visor territorio (informe urbanístico, cexp),
+    edictos RSS, trámites CPOINST/CPPUOEE. eadmin: memorias PGOU PGOUSBT01-05.
+    Sin listado público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
