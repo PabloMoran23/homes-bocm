@@ -1,0 +1,36 @@
+slug: torrelavega
+nombre: "Torrelavega"
+provincia: Cantabria
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://torrelavega.es"
+  adapter: municipio.adapters.torrelavega:TorrelavegaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torrelavega/1.0"
+    wp_base: "https://torrelavega.es"
+    sede_base: "https://sede.torrelavega.es"
+    pgou_base: "https://www.pgou-torrelavega.es"
+    urbanismo_url: "https://torrelavega.es/servicios-al-ciudadano/urbanismo/"
+    catalogo_url: "https://sede.torrelavega.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO"
+    cod_ine: "39087"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    centroid: [43.3503, -4.0479]
+  notes: |
+    WordPress ayuntamiento (urbanismo → PGOU + sede STA).
+    Portal PGOU dedicado (noticias + documentos PDF revisión PGOU).
+    Sede STA: catálogo CATSERV (trámites URB_*); tablón PTS2_TABLON sin dataset embebido (carga AJAX).
+    Geometría partial: SIUCAN WFS Cantabria (Urbanismo:Sectores, INE 39087).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
