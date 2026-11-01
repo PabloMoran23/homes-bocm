@@ -1,0 +1,42 @@
+slug: sant-pere-de-ribes
+nombre: "Sant Pere de Ribes"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.santperederibes.cat"
+  adapter: municipio.adapters.sant_pere_de_ribes:SantPereDeRibesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-pere-de-ribes/1.0"
+    insecure_ssl: true
+    fetch_timeout_s: 45
+    cod_ine_mun: "08231"
+    centroid: [41.2615, 1.7740]
+    max_doc_rows_per_page: 40
+  notes: |
+    Web Liferay (informació urbanística, gestió/projectes, documents /documents/…).
+    Govern obert seu-e.cat (AOC transparència) + sede seuelectronica.santperederibes.cat.
+    RPUC/MUC Generalitat (08231). Certificado SSL del dominio principal inválido en algunos entornos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [1.715, 41.235]
+            - [1.825, 41.235]
+            - [1.825, 41.295]
+            - [1.715, 41.295]
+            - [1.715, 41.235]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Garraf (08231 Sant Pere de Ribes)"
