@@ -1,0 +1,31 @@
+slug: santa-fe
+nombre: "Santa Fe"
+provincia: "Santa Fe (Granada)"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "http://www.santafe.es"
+  adapter: municipio.adapters.santa_fe:SantaFeAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-fe/1.0"
+    web_base: "http://www.santafe.es"
+    sede_base: "https://santafe.sedelectronica.es"
+    board_url: "https://santafe.sedelectronica.es/board/"
+    planeamiento_url: "http://www.santafe.es/index.php?g=1&c=2&c2=&f1=contenidos&s1=see&f2=&s2=&ob=&sp=fd758a562efe887ea5300b37463fe9e3&spp=767729668d7e514416a282aeaa988187"
+    formularios_url: "http://www.santafe.es/index.php?g=1&c=2&c2=&f1=contenidos&s1=see&f2=&s2=&ob=&spp=04a26d0be3e8c1ef3fd08330825579"
+    ine_municipio: "18175"
+    centroid: [37.1894, -3.7181]
+    insecure_ssl: true
+  notes: |
+    Web municipal Artico Estudio (PHP) + sede espublico gestiona (tablón /board/).
+    Planeamiento: NNSS 1998 + adaptación LOUA (PDFs en web).
+    Geometría partial: IDE Dip. Granada (ArcGIS) documentado; coords vía geocode (centroid manifest).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
