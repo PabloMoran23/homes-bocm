@@ -1,0 +1,53 @@
+slug: hellin
+nombre: "Hellín"
+provincia: Albacete
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://hellin.sedipualba.es"
+  adapter: municipio.adapters.hellin:HellinAyuntamientoAdapter
+  config:
+    sede_base: "https://hellin.sedipualba.es"
+    web_base: "https://www.hellin.es"
+    tablon_rss: "https://hellin.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://hellin.sedipualba.es/tablondeanuncios/default.aspx"
+    eadmin_tablon: "https://eadmin.dipualba.es/tablondeanuncios/default.aspx?entidad=02037"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-hellin/1.0"
+    insecure_ssl: true
+    centroid: [38.5106, -1.6972]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "02037"
+  notes: |
+    Web oficial Joomla (www.hellin.es; certificado SSL caducado — insecure_ssl).
+    Sede Sedipualba hellin.sedipualba.es: tablón RSS/HTML + catálogo trámites (área Urbanismo).
+    Enlace legacy eAdmin Diputación Albacete (entidad 02037) redirige a sede municipal.
+    Geometría parcial: polígono PGOU/POM vía ArcGIS CLM (COD_INE 02037); sin visor expediente-parcela.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-1.92, 38.28],
+              [-1.44, 38.28],
+              [-1.44, 38.72],
+              [-1.92, 38.72],
+              [-1.92, 38.28],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Hellín (Albacete) + PGOU CLM COD_INE=02037"
