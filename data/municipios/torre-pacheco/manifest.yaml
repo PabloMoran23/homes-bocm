@@ -1,0 +1,36 @@
+slug: torre-pacheco
+nombre: "Torre-Pacheco"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://sede.torrepacheco.es"
+  adapter: municipio.adapters.torre_pacheco:TorrePachecoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torre-pacheco/1.0"
+    sede_insecure_ssl: true
+    sede_base: "https://sede.torrepacheco.es"
+    web_base: "https://www.torrepacheco.es"
+    transparencia_base: "https://transparencia.torrepacheco.es"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Torre%20Pacheco%27&count=500&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30037"
+    centroid: [37.7439, -0.9538]
+  notes: |
+    Tablón y catálogo STA (T-Systems) en sede.torrepacheco.es (TLS cadena incompleta → insecure_ssl).
+    Web corporativa torrepacheco.es puede bloquear IPs de cloud (F5 503); transparencia.torrepacheco.es accesible.
+    Geometría parcial vía WFS SITMURCIA (clasificación suelo por ámbito, ~200 polígonos).
+
+licencias:
+  enabled: true
+  notes: Tablón STA (edictos licencia/IP) + trámites catálogo CATSERV urbanísticos.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
