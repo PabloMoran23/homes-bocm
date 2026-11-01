@@ -1,0 +1,32 @@
+slug: olmedo
+nombre: "Olmedo"
+provincia: "Olmedo (Valladolid)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://olmedo.sedelectronica.es"
+  adapter: municipio.adapters.olmedo:OlmedoAyuntamientoAdapter
+  config:
+    sede_base: "https://olmedo.sedelectronica.es"
+    planpublica_provincia: 47
+    planpublica_municipio: 104
+    ine_code: "47104"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Olmedo"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=47104"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=47&municipio=104"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=47&municipio=104"
+    dossier_url: "https://olmedo.sedelectronica.es/dossier/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olmedo/1.0 (+urbanismo research)"
+    centroid: [41.2878, -4.6889]
+  notes: |
+    Portal Diputación Valladolid redirige a sede espublico. Planeamiento en PlanPublica JCyL (municipio 104)
+    y geometría en IDECyL WFS (c_mun=47104). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
