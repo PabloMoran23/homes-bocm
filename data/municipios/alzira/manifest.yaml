@@ -1,0 +1,27 @@
+slug: alzira
+nombre: "Alzira"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://alzira.es"
+  adapter: municipio.adapters.alzira:AlziraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alzira/1.0"
+    centroid: [39.1511, -0.4360]
+    cod_ine_mun: "46017"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    WordPress alzira.es (REST categorías urbanisme/planejament) + sede inDenova
+    (tablón edictos JS) + gvSIG Online planeamiento + ICV WFS parcial (46017).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
