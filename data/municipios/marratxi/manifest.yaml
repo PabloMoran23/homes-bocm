@@ -1,0 +1,27 @@
+slug: marratxi
+nombre: "Marratxí"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.marratxi.es"
+  adapter: municipio.adapters.marratxi:MarratxiAyuntamientoAdapter
+  config:
+    wp_base: "https://www.marratxi.es"
+    info_base: "https://info.marratxi.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-marratxi/1.0"
+    wp_max_pages: 35
+    centroid: [39.641, 2.753]
+  notes: |
+    WordPress Avada + portal info.marratxi.es (FAQ urbanisme).
+    Normativa municipal con modelos de llicències (PDF) y cédula urbanística.
+    Sede espublico (marratxi.sedelectronica.es) indeterminada — sin tablón público.
+    IDELMA M043: capas PGOU/annex sin exp_absis (sin geometría de expedientes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
