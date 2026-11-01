@@ -3436,11 +3436,11 @@ municipios:
 - slug: san-andres-del-rabanedo
   nombre: San Andrés del Rabanedo
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-01T14:04:13.633477+00:00'
+  last_run: '2026-11-01T14:07:18.021269+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1092
   notes: Sin boletín asociado
   comunidad_autonoma: castilla-y-leon
   provincia: León
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-01T14:04:13.656530+00:00'
+updated_at: '2026-11-01T14:07:18.028193+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
