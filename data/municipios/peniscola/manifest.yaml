@@ -1,0 +1,29 @@
+slug: peniscola
+nombre: "Peñíscola"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.peniscola.org"
+  adapter: municipio.adapters.peniscola:PeniscolaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-peniscola/1.0"
+    sede_insecure_ssl: true
+    cod_ine_mun: "12079"
+    web_base: "https://www.peniscola.org"
+    sede_base: "https://sede.peniscola.org"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Web corporativa vgcomunicacion (peniscola.org): sección Urbanismo, PGOU, planes y tablón.
+    Sede STA TAO (sede.peniscola.org): tablón PTS2_TABLON (KEY=all) + catálogo CATALOGO.
+    ICV WFS Zonificacion (cod_ine_mun=12079) para geometría parcial.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
