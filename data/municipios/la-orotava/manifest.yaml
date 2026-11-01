@@ -1,0 +1,29 @@
+slug: la-orotava
+nombre: "La Orotava"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "http://www.laorotava.es"
+  adapter: municipio.adapters.la_orotava:LaOrotavaAyuntamientoAdapter
+  config:
+    web_base: "http://www.laorotava.es"
+    sede_base: "https://laorotava.sedelectronica.es"
+    board_url: "https://laorotava.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-la-orotava
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38026/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-orotava/1.0"
+    insecure_ssl: true
+    centroid: [28.3906, -16.5231]
+  notes: |
+    Drupal 10 (planeamiento en información pública, planes parciales/especiales) +
+    sede espublico (tablón /board; expedientes con certificado) +
+    SITCAN CKAN planeamiento-urbanistico-de-la-orotava + GEOBDP Grafcan (INE 38026).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
