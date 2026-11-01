@@ -1,0 +1,36 @@
+slug: san-pedro-del-pinatar
+nombre: "San Pedro del Pinatar"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://www.sanpedrodelpinatar.es"
+  adapter: municipio.adapters.san_pedro_del_pinatar:SanPedroDelPinatarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-pedro-del-pinatar/1.0"
+    web_base: "https://www.sanpedrodelpinatar.es"
+    sede_base: "https://sede.sanpedrodelpinatar.es"
+    tablon_url: "https://sede.sanpedrodelpinatar.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON&KEY=all"
+    catalogo_url: "https://sede.sanpedrodelpinatar.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO"
+    insecure_ssl: true
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27San%20Pedro%20del%20Pinatar%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30075"
+    centroid: [37.8356, -0.7910]
+  notes: |
+    Web WordPress (urbanismo/PGOU PDFs) + sede STA T-Systems (tablón JSON embebido + catálogo PTS_PC_012).
+    Geometría parcial vía WFS planeamiento SITMURCIA (campo Ambito).
+
+licencias:
+  enabled: true
+  notes: Formularios web + trámites catálogo urbanismo; tablón con pocas entradas urbanísticas recientes.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
