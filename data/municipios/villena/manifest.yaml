@@ -1,0 +1,47 @@
+slug: villena
+nombre: "Villena"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://sede.villena.es"
+  adapter: municipio.adapters.villena:VillenaAyuntamientoAdapter
+  config:
+    web_base: "https://www.villena.es"
+    sede_base: "https://sede.villena.es"
+    tablon_rss: "https://sede.villena.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://sede.villena.es/tablondeanuncios/"
+    catalogo_urb_url: "https://sede.villena.es/catalogoservicios.aspx?ambito=&area=1915"
+    urbanismo_url: "https://www.villena.es/urbanismo-licencias-de-obras-disciplina-urbanistica-y-patrimonio/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villena/1.0"
+    centroid: [38.6374, -0.8657]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      suz_type_name: InventarioSuSuz
+      zon_type_name: Planeamiento.Zonificacion
+      cod_ine_mun: "03140"
+      suz_max_startindex: 0
+      zon_offsets: [0, 2000, 4000]
+  notes: |
+    WordPress www.villena.es + sede Sedipualba (sede.villena.es) tablón RSS.
+    Documentación PGOU en página de urbanismo. Geometría: ICV WFS (cod_ine_mun=03140).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-1.05, 38.52], [-0.72, 38.52], [-0.72, 38.78], [-1.05, 38.78], [-1.05, 38.52]]
+      crs: EPSG:4326
+      axis_order: xy
