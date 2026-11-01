@@ -1,0 +1,28 @@
+slug: puntallana
+nombre: "Puntallana"
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://puntallana.es"
+  adapter: municipio.adapters.puntallana:PuntallanaAyuntamientoAdapter
+  config:
+    web_base: "https://puntallana.es"
+    sede_base: "https://puntallana.sedelectronica.es"
+    board_url: "https://puntallana.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-puntallana
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38030/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puntallana/1.0"
+    centroid: [28.726, -17.767]
+  notes: |
+    WordPress (puntallana.es) + sede espublico gestiona (/board, /transparency, /dossier)
+    + SITCAN CKAN planeamiento-urbanistico-de-puntallana + GEOBDP Grafcan (INE 38030, La Palma).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
