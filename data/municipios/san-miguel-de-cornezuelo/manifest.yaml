@@ -1,0 +1,36 @@
+slug: san-miguel-de-cornezuelo
+nombre: "San Miguel de Cornezuelo"
+provincia: "San Miguel de Cornezuelo (Valle de Manzanedo, Burgos)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://valledemanzanedo.burgos.es"
+  adapter: municipio.adapters.san_miguel_de_cornezuelo:SanMiguelDeCornezueloAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-miguel-de-cornezuelo/1.0"
+    drupal_base: "https://valledemanzanedo.burgos.es"
+    sede_base: "https://valledemanzanedo.sedelectronica.es"
+    plai_provincia: 9
+    plai_municipio: 409
+    wfs_municipio: "Valle de Manzanedo"
+    centroid: [43.0206, -3.7686]
+    insecure_ssl: true
+  notes: |
+    Localidad del municipio de Valle de Manzanedo (INE 09409). Portal Drupal Toools
+    Diputación Burgos + sede espublico + PLAI/PLAU JCyL (mun. 409) + IDECyL WFS.
+
+geocode:
+  official_boundary_municipio: "Valle de Manzanedo"
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
