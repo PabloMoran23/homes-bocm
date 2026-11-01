@@ -1,0 +1,41 @@
+slug: sant-feliu-de-llobregat
+nombre: "Sant Feliu de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.santfeliu.cat"
+  adapter: municipio.adapters.sant_feliu_de_llobregat:SantFeliuDeLlobregatAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-feliu-de-llobregat/1.0"
+    centroid: [41.3832, 2.0521]
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      cod_ine_mun: "08211"
+  notes: |
+    Seu electrònica JSF (widgetportal): notícies de planejament vigent/en tràmit i projectes d'obres.
+    Catàleg de tràmits (caseid) per llicències d'obra; e-Tauler seu.cat per edictes.
+    Geometria: capa AMB Expedients (CODI_INE 08211) + visor municipal GeoServer (sense join automàtic).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.010, 41.355]
+            - [2.085, 41.355]
+            - [2.085, 41.400]
+            - [2.010, 41.400]
+            - [2.010, 41.355]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado (IGN nameunit sin resultado para Sant Feliu de Llobregat)"
