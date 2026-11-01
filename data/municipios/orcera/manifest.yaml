@@ -1,0 +1,35 @@
+slug: orcera
+nombre: "Orcera"
+provincia: Orcera (Jaén)
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://orcera.sedelectronica.es"
+  adapter: municipio.adapters.orcera:OrceraAyuntamientoAdapter
+  config:
+    sede_base: "https://orcera.sedelectronica.es"
+    web_base: "https://orcera.es"
+    board_url: "https://orcera.sedelectronica.es/board/"
+    transparency_url: "https://orcera.sedelectronica.es/transparency/"
+    citizen_planeamiento_url: "https://orcera.sedelectronica.es/citizen-service/7492b460-b570-4f30-8682-65421df87993"
+    citizen_pbom_url: "https://orcera.sedelectronica.es/citizen-service/e8532594-6733-451a-bdf7-038653f71f3f"
+    citizen_dr_url: "https://orcera.sedelectronica.es/citizen-service/db64886c-26af-41c9-a644-b41c9a1da9b9"
+    gobierno_url: "https://orcera.es/gobierno-y-transparencia/"
+    formularios_url: "https://orcera.es/formularios/"
+    licencia_obras_pdf: "https://admin.dipujaen.es/export/sites/default/galerias/galeriaDescargas/municipios/Orcera/pdf/solicitud_obras.pdf"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-orcera/1.0"
+    centroid: [38.3178, -2.6540]
+  notes: |
+    WordPress (UpSolution) orcera.es + sede espublico gestiona.
+    Tablón /board/, transparencia con PBOM, Planeamiento (NNSS 1987) y DR.
+    Sin visor GIS público; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
