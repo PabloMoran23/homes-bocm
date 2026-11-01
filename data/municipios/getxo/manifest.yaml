@@ -1,0 +1,26 @@
+slug: getxo
+nombre: "Getxo"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.getxo.eus"
+  adapter: municipio.adapters.getxo:GetxoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-getxo/1.0"
+    tablon_base: "https://eudala.getxo.eus/WEBTablon"
+    centroid_lat: 43.3564
+    centroid_lng: -3.0086
+  notes: |
+    PGOU y modificaciones en www.getxo.eus/DocsPublic/urbanismo.
+    Edictos urbanismo en e-Tablón (eudala.getxo.eus/WEBTablon, opt=URBA).
+    Sin listado público de licencias concedidas; guía de trámites + tablón.
+    Visor Lizmap PGOU (eudala2) sin enlace a expedientes individuales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
