@@ -1,0 +1,31 @@
+slug: roquetas-de-mar
+nombre: "Roquetas de Mar"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.roquetasdemar.es"
+  adapter: municipio.adapters.roquetas_de_mar:RoquetasDeMarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-roquetas-de-mar/1.0"
+    web_base: "https://www.roquetasdemar.es"
+    sede_base: "https://sede.aytoroquetas.org"
+    tablon_opc_id: "268"
+    cod_ine: "04079"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=04079"
+    geoportal_url: "https://app.dipalme.org/visor-gis/"
+    centroid: [36.7642, -2.6145]
+  notes: |
+    Web corporativa Drupal 11 (ordenación urbanística / PGOU PDFs).
+    Sede Insuit sede.aytoroquetas.org — tablón electrónico JSON (TAB2 edictos, TAB3 bandos).
+    Geometría parcial: WFS DipAlmería v_siu_ambitos_o_sectores (cod_ine 04079).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: boja
