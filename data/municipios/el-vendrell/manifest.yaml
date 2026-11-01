@@ -1,0 +1,27 @@
+slug: el-vendrell
+nombre: "El Vendrell"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.elvendrell.net"
+  adapter: municipio.adapters.el_vendrell:ElVendrellAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-vendrell/1.0"
+    fetch_timeout_s: 90
+    centroid: [41.2201, 1.5342]
+  notes: |
+    Joomla elvendrell.net: edictes d'urbanisme (RSS + HTML + PDFs docs.elvendrell.net/GURB*),
+    notícies filtrades, planejament derivat / PGOU, tràmits obres.
+    Seu electrònica seu-e.cat (Liferay AOC) per presentació telemàtica.
+    RPUC/MUC Generalitat (codi municipi 43123) per cartografia; visor municipal mpgis (mobilitat/POI).
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
