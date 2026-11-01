@@ -1,0 +1,28 @@
+slug: san-juan-de-aznalfarache
+nombre: "San Juan de Aznalfarache"
+provincia: "San Juan de Aznalfarache, Sevilla"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.sanjuandeaznalfarache.es"
+  adapter: municipio.adapters.san_juan_de_aznalfarache:SanJuanDeAznalfaracheAyuntamientoAdapter
+  config:
+    sede_base: "https://sanjuandeaznalfarache.sedelectronica.es"
+    board_url: "https://sanjuandeaznalfarache.sedelectronica.es/board/"
+    transparency_url: "https://sanjuandeaznalfarache.sedelectronica.es/transparency"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-san-juan-de-aznalfarache/1.0"
+    centroid: [37.3583, -6.0374]
+  notes: |
+    OpenCMS INPRO (web) + sede espublico gestiona (tablón /board, transparencia 7.1 planeamiento).
+    Tablón web OpenCMS (/es/actualidad/tablon-de-anuncios/). Licencias históricas: LicytalPub Dip. Sevilla.
+    Instrumento general: adaptación parcial normas subsidiarias (SITUA). Sin visor GIS municipal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
