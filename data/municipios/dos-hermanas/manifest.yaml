@@ -1,0 +1,28 @@
+slug: dos-hermanas
+nombre: "Dos Hermanas"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.doshermanas.es"
+  adapter: municipio.adapters.dos_hermanas:DosHermanasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    fetch_timeout_s: 180
+    user_agent: "poc-bocm-dos-hermanas/1.0"
+    web_base: "https://www.doshermanas.es"
+    sede_base: "https://sede.doshermanas.es"
+    tablon_url: "https://sede.doshermanas.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON&KEY=all"
+    sede_insecure_ssl: true
+    centroid: [37.2839, -5.9209]
+  notes: |
+    CMS SagaSuite (OpenCMS): concejalía Urbanismo con PGOU, planes parciales y PDFs.
+    Sede STA: tablón PTS2_TABLON (~850 filas, dataset JSON embebido).
+    SITUA Junta (INE 41038): consulta documental escaneada; sin WFS por expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
