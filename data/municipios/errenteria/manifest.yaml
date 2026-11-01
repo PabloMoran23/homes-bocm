@@ -1,0 +1,25 @@
+slug: errenteria
+nombre: "Errenteria"
+provincia: Gipuzkoa
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://errenteria.eus"
+  adapter: municipio.adapters.errenteria:ErrenteriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-errenteria/1.0"
+    centroid: [43.3113, -1.9025]
+    due_api: "https://w390w.gipuzkoa.net/WAS/CORP/DUERegistroPlaneamientoWEB/api/record/?municipality=errenteria"
+    uzt_home: "https://uzt.gipuzkoa.eus/WAS/AYTO/USCServicioCiudadanoVer15WEB/home.do?ayto=67"
+  notes: |
+    Planeamiento: tabla municipal (plugin hirigintza) + API JSON DUE Diputación Gipuzkoa.
+    Licencias: catálogo informativo sede UZT (ayto=67); tablón provincial udal.egoitza.gipuzkoa.eus?De=eu06715.
+    HAPO (hapo/orokorra): cartografía municipal sin REST público enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
