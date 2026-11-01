@@ -1,0 +1,33 @@
+slug: mairena-del-aljarafe
+nombre: "Mairena del Aljarafe"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://mairenadelaljarafe.sedelectronica.es"
+  adapter: municipio.adapters.mairena_del_aljarafe:MairenaDelAljarafeAyuntamientoAdapter
+  config:
+    sede_base: "https://mairenadelaljarafe.sedelectronica.es"
+    gmu_sede: "https://gmumairenadelaljarafe.sedelectronica.es"
+    board_url: "https://mairenadelaljarafe.sedelectronica.es/board"
+    gmu_board_url: "https://gmumairenadelaljarafe.sedelectronica.es/board"
+    transparencia_base: "https://transparencia.mairenadelaljarafe.es"
+    planeamiento_transp_url: "https://transparencia.mairenadelaljarafe.es/es/transparencia/indicadores-de-transparencia/indicador/50.-Esta-publicado-el-Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan.-00020/"
+    opencms_pgou_url: "https://www.mairenadelaljarafe.es/es/ayuntamiento/organismos-y-sociedades/gerencia-municipal-de-urbanismo/Documentos-urbanisticos-aprobados/Planeamiento/planeamiento-general-pgou-e-innovaciones/"
+    transparency_url: "https://mairenadelaljarafe.sedelectronica.es/transparency"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41068"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-mairena-del-aljarafe/1.0"
+    centroid: [37.3446, -6.0631]
+  notes: |
+    OpenCMS InPro (www) + transparencia Diputación Sevilla (IND-50) + sede espublico
+    (tablón general + GMU) + ~109 PDFs PGOU en web GMU. Licencias LicytalPub P4106800F.
+    Sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
