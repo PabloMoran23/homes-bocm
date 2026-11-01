@@ -1,0 +1,31 @@
+slug: petrer
+nombre: "Petrer"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://petrer.es"
+  adapter: municipio.adapters.petrer:PetrerAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-petrer/1.0"
+    centroid: [38.485, -0.767]
+    web_base: "https://petrer.es"
+    sede_base: "https://sede.petrer.es"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      zon_type_name: "Planeamiento.Zonificacion"
+      cod_ine_mun: "03104"
+      mun_name: "Petrer"
+      zon_offsets: [2000]
+  notes: |
+    Web WordPress (categoría Urbanismo + búsqueda IP) + sede STA TAO (CATALOGO).
+    Tablón PTS_TABLON sin dataset embebido (solo formulario de búsqueda).
+    GeoPetrer (ArcGIS Online) + ICV WFS Zonificacion (Plan General, polígonos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
