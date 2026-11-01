@@ -1,0 +1,29 @@
+slug: el-prat-de-llobregat
+nombre: "El Prat de Llobregat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://seu.elprat.cat"
+  adapter: municipio.adapters.el_prat_de_llobregat:ElPratDeLlobregatAyuntamientoAdapter
+  config:
+    web_base: "https://www.elprat.cat"
+    sede_base: "https://seu.elprat.cat"
+    board_url: "https://seu.elprat.cat/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-prat-de-llobregat/1.0"
+    max_crawl_pages: 12
+    geometry:
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+      cod_ine_mun: "08169"
+  notes: |
+    Sede espublico gestiona (nueva UI wicket): tablón /board, trámites /dossier, urbanisme citizen-service.
+    Rutas legacy /siac/* devuelven 404; la web corporativa Drupal enlaza planejament y geoportal.
+    Geometría: AMB Planejament/Expedients (PGM, INE 08169) + visor municipal mapes.elprat.cat.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
