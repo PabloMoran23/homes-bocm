@@ -3355,13 +3355,6 @@ municipios:
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Castellón
-  attempts: 0
-  last_run: null
-  last_error: null
-  pr_url: null
-  notes: Sin boletín asociado
-  comunidad_autonoma: comunitat-valenciana
-  provincia: Castellón
 - slug: carmona
   nombre: Carmona
   bocm_count: 1
