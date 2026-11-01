@@ -1,0 +1,28 @@
+slug: benalmadena
+nombre: "Benalmádena"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.benalmadena.es"
+  adapter: municipio.adapters.benalmadena:BenalmadenaAyuntamientoAdapter
+  config:
+    web_base: "https://www.benalmadena.es"
+    sede_base: "https://sede.benalmadena.es"
+    expedientes_url: "https://www.benalmadena.es/contenido_transparencia.php?m=benalmadena-transparencia&s=informacion-publica-de-expedientes-de-urbanismo"
+    situa_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=29025"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-benalmadena/1.0"
+    centroid: [36.596, -4.517]
+  notes: |
+    Web municipal: tabla de información pública de expedientes de urbanismo (PDFs)
+    y documentación PGOU en transparencia. Sede STA (TAO): tablón PTS_TABLON
+    y catálogo PTS_CATSERV (trámites de licencias/urbanismo). Referencia SITUA
+    Junta de Andalucía (INE 29025) para planeamiento general.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
