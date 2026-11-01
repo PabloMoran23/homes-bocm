@@ -1,0 +1,28 @@
+slug: san-sebastian-de-los-ballesteros
+nombre: "San Sebastián de los Ballesteros"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://sansebastiandelosballesteros.es"
+  adapter: municipio.adapters.san_sebastian_de_los_ballesteros:SanSebastianDeLosBallesterosAyuntamientoAdapter
+  config:
+    pgou_url: "https://sansebastiandelosballesteros.es/pgou-san-sebastian/"
+    sede_base: "https://sede.eprinsa.es/ssballes"
+    tablon_url: "https://sede.eprinsa.es/ssballes/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-sebastian-de-los-ballesteros/1.0"
+    centroid: [37.6531, -4.8214]
+  notes: |
+    WordPress Divi: página PGOU con ~70 PDFs (memorias, planos, normas urbanísticas).
+    Portal transparencia ePrinsa (subdominio) + sede eprinsa/Diputación Córdoba (ssballes).
+    Tablón de edictos Ember SPA sin API pública scrapeable.
+    Open data e-admin (502 en CI); geoportal Diputación Córdoba sin enlace expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
