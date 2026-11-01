@@ -1,0 +1,50 @@
+slug: catarroja
+nombre: "Catarroja"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.catarroja.es"
+  adapter: municipio.adapters.catarroja:CatarrojaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-catarroja/1.0"
+    centroid: [39.404, -0.186]
+    cod_ine_mun: "46094"
+    wfs_page_size: 100
+    seed_pages:
+      - "https://www.catarroja.es/es/urbanismo"
+      - "https://www.catarroja.es/es/transparencia/instrumentos-planeamiento-urbanistico"
+    fetch_gva_index: false
+    wfs_max_startindex: 0
+    sede_base: "https://catarroja.sedipualba.es"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal 10 (catarroja.es) + sede sedipualba (tablón RSS + trámites urbanismo área 1254) +
+    transparencia PGOU (PDFs) + registro GVA + visor PGE geoinnova + ICV WFS InventarioSuSuz.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-0.22, 39.38], [-0.12, 39.38], [-0.12, 39.46], [-0.22, 39.46], [-0.22, 39.38]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
+
+geocode:
+  jitter_missing: false

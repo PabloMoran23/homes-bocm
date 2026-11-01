@@ -1,0 +1,48 @@
+slug: sant-josep-de-sa-talaia
+nombre: "Sant Josep de sa Talaia"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.santjosep.org"
+  adapter: municipio.adapters.sant_josep_de_sa_talaia:SantJosepDeSaTalaiaAyuntamientoAdapter
+  config:
+    sede_base: "https://santjosep.sedelectronica.es"
+    board_url: "https://santjosep.sedelectronica.es/board"
+    web_base: "https://www.santjosep.org"
+    urbanisme_page_id: 1467
+    tramits_page_id: 2602
+    muib_url: "http://muib.caib.es/mapurbibfront/visor_index.jsp"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-josep-de-sa-talaia/1.0"
+    centroid: [38.9223, 1.2936]
+  notes: |
+    WordPress santjosep.org (NNSS, modificaciones, plànols PDF) + sede espublico gestiona (/board).
+    Tràmits urbanisme informativos. MUIB para consulta cartográfica insular (sin WFS automatizable aquí).
+    geometry_status: unavailable (PDF + IDEIB 403).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [1.235, 38.855]
+            - [1.455, 38.855]
+            - [1.455, 39.035]
+            - [1.235, 39.035]
+            - [1.235, 38.855]
+
+geocode:
+  jitter_missing: false

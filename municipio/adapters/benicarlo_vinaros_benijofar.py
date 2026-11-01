@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import http.cookiejar
 import json
@@ -149,7 +150,7 @@ def _fecha_from_blob(text: str) -> str | None:
         return dmy
     years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -207,6 +208,10 @@ def _gml_feature_to_geojson(feat: ET.Element) -> dict[str, Any] | None:
 class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
     """Cola compuesta CV: sedipualba (Benicarló) + espublico (Vinaròs/Benijófar) + ICV WFS."""
 
+    @property
+    def towns(self) -> list[TownConfig]:
+        return TOWNS
+
     def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
         super().__init__(slug, config, base_url or TOWNS[0].web_base)
         self.delay_s = float(self.config.get("request_delay_s", 0.35))
@@ -240,6 +245,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         return unescape(urllib.parse.urljoin(f"{base.rstrip('/')}/", href))
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -714,7 +720,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
-        for town in TOWNS:
+        for town in self.towns:
             for rec in self._collect_licencia_info_pages(town):
                 if rec["id"] not in seen:
                     seen.add(rec["id"])
@@ -769,7 +775,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for town in TOWNS:
+        for town in self.towns:
             for item in self._load_wfs_for_town(town):
                 add(self._wfs_to_proyecto(town, item))
             for item in self._collect_seed_docs(town):

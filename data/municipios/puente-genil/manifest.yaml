@@ -1,0 +1,39 @@
+slug: puente-genil
+nombre: "Puente Genil"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://puentegenil.es"
+  adapter: municipio.adapters.puente_genil:PuenteGenilAyuntamientoAdapter
+  config:
+    wp_base: "https://puentegenil.es"
+    sede_base: "https://sede.eprinsa.es/puentege"
+    urbanismo_url: "https://puentegenil.es/urbanismo-obras-y-viviendas/normativa_urbanistica/"
+    tablon_url: "https://sede.eprinsa.es/puentege/tablon-de-edictos"
+    wp_categories: [29, 172]
+    wp_max_pages: 5
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puente-genil/1.0"
+    centroid: [37.3891, -4.7669]
+    seed_pages:
+      - "https://puentegenil.es/urbanismo-obras-y-viviendas/normativa_urbanistica/"
+      - "https://puentegenil.es/urbanismo-obras-y-viviendas/"
+      - "https://puentegenil.es/agenda-urbana-de-puente-genil-plan-estrategico-municipal/"
+      - "https://puentegenil.es/registro-municipal-de-entidades-urbanisticas-colaboradoras/"
+      - "https://puentegenil.es/bandos/"
+  notes: |
+    WordPress Divi (ePrinsa/Diputación Córdoba): normativa urbanística con PGOU, planes parciales y ordenanzas (PDF).
+    WP REST categorías 29 (Urbanismo) y 172 (Agenda Urbana).
+    Sede eprinsa puentege: tablón Ember SPA sin API pública scrapeable.
+    Dashboard ArcGIS Agenda Urbana (métricas, no geometría por expediente).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false

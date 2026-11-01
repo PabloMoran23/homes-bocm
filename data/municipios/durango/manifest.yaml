@@ -1,0 +1,41 @@
+slug: durango
+nombre: "Durango"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.durango.eus"
+  adapter: municipio.adapters.durango:DurangoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    fetch_timeout_s: 12
+    user_agent: "poc-bocm-durango/1.0 (+urbanismo Bizkaia)"
+    sede_base: "https://egoitza-sede.durango.eus"
+    centroid_lat: 43.1689
+    centroid_lng: -2.6335
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/PX_Durango_inf/MapServer"
+    geometry_layer_ids: [50, 51, 71, 72, 73, 74, 76, 77, 78, 91, 97, 98, 99, 132]
+    geometry_enrich: true
+  notes: |
+    Sede STA (tablón PTS2_TABLON, urbanísticas PTS2_URBANISTICAS) + RSS bandos/noticias.
+    Participación ciudadana (Parte Hartu) para consultas de planeamiento.
+    Geometría parcial vía GeoBizkaia PX_Durango_inf (PGOU, outSR=4326).
+    Licencias concedidas no publicadas; trámites informativos en sede.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
+  centroid_lat: 43.1689
+  centroid_lng: -2.6335
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy

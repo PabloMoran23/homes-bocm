@@ -1,0 +1,40 @@
+slug: benicarlo
+nombre: "Benicarló"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.benicarlo.org"
+  adapter: municipio.adapters.benicarlo:BenicarloAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-benicarlo/1.0"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+      wfs_page_size: 50
+      wfs_max_pages: 0
+      wfs_scan_max_pages: 0
+      wfs_target_min: 0
+      include_zonificacion: false
+  notes: |
+    Web corporativa benicarlo.org (PHP). Sede sedipualba: tablón HTML + RSS.
+    Sin visor urbanístico municipal; geometría partial vía ICV WFS InventarioSuSuz (INE 12018).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+
+geocode:
+  jitter_missing: false

@@ -1,0 +1,33 @@
+slug: la-oliva
+nombre: "La Oliva"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://laoliva.es"
+  adapter: municipio.adapters.la_oliva:LaOlivaAyuntamientoAdapter
+  config:
+    web_base: "https://laoliva.es"
+    sede_base: "https://laoliva.sedelectronica.es"
+    board_url: "https://laoliva.sedelectronica.es/board"
+    urbanismo_url: "https://laoliva.es/ayuntamiento/42"
+    sitcan_package: planeamiento-urbanistico-de-la-oliva
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35018/"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-la-oliva/1.0"
+    centroid: [28.6105, -13.9280]
+  notes: |
+    Portal propio laoliva.es (área Urbanismo /ayuntamiento/42) +
+    sede espublico gestiona (/board) +
+    SITCAN CKAN planeamiento-urbanistico-de-la-oliva + GEOBDP Grafcan (INE 35018).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false

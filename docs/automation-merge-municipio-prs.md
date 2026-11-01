@@ -1,7 +1,8 @@
 # Revisión e integración por lotes de municipios
 
-El onboarding se revisa por lotes. La cola se conserva desde `main` hasta que la
-extracción, la validación geográfica y el sync hayan terminado correctamente.
+El onboarding se revisa por lotes. Fusionar incorpora los manifests y adapters;
+no ejecuta scrapers ni publica datos. El refresco programado descubre los nuevos
+manifests automáticamente.
 
 ## Inventario del backlog
 
@@ -25,7 +26,10 @@ semánticos. Los alias territoriales requieren revisión específica.
 3. Declarar el CRS de salida comprobando la petición o transformación del adapter.
    Desactivar `geocode.jitter_missing` en los municipios nuevos: los puntos alrededor
    del centro municipal no demuestran la ubicación de un proyecto.
-4. Ejecutar la extracción aislada con un plazo por municipio:
+4. Para la revisión mínima de un lote, comprobar estáticamente los manifests y
+   adapters sin ejecutar scrapers. Una extracción de prueba es una acción adicional
+   y debe hacerse solo si se ha solicitado; se puede ejecutar de forma aislada con
+   un plazo por municipio:
 
 ```bash
 python scripts/ci/municipio_batch.py run 'slug-uno slug-dos' --workers 4 --timeout 600
@@ -41,26 +45,34 @@ actualiza la cola ni escribe en Supabase. Revisar `output/municipio-batch/`.
 6. Fusionar la PR de integración con un **merge**, conservando los commits fuente.
    Esto permite a GitHub reconocer las PRs originales integradas. No usar squash
    para esta PR agregada ni marcar como integradas PRs que se hayan excluido.
+7. Si el lote debe incorporarse sin despliegue, incluir `[skip deploy]` en el
+   mensaje del commit final que llega a `main` (también en el merge). El Ignored
+   Build Step de Vercel respeta esa marca incluso si falta el SHA anterior o si
+   el lote incluye cambios en `web/`. Sin la marca sigue aplicándose el filtro
+   habitual de archivos y su comportamiento ante errores.
 
-## Publicación posterior
+## Refresco posterior
 
-El workflow `Municipio post-merge` detecta todos los slugs desde el rango completo
-del push y desde los adapters modificados. Ejecuta cuatro procesos concurrentes,
-con un límite de diez minutos por municipio. Solo publica instantáneas con
-proyectos, coordenadas, paridad suficiente y sin geografía en cuarentena.
+`refresh-municipios.yml` mantiene su cron cada cuatro horas y procesa hasta
+20 municipios por ejecución. `municipio.schedule.due_plan` enumera todos los
+manifests, excluye Madrid y los que declaran `schedule.enabled: false`, y prioriza
+los que no tienen `last_ingest_at` en Supabase. No hay que ejecutar un scraper al
+fusionar ni insertar manualmente una entrada en la base de datos.
 
-Cada worker publica un municipio de forma independiente. Solo el proceso padre
-marca como `done` las publicaciones confirmadas; un fallo conserva pendientes
-las entradas correspondientes y no elimina los éxitos de los otros workers.
-La cola se guarda incluso si parte del lote falla, y los logs e informes quedan
-adjuntos como artifact de Actions. Un workflow fallido puede contener municipios
-publicados correctamente: consultar el resumen individual.
+El estado de `data/municipios/queue.yaml` corresponde al seguimiento del onboarding;
+no determina la selección de la cola de refresco. Un nuevo manifest habilitado
+queda disponible para la próxima ejecución programada. No marcarlo como publicado
+antes de que termine correctamente su extracción y sync.
 
-Para reintentar los fallidos, el dispatch admite una lista separada por comas:
+El workflow `Municipio post-merge` solo admite ejecución manual; no tiene trigger
+por push. Su publicación inmediata se reserva para una petición explícita y se
+puede lanzar con una lista separada por comas:
 
 ```bash
 gh workflow run municipio-post-merge.yml -f 'slug=slug-uno,slug-dos'
 ```
 
-No es necesario pasar credenciales de Supabase al agente local. La publicación
-utiliza el secret del repositorio en GitHub Actions.
+Ese dispatch ejecuta extracción, validación y publicación a Supabase; no forma
+parte de la integración de PRs. La publicación utiliza el secret del repositorio
+en GitHub Actions. Sus informes individuales quedan como artifacts y solo las
+publicaciones confirmadas actualizan la cola de onboarding.

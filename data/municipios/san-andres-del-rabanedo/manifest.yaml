@@ -1,0 +1,40 @@
+slug: san-andres-del-rabanedo
+nombre: "San Andrés del Rabanedo"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+
+portal:
+  base_url: "https://sanandresdelrabanedo.sedelectronica.es"
+  adapter: municipio.adapters.san_andres_del_rabanedo:SanAndresDelRabanedoAyuntamientoAdapter
+  config:
+    sede_base: "https://sanandresdelrabanedo.sedelectronica.es"
+    plai_municipio: 181
+    plai_provincia: 24
+    ine_code: "24181"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "San Andrés del Rabanedo"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=24181"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=181"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=181"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-andres-del-rabanedo/1.0 (+urbanismo research)"
+    insecure_ssl: true
+    centroid: [42.6119, -5.6169]
+  notes: |
+    Web corporativa (aytosanandres.es) bloqueada desde cloud (503 F5). Sede espublico
+    responde «Sede Electrónica Indeterminada» (sin tablón operativo). Planeamiento vía
+    PlanPublica JCyL (NUM 2007) + geometría IDECyL WFS (49 sectores). Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false

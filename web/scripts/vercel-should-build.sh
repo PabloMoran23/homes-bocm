@@ -7,6 +7,7 @@
 # build reads outside web/ (prebuild of `npm run build:public`):
 #   tests/license-date-cases.json  (web/scripts/test-license-dates.mjs)
 #   db/statistics_scope.py         (web/scripts/test-statistics-scope.mjs)
+# An explicit [skip deploy] in the current commit skips all deployment.
 # Any other diff is a skip. If the previous SHA is missing, that commit is
 # not in the clone, the diff fails, or the diff is empty, deploy.
 set -euo pipefail
@@ -38,6 +39,15 @@ on_err() {
   exit 1
 }
 trap on_err ERR
+
+# Administrative onboarding batches must stay quiet even on the first deployment
+# or when their safety changes touch web/. Trust the actual checked-out commit.
+if commit_message=$(git log -1 --format=%B "$AFTER" 2>/dev/null); then
+  if [[ "$commit_message" == *"[skip deploy]"* ]]; then
+    echo "vercel-should-build: skip (explicit [skip deploy] in commit)"
+    exit 0
+  fi
+fi
 
 if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
   deploy "no VERCEL_GIT_PREVIOUS_SHA"
