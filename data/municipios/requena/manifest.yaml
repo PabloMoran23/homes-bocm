@@ -1,0 +1,30 @@
+slug: requena
+nombre: "Requena"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.requena.es"
+  adapter: municipio.adapters.requena:RequenaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-requena/1.0"
+    cod_ine_mun: "46215"
+    centroid_lat: 39.4883
+    centroid_lon: -1.1004
+    sede_base: "https://requena.sedipualba.es"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal 10 (requena.es) con tablón de edictos de urbanismo (PDFs/ZIP) +
+    sede sedipualba (tablón RSS + catálogo de trámites) +
+    ICV WFS InventarioSuSuz (CODINE 46215).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
