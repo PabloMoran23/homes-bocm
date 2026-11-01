@@ -1,0 +1,26 @@
+slug: llucmajor
+nombre: "Llucmajor"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://llucmajor.org"
+  adapter: municipio.adapters.llucmajor:LlucmajorAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-llucmajor/1.0"
+    web_base: "https://llucmajor.org"
+    sede_base: "https://llucmajor.sedelectronica.es"
+    max_crawl_pages: 45
+    centroid: [39.4906, 2.8910]
+  notes: |
+    Web Drupal 10 (llucmajor.org): urbanisme PIC, tràmits obres, enllaços ordenances.
+    Sede espublico (llucmajor.sedelectronica.es) responde «Indeterminada» sin tablón usable.
+    IDELMA IDE M027 sin workspace M027_URBANISME/exp_absis (solo INSPIRE/camins).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
