@@ -1,0 +1,30 @@
+slug: navas-de-riofrio
+nombre: "Navas de Riofrío"
+provincia: "Navas de Riofrío - Segovia"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.navasderiofrio.es"
+  adapter: municipio.adapters.navas_de_riofrio:NavasDeRiofrioAyuntamientoAdapter
+  config:
+    web_base: "https://www.navasderiofrio.es"
+    sede_base: "https://navasderiofrio.sedelectronica.es"
+    board_url: "https://navasderiofrio.sedelectronica.es/board"
+    plai_municipio: 146
+    plai_provincia: 40
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: "Navas de Riofrío"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navas-de-riofrio/1.0"
+    insecure_ssl: true
+  notes: |
+    Portal Liferay Segovia8 (Diputación Segovia) + sede espublico gestiona.
+    Planeamiento: PLAI JCYL provincia 40 municipio 146 + PDFs en /es/urbanismo.
+    Geometría: IDECyL WFS instrumento municipal (NS históricas); sin sectores WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
