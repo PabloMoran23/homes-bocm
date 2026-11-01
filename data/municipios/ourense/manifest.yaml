@@ -1,0 +1,29 @@
+slug: ourense
+nombre: "Ourense"
+provincia: Ourense
+comunidad_autonoma: galicia
+boletin_source_id: bocm
+
+portal:
+  base_url: "https://ourense.gal"
+  adapter: municipio.adapters.ourense:OurenseAyuntamientoAdapter
+  config:
+    web_base: "https://ourense.gal"
+    sede_base: "https://sede.ourense.gob.es"
+    urbanismo_url: "https://ourense.gal/gl/servizos/urbanismo-licencias-y-vivienda"
+    insecure_ssl: true
+    sede_timeout_s: 20
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ourense/1.0"
+    centroid: [42.3360, -7.8640]
+  notes: |
+    CMS corporativo ourense.gal (área Urbanismo, taboleiro PDF, noticias PXOM) +
+    sede.ourense.gob.es (publicaciones ORDE; handshake a menudo bloqueado fuera de ES).
+    SIOTUGA/Xunta para inventario planeamento (INE 32054).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
