@@ -1,0 +1,24 @@
+slug: teruel
+nombre: "Teruel"
+provincia: Teruel
+comunidad_autonoma: aragon
+
+portal:
+  base_url: "https://www.teruel.es"
+  adapter: municipio.adapters.teruel:TeruelAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-teruel/1.0"
+    web_base: "https://www.teruel.es"
+    sede_base: "https://sede.teruel.es"
+    centroid: [40.3456, -1.1065]
+  notes: |
+    WordPress transparencia (PDFs planeamiento) + sede STA T-Systems (catálogo CATSERV; tablón vía Ajax).
+    SIUA Aragón (visor regional) sin WFS enlazable a expedientes del portal.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
