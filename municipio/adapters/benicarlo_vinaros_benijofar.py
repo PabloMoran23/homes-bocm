@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import http.client
 import http.cookiejar
 import json
 import re
@@ -55,6 +56,10 @@ RE_YEAR = re.compile(r"\b((?:19|20)\d{2})\b")
 RE_SECTOR_CODE = re.compile(
     r"(?i)\b(?:sector|ue|p\.?\s*|unidad de ejecuci[oó]n)\s*([A-Z]?\s*\d+)\b",
 )
+RE_SEDIPUALBA_ANUNCIO = re.compile(
+    r'href="([^"]*tablondeanuncios/anuncio\.aspx\?id=\d+)"[^>]*>.*?alt="([^"]+)"',
+    re.I | re.S,
+)
 
 _GML_NS = {
     "gml": "http://www.opengis.net/gml",
@@ -74,6 +79,8 @@ class TownConfig:
     board_url: str | None = None
     tablon_rss: str | None = None
     seed_pages: list[str] = field(default_factory=list)
+    static_seeds: list[dict[str, str]] = field(default_factory=list)
+    tablon_html_url: str | None = None
     centroid: tuple[float, float] = (0.0, 0.0)
 
 
@@ -89,6 +96,19 @@ TOWNS: list[TownConfig] = [
         seed_pages=[
             "https://benicarlo.sedipualba.es/tablondeanuncios/default.aspx",
             "https://benicarlo.sedipualba.es/catalogoservicios.aspx",
+        ],
+        tablon_html_url="https://benicarlo.sedipualba.es/tablondeanuncios/default.aspx",
+        static_seeds=[
+            {
+                "titulo": "Visor cartográfico urbanístico (gvSIG Online)",
+                "url": "https://sig.ajuntamentdebenicarlo.org/gvsigonline/core/public_project_load/12/",
+                "tipo": "visor urbanístico",
+            },
+            {
+                "titulo": "Planeamiento urbanístico CV — zonificación (datos abiertos GVA)",
+                "url": "https://dadesobertes.gva.es/dataset/planeamiento-urbanistico-de-la-comunitat-valenciana-zonificacion-urbanistica",
+                "tipo": "planeamiento",
+            },
         ],
         centroid=(40.4208, 0.4275),
     ),
@@ -207,6 +227,10 @@ def _gml_feature_to_geojson(feat: ET.Element) -> dict[str, Any] | None:
 class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
     """Cola compuesta CV: sedipualba (Benicarló) + espublico (Vinaròs/Benijófar) + ICV WFS."""
 
+    @property
+    def towns(self) -> list[TownConfig]:
+        return TOWNS
+
     def __init__(self, slug: str, config: dict[str, Any] | None = None, base_url: str = ""):
         super().__init__(slug, config, base_url or TOWNS[0].web_base)
         self.delay_s = float(self.config.get("request_delay_s", 0.35))
@@ -214,6 +238,19 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         self.icv_wfs_url = str(geom_cfg.get("wfs_url") or ICV_WFS).rstrip("/")
         self.icv_layer_su = str(geom_cfg.get("type_name_su") or ICV_LAYER_SU)
         self.icv_layer_zon = str(geom_cfg.get("type_name_zon") or ICV_LAYER_ZON)
+        def _geom_int(key: str, default: int) -> int:
+            if key in geom_cfg and geom_cfg[key] is not None:
+                return int(geom_cfg[key])
+            return default
+
+        self.wfs_page_size = _geom_int("wfs_page_size", 25)
+        self.wfs_max_pages = _geom_int("wfs_max_pages", 4)
+        self.wfs_scan_max_pages = _geom_int("wfs_scan_max_pages", 24)
+        self.wfs_target_min = _geom_int("wfs_target_min", 6)
+        include_zon = geom_cfg.get("include_zonificacion", False)
+        self._wfs_type_layers: list[tuple[str, str]] = [(self.icv_layer_su, "InventarioSuSuz")]
+        if include_zon:
+            self._wfs_type_layers.append((self.icv_layer_zon, "Zonificacion"))
         self._ssl_ctx = ssl.create_default_context()
         if self.config.get("insecure_ssl", True):
             self._ssl_ctx.check_hostname = False
@@ -227,14 +264,25 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_index: dict[str, dict[str, dict[str, Any]]] = {}
 
     def _fetch(self, url: str, *, timeout: int = 60) -> str:
-        time.sleep(self.delay_s)
-        req = urllib.request.Request(
-            url,
-            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benicarlo-vinaros-benijofar/1.0")},
-        )
-        with self._opener.open(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        ua = self.config.get("user_agent", "poc-bocm-benicarlo-vinaros-benijofar/1.0")
+        last_err: Exception | None = None
+        for attempt in range(4):
+            time.sleep(self.delay_s)
+            req = urllib.request.Request(url, headers={"User-Agent": ua})
+            try:
+                with self._opener.open(req, timeout=timeout) as resp:
+                    charset = resp.headers.get_content_charset() or "utf-8"
+                    return resp.read().decode(charset, errors="replace")
+            except (
+                urllib.error.URLError,
+                TimeoutError,
+                ConnectionResetError,
+                http.client.IncompleteRead,
+                OSError,
+            ) as exc:
+                last_err = exc
+                time.sleep(0.5 * (attempt + 1))
+        raise urllib.error.URLError(last_err or "fetch failed")
 
     def _abs_url(self, href: str, base: str) -> str:
         return unescape(urllib.parse.urljoin(f"{base.rstrip('/')}/", href))
@@ -386,20 +434,63 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 )
         return rows
 
-    def _wfs_page_url(self, type_name: str, start: int) -> str:
-        params = urllib.parse.urlencode(
-            {
-                "service": "WFS",
-                "version": "2.0.0",
-                "request": "GetFeature",
-                "typeNames": type_name,
-                "count": "200",
-                "outputFormat": "GML3",
-                "srsName": "EPSG:4326",
-                "STARTINDEX": str(start),
-            }
-        )
-        return f"{self.icv_wfs_url}?{params}"
+    def _collect_sedipualba_tablon_html(self, town: TownConfig) -> list[dict[str, Any]]:
+        if town.sede_kind != "sedipualba" or not town.tablon_html_url:
+            return []
+        try:
+            html = self._fetch(town.tablon_html_url)
+        except urllib.error.URLError:
+            return []
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for m in RE_SEDIPUALBA_ANUNCIO.finditer(html):
+            href, alt = m.group(1), unescape(_strip_html(m.group(2)))
+            url = self._abs_url(href, town.sede_base)
+            if url in seen or not alt:
+                continue
+            seen.add(url)
+            rows.append(
+                {
+                    "titulo": alt[:500],
+                    "fecha": _fecha_from_blob(alt),
+                    "url": url,
+                    "blob": alt,
+                    "origen": "tablon_html",
+                }
+            )
+        return rows
+
+    def _collect_static_seeds(self, town: TownConfig) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        for seed in town.static_seeds or []:
+            titulo = seed.get("titulo") or ""
+            url = seed.get("url") or ""
+            if not titulo or not url:
+                continue
+            rows.append(
+                {
+                    "titulo": titulo[:500],
+                    "fecha": None,
+                    "url": url,
+                    "blob": f"{titulo} {seed.get('tipo', '')}",
+                    "origen": "portal_seed",
+                    "tipo_hint": seed.get("tipo"),
+                }
+            )
+        return rows
+
+    def _wfs_page_url(self, type_name: str, start: int, ine: str | None = None) -> str:
+        params: dict[str, str] = {
+            "service": "WFS",
+            "version": "2.0.0",
+            "request": "GetFeature",
+            "typeNames": type_name,
+            "count": str(self.wfs_page_size),
+            "outputFormat": "GML3",
+            "srsName": "EPSG:4326",
+            "STARTINDEX": str(start),
+        }
+        return f"{self.icv_wfs_url}?{urllib.parse.urlencode(params)}"
 
     def _parse_wfs_member(self, member: ET.Element, ine: str, layer: str) -> dict[str, Any] | None:
         feat = None
@@ -445,10 +536,12 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
             return self._wfs_by_ine[town.ine]
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
-        for type_name, layer in ((self.icv_layer_su, "InventarioSuSuz"), (self.icv_layer_zon, "Zonificacion")):
+        scan_cap = max(self.wfs_max_pages, self.wfs_scan_max_pages)
+        max_start = self.wfs_page_size * scan_cap
+        for type_name, layer in self._wfs_type_layers:
             start = 0
-            empty_pages = 0
-            while start < 8000:
+            pages = 0
+            while start < max_start and pages < scan_cap:
                 url = self._wfs_page_url(type_name, start)
                 try:
                     raw = self._fetch(url, timeout=90)
@@ -458,20 +551,19 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 members = root.findall(".//wfs:member", _GML_NS)
                 if not members:
                     break
-                page_hits = 0
                 for member in members:
                     rec = self._parse_wfs_member(member, town.ine, layer)
                     if rec and rec["wfs_id"] not in seen:
                         seen.add(rec["wfs_id"])
                         rows.append(rec)
-                        page_hits += 1
-                if page_hits == 0:
-                    empty_pages += 1
-                    if empty_pages >= 8:
-                        break
-                else:
-                    empty_pages = 0
-                start += 200
+                if len(rows) >= self.wfs_target_min:
+                    break
+                if len(members) < self.wfs_page_size:
+                    break
+                start += self.wfs_page_size
+                pages += 1
+            if len(rows) >= self.wfs_target_min:
+                break
         self._wfs_by_ine[town.ine] = rows
         index: dict[str, dict[str, Any]] = {}
         for rec in rows:
@@ -500,13 +592,17 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _ensure_coords(self, town: TownConfig, rec: dict[str, Any]) -> None:
         if rec.get("lat") is not None and rec.get("lon") is not None:
+            rec.setdefault("coordinates_crs", "EPSG:4326")
             return
         rec["lat"] = town.centroid[0]
         rec["lon"] = town.centroid[1]
         rec.setdefault("coord_source", "municipio_centroid")
+        rec["coordinates_crs"] = "EPSG:4326"
 
     def _attach_geometry(self, town: TownConfig, rec: dict[str, Any]) -> None:
         if record_geometry(rec):
+            rec.setdefault("geometry_crs", "EPSG:4326")
+            rec.setdefault("coordinates_crs", "EPSG:4326")
             return
         match = self._match_wfs(town, rec.get("titulo") or "")
         if not match or not match.get("geom"):
@@ -514,8 +610,10 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
             return
         rec["geom_geojson"] = match["geom"]
         rec["geometry_source"] = "portal_wfs"
-        rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0)
+        rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0, town.ine)
+        rec["geometry_crs"] = "EPSG:4326"
         rec["coord_source"] = "portal_geometry_centroid"
+        rec["coordinates_crs"] = "EPSG:4326"
         centroid = geometry_centroid(match["geom"])
         if centroid:
             rec["lat"], rec["lon"] = centroid
@@ -529,6 +627,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 "distrito": None,
                 "lat": town.centroid[0],
                 "lon": town.centroid[1],
+                "coordinates_crs": "EPSG:4326",
                 "titulo": f"Tablón de anuncios — {town.municipio}",
                 "url": town.board_url or town.tablon_rss or f"{town.sede_base}/tablondeanuncios/",
                 "source": "ayuntamiento",
@@ -685,8 +784,10 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         if geom:
             rec["geom_geojson"] = geom
             rec["geometry_source"] = "portal_wfs"
-            rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0)
+            rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0, town.ine)
+            rec["geometry_crs"] = "EPSG:4326"
             rec["coord_source"] = "portal_geometry_centroid"
+            rec["coordinates_crs"] = "EPSG:4326"
             centroid = geometry_centroid(geom)
             if centroid:
                 rec["lat"], rec["lon"] = centroid
@@ -696,7 +797,20 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _seed_to_proyecto(self, town: TownConfig, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = row.get("blob") or row.get("titulo") or ""
-        if not RE_PROYECTO.search(blob) and row.get("origen") != "web_seed":
+        if row.get("origen") == "portal_seed":
+            rec = {
+                "id": _stable_id(town.id_prefix, "proy", row["url"]),
+                "municipio": town.municipio,
+                "titulo": row["titulo"],
+                "fecha": row.get("fecha"),
+                "tipo": row.get("tipo_hint") or _proyecto_tipo(blob),
+                "url": row["url"],
+                "source": "ayuntamiento",
+                "origen": "portal_seed",
+            }
+            self._attach_geometry(town, rec)
+            return rec
+        if not RE_PROYECTO.search(blob) and row.get("origen") not in ("web_seed", "tablon_html"):
             return None
         rec = {
             "id": _stable_id(town.id_prefix, "proy", row["url"]),
@@ -714,12 +828,17 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
-        for town in TOWNS:
+        for town in self.towns:
             for rec in self._collect_licencia_info_pages(town):
                 if rec["id"] not in seen:
                     seen.add(rec["id"])
                     rows.append(rec)
             for item in self._collect_tablon_rss(town):
+                rec = self._rss_to_licencia(town, item)
+                if rec and rec["id"] not in seen:
+                    seen.add(rec["id"])
+                    rows.append(rec)
+            for item in self._collect_sedipualba_tablon_html(town):
                 rec = self._rss_to_licencia(town, item)
                 if rec and rec["id"] not in seen:
                     seen.add(rec["id"])
@@ -769,9 +888,13 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for town in TOWNS:
+        for town in self.towns:
             for item in self._load_wfs_for_town(town):
                 add(self._wfs_to_proyecto(town, item))
+            for item in self._collect_static_seeds(town):
+                add(self._seed_to_proyecto(town, item))
+            for item in self._collect_sedipualba_tablon_html(town):
+                add(self._rss_to_proyecto(town, item) or self._seed_to_proyecto(town, item))
             for item in self._collect_seed_docs(town):
                 add(self._seed_to_proyecto(town, item))
             for item in self._collect_tablon_rss(town):
