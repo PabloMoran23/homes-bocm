@@ -1,0 +1,30 @@
+slug: manresa
+nombre: "Manresa"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://web.manresa.cat"
+  adapter: municipio.adapters.manresa:ManresaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-manresa/1.0"
+    web_base: "https://web.manresa.cat"
+    seu_base: "https://www.manresa.cat"
+    tramits_url: "https://web.manresa.cat/web/menu/632-urbanisme/tramits"
+    centroid: [41.7231, 1.8265]
+    fetch_timeout_s: 60
+    max_articles: 150
+  notes: |
+    CMS propio web.manresa.cat: artículos de planejament (en tràmit, vigent, plans
+    especials, convenis). Trámites de licencias en /seu/menu/fitza (sede 2018).
+    e-TAULER (www.manresa.cat/etauler) es SPA sin API pública scrapeable.
+    Plànol guia turístico; sin visor SIG enlazado a expedientes.
+
+licencias:
+  enabled: true
+  notes: Trámites informativos de urbanismo (llicències, comunicacions d'obra).
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
