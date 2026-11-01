@@ -1,0 +1,26 @@
+slug: portugalete
+nombre: "Portugalete"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.portugalete.org"
+  adapter: municipio.adapters.portugalete:PortugaleteAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-portugalete/1.0"
+    portal_timeout_s: 12
+    opendata_timeout_s: 15
+    centroid: [43.3180, -3.0207]
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/Plangintza_Planeamiento/MapServer"
+  notes: |
+    SharePoint portugalete.org (tablón + trámites Urbanismo_*) + Open Data Bizkaia
+    (planeamiento agregado) + ArcGIS Diputación Plangintza_Planeamiento (clasificación suelo).
+    PortugaleteON (CMS) como sede complementaria. Sin boletín regional en cola.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
