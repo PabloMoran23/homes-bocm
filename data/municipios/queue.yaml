@@ -3317,11 +3317,11 @@ municipios:
 - slug: camargo
   nombre: Camargo
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-01T00:04:08.938053+00:00'
+  last_run: '2026-11-01T00:26:07.124738+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1085
   notes: Sin boletín asociado
   comunidad_autonoma: cantabria
   provincia: Cantabria
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-01T00:04:08.954100+00:00'
+updated_at: '2026-11-01T00:26:07.131360+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
