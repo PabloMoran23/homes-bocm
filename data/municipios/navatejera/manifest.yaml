@@ -1,0 +1,31 @@
+slug: navatejera
+nombre: "Navatejera"
+provincia: León
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.villaquilambre.es"
+  adapter: municipio.adapters.navatejera:NavatejeraAyuntamientoAdapter
+  config:
+    sede_base: "https://villaquilambre.sedelectronica.es"
+    wfs_municipio: "Villaquilambre"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-navatejera/1.0"
+    seed_pages:
+      - "https://www.villaquilambre.es/atencion-al-ciudadano/urbanismo/estudio-detalle-sur-01/"
+      - "https://www.villaquilambre.es/atencion-al-ciudadano/urbanismo/planeamiento-urbanistico/"
+      - "https://www.villaquilambre.es/atencion-al-ciudadano/urbanismo/licencias/"
+      - "https://www.villaquilambre.es/atencion-al-ciudadano/urbanismo/edictos/"
+      - "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=24&municipio=241"
+      - "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=24&municipio=241"
+  notes: |
+    Navatejera es pedanía del municipio de Villaquilambre (casa consistorial en Villaquilambre).
+    Urbanismo y licencias se publican en villaquilambre.es y villaquilambre.sedelectronica.es.
+    Actuación principal en ámbito: Estudio de detalle SUR-01 (SUC PGOU Villaquilambre).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
