@@ -1,0 +1,31 @@
+slug: nijar
+nombre: "Níjar"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://nijar.sedelectronica.es"
+  adapter: municipio.adapters.nijar:NijarAyuntamientoAdapter
+  config:
+    sede_base: "https://nijar.sedelectronica.es"
+    board_url: "https://nijar.sedelectronica.es/board/"
+    web_base: "https://nijar.es"
+    urbanismo_news_url: "https://nijar.es/noticias/categoria/urbanismo/"
+    urbanismo_area_url: "https://nijar.es/ayuntamiento/areas/urbanismo-e-infraestructuras/"
+    cod_ine: "04066"
+    wfs_sectors_url: "https://app.dipalme.org/geoserver/urbanismo/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=urbanismo:v_siu_ambitos_o_sectores&CQL_FILTER=cod_ine%3D%2704066%27&outputFormat=application/json&srsName=EPSG:4326"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-nijar/1.0"
+    centroid: [36.9676, -2.2060]
+  notes: |
+    Tablón sede espublico gestiona; noticias WP categoría urbanismo (REST bloqueado).
+    WFS Diputación Almería (v_siu_ambitos_o_sectores) para geometría parcial por sector.
+    Transparencia sede: carpeta «Información medioambiental y urbanística» (168 docs, navegación AJAX).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
