@@ -1,0 +1,57 @@
+slug: sesena
+nombre: "Seseña"
+provincia: Toledo
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://ayto-sesena.org"
+  adapter: municipio.adapters.sesena:SesenaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sesena/1.0 (+urbanismo research)"
+    sede_base: "https://sede.ayto-sesena.org/eAdmin"
+    sede_insecure_ssl: true
+    tablon_url: "https://sede.ayto-sesena.org/eAdmin/Tablon.do?action=verAnuncios&tipoTablon=1"
+    publicacion_pages:
+      - "https://ayto-sesena.org/plan-de-ordenacion-municipal-en-tramite/"
+      - "https://ayto-sesena.org/transparencia/transparencia-pom/"
+      - "https://ayto-sesena.org/transparencia/transparencia-uo/"
+    licencia_pages:
+      - "https://ayto-sesena.org/descarga-de-documentos/"
+      - "https://ayto-sesena.org/concejalia-urbanismo/"
+    centroid: [40.1047, -3.6979]
+    geometry:
+      kind: arcgis_mapserver
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "45161"
+  notes: |
+    Web corporativa WordPress (POM en trámite, transparencia UO/SAU34) + sede eAdmin (tablón, trámites).
+    Certificado SSL de sede.ayto-sesena.org caducado (insecure_ssl).
+    Geometría municipal vía CLM Planeamiento_Municipal (COD_INE 45161 — Seseña).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.74, 40.02],
+              [-3.60, 40.02],
+              [-3.60, 40.15],
+              [-3.74, 40.15],
+              [-3.74, 40.02],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox CLM Planeamiento COD_INE=45161"
