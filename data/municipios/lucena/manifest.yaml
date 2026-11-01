@@ -1,0 +1,27 @@
+slug: lucena
+nombre: "Lucena"
+provincia: "Córdoba"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://lucena.es"
+  adapter: municipio.adapters.lucena:LucenaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.eprinsa.es/lucena"
+    tablon_url: "https://sede.eprinsa.es/lucena/tablon-de-edictos"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-lucena/1.0"
+    centroid: [37.4089, -4.4853]
+  notes: |
+    Fuentes: lucena.es (WordPress Divi: urbanismo, normativa, noticias WP REST)
+    + transparencia.lucena.es (publicidad activa PGOU)
+    + sede eprinsa/Diputación Córdoba (tablón SPA).
+    Visor histórico urbanismo.aytolucena.es inaccesible; sin GIS municipal enlazable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
