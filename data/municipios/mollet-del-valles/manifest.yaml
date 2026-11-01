@@ -1,0 +1,28 @@
+slug: mollet-del-valles
+nombre: "Mollet del Vallès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.molletvalles.cat"
+  adapter: municipio.adapters.mollet_del_valles:MolletDelVallesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mollet-del-valles/1.0"
+    web_base: "https://www.molletvalles.cat"
+    tramits_base: "https://tramits.molletvalles.cat/Ciutadania"
+    max_search_pages: 5
+    centroid: [41.5403, 2.2131]
+    cod_ine_mun: "08120"
+  notes: |
+    Plone (urbanisme, POUM, notícies RSS) + cerca @@search planejament.
+    Catàleg tràmits ASP.NET (tramits.molletvalles.cat) — sense tablón públic de licencias concedidas.
+    Seu própia (seu.molletvalles.cat) sense opensiac/STA.
+    Geoportal Nexus (molletgp42) enlazado desde POUM; capa AMB Expedients vacía per INE 08120.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
