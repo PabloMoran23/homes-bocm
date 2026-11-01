@@ -1,0 +1,29 @@
+slug: san-agustin-de-guadalix
+nombre: "San Agustín del Guadalix"
+provincia: Madrid
+comunidad_autonoma: comunidad-madrid
+
+portal:
+  base_url: "https://sanagustindelguadalix.net"
+  adapter: municipio.adapters.san_agustin_de_guadalix:SanAgustinDeGuadalixAyuntamientoAdapter
+  config:
+    sede_base: "https://sanagustindelguadalix.sedelectronica.es"
+    board_url: "https://sanagustindelguadalix.sedelectronica.es/board/"
+    dossier_url: "https://sanagustindelguadalix.sedelectronica.es/dossier"
+    formularios_url: "https://sanagustindelguadalix.net/formularios-solicitudes/"
+    urbanismo_root: "https://sanagustindelguadalix.net/portal-transparencia/normativa-urbanismo/"
+    urbanismo_page_id: 25892
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-agustin-de-guadalix/1.0"
+    centroid: [40.6860, -3.6321]
+  notes: |
+    Mismo ayuntamiento físico que san-agustin-del-guadalix (BOCM alterna «de»/«del»).
+    WordPress Divi transparencia + tablón espublico gestiona.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
