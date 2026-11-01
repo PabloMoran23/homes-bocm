@@ -1,0 +1,26 @@
+slug: irun
+nombre: "Irun"
+provincia: Gipuzkoa
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.irun.org"
+  adapter: municipio.adapters.irun:IrunAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-irun/1.0"
+    centroid: [43.3378, -1.7888]
+    web_base: "https://www.irun.org"
+    enrich_details: true
+  notes: |
+    Joomla (plantilla adiplantilla): tablas HTML de expedientes en exposición pública y
+    planeamiento aprobado; fichas /es/obras/...?idob= con metadatos y PDFs SAC.
+    Tablón digital (acordeón) + catálogo de trámites de obras/licencias en urbanismo.
+    Geocallejero (callejero) sin enlace a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
