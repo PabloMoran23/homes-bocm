@@ -1,0 +1,26 @@
+slug: tudela
+nombre: "Tudela"
+provincia: Navarra
+comunidad_autonoma: navarra
+
+portal:
+  base_url: "https://www.tudela.es"
+  adapter: municipio.adapters.tudela:TudelaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tudela/1.0"
+    sede_base: "https://sede.tudela.es"
+    centroid_lat: 42.0619
+    centroid_lon: -1.6044
+    max_anuncio_pages: 25
+  notes: |
+    Web corporativa (Symfony): anuncios de urbanismo + PDFs de planeamiento en /docs/urbanismo/.
+    Sede STA T-Systems: tablón PTS2_TABLON (dataset embebido) y catálogo CATSERV.
+    Sin visor municipal enlazado a expedientes; geometría vía orquestador (centroide + jitter).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
