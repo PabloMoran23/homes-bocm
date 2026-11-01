@@ -1,0 +1,27 @@
+slug: manacor
+nombre: "Manacor"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://manacor.eadministracio.cat"
+  adapter: municipio.adapters.manacor:ManacorAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-manacor/1.0"
+    web_base: "https://manacor.org"
+    sede_base: "https://manacor.eadministracio.cat"
+    board_url: "https://manacor.eadministracio.cat/board"
+    transparency_urban_url: "https://manacor.eadministracio.cat/transparency/32805cd0-06d5-40e5-8879-2e8304830f35/"
+    centroid: [39.5696, 3.2096]
+  notes: |
+    Web corporativa Drupal 10 (manacor.org) + sede espublico (manacor.eadministracio.cat).
+    Tablón /board, transparencia urbanismo, noticias sección urbanismo, PGOU (plageneral.manacor.org).
+    Visor SITMUN (sitmun.idelma.cat/urb_manacor) sin WFS público enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
