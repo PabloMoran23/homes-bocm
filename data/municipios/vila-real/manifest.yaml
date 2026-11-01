@@ -1,0 +1,29 @@
+slug: vila-real
+nombre: "Vila-real"
+provincia: Vila-real (Castellón)
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.vila-real.es/portal"
+  adapter: municipio.adapters.vila_real:VilaRealAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vila-real/1.0"
+    centroid_lat: 39.9367
+    centroid_lon: 0.1013
+    web_base: "https://www.vila-real.es/portal"
+    sede_base: "https://seuelectronica.vila-real.es"
+    sede_insecure_ssl: true
+  notes: |
+    Portal eAdmin (JSP) + sede STA TAO (tablón PTS2_TABLON + catálogo CATSERV).
+    Planeamiento: tablas s_ldoc_d11 (planes parciales) y PDF PGOU consolidado.
+    Geometría: ICV WFS sin polígonos para INE 12135; visor municipal app.vila-real.es inaccesible.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+boletin_source_id: dogv
