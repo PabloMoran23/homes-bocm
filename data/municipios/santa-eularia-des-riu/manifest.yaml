@@ -1,0 +1,29 @@
+slug: santa-eularia-des-riu
+nombre: "Santa Eulària des Riu"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://santaeulariadesriu.sedelectronica.es"
+  adapter: municipio.adapters.santa_eularia_des_riu:SantaEulariaDesRiuAyuntamientoAdapter
+  config:
+    sede_base: "https://santaeulariadesriu.sedelectronica.es"
+    board_url: "https://santaeulariadesriu.sedelectronica.es/board"
+    web_base: "https://www.santaeulariadesriu.com"
+    ordenacion_url: "https://www.santaeulariadesriu.com/ca/departaments/territori-urbanisme-i-activitats/ordenacio-del-territori-i-urbanisme"
+    visor_url: "https://www.santaeularia.com:444/geoxarc/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-santa-eularia-des-riu/1.0"
+    centroid: [38.984, 1.534]
+  notes: |
+    Joomla/YOOtheme (santaeulariadesriu.com) + sede espublico gestiona.
+    Tablón /board y consulta /expedientes; trámites y PDFs en ordenació urbanisme.
+    Visor GeoXarc (santaeularia.com:444) — WMS interno sin API pública enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
