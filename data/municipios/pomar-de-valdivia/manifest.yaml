@@ -1,0 +1,29 @@
+slug: pomar-de-valdivia
+nombre: "Pomar de Valdivia"
+provincia: "Pomar de Valdivia (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://pomardevaldivia.es"
+  adapter: municipio.adapters.pomar_de_valdivia:PomarDeValdiviaAyuntamientoAdapter
+  config:
+    web_base: "https://pomardevaldivia.es"
+    sede_base: "https://pomardevaldivia.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-pomar-de-valdivia/1.0 (+urbanismo research)"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Pomar de Valdivia"
+    centroid: [42.8123, -4.1645]
+  notes: |
+    WordPress Diputación de Palencia (galería urbanismo + Download Monitor)
+    + sede espublico gestiona (tablón/catálogo)
+    + PLAU/PLAI Junta CYL (prov=34, mun=135, INE 34135)
+    + IDECyL WFS sectores/instrumentos (n_mun='Pomar de Valdivia').
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
