@@ -1,0 +1,28 @@
+slug: cerdanyola-del-valles
+nombre: "Cerdanyola del Vallès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "http://www.cerdanyola.cat"
+  adapter: municipio.adapters.cerdanyola_del_valles:CerdanyolaDelVallesAyuntamientoAdapter
+  config:
+    web_base: "http://www.cerdanyola.cat"
+    seu_e_base: "https://seu-e.cat"
+    sede_base: "https://seu.cerdanyola.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cerdanyola/1.0"
+    insecure_ssl: true
+    fetch_timeout_s: 90
+    centroid: [41.4911, 2.1408]
+  notes: |
+    Drupal 7 (urbanisme, actualitat, PIG) + seu-e Liferay (planejament / IP urbanística).
+    Sede STA seu.cerdanyola.cat sin dataset tablón en HTML; anuncios en e-Tauler 826650006.
+    SIG Enmapa (sig.cerdanyola.cat) visor alineaciones; AMB Expedients sin filas INE 08074.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
