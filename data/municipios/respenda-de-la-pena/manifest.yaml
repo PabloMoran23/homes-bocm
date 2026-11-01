@@ -1,0 +1,28 @@
+slug: respenda-de-la-pena
+nombre: "Respenda de la Peña"
+provincia: "Respenda de la Peña (Palencia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://respendadelapena.es"
+  adapter: municipio.adapters.respenda_de_la_pena:RespendaDeLaPenaAyuntamientoAdapter
+  config:
+    web_base: "https://respendadelapena.es"
+    sede_base: "https://respendadelapena.sedelectronica.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-respenda-de-la-pena/1.0"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Respenda de la Peña"
+    centroid: [42.732, -4.776]
+  notes: |
+    WordPress corporativo + sede espublico gestiona (tablón/catálogo)
+    + PlanPublica JCyL (provincia 34, municipio 151, INE 34151)
+    + IDECyL WFS instrumento NUM.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
