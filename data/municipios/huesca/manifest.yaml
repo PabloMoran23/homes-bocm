@@ -1,0 +1,32 @@
+slug: huesca
+nombre: "Huesca"
+provincia: Huesca
+comunidad_autonoma: aragon
+
+portal:
+  base_url: "https://www.huesca.es"
+  adapter: municipio.adapters.huesca:HuescaAyuntamientoAdapter
+  config:
+    liferay_base: "https://www.huesca.es"
+    sede_base: "https://sedeelectronica.huesca.es/eAdmin"
+    tablon_url: "https://sedeelectronica.huesca.es/eAdmin/Tablon.do?action=verAnuncios&tipoTablon=1"
+    catalogo_urbanismo_url: "https://www.huesca.es/ayuntamiento/tramites-y-gestiones/catalogo-de-tramites/urbanismo"
+    wayback_snapshot: "20250422193846"
+    wayback_fallback: true
+    sede_fetch_timeout_s: 20
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-huesca/1.0"
+    centroid: [42.1361, -0.4087]
+  notes: |
+    Liferay www.huesca.es (área Urbanismo, documentos PGOU/modificaciones, noticias /w/) +
+    sede eAdmin Maggioli (tablón tipoTablon=1; fallback Wayback si timeout en cloud) +
+    catálogo de trámites urbanísticos (páginas informativas licencias).
+    GeoInfo Huesca (gis.huesca.es) visores sin join a expediente; geometry_status unavailable.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
