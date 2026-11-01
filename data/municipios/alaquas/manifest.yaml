@@ -1,0 +1,30 @@
+slug: alaquas
+nombre: "Alaquàs"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.alaquas.org"
+  adapter: municipio.adapters.alaquas:AlaquasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alaquas/1.0"
+    centroid: [39.456, -0.462]
+    sede_base: "https://alaquas.sedelectronica.es"
+    board_url: "https://alaquas.sedelectronica.es/board"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      layer_su: "ms:InventarioSuSuz"
+      layer_zon: "Planeamiento.Zonificacion"
+      ine_municipio: "46004"
+  notes: |
+    Sede espublico gestiona (tablón /board, preview-document PDFs).
+    Web corporativa alaquas.org (monografías PGOU/sectores) — 403 desde algunos entornos cloud.
+    Geometría parcial vía ICV WFS (COD_INE 46004) + visor GVA.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
