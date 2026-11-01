@@ -1,0 +1,50 @@
+slug: castro-urdiales
+nombre: "Castro-Urdiales"
+provincia: Cantabria
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://www.castro-urdiales.net"
+  adapter: municipio.adapters.castro_urdiales:CastroUrdialesAyuntamientoAdapter
+  config:
+    web_base: "https://www.castro-urdiales.net"
+    urbanismo_url: "https://www.castro-urdiales.net/servicios.aspx?vista=servicios-ciudadania&cod=urbanismo"
+    sede_base: "https://sedeelectronica.castro-urdiales.net"
+    aucan_url: "https://aplicacionesweb.cantabria.es/aucan/public/zona/costaoriental/castrourdiales"
+    cod_ine: "39020"
+    sede_insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castro-urdiales/1.0"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    centroid: [43.382, -3.220]
+  notes: |
+    Web municipal ASP.NET (Micastro) con PDFs en recursosWEB/publicaciones.
+    Sede Maggioli ATM (certificado SSL caducado; sede_insecure_ssl).
+    Exposición pública en sede SPA (sin listado scrapeable).
+    Geometría: WFS Cantabria Urbanismo:Sectores (INE 39020) + AUCAN PGOU.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.28, 43.34],
+              [-3.15, 43.34],
+              [-3.15, 43.43],
+              [-3.28, 43.43],
+              [-3.28, 43.34],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
