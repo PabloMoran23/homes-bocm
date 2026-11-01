@@ -1,0 +1,28 @@
+slug: san-juan-de-la-rambla
+nombre: "San Juan de la Rambla"
+provincia: "Santa Cruz de Tenerife"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://www.sanjuandelarambla.es"
+  adapter: municipio.adapters.san_juan_de_la_rambla:SanJuanDeLaRamblaAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.sanjuandelarambla.es"
+    edictos_rss: "https://sede.sanjuandelarambla.es/publico/sindicacion/edictos/RSS"
+    sitcan_package: "planeamiento-urbanistico-de-san-juan-de-la-rambla"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38034/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-juan-de-la-rambla/1.0"
+    centroid: [28.3897, -16.6472]
+  notes: |
+    WordPress Divi (noticias PMUS/urbanismo) + sede Galileo GIYS (edictos RSS, tablón, procedimientos).
+    Planeamiento sistematizado SITCAN/GRAFCAN (9 recursos, 3 instrumentos) con geometría GeoBDP.
+    Visor expedientes sede (mapa 38034_CEXP) vía cit.galileoiys.es — no accesible desde CI.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
