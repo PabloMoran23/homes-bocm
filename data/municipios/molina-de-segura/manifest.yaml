@@ -1,0 +1,39 @@
+slug: molina-de-segura
+nombre: "Molina de Segura"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://sedeelectronica.molinadesegura.es"
+  adapter: municipio.adapters.molina_de_segura:MolinaDeSeguraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-molina-de-segura/1.0"
+    sede_base: "https://sedeelectronica.molinadesegura.es"
+    sta_base: "https://cciudadana.molinadesegura.es"
+    urbanismo_base: "https://urbanismo.molinadesegura.es"
+    info_url: "https://sedeelectronica.molinadesegura.es/informacion-urbanistica/"
+    tablon_url: "https://cciudadana.molinadesegura.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=TABLON"
+    catalogo_url: "https://cciudadana.molinadesegura.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Molina%20de%20Segura%27&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30027"
+    centroid: [38.10506, -1.20726]
+    insecure_ssl: true
+    archive_fallback: true
+  notes: |
+    Información urbanística (tabla WP en sede) + tablón STA cciudadana + PGMO urbanismo.molinadesegura.es.
+    Geometría parcial: WFS SITMURCIA plu_ze_37_mun_uso_suelo (ámbitos PGMO).
+
+licencias:
+  enabled: true
+  notes: Tablón STA (edictos) + fichas trámites urbanismo en sede (obra mayor, comunicación previa, etc.).
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
