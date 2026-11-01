@@ -1,0 +1,32 @@
+slug: rosinos-de-la-requejada
+nombre: "Rosinos de la Requejada"
+provincia: "Rosinos de la Requejada (Zamora)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://rosinosdelarequejada.sedelectronica.es"
+  adapter: municipio.adapters.rosinos_de_la_requejada:RosinosDeLaRequejadaAyuntamientoAdapter
+  config:
+    sede_base: "https://rosinosdelarequejada.sedelectronica.es"
+    planpublica_provincia: 49
+    planpublica_municipio: 215
+    ine_code: "49215"
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/wfs"
+    wfs_municipio: "Rosinos de la Requejada"
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=49215"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=49&municipio=215"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=49&municipio=215"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rosinos-de-la-requejada/1.0 (+urbanismo research)"
+    centroid: [42.1323, -6.5113]
+    insecure_ssl: true
+  notes: |
+    Dominio www.rosinosdelarequejada.es reservado (Diputación de Zamora). Sede espublico gestiona
+    + PlanPublica/SiuCyL (Zamora 215) + IDECyL WFS. Ver RESEARCH.md.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
