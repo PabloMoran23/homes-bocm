@@ -1,0 +1,41 @@
+slug: crevillent
+nombre: Crevillent
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: https://crevillent.es
+  adapter: municipio.adapters.crevillent:CrevillentAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: poc-bocm-crevillent/1.0
+    cod_ine_mun: "03059"
+    centroid: [38.2478, -0.8094]
+    sede_base: https://crevillent.sedipualba.es
+    wfs_max_startindex: 4000
+    skip_icv_wfs: true
+    geometry:
+      kind: icv_wfs
+      wfs_url: https://terramapas.icv.gva.es/0702_Planeamiento
+      type_name: ms:InventarioSuSuz
+  notes: |
+    WordPress (crevillent.es) documentación PGOU en oficina técnica +
+    sede sedipualba (tablón RSS + catálogo trámites URB área 1547) +
+    ICV WFS InventarioSuSuz (cod_ine_mun 03059).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  centroid: [38.2478, -0.8094]
+  jitter_missing: true
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
