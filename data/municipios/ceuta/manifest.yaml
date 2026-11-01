@@ -1,0 +1,25 @@
+slug: ceuta
+nombre: "Ceuta"
+provincia: Ceuta
+comunidad_autonoma: ceuta
+
+portal:
+  base_url: "https://www.ceuta.es/ceuta"
+  adapter: municipio.adapters.ceuta:CeutaAyuntamientoAdapter
+  config:
+    web_base: "https://www.ceuta.es/ceuta"
+    sede_base: "https://sede.ceuta.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ceuta/1.0"
+    centroid: [35.8894, -5.3213]
+    bocce_max_issues: 6
+  notes: |
+    Portal institucional Joomla (PGOU 2023, jDownloads) + BOCCE + sede electrónica (controlador trámites).
+    Tablón web requiere URL embebida (sin listado HTML scrapeable). Visor PGOU: mapas interactivos en Tomo 5/6.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
