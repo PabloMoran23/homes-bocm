@@ -41,9 +41,9 @@ run_case() {
   esac
   if [ "$expected" -eq 0 ]; then
     case "$out" in
-      *"vercel-should-build: skip (no changes under web/"*) ;;
+      *"vercel-should-build: skip (no changes under web/"*|*"vercel-should-build: skip (explicit [skip deploy] in commit)"*) ;;
       *)
-        fail "$name: skip without the web/ log. output: $out"
+        fail "$name: skip without an explicit reason. output: $out"
         return
         ;;
     esac
@@ -115,12 +115,24 @@ make_fixture() {
 
   git -C "$repo" mv web/app/page.tsx docs/page.tsx
   FIX_RENAME="$(commit "$repo" "rename out of web")"
+  git -C "$repo" checkout -q -b skip-deploy-fixture
+  printf 'marker\n' > "$repo/web/app/marker.tsx"
+  FIX_SKIP_DEPLOY="$(commit "$repo" "chore: administrative batch [skip deploy]")"
+  git -C "$repo" checkout -q main
   install_script "$repo"
 }
 
 make_fixture
 
 SCRIPT="$TMP/origin/web/scripts/vercel-should-build.sh"
+
+run_case "marker skips without previous SHA" 0 "skip (explicit [skip deploy] in commit)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_GIT_COMMIT_SHA="$FIX_SKIP_DEPLOY" \
+  bash "$SCRIPT"
+
+run_case "marker skips web changes" 0 "skip (explicit [skip deploy] in commit)" \
+  env VERCEL_GIT_PREVIOUS_SHA="$FIX_RENAME" VERCEL_GIT_COMMIT_SHA="$FIX_SKIP_DEPLOY" \
+  bash "$SCRIPT"
 
 run_case "no previous SHA" 1 "no VERCEL_GIT_PREVIOUS_SHA" \
   env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_GIT_COMMIT_SHA="$FIX_RENAME" \

@@ -1,10 +1,6 @@
 name: Municipio post-merge
 on:
-  push:
-    branches: [main]
-    paths:
-      - "data/municipios/**/manifest.yaml"
-      - "municipio/adapters/**"
+  # La integración solo incorpora manifests; el cron de refresh ejecuta después.
   workflow_dispatch:
     inputs:
       slug:
