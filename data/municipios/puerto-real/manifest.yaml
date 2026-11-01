@@ -1,0 +1,32 @@
+slug: puerto-real
+nombre: "Puerto Real"
+provincia: Cádiz
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://puertoreal.es"
+  adapter: municipio.adapters.puerto_real:PuertoRealAyuntamientoAdapter
+  config:
+    wp_base: "https://puertoreal.es"
+    sede_base: "https://sede.eprinsa.es/puertoreal"
+    tablon_url: "https://sede.eprinsa.es/puertoreal/tablon-de-edictos"
+    pgou_url: "https://puertoreal.es/aprobacion-definitiva-pgou/"
+    urbanismo_url: "https://puertoreal.es/atencion-a-la-ciudadania/servicios-municipales/urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-puerto-real/1.0"
+    max_noticias: 45
+    centroid: [36.5289, -6.1486]
+  notes: |
+    WordPress 6tems: PGOU definitivo (PDFs en página dedicada), ordenanzas urbanísticas vía REST,
+    noticias municipales (sitemap + metadatos Yoast). Sede eprinsa (Diputación Córdoba) para tablón y trámites.
+  geometry:
+    kind: unavailable
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
