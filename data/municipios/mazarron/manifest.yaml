@@ -1,0 +1,33 @@
+slug: mazarron
+nombre: "Mazarrón"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://www.mazarron.es"
+  adapter: municipio.adapters.mazarron:MazarronAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mazarron/1.0"
+    web_base: "https://www.mazarron.es"
+    sede_base: "https://sede.mazarron.es"
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Mazarr%C3%B3n%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+    cod_ine: "30027"
+    centroid: [37.599, -1.314]
+  notes: |
+    OpenCms (mazarron.es) listados de planes y convenios PGMO + sede STA (tablón/catálogo).
+    Geometría parcial vía WFS SITMURCIA (ámbitos S_03-*, A_05-01/*, SGEL).
+
+licencias:
+  enabled: true
+  notes: Tablón STA + trámites catálogo + página informativa licencias urbanísticas.
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
