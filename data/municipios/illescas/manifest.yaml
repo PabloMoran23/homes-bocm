@@ -1,0 +1,50 @@
+slug: illescas
+nombre: "Illescas"
+provincia: Toledo
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://illescas.sedelectronica.es"
+  adapter: municipio.adapters.illescas:IllescasAyuntamientoAdapter
+  config:
+    sede_base: "https://illescas.sedelectronica.es"
+    board_url: "https://illescas.sedelectronica.es/board"
+    transparency_url: "https://illescas.sedelectronica.es/transparency"
+    dossier_url: "https://illescas.sedelectronica.es/dossier"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-illescas/1.0"
+    centroid: [40.1228, -3.8456]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "45081"
+  notes: |
+    Sede espublico gestiona: tablón de anuncios, portal de transparencia (carpeta 7 urbanismo)
+    y catálogo de trámites. Web corporativa illescas.es no responde desde entornos CI.
+    Geometría parcial: polígono POM municipal vía ArcGIS CLM (COD_INE=45081).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.98, 40.02],
+              [-3.70, 40.02],
+              [-3.70, 40.22],
+              [-3.98, 40.22],
+              [-3.98, 40.02],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox Illescas (La Sagra, Toledo)"
