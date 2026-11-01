@@ -1,0 +1,28 @@
+slug: granollers
+nombre: "Granollers"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.granollers.cat"
+  adapter: municipio.adapters.granollers:GranollersAyuntamientoAdapter
+  config:
+    web_base: "https://www.granollers.cat"
+    sede_portal: "https://seuelectronica.granollers.cat/portal/sede"
+    sede_sta: "https://seuelectronica.granollers.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-granollers/1.0"
+    centroid: [41.6080, 2.2877]
+  notes: |
+    Sede JSP (normativa urbanística): planejament en tràmit (144), derivat aprovat (145),
+    instruments de gestió (151), instruments de planificació (102) — blocs <strong> + PDFs.
+    Catálogo trámites (codbusqueda=65): licencias/comunicaciones previas (búsqueda por palabra).
+    Tablón STA PTS2_TABLON requiere AJAX (sin dataset embebido); e-Tauler SPA (809610007).
+    Geoportal Hub (Urbanisme) sin capa enlazada a expedientes; AMB Expedients sin filas INE 08108.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
