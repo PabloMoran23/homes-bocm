@@ -1,0 +1,30 @@
+slug: santa-lucia-de-tirajana
+nombre: "Santa Lucía de Tirajana"
+provincia: Santa Lucía de Tirajana
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://santaluciadetirajana.sedelectronica.es"
+  adapter: municipio.adapters.santa_lucia_de_tirajana:SantaLuciaDeTirajanaAyuntamientoAdapter
+  config:
+    sede_base: "https://santaluciadetirajana.sedelectronica.es"
+    board_url: "https://santaluciadetirajana.sedelectronica.es/board"
+    sitcan_package: planeamiento-urbanistico-de-santa-lucia-de-tirajana
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35022/"
+    idecanarias_pgo_index: "https://www.idecanarias.es/resources/PLA_ENP_URB/URB_PLA/GC/SLuc/719/indice.html"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-lucia-de-tirajana/1.0"
+    centroid: [27.9125, -15.5408]
+  notes: |
+    Sede espublico gestiona (tablón /board) + SITCAN CKAN planeamiento-urbanistico-de-santa-lucia-de-tirajana
+    + GEOBDP Grafcan INE 35022 + índices IDECanarias PGO (GC/SLuc).
+    El dominio www.santaluciadetirajana.es no resolvió DNS en CI (oct-2026).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
