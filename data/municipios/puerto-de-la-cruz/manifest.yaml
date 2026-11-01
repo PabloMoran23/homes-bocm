@@ -1,0 +1,27 @@
+slug: puerto-de-la-cruz
+nombre: "Puerto de la Cruz"
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://ciudadsostenible.puertodelacruz.es"
+  adapter: municipio.adapters.puerto_de_la_cruz:PuertoDeLaCruzAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-puerto-de-la-cruz/1.0"
+    sitcan_package: planeamiento-urbanistico-de-puerto-de-la-cruz
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38039/"
+    sede_base: "https://puertodelacruz.sedelectronica.es"
+    board_url: "https://puertodelacruz.sedelectronica.es/board"
+  notes: |
+    Portal Ciudad Sostenible (Divi/WP) para trámites y normativa urbanística.
+    Sede espublico gestiona: tablón /board y catálogo /dossier.
+    Planeamiento en SITCAN (opendata.sitcan.es) y geometrías en GEOBDP Grafcan (INE 38039).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
