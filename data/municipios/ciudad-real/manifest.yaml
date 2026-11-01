@@ -1,0 +1,23 @@
+slug: ciudad-real
+nombre: "Ciudad Real"
+provincia: Ciudad Real
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.ciudadreal.es"
+  adapter: municipio.adapters.ciudad_real:CiudadRealAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ciudad-real/1.0"
+    centroid: [38.986, -3.927]
+  notes: |
+    Joomla: planeamiento en páginas del servicio de urbanismo con PDFs en
+    /documentos/urbanismo/planeamiento/ y convenios en /documentos/conveniosurbanismo/.
+    Licencias: memoria anual y formularios; sin tablón STA de concesiones.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
