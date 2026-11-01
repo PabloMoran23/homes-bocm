@@ -1,0 +1,31 @@
+slug: onzonilla-y-vega-de-infanzones
+nombre: "Onzonilla y Vega de Infanzones"
+provincia: "Onzonilla y Vega de Infanzones (León)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.aytoonzonilla.es"
+  adapter: municipio.adapters.onzonilla_y_vega_de_infanzones:OnzonillaYVegaDeInfanzonesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-onzonilla-y-vega-de-infanzones/1.0"
+    web_base: "https://www.aytoonzonilla.es"
+    sede_base: "https://ayuntamientodeonzonilla.sedelectronica.es"
+    board_url: "https://ayuntamientodeonzonilla.sedelectronica.es/board"
+    info_url: "https://ayuntamientodeonzonilla.sedelectronica.es/info"
+    wfs_municipios:
+      - Onzonilla
+      - Vega de Infanzones
+    insecure_ssl: true
+  notes: |
+    Ayuntamiento principal en Onzonilla (OpenCms Samdipu León). Sede espublico en
+    ayuntamientodeonzonilla.sedelectronica.es (no onzonilla.sedelectronica.es).
+    Vega de Infanzones no tiene web propia; planeamiento vía PlanPublica (municipio 197)
+    e IDECyL WFS urbanismo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
