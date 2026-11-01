@@ -1,0 +1,31 @@
+slug: rivilla-de-barajas
+nombre: "Rivilla de Barajas"
+provincia: "Rivilla de Barajas (Ávila)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.rivilladebarajas.es"
+  adapter: municipio.adapters.rivilla_de_barajas:RivillaDeBarajasAyuntamientoAdapter
+  config:
+    wp_base: "https://www.rivilladebarajas.es"
+    sede_base: "https://rivilladebarajas.sedelectronica.es"
+    board_url: "https://rivilladebarajas.sedelectronica.es/board"
+    plau_provincia: 5
+    plau_municipio: 196
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rivilla-de-barajas/1.0"
+    insecure_ssl: true
+    centroid: [40.875, -5.0156]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Rivilla de Barajas
+  notes: |
+    Web WordPress (tema Evolve). Sede espublico gestiona: tablón /board y catálogo /dossier.
+    PlanPublica JCyL prov05 mun196 (SPG, cDocId 276994).
+    Geometría: IDECyL WFS PLAU CyL (1 instrumento ámbito SPG).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
