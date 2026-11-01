@@ -1,0 +1,31 @@
+slug: palazuelos-de-eresma
+nombre: "Palazuelos de Eresma"
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://palazuelosdeeresma.es"
+  adapter: municipio.adapters.palazuelos_de_eresma:PalazuelosDeEresmaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-palazuelos-de-eresma/1.0"
+    sede_base: "https://palazuelosdeeresma.sedelectronica.es"
+    plau_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlau.do?bInfoPublica=N&provincia=40&municipio=155"
+    plai_url: "https://servicios.jcyl.es/PlanPublica/searchVPubDocMuniPlai.do?bInfoPublica=S&provincia=40&municipio=155"
+    wfs_municipio: "Palazuelos de Eresma"
+    wp_planeamiento_url: "https://palazuelosdeeresma.es/urbanismo-y-obras/"
+    tramite_pages:
+      - url: "https://palazuelosdeeresma.sedelectronica.es/dossier.5"
+        titulo: "Solicitud de Licencia o Autorización Urbanística"
+  notes: |
+    WordPress (palazuelosdeeresma.es) con enlace PLAU JCyL en urbanismo.
+    Sede espublico: tablón /board/, trámites /dossier.
+    PlanPublica provincia 40 / municipio 155 (INE 40155).
+    IDECyL WFS urbanismo (n_mun=Palazuelos de Eresma).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
