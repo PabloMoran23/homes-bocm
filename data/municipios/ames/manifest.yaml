@@ -1,0 +1,26 @@
+slug: ames
+nombre: "Ames"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.concellodeames.gal"
+  adapter: municipio.adapters.ames:AmesAyuntamientoAdapter
+  config:
+    web_base: "https://www.concellodeames.gal"
+    sede_base: "https://sede.concellodeames.gal/eAdmin"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ames/1.0"
+    max_siotuga_desarrollo: 60
+    centroid: [42.9042, -8.6550]
+  notes: |
+    Drupal corporativo (transparencia urbanismo/PXOM) + sede eAdmin (tablón digital, catálogo trámites).
+    Sección «Urbanismo» del tablón vacía; planeamiento vía SIOTUGA (INE 15002) y documentos transparencia.
+    Sin listado público de licencias concedidas con dirección.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
