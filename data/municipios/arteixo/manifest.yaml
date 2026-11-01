@@ -1,0 +1,27 @@
+slug: arteixo
+nombre: "Arteixo"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://sede.arteixo.org"
+  adapter: municipio.adapters.arteixo:ArteixoAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.arteixo.org"
+    web_base: "https://arteixo.org"
+    siotuga_inventario: "https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=15005&lang=es_ES"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arteixo/1.0"
+    max_tablon_pages: 30
+    centroid: [43.3047, -8.5075]
+  notes: |
+    Sede electrónica Diputación A Coruña (OpenCms SXC): tablón HTML paginado + buscador POST.
+    Trámites urbanismo en /sxc/es/procedimientosytramites/ (licencias, comunicaciones previas).
+    Planeamiento: inventario SIOTUGA Xunta (INE 15005) y anuncios «Urbanismo - Planeamiento».
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
