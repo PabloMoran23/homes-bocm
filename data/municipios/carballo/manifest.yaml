@@ -1,0 +1,26 @@
+slug: carballo
+nombre: "Carballo"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://carballo.gal"
+  adapter: municipio.adapters.carballo:CarballoAyuntamientoAdapter
+  config:
+    web_base: "https://carballo.gal"
+    sede_base: "https://sede.carballo.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carballo/1.0"
+    max_siotuga_desarrollo: 60
+    centroid: [43.2134, -8.6910]
+  notes: |
+    Web WordPress (carballo.gal): urbanismo, PDFs «documentos en tramitación».
+    Sede SXC Diputación A Coruña (sede.carballo.gal): tablón POST + trámites urbanismo.
+    Planeamiento inventariado SIOTUGA (INE 15019). Sin listado público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
