@@ -1,0 +1,34 @@
+slug: peligros
+nombre: "Peligros"
+provincia: "Peligros, Granada"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://peligros.sedelectronica.es"
+  adapter: municipio.adapters.peligros:PeligrosAyuntamientoAdapter
+  config:
+    wp_base: "https://ayuntamientopeligros.es"
+    sede_base: "https://peligros.sedelectronica.es"
+    board_url: "https://peligros.sedelectronica.es/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-peligros/1.0"
+    centroid: [37.2322, -3.6865]
+    wp_search_terms:
+      - pevg
+      - planeamiento
+      - urbanismo
+      - estudio de detalle
+  notes: |
+    Fuentes: WordPress ayuntamientopeligros.es (transparencia urbanismo, PDFs PEVG) +
+    sede espublico gestiona (/board/, /dossier).
+    SITUA Junta de Andalucía; asistencia planeamiento Diputación Granada.
+    geometry_status: unavailable (sin visor GIS enlazable a expedientes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
