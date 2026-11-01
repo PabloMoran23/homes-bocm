@@ -1,0 +1,28 @@
+slug: oleiros
+nombre: "Oleiros"
+provincia: A Coruña
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.oleiros.org"
+  adapter: municipio.adapters.oleiros:OleirosAyuntamientoAdapter
+  config:
+    web_base: "https://www.oleiros.org"
+    sede_base: "https://sede.oleiros.org"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-oleiros/1.0"
+    max_siotuga_plans: 400
+    max_liferay_pages: 24
+    centroid: [43.3342, -8.3169]
+  notes: |
+    Web corporativa Liferay (oleiros.org): sección Urbanismo (PXOM, ordenacións en tramitación/aprobadas).
+    Sede electrónica STA (sede.oleiros.org): tablón PTS2_TABLON + catálogo CATSERV (keyword 37.URBANISMO).
+    Planeamiento inventariado en SIOTUGA Xunta (INE 15058).
+    Sin listado público de licencias concedidas; trámites informativos en catálogo.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
