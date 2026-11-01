@@ -1,0 +1,32 @@
+slug: ojen
+nombre: "Ojén"
+provincia: "Ojén, Málaga"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://www.ojen.es"
+  adapter: municipio.adapters.ojen:OjenAyuntamientoAdapter
+  config:
+    web_base: "https://www.ojen.es"
+    sede_base: "https://sede.malaga.es/ojen"
+    sede_legacy: "https://ojen.sedelectronica.es"
+    board_url: "https://sede.malaga.es/ojen/tablon-de-anuncios/"
+    impresos_url: "https://www.ojen.es/6031/impresos-formularios"
+    urbanismo_url: "https://www.ojen.es/11039/com1_md1_cd-18257/s08-urbanismo"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-ojen/1.0"
+    centroid: [36.5646, -4.8558]
+  notes: |
+    Web municipal Diputación Málaga (ojen.es) con WAF AWS en CI;
+    sede agregada sede.malaga.es/ojen (tablón + trámites; timeout SSL en CI);
+    espublico legacy (ojen.sedelectronica.es) inactiva;
+    planeamiento: NNSS revisadas (BOJA 2023/2026) + consulta SITUA (INE 29076).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
