@@ -838,3 +838,6 @@ geometry:
       axis_order: xy
       source: https://nominatim.openstreetmap.org (OSM admin boundary Samartín del Rei Aurelio)
     coordinates_crs: EPSG:4326
+
+geocode:
+  jitter_missing: false

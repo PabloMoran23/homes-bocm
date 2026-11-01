@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import re
@@ -82,12 +84,12 @@ def _fecha_from_blob(text: str) -> str | None:
     m = re.search(r"/(\d{4})/(\d{2})/", text or "")
     if m:
         try:
-            return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
+            return None  # No observed full date; preserve unknown precision.
         except ValueError:
             pass
     years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -364,6 +366,7 @@ class PozoblancoAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

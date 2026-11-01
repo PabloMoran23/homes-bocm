@@ -43,3 +43,6 @@ geometry:
             - [1.455, 39.035]
             - [1.235, 39.035]
             - [1.235, 38.855]
+
+geocode:
+  jitter_missing: false

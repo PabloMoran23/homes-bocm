@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import re
@@ -88,7 +90,7 @@ def _fecha_from_text(text: str, url: str = "") -> str | None:
         return f"{m.group(1)}-{m.group(2)}-01"
     years = [int(x.group(1)) for x in RE_YEAR.finditer(f"{text} {url}") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -419,6 +421,7 @@ class MotrilAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

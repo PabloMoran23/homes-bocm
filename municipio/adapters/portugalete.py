@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -183,6 +184,7 @@ class PortugaleteAyuntamientoAdapter(AyuntamientoAdapter):
         return json.loads(self._fetch(url, timeout_s=timeout_s))
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
@@ -272,7 +274,7 @@ class PortugaleteAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", f"arcgis-clas-{layer_id}"),
                 "municipio": MUNICIPIO,
                 "titulo": titulo,
-                "fecha": "2023-01-01",
+                "fecha": '2023',
                 "tipo": "PGOU",
                 "url": OPENDATA_CATALOG,
                 "source": "ayuntamiento",
@@ -308,7 +310,7 @@ class PortugaleteAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", f"opendata-global-{i}-{titulo[:80]}"),
                 "municipio": MUNICIPIO,
                 "titulo": titulo,
-                "fecha": "2023-01-01",
+                "fecha": '2023',
                 "tipo": _tipo_proyecto(titulo),
                 "url": OPENDATA_GLOBAL_JSON,
                 "source": "ayuntamiento",
@@ -419,7 +421,7 @@ class PortugaleteAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", OPENDATA_CATALOG),
                 "municipio": MUNICIPIO,
                 "titulo": "Planeamiento urbanístico Portugalete (catálogo Open Data Bizkaia)",
-                "fecha": "2023-01-01",
+                "fecha": '2023',
                 "tipo": "PGOU",
                 "url": OPENDATA_CATALOG,
                 "source": "ayuntamiento",

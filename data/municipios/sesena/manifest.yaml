@@ -55,3 +55,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox CLM Planeamiento COD_INE=45161"
+
+geocode:
+  jitter_missing: false

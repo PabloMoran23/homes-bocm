@@ -36,3 +36,6 @@ proyectos:
     - "Guadalix de la Sierra"
     - "Venturada"
     - "Cabanillas de la Sierra"
+
+geocode:
+  jitter_missing: false

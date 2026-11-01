@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import html as htmlmod
 import json
@@ -103,7 +104,7 @@ def _fecha_from_pdf_url(url: str) -> str | None:
     if not m:
         return None
     try:
-        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
+        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime('%Y-%m')
     except ValueError:
         return None
 
@@ -277,6 +278,7 @@ class CalafellAyuntamientoAdapter(AyuntamientoAdapter):
         return list(by_id.values())
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

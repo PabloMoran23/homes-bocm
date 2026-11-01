@@ -20,6 +20,24 @@ class SnapshotTests(unittest.TestCase):
         project = {'titulo': 'Plan parcial sector 3', 'expediente': '12/2025', 'url': 'https://sede.example/exp12'}
         self.assertEqual(reviewed_records(Path('proyectos.jsonl'), [ref, project]), [project])
 
+    def test_explicit_catalogue_stubs_and_procedures_are_not_projects(self):
+        rows = [{'titulo': 'Licencias urbanísticas', 'origen': origin,
+                 'expediente': '12/2025', 'url': 'https://sede.example/catalog'}
+                for origin in ('catalog_stub', 'catalogo', 'sede_tramite_info',
+                               'wp_form_pdf', 'portal_semilla')]
+        self.assertEqual(reviewed_records(Path('proyectos.jsonl'), rows), [])
+
+    def test_municipal_centroid_is_removed_but_real_geometry_centroid_survives(self):
+        base = {'titulo': 'Plan parcial sector 3', 'expediente': '12/2025',
+                'url': 'https://sede.example/exp12', 'lat': 38.2, 'lon': -1.4}
+        guessed = {**base, 'coord_source': 'municipio_centroid'}
+        measured = {**base, 'coord_source': 'portal_geometry_centroid'}
+        exported = reviewed_records(Path('proyectos.jsonl'), [guessed, measured])
+        self.assertNotIn('lat', exported[0])
+        self.assertNotIn('lon', exported[0])
+        self.assertEqual(exported[1], measured)
+        self.assertIn('lat', guessed)
+
 
 if __name__ == '__main__':
     unittest.main()

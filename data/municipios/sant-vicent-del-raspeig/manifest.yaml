@@ -30,7 +30,7 @@ proyectos:
   source: ayuntamiento
 
 geocode:
-  jitter_missing: true
+  jitter_missing: false
 
 geometry:
   validation:

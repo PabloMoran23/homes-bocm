@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -73,7 +74,7 @@ def _fecha_from_pdf_url(url: str) -> str | None:
     if not m:
         return None
     try:
-        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
+        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime('%Y-%m')
     except ValueError:
         return None
 
@@ -139,6 +140,7 @@ class SantJoanDespiAyuntamientoAdapter(AyuntamientoAdapter):
         return urllib.parse.urljoin(SEU, href)
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

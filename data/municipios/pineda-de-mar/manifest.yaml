@@ -40,3 +40,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado término municipal (costa Maresme)"
+
+geocode:
+  jitter_missing: false

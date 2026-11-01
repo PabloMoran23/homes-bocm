@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -134,7 +135,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -205,7 +206,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
             doc = pdfs[0] if pdfs else page_url
             url = doc if pdfs else page_url
             key = f"{titulo}|{doc}"
-            fecha = _fecha_from_blob(titulo, doc) or _fecha_from_blob("", page_url) or "1970-01-01"
+            fecha = _fecha_from_blob(titulo, doc) or _fecha_from_blob("", page_url) or None
             rec: dict[str, Any] = {
                 "id": _stable_id("proy", key),
                 "municipio": MUNICIPIO,
@@ -240,7 +241,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
                     "id": _stable_id("proy", u),
                     "municipio": MUNICIPIO,
                     "titulo": titulo or "Document urbanístic",
-                    "fecha": _fecha_from_blob(titulo, u) or "1970-01-01",
+                    "fecha": _fecha_from_blob(titulo, u) or None,
                     "tipo": _proyecto_tipo(titulo),
                     "url": u,
                     "source": "ayuntamiento",
@@ -303,7 +304,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
             "titulo": row["titulo"],
-            "fecha": row.get("fecha") or _fecha_from_blob(row["titulo"], url) or "1970-01-01",
+            "fecha": row.get("fecha") or _fecha_from_blob(row["titulo"], url) or None,
             "tipo": _proyecto_tipo(row["titulo"]),
             "url": url,
             "source": "ayuntamiento",
@@ -328,7 +329,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", u),
-                    "fecha_concesion": _fecha_from_blob(t, u) or "1970-01-01",
+                    "fecha_concesion": _fecha_from_blob(t, u) or None,
                     "tipo": t[:200],
                     "distrito": "Igualada",
                     "lat": None,
@@ -354,7 +355,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", url),
-                    "fecha_concesion": "1970-01-01",
+                    "fecha_concesion": None,
                     "tipo": label[:200],
                     "distrito": "Igualada",
                     "lat": None,
@@ -367,6 +368,7 @@ class IgualadaAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

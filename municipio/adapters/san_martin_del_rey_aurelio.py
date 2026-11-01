@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import re
@@ -93,7 +95,7 @@ def _iso_from_year(text: str) -> str | None:
     ]
     if not years:
         return None
-    return f"{max(years)}-01-01"
+    return None  # No observed full date; preserve unknown precision.
 
 
 def _strip_html(text: str) -> str:
@@ -193,6 +195,7 @@ class SanMartinDelReyAurelioAyuntamientoAdapter(AyuntamientoAdapter):
         return urllib.parse.urljoin(BASE, href)
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

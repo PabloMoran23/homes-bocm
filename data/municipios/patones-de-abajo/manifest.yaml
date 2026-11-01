@@ -33,3 +33,6 @@ proyectos:
   municipio_aliases:
     - "Patones de Abajo"
     - "Patones"
+
+geocode:
+  jitter_missing: false

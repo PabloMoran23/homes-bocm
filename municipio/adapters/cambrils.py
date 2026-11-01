@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -98,7 +99,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -214,7 +215,7 @@ class CambrilsAyuntamientoAdapter(AyuntamientoAdapter):
         titulo = self._page_title(html, slug.replace("-", " ").title())
         if not titulo:
             return None
-        fecha = self._page_fecha(html, titulo, url) or "1970-01-01"
+        fecha = self._page_fecha(html, titulo, url) or None
         rec: dict[str, Any] = {
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
@@ -246,7 +247,7 @@ class CambrilsAyuntamientoAdapter(AyuntamientoAdapter):
                     "id": _stable_id("proy", pdf_url),
                     "municipio": MUNICIPIO,
                     "titulo": titulo[:500],
-                    "fecha": _fecha_from_blob(titulo, pdf_url) or "1970-01-01",
+                    "fecha": _fecha_from_blob(titulo, pdf_url) or None,
                     "tipo": "POUM",
                     "url": POUM,
                     "documento_url": pdf_url,
@@ -271,7 +272,7 @@ class CambrilsAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", u),
-                    "fecha_concesion": _fecha_from_blob(titulo, u) or "1970-01-01",
+                    "fecha_concesion": _fecha_from_blob(titulo, u) or None,
                     "tipo": titulo[:200],
                     "distrito": "Cambrils",
                     "lat": None,
@@ -311,6 +312,7 @@ class CambrilsAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

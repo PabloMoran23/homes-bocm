@@ -48,3 +48,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox Illescas (La Sagra, Toledo)"
+
+geocode:
+  jitter_missing: false

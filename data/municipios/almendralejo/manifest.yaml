@@ -39,3 +39,6 @@ geometry:
         - [[-6.55, 38.64], [-6.28, 38.64], [-6.28, 38.76], [-6.55, 38.76], [-6.55, 38.64]]
       crs: "EPSG:4326"
       axis_order: "xy"
+
+geocode:
+  jitter_missing: false

@@ -32,3 +32,6 @@ proyectos:
   municipio_aliases:
     - "Paracuellos del Jarama"
     - "Paracuellos de Jarama"
+
+geocode:
+  jitter_missing: false

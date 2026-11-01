@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -116,7 +117,7 @@ def _parse_fecha(text: str) -> str | None:
                 pass
     years = re.findall(r"\b(20\d{2})\b", text or "")
     if years:
-        return f"{max(int(y) for y in years)}-01-01"
+        return f"{max(int(y) for y in years)}"
     return None
 
 
@@ -378,6 +379,7 @@ class BlanesAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

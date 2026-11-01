@@ -789,3 +789,6 @@ geometry:
       axis_order: xy
       source: https://idecyl.jcyl.es/geoserver/urbanismo/ows?service=WFS&version=2.0.0&request=GetFeature&typeName=urbanismo:plau_cyl_instrumentos_ambito&outputFormat=application/json&srsName=EPSG:4326&count=5&CQL_FILTER=n_mun%20%3D%20%27Sancedo%27
   notes: Límite municipal aproximado vía ámbito NUM IDECyL WFS (IGN sin coincidencia exacta).
+
+geocode:
+  jitter_missing: false

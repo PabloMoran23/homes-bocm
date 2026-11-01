@@ -52,3 +52,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado Puertollano + PGOU CLM COD_INE=13071"
+
+geocode:
+  jitter_missing: false

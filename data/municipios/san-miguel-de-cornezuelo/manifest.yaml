@@ -21,6 +21,7 @@ portal:
     Diputación Burgos + sede espublico + PLAI/PLAU JCyL (mun. 409) + IDECyL WFS.
 
 geocode:
+  jitter_missing: false
   official_boundary_municipio: "Valle de Manzanedo"
 
 geometry:

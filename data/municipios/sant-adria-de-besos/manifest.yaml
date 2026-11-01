@@ -44,3 +44,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado término municipal (IGN intermitente en cloud)"
+
+geocode:
+  jitter_missing: false

@@ -43,3 +43,6 @@ geometry:
         - [[3.95, 39.82], [4.38, 39.82], [4.38, 40.06], [3.95, 40.06], [3.95, 39.82]]
       crs: "EPSG:4326"
       axis_order: "xy"
+
+geocode:
+  jitter_missing: false

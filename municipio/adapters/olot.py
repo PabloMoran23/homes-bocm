@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -100,14 +101,14 @@ def _fecha_from_blob(text: str, section: str = "") -> str:
         if 1970 <= int(y.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     if section == "en_tramit":
-        return f"{datetime.now(timezone.utc).year}-01-01"
+        return None
     if section == "aprovades_pre_2003":
-        return "1998-01-01"
+        return '1998'
     if section == "aprovades_post_2003":
-        return "2010-01-01"
-    return "1970-01-01"
+        return '2010'
+    return None
 
 
 def _proyecto_tipo(titulo: str, section: str) -> str:
@@ -164,6 +165,7 @@ class OlotAyuntamientoAdapter(AyuntamientoAdapter):
         return urllib.parse.urljoin(f"{self.web_base}/", unescape(href))
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
@@ -217,7 +219,7 @@ class OlotAyuntamientoAdapter(AyuntamientoAdapter):
         pdfs = RE_PDF_HREF.findall(html)
         blob = " ".join(pdfs)
         fecha = _fecha_from_blob(blob, str(rec.get("seccion") or ""))
-        if fecha != "1970-01-01":
+        if fecha != None:
             rec["fecha"] = fecha
         if pdfs:
             rec["document_url"] = self._abs_url(pdfs[0])
@@ -278,7 +280,7 @@ class OlotAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", url),
-                    "fecha_concesion": "1970-01-01",
+                    "fecha_concesion": None,
                     "tipo": label[:200],
                     "distrito": MUNICIPIO,
                     "lat": None,

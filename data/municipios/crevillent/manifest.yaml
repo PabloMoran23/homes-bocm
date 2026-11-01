@@ -32,7 +32,7 @@ proyectos:
 
 geocode:
   centroid: [38.2478, -0.8094]
-  jitter_missing: true
+  jitter_missing: false
 
 geometry:
   validation:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -141,7 +142,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -231,7 +232,7 @@ class MolletDelVallesAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
             "titulo": titulo,
-            "fecha": row.get("fecha") or _fecha_from_blob(titulo, url) or "1970-01-01",
+            "fecha": row.get("fecha") or _fecha_from_blob(titulo, url) or None,
             "tipo": _proyecto_tipo(titulo),
             "url": url,
             "source": "ayuntamiento",
@@ -425,7 +426,7 @@ class MolletDelVallesAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", url),
-                    "fecha_concesion": "1970-01-01",
+                    "fecha_concesion": None,
                     "tipo": item["tipo"],
                     "distrito": MUNICIPIO,
                     "lat": None,
@@ -456,7 +457,7 @@ class MolletDelVallesAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", url),
-                    "fecha_concesion": "1970-01-01",
+                    "fecha_concesion": None,
                     "tipo": titulo[:200],
                     "distrito": MUNICIPIO,
                     "lat": None,
@@ -469,6 +470,7 @@ class MolletDelVallesAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

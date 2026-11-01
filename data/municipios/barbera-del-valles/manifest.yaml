@@ -40,3 +40,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado término municipal (MUC/RPUC 08252; visor sin API por expediente)"
+
+geocode:
+  jitter_missing: false

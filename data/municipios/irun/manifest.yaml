@@ -24,3 +24,6 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geocode:
+  jitter_missing: false

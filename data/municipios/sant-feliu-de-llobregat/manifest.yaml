@@ -39,3 +39,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado (IGN nameunit sin resultado para Sant Feliu de Llobregat)"
+
+geocode:
+  jitter_missing: false

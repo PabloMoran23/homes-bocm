@@ -397,3 +397,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: https://nominatim.openstreetmap.org (OSM administrative boundary, simplified)
+
+geocode:
+  jitter_missing: false

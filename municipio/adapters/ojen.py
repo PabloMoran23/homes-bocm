@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import base64
 import hashlib
 import http.cookiejar
@@ -85,7 +87,7 @@ def _fecha_from_blob(text: str) -> str | None:
         return dmy
     years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -345,7 +347,7 @@ class OjenAyuntamientoAdapter(AyuntamientoAdapter):
             },
             {
                 "titulo": "Fichas urbanísticas sectores S-6 a S-9 (NNSS Ojén) — BOJA 2026",
-                "fecha": "2025-12-04",
+                "fecha": None,
                 "url": self.boja_fichas_url,
                 "blob": (
                     "Fichas urbanísticas sectores S-6 S-7 S-8 S-9 plan parcial "
@@ -509,6 +511,7 @@ class OjenAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

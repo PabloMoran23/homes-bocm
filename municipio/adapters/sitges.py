@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -287,7 +288,7 @@ class SitgesAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", key),
             "municipio": MUNICIPIO,
             "titulo": titulo[:500],
-            "fecha": row.get("fecha") or "2020-01-01",
+            "fecha": row.get("fecha") or '2020',
             "tipo": tipo[:300],
             "url": url,
             "source": "ayuntamiento",
@@ -304,7 +305,7 @@ class SitgesAyuntamientoAdapter(AyuntamientoAdapter):
         url = row.get("url") or SEU_BASE
         return {
             "id": _stable_id("lic", f"{url}|{titulo}"),
-            "fecha_concesion": row.get("fecha") or "2020-01-01",
+            "fecha_concesion": row.get("fecha") or '2020',
             "tipo": titulo[:300],
             "distrito": "",
             "lat": None,
@@ -354,6 +355,7 @@ class SitgesAyuntamientoAdapter(AyuntamientoAdapter):
         return list(by_id.values())
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

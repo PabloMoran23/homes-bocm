@@ -27,3 +27,6 @@ proyectos:
   source: ayuntamiento
 
 boletin_source_id: dogv
+
+geocode:
+  jitter_missing: false

@@ -887,3 +887,6 @@ geometry:
       axis_order: xy
       source: https://nominatim.openstreetmap.org/ (OSM admin boundary)
   notes: Límite municipal OSM (IGN sin ficha exacta para este nombre).
+
+geocode:
+  jitter_missing: false

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import json
 import re
 from pathlib import Path
@@ -56,6 +58,7 @@ class NavatejeraAyuntamientoAdapter(VillaquilambreAyuntamientoAdapter):
     """
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         if "licencias" in path.name:
             kept = [_remap_record(r) for r in rows if _keep_licencia(r)]
         else:

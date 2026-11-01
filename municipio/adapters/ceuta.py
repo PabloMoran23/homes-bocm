@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import re
@@ -122,7 +124,7 @@ def _fecha_from_text(text: str) -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -250,7 +252,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
             except urllib.error.URLError:
                 continue
             page_title = self._page_heading(html, "PGOU Ceuta")
-            fecha_page = _fecha_from_text(html) or "2023-12-28"
+            fecha_page = _fecha_from_text(html) or None
             for href in RE_JDOWNLOAD.findall(html):
                 pdf_url = self._abs_url(href, page_url)
                 title = unescape(Path(urllib.parse.urlparse(pdf_url).path).name.replace("-", " "))
@@ -275,7 +277,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                     "Revisión y Adaptación PGOU Ceuta 2023 (página oficial)",
                     page_url,
                     None,
-                    "2023-12-28",
+                    None,
                 )
 
         return items
@@ -395,6 +397,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
         return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

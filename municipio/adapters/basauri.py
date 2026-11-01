@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -82,7 +83,7 @@ def _fecha_from_url(url: str) -> str | None:
     if not m:
         return None
     try:
-        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
+        return datetime(int(m.group(1)), int(m.group(2)), 1).strftime('%Y-%m')
     except ValueError:
         return None
 
@@ -265,7 +266,7 @@ class BasauriAyuntamientoAdapter(AyuntamientoAdapter):
             except urllib.error.URLError:
                 page = ""
             title = self._page_title(page, path.rsplit("/", 1)[-1].replace("-", " "))
-            fecha = self._page_fecha(page, url) or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            fecha = self._page_fecha(page, url) or None
             rec: dict[str, Any] = {
                 "id": _stable_id("proy", url),
                 "municipio": MUNICIPIO,
@@ -294,7 +295,7 @@ class BasauriAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", url),
                 "municipio": MUNICIPIO,
                 "titulo": titulo[:500],
-                "fecha": _fecha_from_url(url) or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "fecha": _fecha_from_url(url) or None,
                 "tipo": _tipo_proyecto(titulo),
                 "url": url,
                 "source": "ayuntamiento",
@@ -427,7 +428,7 @@ class BasauriAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", item["url"]),
                 "municipio": MUNICIPIO,
                 "titulo": item["titulo"],
-                "fecha": item.get("fecha") or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+                "fecha": item.get("fecha") or None,
                 "tipo": _tipo_proyecto(item["titulo"]),
                 "url": item["url"],
                 "source": "ayuntamiento",
@@ -462,6 +463,7 @@ class BasauriAyuntamientoAdapter(AyuntamientoAdapter):
         return list(by_id.values())
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

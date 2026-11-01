@@ -34,3 +34,6 @@ geometry:
     source_crs: EPSG:4326
     coordinates_crs: EPSG:4326
     axis_order: xy
+
+geocode:
+  jitter_missing: false

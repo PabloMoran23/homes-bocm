@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import http.cookiejar
 import json
@@ -351,7 +353,7 @@ class PalazuelosDeEresmaAyuntamientoAdapter(AyuntamientoAdapter):
             {
                 "titulo": "Urbanismo y obras — planeamiento (enlace PlanPublica JCyL)",
                 "url": self.wp_planeamiento_url,
-                "fecha": "2020-12-16",
+                "fecha": None,
                 "origen": "web_wordpress",
             }
         ]
@@ -636,6 +638,7 @@ class PalazuelosDeEresmaAyuntamientoAdapter(AyuntamientoAdapter):
         return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -99,7 +100,7 @@ def _fecha_from_expte(expte: str) -> str | None:
     if m:
         y = int(m.group(1))
         if 1980 <= y <= 2035:
-            return f"{y}-01-01"
+            return f"{y}"
     return None
 
 
@@ -411,6 +412,7 @@ class CalviaAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

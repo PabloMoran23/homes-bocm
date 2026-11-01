@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -45,7 +46,7 @@ DEFAULT_DOCUMENTED_PROYECTOS: list[dict[str, Any]] = [
             "de la unidad de ejecución UE-7 Azoka-Montevideo"
         ),
         "url": f"{PORTAL_BASE}/es/home",
-        "fecha": "2026-01-01",
+        "fecha": '2026',
         "tipo": "urbanización",
         "geom_tokens": ["Azoka", "Montevideo", "UE-7"],
     },
@@ -118,7 +119,7 @@ def _fecha_from_text(text: str) -> str | None:
         return iso
     years = [int(m.group(1)) for m in RE_YEAR.finditer(text or "") if 1980 <= int(m.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -381,6 +382,7 @@ class DurangoAyuntamientoAdapter(AyuntamientoAdapter):
             rec["lat"], rec["lon"] = centroid
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

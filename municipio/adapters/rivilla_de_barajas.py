@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import http.cookiejar
 import json
@@ -109,7 +111,7 @@ def _fecha_from_blob(text: str) -> str | None:
         return iso
     years = [int(x.group(1)) for x in RE_YEAR.finditer(text or "") if 1980 <= int(x.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -556,7 +558,7 @@ class RivillaDeBarajasAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
             "titulo": "Sin Planeamiento General (SPG) — Rivilla de Barajas",
-            "fecha": "2026-09-30",
+            "fecha": None,
             "tipo": "planeamiento",
             "url": url,
             "source": "ayuntamiento",
@@ -567,6 +569,7 @@ class RivillaDeBarajasAyuntamientoAdapter(AyuntamientoAdapter):
         return rec
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

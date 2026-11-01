@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import json
 import tempfile
 from datetime import datetime, timezone
@@ -70,6 +72,7 @@ class MoralejaDeEnmedioYBatresAyuntamientoAdapter(AyuntamientoAdapter):
         return rows, stats
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

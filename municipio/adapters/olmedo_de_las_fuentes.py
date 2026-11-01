@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import json
 from pathlib import Path
 from typing import Any
@@ -27,6 +29,7 @@ class OlmedoDeLasFuentesAyuntamientoAdapter(OlmedaDeLasFuentesAyuntamientoAdapte
     """
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         remapped = [_remap_record(r) for r in rows]
         with path.open("w", encoding="utf-8") as f:
             for row in remapped:

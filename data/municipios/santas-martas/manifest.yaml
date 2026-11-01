@@ -604,3 +604,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: idecyl_wfs_plau_cyl_instrumentos_ambito_c_prov_mun_24160
+
+geocode:
+  jitter_missing: false

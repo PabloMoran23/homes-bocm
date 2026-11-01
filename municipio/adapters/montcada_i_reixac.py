@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -114,7 +115,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
     blob = f"{text} {url}"
     years = [int(y.group(1)) for y in RE_YEAR.finditer(blob) if 1985 <= int(y.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -257,7 +258,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
             "titulo": titulo[:500],
-            "fecha": fecha or "1970-01-01",
+            "fecha": fecha or None,
             "tipo": _proyecto_tipo(titulo),
             "url": url,
             "source": "ayuntamiento",
@@ -277,7 +278,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
             "id": _stable_id("proy", url),
             "municipio": MUNICIPIO,
             "titulo": titulo[:500],
-            "fecha": _fecha_from_blob(titulo, url) or "1970-01-01",
+            "fecha": _fecha_from_blob(titulo, url) or None,
             "tipo": _proyecto_tipo(titulo),
             "url": url,
             "source": "ayuntamiento",
@@ -294,7 +295,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
             prev = by_id[rid]
             if not prev.get("documento_url") and row.get("documento_url"):
                 prev["documento_url"] = row["documento_url"]
-            if prev.get("fecha") == "1970-01-01" and row.get("fecha") not in (None, "1970-01-01"):
+            if prev.get("fecha") == None and row.get("fecha") not in (None, None):
                 prev["fecha"] = row["fecha"]
         return list(by_id.values())
 
@@ -320,7 +321,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
             rows.append(
                 {
                     "id": _stable_id("lic", page_url),
-                    "fecha_concesion": "1970-01-01",
+                    "fecha_concesion": None,
                     "tipo": label[:200],
                     "distrito": MUNICIPIO,
                     "lat": None,
@@ -345,7 +346,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
                 rows.append(
                     {
                         "id": _stable_id("lic", u),
-                        "fecha_concesion": _fecha_from_blob(t, u) or "1970-01-01",
+                        "fecha_concesion": _fecha_from_blob(t, u) or None,
                         "tipo": t[:200],
                         "distrito": MUNICIPIO,
                         "lat": None,
@@ -359,6 +360,7 @@ class MontcadaIReixacAyuntamientoAdapter(AyuntamientoAdapter):
 
     @staticmethod
     def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

@@ -30,6 +30,7 @@ proyectos:
   source: ayuntamiento
 
 geocode:
+  jitter_missing: false
   centroid_lat: 43.1689
   centroid_lng: -2.6335
 

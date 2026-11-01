@@ -47,3 +47,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado Puerto del Rosario (Fuerteventura)"
+
+geocode:
+  jitter_missing: false

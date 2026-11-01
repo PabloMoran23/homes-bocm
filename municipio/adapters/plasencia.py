@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -94,12 +95,12 @@ def _fecha_from_expediente(text: str) -> str | None:
     m = RE_EXPEDIENTE_YEAR.search(text or "")
     if m:
         try:
-            return datetime(int(m.group(2)), 1, 1).strftime("%Y-%m-%d")
+            return datetime(int(m.group(2)), 1, 1).strftime('%Y-%m')
         except ValueError:
             pass
     years = [int(y.group(1)) for y in RE_YEAR.finditer(text or "") if 1980 <= int(y.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -327,6 +328,7 @@ class PlasenciaAyuntamientoAdapter(AyuntamientoAdapter):
         return out
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

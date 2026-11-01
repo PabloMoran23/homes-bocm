@@ -29,3 +29,6 @@ proyectos:
   source: ayuntamiento
 
 boletin_source_id: boja
+
+geocode:
+  jitter_missing: false

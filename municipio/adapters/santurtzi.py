@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -103,7 +104,7 @@ def _iso_from_year(text: str) -> str | None:
     ]
     if not years:
         return None
-    return f"{max(years)}-01-01"
+    return f"{max(years)}"
 
 
 def _strip_html(text: str) -> str:
@@ -218,7 +219,7 @@ class SanturtziAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", f"bizkaia-pur-{inst_id}"),
                 "municipio": MUNICIPIO,
                 "titulo": titulo[:500],
-                "fecha": f"{year}-01-01",
+                "fecha": f"{year}",
                 "tipo": _tipo_proyecto(titulo),
                 "url": detail_url,
                 "source": "ayuntamiento",
@@ -359,6 +360,7 @@ class SanturtziAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

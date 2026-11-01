@@ -38,3 +38,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado término municipal Sant Joan Despí (08273)"
+
+geocode:
+  jitter_missing: false

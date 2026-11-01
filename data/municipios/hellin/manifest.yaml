@@ -51,3 +51,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado Hellín (Albacete) + PGOU CLM COD_INE=02037"
+
+geocode:
+  jitter_missing: false

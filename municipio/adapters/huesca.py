@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import re
@@ -102,7 +104,7 @@ def _fecha_from_blob(text: str) -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -201,6 +203,7 @@ class HuescaAyuntamientoAdapter(AyuntamientoAdapter):
         return unescape(urllib.parse.urljoin(f"{self.liferay_base}/", href))
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

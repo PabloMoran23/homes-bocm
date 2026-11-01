@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import http.cookiejar
 import json
@@ -109,7 +111,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
     m = re.search(r"/(\d{4})/(\d{2})/", url or text or "")
     if m:
         try:
-            return datetime(int(m.group(1)), int(m.group(2)), 1).strftime("%Y-%m-%d")
+            return None  # No observed full date; preserve unknown precision.
         except ValueError:
             pass
     years = [
@@ -118,7 +120,7 @@ def _fecha_from_blob(text: str, url: str = "") -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return None  # No observed full date; preserve unknown precision.
     return None
 
 
@@ -309,7 +311,7 @@ class PeligrosAyuntamientoAdapter(AyuntamientoAdapter):
         add(
             PGOU_PDF_URL,
             "Plan Especial Vega de Granada (PEVG) — documento inicial de evaluación",
-            "2020-03-01",
+            None,
             "pgou_pdf",
         )
 
@@ -419,7 +421,7 @@ class PeligrosAyuntamientoAdapter(AyuntamientoAdapter):
                 "id": _stable_id("proy", PGOU_PDF_URL),
                 "municipio": MUNICIPIO,
                 "titulo": "Plan Especial Vega de Granada (PEVG) — DIE (PDF)",
-                "fecha": "2020-03-01",
+                "fecha": None,
                 "tipo": "plan especial",
                 "url": PGOU_PDF_URL,
                 "source": "ayuntamiento",
@@ -552,6 +554,7 @@ class PeligrosAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")

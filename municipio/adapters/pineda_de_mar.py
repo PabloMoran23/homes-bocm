@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import html as html_module
 import json
@@ -89,7 +90,7 @@ def _fecha_from_pdf_url(url: str) -> str | None:
         if 1980 <= int(x.group(1)) <= 2035
     ]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -147,6 +148,7 @@ class PinedaDeMarAyuntamientoAdapter(AyuntamientoAdapter):
         return urllib.parse.urljoin(f"{self.sede_base}/", unescape(href))
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

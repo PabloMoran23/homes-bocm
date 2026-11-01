@@ -46,3 +46,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox municipio Cuenca + ArcGIS CLM COD_INE=16078"
+
+geocode:
+  jitter_missing: false

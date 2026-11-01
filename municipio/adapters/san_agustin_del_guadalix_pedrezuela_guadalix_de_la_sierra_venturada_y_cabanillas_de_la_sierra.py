@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
+
 import hashlib
 import json
 import math
@@ -39,13 +41,6 @@ TOWN_CENTROIDS: dict[str, tuple[float, float]] = {
 }
 
 
-def _jitter(lat: float, lng: float, key: str, *, spread_m: float = 180.0) -> tuple[float, float]:
-    h = int(hashlib.sha256(key.encode("utf-8")).hexdigest()[:8], 16)
-    angle = (h % 360) * math.pi / 180.0
-    dist = ((h >> 8) % 1000) / 1000.0 * spread_m
-    dlat = (dist * math.cos(angle)) / 111_320.0
-    dlng = (dist * math.sin(angle)) / (111_320.0 * max(0.2, math.cos(math.radians(lat))))
-    return lat + dlat, lng + dlng
 
 
 _BOUNDARY_CACHE: dict[str, dict[str, Any] | None] = {}
@@ -85,7 +80,7 @@ def _attach_municipio_scope(rows: list[dict[str, Any]], *, manifest_nombre: str)
 
 
 def _sanitize_inherited_coords(rows: list[dict[str, Any]]) -> None:
-    """Member adapters may set lat/lon without coordinates_crs; drop so geocode can jitter."""
+    """Member adapters may set lat/lon without coordinates_crs; drop unverified point coordinates."""
     for rec in rows:
         if record_geometry(rec):
             rec.setdefault("geometry_crs", "EPSG:4326")
@@ -95,20 +90,6 @@ def _sanitize_inherited_coords(rows: list[dict[str, Any]]) -> None:
                 rec.pop(k, None)
 
 
-def _apply_town_centroids(rows: list[dict[str, Any]]) -> None:
-    for rec in rows:
-        if rec.get("lat") is not None:
-            continue
-        town = str(rec.get("municipio") or "")
-        base = TOWN_CENTROIDS.get(town)
-        if not base:
-            continue
-        rec_id = str(rec.get("id") or rec.get("url") or town)
-        lat, lng = _jitter(base[0], base[1], rec_id)
-        rec["lat"] = round(lat, 7)
-        rec["lon"] = round(lng, 7)
-        rec["lng"] = round(lng, 7)
-        rec.setdefault("coord_source", "municipio_centroid_jitter")
 
 
 class SanAgustinDelGuadalixPedrezuelaGuadalixDeLaSierraVenturadaYCabanillasDeLaSierraAyuntamientoAdapter(
@@ -143,6 +124,7 @@ class SanAgustinDelGuadalixPedrezuelaGuadalixDeLaSierraVenturadaYCabanillasDeLaS
 
     @staticmethod
     def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:
@@ -174,7 +156,6 @@ class SanAgustinDelGuadalixPedrezuelaGuadalixDeLaSierraVenturadaYCabanillasDeLaS
             or "San Agustín del Guadalix, Pedrezuela, Guadalix de la Sierra, Venturada y Cabanillas de la Sierra"
         )
         _attach_municipio_scope(rows, manifest_nombre=manifest_nombre)
-        _apply_town_centroids(rows)
 
         self._write_jsonl(out_jsonl, rows)
         stats: dict[str, Any] = {

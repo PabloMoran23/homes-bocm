@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
@@ -99,7 +100,7 @@ def _fecha_from_blob(text: str, lastmod: str | None = None) -> str | None:
             return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
     years = [int(y.group(1)) for y in RE_YEAR.finditer(text or "") if 1985 <= int(y.group(1)) <= 2035]
     if years:
-        return f"{max(years)}-01-01"
+        return f"{max(years)}"
     return None
 
 
@@ -149,6 +150,7 @@ class BarberaDelVallesAyuntamientoAdapter(AyuntamientoAdapter):
         return urllib.parse.urljoin(f"{self.web_base}/", href)
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
+        rows = reviewed_records(path, rows)
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as f:
             for row in rows:

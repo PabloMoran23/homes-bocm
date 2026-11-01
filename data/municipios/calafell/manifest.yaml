@@ -36,3 +36,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado costa Tarragona (Calafell)"
+
+geocode:
+  jitter_missing: false

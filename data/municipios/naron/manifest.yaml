@@ -40,3 +40,6 @@ geometry:
             - [-8.05, 43.56]
             - [-8.28, 43.56]
             - [-8.28, 43.43]
+
+geocode:
+  jitter_missing: false

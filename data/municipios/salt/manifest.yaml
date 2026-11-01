@@ -40,3 +40,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado municipio Salt (Girona)"
+
+geocode:
+  jitter_missing: false

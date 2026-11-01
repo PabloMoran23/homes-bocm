@@ -43,3 +43,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox aproximado término municipal Salou (INE 43148)"
+
+geocode:
+  jitter_missing: false

@@ -30,3 +30,6 @@ proyectos:
   enabled: true
   source: ayuntamiento
   notes: WP área urbanismo/PGOU + noticias taxonomía Urbanismo + tablón sede
+
+geocode:
+  jitter_missing: false

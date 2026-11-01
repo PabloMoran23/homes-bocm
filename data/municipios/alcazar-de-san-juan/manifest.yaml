@@ -50,3 +50,6 @@ geometry:
       crs: EPSG:4326
       axis_order: xy
       source: "bbox PGOU CLM COD_INE=13005 (geoservicios.castillalamancha.es)"
+
+geocode:
+  jitter_missing: false
