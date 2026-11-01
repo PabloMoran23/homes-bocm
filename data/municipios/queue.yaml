@@ -3447,11 +3447,11 @@ municipios:
 - slug: sant-josep-de-sa-talaia
   nombre: Sant Josep de sa Talaia
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-01T16:04:09.220002+00:00'
+  last_run: '2026-11-01T16:09:07.302721+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1093
   notes: Sin boletín asociado
   comunidad_autonoma: illes-balears
   provincia: Illes Balears
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-01T16:04:09.234311+00:00'
+updated_at: '2026-11-01T16:09:07.313711+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
