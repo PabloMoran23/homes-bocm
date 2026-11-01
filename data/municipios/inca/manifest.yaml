@@ -1,0 +1,30 @@
+slug: inca
+nombre: "Inca"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://incaciutat.com"
+  adapter: municipio.adapters.inca:IncaAyuntamientoAdapter
+  config:
+    web_base: "https://incaciutat.com"
+    sede_base: "https://incaciutat.sedelectronica.es"
+    board_url: "https://incaciutat.sedelectronica.es/board"
+    dossier_url: "https://incaciutat.sedelectronica.es/dossier"
+    wp_categories: [62]
+    wp_max_pages: 3
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-inca/1.0"
+    centroid: [39.721, 2.911]
+  notes: |
+    WordPress incaciutat.com (categoría Urbanisme i patrimoni) + sede espublico gestiona.
+    PGOU/modificaciones publicadas como entradas WP y PDFs en /pgou.
+    Tablón /board sin urbanismo en la página inicial (mayoría padrón/subvenciones).
+    Geoportal https://mapes.incaciutat.com/geoportal/ (visor PGOU, sin WFS expedientes).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
