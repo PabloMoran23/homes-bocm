@@ -1,0 +1,30 @@
+slug: vilafranca-del-penedes
+nombre: "Vilafranca del Penedès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://tramits.vilafranca.cat"
+  adapter: municipio.adapters.vilafranca_del_penedes:VilafrancaDelPenedesAyuntamientoAdapter
+  config:
+    sede_base: "https://tramits.vilafranca.cat"
+    catalogo_url: "https://tramits.vilafranca.cat/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO&lang=CA"
+    eixdiari_url: "https://www.eixdiari.cat/serveis/anuncis-oficials/vilafranca-del-penedes/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-vilafranca-del-penedes/1.0"
+    centroid: [41.3465, 1.6980]
+    geometry:
+      wfs_url: "https://sig.gencat.cat/ows/PLANEJAMENT/wfs"
+      type_name: "PLANEJAMENT:MUC_PDERIVAT_SECTOR"
+      cod_ine_mun: "08305"
+  notes: |
+    Sede STA (tramits.vilafranca.cat) catálogo CATSERV + anuncis eixdiari.
+    Planejament derivat en urbanisme.vilafranca.cat (Cloudflare en cloud).
+    Geometría sectores vía WFS PLANEJAMENT MUC (CODI_INE 08305).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
