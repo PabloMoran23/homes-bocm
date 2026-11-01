@@ -1,0 +1,51 @@
+slug: valdepenas
+nombre: "Valdepeñas"
+provincia: Ciudad Real
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://www.valdepenas.es"
+  adapter: municipio.adapters.valdepenas:ValdepenasAyuntamientoAdapter
+  config:
+    web_base: "https://www.valdepenas.es"
+    sede_base: "https://valdepenas.sedelectronica.es"
+    board_url: "https://valdepenas.sedelectronica.es/board"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valdepenas/1.0"
+    centroid: [38.7621, -3.3842]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "13087"
+  notes: |
+    Web WordPress (obras y urbanismo, POM refundido 2021 con PDFs).
+    Sede espublico gestiona: tablón /board (Actuaciones Urbanísticas, Licencias Urbanísticas),
+    trámites /dossier, consulta expedientes con login /expedientes.
+    Transparencia sede: sección 7 Urbanismo (6 docs, Wicket AJAX).
+    Visor Urbanismo en Red / LocalGIS municipal no enlazado públicamente desde la web.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-3.56, 38.65],
+              [-3.23, 38.65],
+              [-3.23, 38.96],
+              [-3.56, 38.96],
+              [-3.56, 38.65],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox PGOU CLM COD_INE=13087 (geoservicios.castillalamancha.es)"
