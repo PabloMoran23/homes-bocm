@@ -1,0 +1,28 @@
+slug: pontevedra
+nombre: "Pontevedra"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://pontevedra.gal"
+  adapter: municipio.adapters.pontevedra:PontevedraAyuntamientoAdapter
+  config:
+    web_base: "https://pontevedra.gal"
+    sede_base: "https://sede.pontevedra.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pontevedra/1.0"
+    max_siotuga_desarrollo: 60
+    centroid: [42.431, -8.644]
+  notes: |
+    Web corporativa WordPress (pontevedra.gal): planeamiento, PXOU/PXOM, trámites y PDFs /PXOU/.
+    Inventario Xunta SIOTUGA (INE 36038): PG + instrumentos de desarrollo vía query_document.php.
+    Sede JSF (sede.pontevedra.gal): publicacións/transparencia; sin tablón scrapeable (timeouts >60s).
+    Catafis (catafis.pontevedra.gal): visor SIG Leaflet; sin enlace estable expediente→geometría.
+    Sin listado público de licencias concedidas (solo trámites informativos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
