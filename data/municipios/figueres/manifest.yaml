@@ -1,0 +1,28 @@
+slug: figueres
+nombre: "Figueres"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.figueres.cat"
+  adapter: municipio.adapters.figueres:FigueresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-figueres/1.0"
+    fetch_timeout_s: 90
+    centroid: [42.267, 2.961]
+    seed_pages:
+      - "https://www.figueres.cat/temes/urbanisme/planejament-urbanistic"
+      - "https://www.figueres.cat/temes/urbanisme/projectes"
+      - "https://www.figueres.cat/temes/urbanisme/projectes/projectes-en-exposicio-publica"
+      - "https://www.figueres.cat/temes/urbanisme/poum"
+  notes: |
+    Web corporativa Plone: planejament urbanístic + projectes (RSS) y trámites de licencias.
+    Consulta de expedientes en tramit.figueres.org (OAC). Visor wgis.figueres.org sin API REST pública enlazada a expediente.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
