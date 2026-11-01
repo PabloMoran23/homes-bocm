@@ -1,0 +1,45 @@
+slug: san-sebastian
+nombre: "San Sebastián"
+provincia: "San Sebastián/La Gomera"
+comunidad_autonoma: canarias
+boletin_source_id: boc_canarias
+
+portal:
+  base_url: "https://sansebastiangomera.org"
+  adapter: municipio.adapters.san_sebastian:SanSebastianAyuntamientoAdapter
+  config:
+    sede_base: "https://eadmin.sansebastiangomera.org"
+    edictos_rss: "https://eadmin.sansebastiangomera.org/publico/sindicacion/edictos/RSS"
+    sitcan_package: "planeamiento-urbanistico-de-san-sebastian-de-la-gomera"
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38036/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-san-sebastian/1.0"
+    centroid: [28.0919, -17.1115]
+  notes: |
+    Alias BOC Canarias del municipio INE San Sebastián de La Gomera (38036).
+    WordPress + sede Galileo GIYS + SITCAN/GeoBDP (misma ingesta que san-sebastian-de-la-gomera).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - "San Sebastián"
+    - "San Sebastián/La Gomera"
+    - "San Sebastián de La Gomera"
+
+geometry:
+  validation:
+    municipal_boundary:
+      crs: EPSG:4326
+      axis_order: xy
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-17.35, 27.98]
+            - [-16.95, 27.98]
+            - [-16.95, 28.25]
+            - [-17.35, 28.25]
+            - [-17.35, 27.98]
