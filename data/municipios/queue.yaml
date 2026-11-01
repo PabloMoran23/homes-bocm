@@ -3367,11 +3367,11 @@ municipios:
 - slug: durango
   nombre: Durango
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-01T04:01:00.779501+00:00'
+  last_run: '2026-11-01T04:25:01.344807+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1087
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Bizkaia
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-01T04:01:00.811670+00:00'
+updated_at: '2026-11-01T04:25:01.354401+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
