@@ -1,0 +1,27 @@
+slug: camargo
+nombre: "Camargo"
+provincia: Cantabria
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://sede.aytocamargo.es"
+  adapter: municipio.adapters.camargo:CamargoAyuntamientoAdapter
+  config:
+    sede_base: "https://sede.aytocamargo.es"
+    web_base: "https://www.aytocamargo.es"
+    cod_ine: "39016"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-camargo/1.0"
+    centroid: [43.41, -3.82]
+  notes: |
+    Sede OpenSIAC (GADD): tablón información pública + trámites urbanismo.
+    Web Drupal ayuntamiento: PGOU planos ordenación (PDFs).
+    Geometría: SIUCAN WFS Cantabria (Urbanismo:Sectores, INE 39016).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
