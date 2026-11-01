@@ -1,0 +1,31 @@
+slug: remondo
+nombre: "Remondo"
+provincia: "Remondo (Segovia)"
+comunidad_autonoma: castilla-y-leon
+
+portal:
+  base_url: "https://www.remondo.es"
+  adapter: municipio.adapters.remondo:RemondoAyuntamientoAdapter
+  config:
+    web_base: "https://www.remondo.es"
+    sede_base: "https://remondo.sedelectronica.es"
+    plai_municipio: 166
+    plai_provincia: 40
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-remondo/1.0"
+    centroid: [41.3436, -4.2213]
+    wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
+    wfs_municipio: Remondo
+    siur_url: "https://idecyl.jcyl.es/siur/index.html?id=40167"
+  notes: |
+    Web Liferay (infra Diputación Segovia) en www.remondo.es.
+    Sede espublico (remondo.sedelectronica.es) — tablón sin anuncios urbanísticos activos.
+    Planeamiento archivado en PLAI JCyL (prov. 40, mun. 166) y visor SIUR IDECyL.
+    Actualidad municipal con anuncios de información pública (autorizaciones de uso).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
