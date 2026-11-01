@@ -1,0 +1,28 @@
+slug: motril
+nombre: "Motril"
+provincia: Granada
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://motril.es"
+  adapter: municipio.adapters.motril:MotrilAyuntamientoAdapter
+  config:
+    web_base: "https://motril.es"
+    sede_base: "https://sede.motril.es"
+    request_delay_s: 0.35
+    fetch_timeout_s: 120
+    sede_insecure_ssl: true
+    user_agent: "poc-bocm-motril/1.0"
+    centroid: [36.7501, -3.5170]
+  notes: |
+    Fuentes: WordPress motril.es (información pública / PGOU PDFs) y sede STA T-Systems
+    (PTS2_TABLON KEY urbanismo + KEY=all, PTS_CATSERV trámites). SITUA Junta (INE 18087).
+    Planos PGOU en wp-content/uploads; sin visor GIS municipal enlazable a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
