@@ -1,0 +1,30 @@
+slug: rocafort
+nombre: "Rocafort"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+boletin_source_id: dogv
+
+portal:
+  base_url: "https://www.rocafort.es"
+  adapter: municipio.adapters.rocafort:RocafortAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-rocafort/1.0"
+    cod_ine_mun: "46216"
+    sede_base: "https://rocafort.sede.dival.es"
+    centroid: [39.536, -0.413]
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal 10 portalesmunicipales (rocafort.es) transparencia + planeamiento PDFs.
+    Sede Dival (Sedipualba): tablón RSS; catálogo Urbanismo sin trámites publicados.
+    Registro planeamiento GVA + ICV WFS InventarioSuSuz (INE 46216).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
