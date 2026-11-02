@@ -1,0 +1,52 @@
+slug: betera
+nombre: "Bétera"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.betera.es"
+  adapter: municipio.adapters.betera:BeteraAyuntamientoAdapter
+  config:
+    sede_base: "https://betera.sedelectronica.es"
+    board_url: "https://betera.sedelectronica.es/board"
+    web_base: "https://www.betera.es"
+    informacion_publica_url: "https://www.betera.es/es/pagina/informacion-publica"
+    informacion_urbanismo_url: "https://www.betera.es/es/pagina/informacion-urbanismo-e-infraestructuras"
+    pgou_url: "https://www.betera.es/va/enlace/pla-general-urbanistic-pgou"
+    documentacion_url: "https://www.betera.es/es/enlace/documentacion"
+    sig_url: "https://sig.betera.es/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-betera/1.0"
+    centroid: [39.591, -0.461]
+    cod_ine_mun: "46047"
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+      offsets: [0, 2000, 4000, 6000, 8000, 10000]
+  notes: |
+    Drupal 10 portalesmunicipales (DigitalValue) + sede espublico gestiona.
+    Tablón /board con edictos; información pública en web (PDF EIP/EATE, PMUS, PP sector R-13).
+    SIG municipal https://sig.betera.es/ (cartografía local).
+    Geometría partial: ICV WFS zonificación (cod_ine_mun 46047).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-0.52, 39.52], [-0.40, 39.52], [-0.40, 39.66], [-0.52, 39.66], [-0.52, 39.52]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
