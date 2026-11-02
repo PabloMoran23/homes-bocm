@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 import ssl
 import time
@@ -13,6 +14,8 @@ from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
 from typing import Any
+
+from pyproj import Transformer
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
@@ -107,6 +110,8 @@ _GML_NS = {
     "ms": "http://mapserver.gis.umn.edu/mapserver",
     "wfs": "http://www.opengis.net/wfs/2.0",
 }
+
+_WGS84_FROM_25830 = Transformer.from_crs("EPSG:25830", "EPSG:4326", always_xy=True)
 
 
 def _gml_find(feat: ET.Element, tag: str) -> ET.Element | None:
@@ -242,13 +247,27 @@ def _sector_tokens(text: str) -> list[str]:
     return tokens
 
 
-def _gml_poslist_to_polygon(poslist: str) -> dict[str, Any] | None:
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    r = 6371.0
+    p = math.pi / 180.0
+    a = math.sin((lat2 - lat1) * p / 2) ** 2 + math.cos(lat1 * p) * math.cos(lat2 * p) * math.sin(
+        (lon2 - lon1) * p / 2
+    ) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
+
+
+def _gml_poslist_to_polygon(poslist: str, *, crs: str = "EPSG:25830") -> dict[str, Any] | None:
     parts = [float(x) for x in poslist.split() if x.strip()]
     if len(parts) < 6:
         return None
     coords: list[list[float]] = []
     for i in range(0, len(parts) - 1, 2):
-        lat, lon = parts[i], parts[i + 1]
+        x, y = parts[i], parts[i + 1]
+        if crs == "EPSG:4326":
+            # ICV WFS posList en EPSG:4326 viene como lat,lon (no lon,lat GeoJSON).
+            lat, lon = x, y
+        else:
+            lon, lat = _WGS84_FROM_25830.transform(x, y)
         coords.append([lon, lat])
     if coords and coords[0] != coords[-1]:
         coords.append(coords[0])
@@ -262,7 +281,14 @@ def _gml_feature_to_geojson(feat: ET.Element) -> dict[str, Any] | None:
     pos = poly.find(f".//{{{_GML_NS['gml']}}}posList")
     if pos is None or not (pos.text or "").strip():
         return None
-    return _gml_poslist_to_polygon(pos.text.strip())
+    srs = (
+        poly.get("{http://www.opengis.net/gml/3.2}srsName")
+        or poly.get("{http://www.opengis.net/gml}srsName")
+        or poly.get("srsName")
+        or ""
+    ).upper()
+    crs = "EPSG:4326" if "4326" in srs else "EPSG:25830"
+    return _gml_poslist_to_polygon(pos.text.strip(), crs=crs)
 
 
 class AlmassoraAyuntamientoAdapter(AyuntamientoAdapter):
@@ -287,6 +313,16 @@ class AlmassoraAyuntamientoAdapter(AyuntamientoAdapter):
             self._ssl_ctx.verify_mode = ssl.CERT_NONE
         self._wfs_cache: list[dict[str, Any]] | None = None
         self._wfs_by_key: dict[str, dict[str, Any]] | None = None
+        self.centroid_lat = self.config.get("centroid_lat")
+        self.centroid_lon = self.config.get("centroid_lon")
+        self.wfs_max_centroid_km = float(self.config.get("wfs_max_centroid_km", 20.0))
+
+    def _wfs_centroid_in_scope(self, lat: float | None, lon: float | None) -> bool:
+        if lat is None or lon is None:
+            return True
+        if self.centroid_lat is None or self.centroid_lon is None:
+            return True
+        return _haversine_km(float(self.centroid_lat), float(self.centroid_lon), lat, lon) <= self.wfs_max_centroid_km
 
     def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
         last_err: Exception | None = None
@@ -518,15 +554,28 @@ class AlmassoraAyuntamientoAdapter(AyuntamientoAdapter):
             "origen": "icv_wfs",
         }
         if geom:
-            rec["geom_geojson"] = geom
-            rec["geometry_crs"] = "EPSG:4326"
-            rec["geometry_axis_order"] = "xy"
-            rec["geometry_source"] = "portal_wfs"
-            rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0)
-            rec["coord_source"] = "portal_geometry_centroid"
             centroid = geometry_centroid(geom)
             if centroid:
                 rec["lat"], rec["lon"] = centroid
+            if not self._wfs_centroid_in_scope(rec.get("lat"), rec.get("lon")):
+                for key in (
+                    "geom_geojson",
+                    "geometry_crs",
+                    "geometry_axis_order",
+                    "geometry_source",
+                    "geometry_source_url",
+                    "coord_source",
+                    "lat",
+                    "lon",
+                ):
+                    rec.pop(key, None)
+            else:
+                rec["geom_geojson"] = geom
+                rec["geometry_crs"] = "EPSG:4326"
+                rec["geometry_axis_order"] = "xy"
+                rec["geometry_source"] = "portal_wfs"
+                rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0)
+                rec["coord_source"] = "portal_geometry_centroid"
         return rec
 
     def _collect_icv_wfs(self) -> list[dict[str, Any]]:
@@ -696,9 +745,6 @@ class AlmassoraAyuntamientoAdapter(AyuntamientoAdapter):
 
         for doc in self._collect_urbanismo_html():
             add(self._to_proyecto(doc))
-
-        for wfs_row in self._collect_icv_wfs():
-            add(self._to_proyecto(wfs_row))
 
         self._write_jsonl(out_jsonl, rows)
         with_geom = sum(1 for r in rows if record_geometry(r))

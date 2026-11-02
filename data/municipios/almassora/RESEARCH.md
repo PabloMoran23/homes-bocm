@@ -53,9 +53,10 @@
   - Capas: `ms:InventarioSuSuz`, `Planeamiento.Zonificacion`
   - Campo municipio: `cod_ine_mun` = `12008`
   - Visor GVA: `https://visor.gva.es/visor/?capas=spaicv0702_plan_zonificacion`
-- **Estrategia:** paginar WFS filtrado por INE, convertir `gml:Polygon` → GeoJSON EPSG:4326; match textual UE/sector en títulos de noticias.
+- **Estrategia:** paginar WFS filtrado por INE, convertir `gml:Polygon` (EPSG:25830) → GeoJSON EPSG:4326 vía pyproj; match textual UE/sector en títulos de noticias.
 - **Limitaciones:**
   - Geometría a nivel de sector/zonificación ICV, no de expedientes del tablón.
+  - Solo 2 polígonos SU/SUZ con `cod_ine_mun=12008` en ICV (SR1/SR2); sus centroides caen ~33 km al oeste del término municipal (probable error de catálogo ICV) — el adapter **no** los publica como proyectos ni adjunta polígono fuera de un radio de 20 km del centroide municipal.
   - Sin visor ArcGIS municipal propio enlazado a expedientes.
   - Tablón sin coordenadas.
 
