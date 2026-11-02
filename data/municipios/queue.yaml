@@ -3560,9 +3560,9 @@ municipios:
   bocm_count: 0
   status: done
   attempts: 1
-  last_run: '2026-11-02T08:56:21.413232+00:00'
+  last_run: '2026-11-02T10:20:27.662682+00:00'
   last_error: null
-  pr_url: https://github.com/PabloMoran23/homes-bocm/compare/main...automation/municipio-almassora
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1102
   notes: Sin boletín asociado
   comunidad_autonoma: comunitat-valenciana
   provincia: Castellón
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-02T08:56:21.419787+00:00'
+updated_at: '2026-11-02T10:20:27.669700+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
