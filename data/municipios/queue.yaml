@@ -3616,11 +3616,11 @@ municipios:
 - slug: sant-vicenc-dels-horts
   nombre: Sant Vicenç dels Horts
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-02T18:01:22.781922+00:00'
+  last_run: '2026-11-02T18:09:40.659762+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1106
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-02T18:01:22.795506+00:00'
+updated_at: '2026-11-02T18:09:40.668820+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
