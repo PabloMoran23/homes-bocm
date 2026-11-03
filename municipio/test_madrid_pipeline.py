@@ -80,6 +80,18 @@ class MadridIngestMappingTest(unittest.TestCase):
 
 
 class MadridExportTest(unittest.TestCase):
+    def test_empty_license_export_fails_and_preserves_previous_file(self) -> None:
+        from types import SimpleNamespace
+        from municipio.madrid_export import export_licencias
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "licencias.jsonl"
+            path.write_text('{"id":"previous"}\n')
+            manifest = SimpleNamespace(output_dir=Path(tmp), ensure_output_dir=lambda: None)
+            with patch("municipio.madrid_export.build_licencias", return_value=[]):
+                with self.assertRaisesRegex(RuntimeError, "vacía"):
+                    export_licencias(manifest)
+            self.assertEqual(path.read_text(), '{"id":"previous"}\n')
+
     def test_catalog_row_normalizes_grupo(self) -> None:
         rec = _catalog_row(
             {

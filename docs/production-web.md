@@ -96,17 +96,31 @@ Versión operativa actual: no descarga BOCM nuevos con LLM ni recalcula
 | Dataset | Frecuencia | Qué hace |
 | --- | --- | --- |
 | SIGMA (Ayto. Madrid) | Semanal (lunes) | Descarga + upsert catálogo y geometrías |
-| Licencias urbanísticas | Mensual (día 1 UTC) o manual | Años actual y anterior → JSONL → Supabase |
+| Licencias urbanísticas y declaraciones responsables | Semanal (lunes), día 17 UTC o manual | CSV actuales desde 2023 → JSONL → Supabase y web |
 | `web/public/data` | Semanal | `npm run build-data` scope `madrid-public` |
 
-En lunes que no son día 1: solo SIGMA (`--skip-licencias`). Día 1 o run manual con
-`refresh_licencias=true`: descarga `YEAR-1,YEAR` y sync incremental.
+Cada ejecución programada descarga los conjuntos `640505` (licencias otorgadas)
+y `133556` (declaraciones responsables), que sustituyen al retirado `300193`.
+El histórico anterior a 2023 se conserva; los registros desde 2023 se reemplazan
+por el snapshot actual completo para evitar duplicarlos con el conjunto retirado.
+Las declaraciones se fechan por alta, sin inventar concesión. Las coordenadas
+del histórico se reutilizan por NDP; los edificios nuevos sin coordenadas siguen
+en las estadísticas aunque no se dibujen en el mapa. Las particiones web de
+licencias se construyen desde ese JSONL, también en builds con Supabase, para
+no reintroducir filas del conjunto retirado conservadas en la base histórica.
+Así una descarga fallida vuelve a intentarse la semana siguiente. En ejecución
+manual se puede usar `refresh_licencias=false` para reexportar la caché.
+Una descarga fallida, vacía o inválida termina con error y conserva el JSONL y
+resumen anteriores. La conexión a Supabase se comprueba antes de scrapear;
+las conexiones, consultas y pasos tienen límites de tiempo. Solo se guarda
+la caché de una ejecución completa con éxito.
 
 Recarga completa de licencias (solo manual):
 
 ```bash
-python3 -m sector_geometry.madrid_licencias_download
-python3 db/sync_madrid_public_to_supabase.py --licencias-full
+python3 -m sector_geometry.madrid_licencias_download --current
+python3 -m municipio run --municipio madrid --step licencias_update
+python3 -m municipio run --municipio madrid --step sync_supabase
 ```
 
 Flujo del job:
