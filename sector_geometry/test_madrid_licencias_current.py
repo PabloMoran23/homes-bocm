@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 from urllib.error import HTTPError
 
-from sector_geometry.madrid_licencias_current import parse_csv, refresh
+from sector_geometry.madrid_licencias_current import parse_csv, refresh, merge_snapshot_rows
 from sector_geometry.madrid_licencias_download import licencia_key
 
 
@@ -39,6 +39,40 @@ class CurrentSourcesTest(unittest.TestCase):
         self.assertIsNone(dr["fecha_concesin"])
         self.assertEqual(dr["fecha_de_alta"], "2026-03-03")
         self.assertEqual(dr["_source_record"]["TIPO"], "Declaración Responsable - Actividad")
+
+    def test_full_csv_keeps_responsible_declarations_from_2022(self):
+        data = resource("declaraciones", **{"FECHA_ALTA_EXPEDIENTE - Año": "2022"})
+        rows = parse_csv(data, "declaraciones", origin={"dataset": "133556"}, locations={})
+        self.assertEqual(rows[0]["anio_dataset"], 2022)
+        self.assertEqual(rows[0]["fecha_de_alta"], "2022-03-03")
+
+    def test_overlap_replaced_once_and_conflicting_current_keys_rejected(self):
+        current = parse_csv(resource("declaraciones", **{"FECHA_ALTA_EXPEDIENTE - Año": "2022"}),
+                            "declaraciones", origin={"dataset": "133556"}, locations={})[0]
+        historical = dict(current, procedimiento="Declaración Responsable", fecha_de_alta="03/03/2022")
+        historical.pop("numero_expediente")
+        historical.pop("source_dataset")
+        rows, stats = merge_snapshot_rows([historical], [current])
+        self.assertEqual(rows[0]["numero_expediente"], current["numero_expediente"])
+        self.assertIn(historical, rows[0]["_source_variants"])
+        repeated, _ = merge_snapshot_rows(rows, [current])
+        self.assertEqual(repeated, rows)
+        self.assertEqual(stats["historicalRowsSuperseded"], 1)
+        rows, stats = merge_snapshot_rows([], [current, current])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(stats["duplicateRowsCollapsed"], 1)
+        with self.assertRaises(ValueError):
+            merge_snapshot_rows([], [current, dict(current, fecha_concesin="2022-04-01")])
+
+    def test_same_building_and_date_with_different_type_is_not_collapsed(self):
+        current = parse_csv(resource("declaraciones", **{"FECHA_ALTA_EXPEDIENTE - Año": "2022"}),
+                            "declaraciones", origin={"dataset": "133556"}, locations={})[0]
+        old = dict(current, tipo_de_expediente="Declaración Responsable Residencial")
+        old.pop("numero_expediente")
+        old.pop("source_dataset")
+        rows, stats = merge_snapshot_rows([old], [current])
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(stats["historicalRowsSuperseded"], 0)
 
     def test_coordinates_only_reused_for_same_ndp(self):
         old = {"coordenadas_x": "44000000", "coordenadas_y": "447000000"}

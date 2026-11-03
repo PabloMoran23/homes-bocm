@@ -476,24 +476,25 @@ def licencia_key(row: dict[str, Any], *, anio: int | None) -> str:
     return sha256("|".join(parts).encode()).hexdigest()[:32]
 
 
-def iter_licencias_rows() -> Iterable[dict[str, Any]]:
-    if not JSONL_LIC.is_file():
+def iter_licencias_rows(path: Path | None = None) -> Iterable[dict[str, Any]]:
+    path = path or JSONL_LIC
+    if not path.is_file():
         return
-    with JSONL_LIC.open(encoding="utf-8") as fh:
+    with path.open(encoding="utf-8") as fh:
         for line in fh:
             line = line.strip()
             if line:
                 yield json.loads(line)
 
 
-def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, tuple], dict[str, int]]:
+def collect_licencias(*, years: set[int] | None = None, jsonl_path: Path | None = None) -> tuple[dict[str, dict[str, Any]], dict[str, tuple], dict[str, int]]:
     inmuebles: dict[str, dict[str, Any]] = {}
     actuaciones_by_key: dict[str, tuple] = {}
     stats = {"rows": 0, "skipped": 0, "with_coords": 0, "temporal_quarantine": 0}
 
     from license_territory import territorial_raw
 
-    for original in iter_licencias_rows():
+    for original in iter_licencias_rows(jsonl_path):
         row = territorial_raw(original)
         anio = row.get("anio_dataset") or row.get("anioDataset")
         try:

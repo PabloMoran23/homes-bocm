@@ -119,7 +119,7 @@ class MadridAyuntamientoAdapter(AyuntamientoAdapter):
         # contienen el histórico reciente completo; refresh conserva lo anterior.
         args: list[str] = ["--current"]
         self._run(LICENCIAS_MODULE, args)
-        return {"status": "ok", "since_year": 2023, "historical_preserved": True,
+        return {"status": "ok", "since_year": 2022, "historical_preserved": True,
                 "datasets": ["640505", "133556"]}
 
     def _write_state(self, path: Path, payload: dict[str, Any]) -> None:
