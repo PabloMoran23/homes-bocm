@@ -121,6 +121,10 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
         # Acquire before reading scope, so a concurrent writer cannot add Madrid
         # rows between the scope snapshot and the replacement.
         with conn.cursor() as cur:
+            if schema == "homes":
+                cur.execute("SELECT version,target_version FROM homes.entity_policy_config WHERE singleton FOR SHARE")
+                if cur.fetchone() != (POLICY_VERSION, POLICY_VERSION):
+                    raise RuntimeError("La clasificación cambió durante la preparación")
             cur.execute(f"LOCK TABLE {table} IN SHARE ROW EXCLUSIVE MODE")
             if schema == "homes":
                 cur.execute("SELECT pg_advisory_xact_lock(85020261103)")
@@ -217,6 +221,17 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
           ON CONFLICT(ndp_edificio) DO UPDATE SET direccion=coalesce(excluded.direccion,{schema}.inmueble.direccion),
           distrito=coalesce(excluded.distrito,{schema}.inmueble.distrito),barrio=coalesce(excluded.barrio,{schema}.inmueble.barrio),
           lat=coalesce({schema}.inmueble.lat,excluded.lat),lng=coalesce({schema}.inmueble.lng,excluded.lng),updated_at=now()""")
+        # These two derived effects are already computed for the entire batch.
+        # The table lock excludes all writers. Trigger DDL is transactional: on
+        # failure rollback restores it, and on success we restore before commit.
+        cur.execute("SELECT tgname,tgenabled FROM pg_trigger WHERE tgrelid=%s::regclass AND tgname=ANY(%s)",
+                    (table, ["entity_classification_changed", "licencia_territory_invalidation"]))
+        paused = [(name, mode) for name, mode in cur.fetchall() if mode != "D"]
+        modes = {"O": "ENABLE", "A": "ENABLE ALWAYS", "R": "ENABLE REPLICA"}
+        for name, mode in paused:
+            if mode not in modes:
+                raise RuntimeError("Modo de trigger desconocido")
+            cur.execute(f'ALTER TABLE {table} DISABLE TRIGGER "{name}"')
         _LOG.info("Copia y staging listos; sustituyendo el lote en la transacción")
         cur.execute(f"DELETE FROM {table} l USING madrid_license_scope s WHERE l.id=s.id")
         cur.execute(f"""INSERT INTO {table}(id,licencia_key,inmueble_id,anio_dataset,fecha_alta,fecha_concesion,
@@ -229,6 +244,11 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
           FROM madrid_license_stage s JOIN {schema}.inmueble i ON i.ndp_edificio=s.ndp LEFT JOIN madrid_license_links o ON o.id=s.id""")
         if cur.rowcount != len(keys):
             raise RuntimeError("Recuento insertado distinto del snapshot")
+        for name, mode in paused:
+            cur.execute(f'ALTER TABLE {table} {modes[mode]} TRIGGER "{name}"')
+        if any(name == "licencia_territory_invalidation" for name, _ in paused):
+            cur.execute(f"""INSERT INTO {schema}.license_territory_rebuild VALUES ('madrid',now(),'license_changed')
+              ON CONFLICT(municipio_slug) DO UPDATE SET requested_at=excluded.requested_at,reason=excluded.reason""")
         cur.execute(f"DELETE FROM {schema}.entity_reprocess_queue q WHERE q.entity_table='licencia' AND (EXISTS(SELECT 1 FROM madrid_license_scope s WHERE s.id::text=q.entity_id) OR EXISTS(SELECT 1 FROM madrid_license_stage s WHERE s.id::text=q.entity_id))")
         cur.execute(outside_sql)
         if cur.fetchone() != outside_before:

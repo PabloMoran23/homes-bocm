@@ -14,7 +14,11 @@ reconocibles, vínculos con proyectos y fechas de inserción. Comprueba la versi
 de clasificación, evita snapshots vacíos o caídas de más del 20%, valida las dos
 fuentes, bloquea escritores concurrentes y verifica que las filas ajenas al lote
 no cambien. Una repetición del mismo contenido y conjunto de claves no escribe.
-No activa la política global de clasificación.
+No activa la política global de clasificación. Durante la sustitución, bajo el
+bloqueo de escritores, pausa únicamente los dos triggers derivados de esa tabla:
+la clasificación ya está calculada y se registra una sola invalidación territorial
+del lote. Restaura su modo original antes del commit; un rollback también revierte
+la pausa. Las restricciones y los demás triggers siguen activos.
 
 Para un replay independiente, primero ejecutar sin `--apply`:
 

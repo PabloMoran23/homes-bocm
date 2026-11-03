@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from psycopg2.extras import Json
+
 from db.madrid_license_snapshot import prepare_row, source_fingerprint, sync_snapshot
 
 
@@ -45,7 +47,13 @@ class SnapshotIntegrationTest(unittest.TestCase):
                 coord_source text,inserted_at timestamptz,updated_at timestamptz)''')
             cur.execute('CREATE TEMP TABLE entity_reprocess_queue(entity_table text,entity_id text)')
             cur.execute("INSERT INTO pg_temp.licencia(id,licencia_key,municipio_slug,fuente,raw_json) VALUES(1,'other','valladolid','other','{}'),(2,'legacy',NULL,NULL,%s)",
-                        (__import__('psycopg2.extras', fromlist=['Json']).Json({'anio_dataset':2022,'ndp_edificio':'110001','fecha_de_alta':'2022-06-01'}),))
+                        (Json({'anio_dataset':2022,'ndp_edificio':'110001','fecha_de_alta':'2022-06-01'}),))
+        with self.conn.cursor() as cur:
+            cur.execute("CREATE TEMP TABLE license_territory_rebuild(municipio_slug text PRIMARY KEY,requested_at timestamptz,reason text)")
+            cur.execute("""CREATE FUNCTION pg_temp.reject_row_derivation() RETURNS trigger LANGUAGE plpgsql AS $$
+                BEGIN RAISE EXCEPTION 'Derived triggers should be replaced by batch effects'; END $$""")
+            for name in ('entity_classification_changed', 'licencia_territory_invalidation'):
+                cur.execute(f'CREATE TRIGGER {name} BEFORE INSERT ON pg_temp.licencia FOR EACH ROW EXECUTE FUNCTION pg_temp.reject_row_derivation()')
         self.conn.commit()
         self.records = [record('a'), record('b', '133556')]
         self.evidence = {source_fingerprint({'anio_dataset':2022,'ndp_edificio':'110001','fecha_de_alta':'2022-06-01'})}
@@ -65,6 +73,10 @@ class SnapshotIntegrationTest(unittest.TestCase):
             self.assertTrue(all(r[1] is not None for r in rows[1:]))
             cur.execute('SELECT count(*) FROM pg_temp.madrid_license_snapshot_backup')
             self.assertEqual(cur.fetchone()[0], 1)
+            cur.execute("SELECT tgname,tgenabled FROM pg_trigger WHERE tgrelid='pg_temp.licencia'::regclass ORDER BY tgname")
+            self.assertEqual(cur.fetchall(), [('entity_classification_changed','O'), ('licencia_territory_invalidation','O')])
+            cur.execute('SELECT municipio_slug FROM pg_temp.license_territory_rebuild')
+            self.assertEqual(cur.fetchall(), [('madrid',)])
         repeated = sync_snapshot(self.conn, self.records, apply=True, schema='pg_temp')
         self.assertEqual(repeated['status'], 'unchanged')
         with self.conn.cursor() as cur:
@@ -85,3 +97,5 @@ class SnapshotIntegrationTest(unittest.TestCase):
         with self.conn.cursor() as cur:
             cur.execute('SELECT licencia_key FROM pg_temp.licencia ORDER BY id')
             self.assertEqual(cur.fetchall(), [('other',), ('legacy',)])
+            cur.execute("SELECT tgenabled FROM pg_trigger WHERE tgrelid='pg_temp.licencia'::regclass")
+            self.assertEqual(cur.fetchall(), [('O',), ('O',)])
