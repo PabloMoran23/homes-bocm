@@ -177,10 +177,10 @@ function codigoDesdeTipo(
   ) {
     return { codigo: "local_a_vivienda", confianza: "alta" };
   }
-  if (tipo.includes("declaracion responsable residencial") || tipo.includes("declaracion responsable obra")) {
+  if ((tipo.includes("declaracion responsable") && tipo.includes("residencial")) || tipo.includes("declaracion responsable obra")) {
     return { codigo: "vivienda_obra_menor", confianza: "media" };
   }
-  if (tipo.includes("declaracion responsable actividad")) {
+  if (tipo.includes("declaracion responsable") && tipo.includes("actividad")) {
     return { codigo: "local_actividad", confianza: "media" };
   }
   if (tipo.includes("declaracion responsable") && tipo.includes("primera ocupacion")) {
