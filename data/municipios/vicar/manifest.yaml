@@ -1,0 +1,30 @@
+slug: vicar
+nombre: "Vícar"
+provincia: "Vícar-Almería"
+comunidad_autonoma: andalucia
+boletin_source_id: boja
+
+portal:
+  base_url: "https://vicar.sedelectronica.es"
+  adapter: municipio.adapters.vicar:VicarAyuntamientoAdapter
+  config:
+    sede_base: "https://vicar.sedelectronica.es"
+    board_url: "https://vicar.sedelectronica.es/board/"
+    wp_base: "https://www.vicar.es"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-vicar/1.0"
+    cod_ine: "04102"
+    centroid: [36.8312, -2.6425]
+    geometry_crs: EPSG:4326
+  notes: |
+    Fuentes: web WordPress (vicar.es/area-de-urbanismo), sede espublico gestiona
+    (/board, /dossier, catálogo urbanismo), PAI (pai.vicar.es), BOP Diputación Almería,
+    WFS sectores SIU Diputación (cod_ine 04102), SITUA Junta.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
