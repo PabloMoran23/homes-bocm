@@ -1,0 +1,51 @@
+slug: mieres-33037
+nombre: "Mieres"
+provincia: Asturias
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://www.mieres.es"
+  adapter: municipio.adapters.mieres:MieresAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-mieres-33037/1.0"
+    centroid: [43.25, -5.77]
+    canonical_slug: mieres
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "37"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_municipio_id: "33037"
+  notes: |
+    Alias de cola INE 33037 al pipeline canónico `mieres` (Asturias).
+    WordPress mieres.es + sede STA tablón + RPGUR idConcejo=37.
+    Geometría parcial WFS visorrpgur (id_municipio=33037).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Mieres
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-5.8555275, 43.1811074],
+              [-5.8555275, 43.2891397],
+              [-5.6254914, 43.2891397],
+              [-5.6254914, 43.1811074],
+              [-5.8555275, 43.1811074],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox OSM/Nominatim término Mieres (Asturias INE 33037)"
