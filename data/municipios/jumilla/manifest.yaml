@@ -1,0 +1,26 @@
+slug: jumilla
+nombre: "Jumilla"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://jumilla.sedipualba.es"
+  adapter: municipio.adapters.jumilla:JumillaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-jumilla/1.0"
+    web_base: "https://jumilla.org"
+    sede_base: "https://jumilla.sedipualba.es"
+    catalogo_urbanismo: "https://jumilla.sedipualba.es/catalogoservicios.aspx?ambito=&area=1153"
+    pgou_page: "https://jumilla.org/ayuntamiento/PGOUJUMILLA.asp"
+  notes: |
+    Sede Sedipualba (tablón RSS/HTML, área urbanismo id=1153).
+    PGOU y documentación en jumilla.org / datos.jumilla.org.
+    Geometría parcial: WFS SITMURCIA plu_ze_37_mun_uso_suelo (Municipio=Jumilla).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
