@@ -1,0 +1,36 @@
+slug: redondela
+nombre: "Redondela"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://redondela.gal"
+  adapter: municipio.adapters.redondela:RedondelaAyuntamientoAdapter
+  config:
+    web_base: "https://redondela.gal"
+    sede_base: "https://redondela.sedelectronica.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-redondela/1.0"
+    max_siotuga_desarrollo: 80
+    wayback_fallback: true
+    prefer_wayback: false
+    insecure_ssl: true
+    geometry_enrich: true
+    geometry_max_rows: 25
+    centroid_lat: 42.2836
+    centroid_lon: -8.6096
+    geometry:
+      kind: arcgis_featureserver
+      base_url: "https://services-eu1.arcgis.com/KmoBn3Qii9gbOa4C/arcgis/rest/services"
+  notes: |
+    Web corporativa WordPress (redondela.gal): sección PXOM; bloqueo 403 desde IPs cloud (wayback_fallback).
+    Sede OpenGovernment (redondela.sedelectronica.gal): trámites; redirección con sesión opaca.
+    Inventario Xunta SIOTUGA (INE 36045): PG + instrumentos de desarrollo.
+    Hub ArcGIS municipal (redondela.maps.arcgis.com): capas T36045_PXOM_* en services-eu1.arcgis.com.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
