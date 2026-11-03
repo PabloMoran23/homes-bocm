@@ -1,0 +1,38 @@
+slug: pielagos
+nombre: "Piélagos"
+provincia: Cantabria
+comunidad_autonoma: cantabria
+
+portal:
+  base_url: "https://www.pielagos.es"
+  adapter: municipio.adapters.pielagos:PielagosAyuntamientoAdapter
+  config:
+    web_base: "https://www.pielagos.es"
+    tablon_url: "https://www.pielagos.es/tablon-de-anuncios-virtual"
+    pgou_url: "https://www.pielagos.es/plan-general-de-ordenacion-vigente"
+    servicios_tecnicos_url: "https://www.pielagos.es/servicios-tecnicos"
+    sede_url: "https://sede.pielagos.es/"
+    aucan_url: "https://aplicacionesweb.cantabria.es/aucan/public/zona/costacentral/pielagos"
+    cod_ine: "39052"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pielagos/1.0"
+    wfs_base: "https://geoservicios.cantabria.es/inspire/services/Urbanismo/MapServer/WFSServer"
+    centroid: [43.405, -3.967]
+  notes: |
+    Web municipal interactivaclic (tablón virtual en tabla HTML + PDFs kcfinder).
+    PGOU vigente y revisiones 2016/2018/2023 en páginas estáticas.
+    Sede sede.pielagos.es (emiservicio ASP; trámites, sin listado scrapeable).
+    Geometría: SIUCAN WFS Cantabria (Urbanismo:Sectores, INE 39052).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
