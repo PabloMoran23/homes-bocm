@@ -12,7 +12,7 @@
 # Production compares the incoming merge/squash commit against its first parent.
 # The last successful deployment can lag intentionally skipped web changes and
 # must not make a later municipality-only PR deploy them accidentally.
-# Unknown history, a failed diff, or an empty diff still deploys conservatively.
+# Unavailable preview history skips the build: only verified web changes deploy.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -20,10 +20,20 @@ cd "$REPO_ROOT"
 
 BEFORE="${VERCEL_GIT_PREVIOUS_SHA:-}"
 AFTER="${VERCEL_GIT_COMMIT_SHA:-HEAD}"
+FETCH_REMOTE=origin
+# Vercel can reconstruct .git without retaining any configured remote.
+if ! git remote get-url origin >/dev/null 2>&1; then
+  FETCH_REMOTE="https://github.com/${VERCEL_GIT_REPO_OWNER:-PabloMoran23}/${VERCEL_GIT_REPO_SLUG:-homes-bocm}.git"
+fi
 
 deploy() {
   echo "vercel-should-build: deploy ($1)"
   exit 1
+}
+
+skip_unverified() {
+  echo "vercel-should-build: skip (unverified web changes: $1)"
+  exit 0
 }
 
 # First fatal/error line of a captured git command, for the decision log.
@@ -75,20 +85,20 @@ if [ "${VERCEL_ENV:-}" = "preview" ]; then
   if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
     preview_fetch_args+=(--depth=100)
   fi
-  if ! fetch_history "${preview_fetch_args[@]}" origin '+refs/heads/main:refs/remotes/origin/main'; then
-    deploy "cannot fetch preview base main"
+  if ! fetch_history "${preview_fetch_args[@]}" "$FETCH_REMOTE" '+refs/heads/main:refs/remotes/origin/main'; then
+    skip_unverified "cannot fetch preview base main"
   fi
   if ! BEFORE=$(git merge-base "$AFTER" refs/remotes/origin/main); then
     # Vercel clones only a short history. Deepen the branch and main together.
-    if ! fetch_history --deepen=1000 origin "$AFTER" '+refs/heads/main:refs/remotes/origin/main'; then
-      deploy "cannot recover preview merge base"
+    if ! fetch_history --deepen=1000 "$FETCH_REMOTE" "$AFTER" '+refs/heads/main:refs/remotes/origin/main'; then
+      skip_unverified "cannot recover preview merge base"
     fi
-    BEFORE=$(git merge-base "$AFTER" refs/remotes/origin/main) || deploy "preview merge base unavailable"
+    BEFORE=$(git merge-base "$AFTER" refs/remotes/origin/main) || skip_unverified "preview merge base unavailable"
   fi
   echo "vercel-should-build: comparing preview against main merge base ${BEFORE}"
 elif [ "${VERCEL_ENV:-}" = "production" ]; then
   if ! BEFORE=$(git rev-parse --verify "${AFTER}^1" 2>/dev/null); then
-    if ! fetch_history --depth=2 origin "$AFTER"; then
+    if ! fetch_history --depth=2 "$FETCH_REMOTE" "$AFTER"; then
       deploy "cannot recover production parent"
     fi
     BEFORE=$(git rev-parse --verify "${AFTER}^1" 2>/dev/null) || deploy "production parent unavailable"
@@ -107,9 +117,9 @@ if ! commit_exists "$BEFORE"; then
   trap - ERR
   set +e
   if command -v timeout >/dev/null 2>&1; then
-    GIT_TERMINAL_PROMPT=0 timeout 60 git fetch --depth=1 --no-tags origin "$BEFORE" >"$fetch_log" 2>&1
+    GIT_TERMINAL_PROMPT=0 timeout 60 git fetch --depth=1 --no-tags "$FETCH_REMOTE" "$BEFORE" >"$fetch_log" 2>&1
   else
-    GIT_TERMINAL_PROMPT=0 git fetch --depth=1 --no-tags origin "$BEFORE" >"$fetch_log" 2>&1
+    GIT_TERMINAL_PROMPT=0 git fetch --depth=1 --no-tags "$FETCH_REMOTE" "$BEFORE" >"$fetch_log" 2>&1
   fi
   fetch_status=$?
   set -e
