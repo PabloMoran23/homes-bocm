@@ -1,0 +1,27 @@
+name: Check Vercel build filter
+
+on:
+  pull_request:
+    paths:
+      - web/scripts/vercel-should-build.sh
+      - web/scripts/test-vercel-should-build.sh
+      - .github/workflows/check-vercel-build-filter.yml
+  push:
+    branches: [main]
+    paths:
+      - web/scripts/vercel-should-build.sh
+      - web/scripts/test-vercel-should-build.sh
+      - .github/workflows/check-vercel-build-filter.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - run: bash web/scripts/test-vercel-should-build.sh

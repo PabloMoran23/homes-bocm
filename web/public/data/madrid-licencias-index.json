@@ -1,44 +1,34 @@
 {
-  "generatedAt": "2026-10-14T20:30:57.110Z",
+  "generatedAt": "2026-11-03T18:45:45.402Z",
   "coverageStatus": "partial",
-  "source": "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
+  "source": "datos.madrid.es: histórico 300193; licencias 640505 y declaraciones responsables 133556 desde 2023",
   "sourceSnapshot": {
-    "mode": "cached-xlsx-replay",
+    "mode": "current-csv-download",
     "resources": {
       "2022": {
         "url": "https://datos.madrid.es/dataset/300193-0-licencias-urbanisticas/resource/300193-3-licencias-urbanisticas-xlsx/download/300193-3-licencias-urbanisticas-xlsx.xlsx",
         "sha256": "29691b053112fdc73d93a66b07e331498065a57abc7f6e7b10152c756b3111d2",
+        "downloadedThisRun": false,
         "cacheModifiedAt": "2026-05-16T08:40:32.987278+00:00",
-        "downloadedThisRun": false,
         "factualUpdatedAt": null
       },
-      "2023": {
-        "url": "https://datos.madrid.es/dataset/300193-0-licencias-urbanisticas/resource/300193-1-licencias-urbanisticas-xlsx/download/300193-1-licencias-urbanisticas-xlsx.xlsx",
-        "sha256": "2415704bbd6ad522905e492ced9ff1f5dbc27e10061c81d9144e9d6fc3174a13",
-        "cacheModifiedAt": "2026-05-16T08:40:33.926857+00:00",
-        "downloadedThisRun": false,
-        "factualUpdatedAt": null
+      "licencias": {
+        "url": "https://datos.madrid.es/dataset/640505-0-licencias-urbanisticas-otorgadas/resource/640505-1-licencias-urbanisticas-otorgadas/download/licencias.csv",
+        "dataset": "640505-0-licencias-urbanisticas-otorgadas",
+        "sha256": "94f58ac60a335ac14ea80393faf714e6a53a52dea7133ba342f1027ded2fb108",
+        "downloadedThisRun": true,
+        "downloadedAt": "2026-11-03T18:43:07.592932+00:00",
+        "factualUpdatedAt": null,
+        "rows": 11823
       },
-      "2024": {
-        "url": "https://datos.madrid.es/dataset/300193-0-licencias-urbanisticas/resource/300193-11-licencias-urbanisticas-xlsx/download/300193-11-licencias-urbanisticas-xlsx.xlsx",
-        "sha256": "d5beeb46331c04b3563a395a4ce54e45a456dcc14f4c93bceed33668fe657d34",
-        "cacheModifiedAt": "2026-05-16T08:40:34.481120+00:00",
-        "downloadedThisRun": false,
-        "factualUpdatedAt": null
-      },
-      "2025": {
-        "url": "https://datos.madrid.es/dataset/300193-0-licencias-urbanisticas/resource/300193-0-licencias-urbanisticas-xlsx/download/300193-0-licencias-urbanisticas-xlsx.xlsx",
-        "sha256": "fc20aa4f52c6a37dfc1779bf4fe30715ca7b7dcf3386946b325baf06b0e91be3",
-        "cacheModifiedAt": "2026-05-16T08:40:35.158012+00:00",
-        "downloadedThisRun": false,
-        "factualUpdatedAt": null
-      },
-      "2026": {
-        "url": "https://datos.madrid.es/dataset/300193-0-licencias-urbanisticas/resource/300193-2-licencias-urbanisticas-xlsx/download/300193-2-licencias-urbanisticas-xlsx.xlsx",
-        "sha256": "5fb8e901c0ed2f8dc41c54ff947e1a02ea591d0d7b1286feaec7771f3be46328",
-        "cacheModifiedAt": "2026-05-16T08:40:35.888904+00:00",
-        "downloadedThisRun": false,
-        "factualUpdatedAt": null
+      "declaraciones": {
+        "url": "https://datos.madrid.es/dataset/133556-0-declaraciones-responsables/resource/133556-0-declaraciones-responsables/download/dr.csv",
+        "dataset": "133556-0-declaraciones-responsables",
+        "sha256": "5d58a219d7998c244289b4d94405478b19ad18a94643a0d81c3d40d001f6e367",
+        "downloadedThisRun": true,
+        "downloadedAt": "2026-11-03T18:43:10.215515+00:00",
+        "factualUpdatedAt": null,
+        "rows": 92074
       }
     },
     "factualUpdatedAt": null
@@ -58,15 +48,15 @@
   "municipioCode": "28079",
   "territorialPolicy": "license-territory-v1",
   "excludedTerritory": 0,
-  "withoutCoords": 1198,
-  "totalRows": 48960,
-  "withCoords": 47762,
+  "withoutCoords": 22073,
+  "totalRows": 122364,
+  "withCoords": 100291,
   "byYear": {
     "2022": 18467,
-    "2023": 6538,
-    "2024": 8811,
-    "2025": 11496,
-    "2026": 3648
+    "2023": 26329,
+    "2024": 27403,
+    "2025": 27246,
+    "2026": 22919
   },
   "years": [
     2026,
@@ -78,43 +68,43 @@
   "topUso": [
     {
       "name": "residencial",
-      "count": 5727
+      "count": 3659
     },
     {
       "name": "servicios terciarios",
-      "count": 2773
+      "count": 2738
     },
     {
       "name": "industrial",
-      "count": 382
+      "count": 360
     },
     {
       "name": "dotacional de servicios colectivos",
-      "count": 302
-    },
-    {
-      "name": "dotacional de servicios infraestructurales",
-      "count": 184
+      "count": 225
     },
     {
       "name": "otros usos",
-      "count": 176
+      "count": 172
     },
     {
-      "name": "dotacional",
-      "count": 38
+      "name": "dotacional de servicios infraestructurales",
+      "count": 169
     },
     {
       "name": "garaje-aparcamiento",
-      "count": 37
+      "count": 28
     },
     {
-      "name": "dotacional para el transporte",
-      "count": 22
+      "name": "dotacional",
+      "count": 21
     },
     {
       "name": "instalaciones",
-      "count": 21
+      "count": 20
+    },
+    {
+      "name": "dotacional para el transporte",
+      "count": 13
     },
     {
       "name": "anexos",
@@ -126,7 +116,7 @@
     },
     {
       "name": "trasteros",
-      "count": 4
+      "count": 3
     },
     {
       "name": "usos en suelo no urbanizable",
@@ -135,245 +125,245 @@
   ],
   "topDistrito": [
     {
+      "name": "salamanca",
+      "count": 10005
+    },
+    {
       "name": "centro",
-      "count": 4410
+      "count": 9982
     },
     {
       "name": "chamberi",
-      "count": 3411
-    },
-    {
-      "name": "tetuan",
-      "count": 3278
-    },
-    {
-      "name": "hortaleza",
-      "count": 3233
-    },
-    {
-      "name": "ciudad lineal",
-      "count": 3122
-    },
-    {
-      "name": "salamanca",
-      "count": 3060
-    },
-    {
-      "name": "moncloa-aravaca",
-      "count": 2840
-    },
-    {
-      "name": "carabanchel",
-      "count": 2624
+      "count": 8557
     },
     {
       "name": "chamartin",
-      "count": 2578
+      "count": 7034
+    },
+    {
+      "name": "tetuan",
+      "count": 6702
+    },
+    {
+      "name": "ciudad lineal",
+      "count": 6203
+    },
+    {
+      "name": "moncloa-aravaca",
+      "count": 5378
     },
     {
       "name": "fuencarral-el pardo",
-      "count": 2302
+      "count": 4996
+    },
+    {
+      "name": "hortaleza",
+      "count": 4975
+    },
+    {
+      "name": "carabanchel",
+      "count": 4798
     },
     {
       "name": "retiro",
-      "count": 2122
-    },
-    {
-      "name": "san blas-canillejas",
-      "count": 2071
+      "count": 4691
     },
     {
       "name": "arganzuela",
-      "count": 2004
-    },
-    {
-      "name": "puente de vallecas",
-      "count": 1850
-    },
-    {
-      "name": "usera",
-      "count": 1819
+      "count": 4390
     },
     {
       "name": "latina",
-      "count": 1663
+      "count": 3942
+    },
+    {
+      "name": "san blas-canillejas",
+      "count": 3482
+    },
+    {
+      "name": "puente de vallecas",
+      "count": 3254
+    },
+    {
+      "name": "usera",
+      "count": 2487
     },
     {
       "name": "villa de vallecas",
-      "count": 1513
-    },
-    {
-      "name": "barajas",
-      "count": 1403
+      "count": 2415
     },
     {
       "name": "villaverde",
-      "count": 1286
+      "count": 2196
+    },
+    {
+      "name": "barajas",
+      "count": 2089
     },
     {
       "name": "vicalvaro",
-      "count": 1018
+      "count": 1593
     },
     {
       "name": "moratalaz",
-      "count": 931
+      "count": 1570
     },
     {
       "name": "0",
-      "count": 416
+      "count": 185
     }
   ],
   "topDistritoMap": [
     {
+      "name": "salamanca",
+      "count": 10005,
+      "lat": 40.42948607534955,
+      "lng": -3.676914662522901,
+      "withCoords": 9978
+    },
+    {
       "name": "centro",
-      "count": 4410,
-      "lat": 40.41830409453268,
-      "lng": -3.7032394126387036,
-      "withCoords": 4291
+      "count": 9982,
+      "lat": 40.418476092700566,
+      "lng": -3.7032027564916197,
+      "withCoords": 9927
     },
     {
       "name": "chamberi",
-      "count": 3411,
-      "lat": 40.43609011044159,
-      "lng": -3.7031956906248724,
-      "withCoords": 3367
-    },
-    {
-      "name": "tetuan",
-      "count": 3278,
-      "lat": 40.45837440656021,
-      "lng": -3.6998207484775882,
-      "withCoords": 3272
-    },
-    {
-      "name": "hortaleza",
-      "count": 3233,
-      "lat": 40.471015130214504,
-      "lng": -3.639850017000285,
-      "withCoords": 3171
-    },
-    {
-      "name": "ciudad lineal",
-      "count": 3122,
-      "lat": 40.439103804002464,
-      "lng": -3.6502036623907843,
-      "withCoords": 3113
-    },
-    {
-      "name": "salamanca",
-      "count": 3060,
-      "lat": 40.42942479433016,
-      "lng": -3.676502872674415,
-      "withCoords": 3010
-    },
-    {
-      "name": "moncloa-aravaca",
-      "count": 2840,
-      "lat": 40.45292322042974,
-      "lng": -3.7533335670362518,
-      "withCoords": 2750
-    },
-    {
-      "name": "carabanchel",
-      "count": 2624,
-      "lat": 40.38529733087678,
-      "lng": -3.7336155782171687,
-      "withCoords": 2599
+      "count": 8557,
+      "lat": 40.43623188661757,
+      "lng": -3.7035333482675874,
+      "withCoords": 8529
     },
     {
       "name": "chamartin",
-      "count": 2578,
-      "lat": 40.453722171863255,
-      "lng": -3.6779426569401745,
-      "withCoords": 2511
+      "count": 7034,
+      "lat": 40.4535239414057,
+      "lng": -3.678366929069634,
+      "withCoords": 6986
+    },
+    {
+      "name": "tetuan",
+      "count": 6702,
+      "lat": 40.45751479735676,
+      "lng": -3.699080352335289,
+      "withCoords": 6700
+    },
+    {
+      "name": "ciudad lineal",
+      "count": 6203,
+      "lat": 40.44044912160969,
+      "lng": -3.6510860025601986,
+      "withCoords": 6196
+    },
+    {
+      "name": "moncloa-aravaca",
+      "count": 5378,
+      "lat": 40.449338570933186,
+      "lng": -3.7469475689241896,
+      "withCoords": 5338
     },
     {
       "name": "fuencarral-el pardo",
-      "count": 2302,
-      "lat": 40.48816086197629,
-      "lng": -3.7059747727377457,
-      "withCoords": 2262
+      "count": 4996,
+      "lat": 40.48802944780731,
+      "lng": -3.704698215777992,
+      "withCoords": 4979
+    },
+    {
+      "name": "hortaleza",
+      "count": 4975,
+      "lat": 40.472220280349454,
+      "lng": -3.6403705075273063,
+      "withCoords": 4925
+    },
+    {
+      "name": "carabanchel",
+      "count": 4798,
+      "lat": 40.38559233402037,
+      "lng": -3.7327518782379165,
+      "withCoords": 4783
     },
     {
       "name": "retiro",
-      "count": 2122,
-      "lat": 40.411005365739776,
-      "lng": -3.675543992442633,
-      "withCoords": 2111
-    },
-    {
-      "name": "san blas-canillejas",
-      "count": 2071,
-      "lat": 40.437250677086986,
-      "lng": -3.613201521523095,
-      "withCoords": 2051
+      "count": 4691,
+      "lat": 40.411161138740816,
+      "lng": -3.675656567823122,
+      "withCoords": 4690
     },
     {
       "name": "arganzuela",
-      "count": 2004,
-      "lat": 40.400422988393075,
-      "lng": -3.700071190037454,
-      "withCoords": 1978
-    },
-    {
-      "name": "puente de vallecas",
-      "count": 1850,
-      "lat": 40.390200789261,
-      "lng": -3.658712952070074,
-      "withCoords": 1841
-    },
-    {
-      "name": "usera",
-      "count": 1819,
-      "lat": 40.380632222342555,
-      "lng": -3.705115266949533,
-      "withCoords": 1815
+      "count": 4390,
+      "lat": 40.40061045241138,
+      "lng": -3.699352860998733,
+      "withCoords": 4376
     },
     {
       "name": "latina",
-      "count": 1663,
-      "lat": 40.396522244755396,
-      "lng": -3.7529737176282976,
-      "withCoords": 1657
+      "count": 3942,
+      "lat": 40.396788217908444,
+      "lng": -3.7527496973164287,
+      "withCoords": 3938
+    },
+    {
+      "name": "san blas-canillejas",
+      "count": 3482,
+      "lat": 40.43766100002349,
+      "lng": -3.61336769394521,
+      "withCoords": 3474
+    },
+    {
+      "name": "puente de vallecas",
+      "count": 3254,
+      "lat": 40.39039378170002,
+      "lng": -3.6585955594832127,
+      "withCoords": 3247
+    },
+    {
+      "name": "usera",
+      "count": 2487,
+      "lat": 40.381400425446905,
+      "lng": -3.704366653033352,
+      "withCoords": 2485
     },
     {
       "name": "villa de vallecas",
-      "count": 1513,
-      "lat": 40.3710220195886,
-      "lng": -3.61423149018253,
-      "withCoords": 1434
-    },
-    {
-      "name": "barajas",
-      "count": 1403,
-      "lat": 40.46639038809197,
-      "lng": -3.588926439624276,
-      "withCoords": 1350
+      "count": 2415,
+      "lat": 40.37173111955637,
+      "lng": -3.6151242398500165,
+      "withCoords": 2370
     },
     {
       "name": "villaverde",
-      "count": 1286,
-      "lat": 40.34744080700732,
-      "lng": -3.700083145601018,
-      "withCoords": 1274
+      "count": 2196,
+      "lat": 40.347217753460306,
+      "lng": -3.6997364052078088,
+      "withCoords": 2188
+    },
+    {
+      "name": "barajas",
+      "count": 2089,
+      "lat": 40.46647067335763,
+      "lng": -3.5909077915031227,
+      "withCoords": 2055
     },
     {
       "name": "vicalvaro",
-      "count": 1018,
-      "lat": 40.401150402769595,
-      "lng": -3.5885362166203376,
-      "withCoords": 975
+      "count": 1593,
+      "lat": 40.401130969941605,
+      "lng": -3.590326807742369,
+      "withCoords": 1558
     },
     {
       "name": "moratalaz",
-      "count": 931,
-      "lat": 40.405760554162406,
-      "lng": -3.644703603081794,
-      "withCoords": 930
+      "count": 1570,
+      "lat": 40.40654647335094,
+      "lng": -3.6450815213074526,
+      "withCoords": 1569
     },
     {
       "name": "0",
-      "count": 416,
+      "count": 185,
       "lat": null,
       "lng": null,
       "withCoords": 0
@@ -382,61 +372,49 @@
   "topProcedimiento": [
     {
       "name": "declaración responsable",
-      "count": 20683
-    },
-    {
-      "name": "procedimiento ordinario común",
-      "count": 14385
+      "count": 98020
     },
     {
       "name": "licencia urbanística",
-      "count": 10202
+      "count": 12532
     },
     {
-      "name": "licencia de funcionamiento",
-      "count": 1894
-    },
-    {
-      "name": "consultas urbanísticas",
-      "count": 1115
+      "name": "procedimiento ordinario común",
+      "count": 11451
     },
     {
       "name": "procedimiento ordinario abreviado",
-      "count": 606
+      "count": 328
     },
     {
       "name": "licencia urbanística de actividad",
-      "count": 67
+      "count": 29
     },
     {
       "name": "comunicación previa",
-      "count": 3
+      "count": 2
     },
     {
-      "name": "actuaciones comunicadas",
-      "count": 3
-    },
-    {
-      "name": "procedimiento simplificado",
+      "name": "consultas urbanísticas",
       "count": 2
     }
   ],
   "topTipoExpediente": [
     {
+      "name": "declaración responsable - residencial",
+      "count": 56755
+    },
+    {
+      "name": "declaración responsable - actividad",
+      "count": 33279
+    },
+    {
       "name": "declaración responsable obras",
-      "count": 11536
-    },
-    {
-      "name": "declaración responsable residencial",
-      "count": 7586
-    },
-    {
-      "name": "declaración responsable actividad",
-      "count": 6940
+      "count": 9790
     },
     {
       "name": "licencia urbanística residencial",
-      "count": 6395
+      "count": 6204
     },
     {
       "name": "lic. declaración responsable sin certificado de conformidad",
@@ -444,63 +422,63 @@
     },
     {
       "name": "licencia urbanística de actividad",
-      "count": 3467
+      "count": 3647
     },
     {
       "name": "licencia de funcionamiento de actividad",
-      "count": 1718
-    },
-    {
-      "name": "consulta urbanística",
-      "count": 1115
+      "count": 1978
     },
     {
       "name": "declaración responsable - primera ocupación",
-      "count": 804
+      "count": 1703
+    },
+    {
+      "name": "declaración responsable actividad",
+      "count": 1212
     },
     {
       "name": "talas de árboles",
-      "count": 602
+      "count": 475
     },
     {
-      "name": "declaración responsable actividad - migracion platea",
-      "count": 487
+      "name": "declaración responsable - funcionamiento",
+      "count": 337
     },
     {
       "name": "oc obras transformación locales en viviendas",
-      "count": 450
+      "count": 263
     },
     {
-      "name": "obras de reestructuración parcial",
-      "count": 311
+      "name": "licencia de 1ª ocupación y funcionamiento",
+      "count": 198
+    },
+    {
+      "name": "licencia básica residencial",
+      "count": 197
+    },
+    {
+      "name": "licencias para actividades temporales",
+      "count": 191
     },
     {
       "name": "obras de nueva planta",
-      "count": 260
+      "count": 166
     },
     {
-      "name": "licencia básica urbanística residencial",
-      "count": 224
+      "name": "obras de reestructuración parcial",
+      "count": 165
     },
     {
       "name": "modificaciones de licencia",
-      "count": 186
-    },
-    {
-      "name": "declaración responsable ocupación vía pública",
-      "count": 184
-    },
-    {
-      "name": "licencia de funcionamiento residencial",
-      "count": 153
-    },
-    {
-      "name": "obras de reestructuración puntual",
-      "count": 152
+      "count": 134
     },
     {
       "name": "reestructuración puntual",
-      "count": 144
+      "count": 105
+    },
+    {
+      "name": "licencia básica actividad",
+      "count": 95
     }
   ],
   "byYearUso": {
@@ -522,128 +500,128 @@
         "count": 225
       },
       {
-        "name": "dotacional de servicios infraestructurales",
-        "count": 169
-      },
-      {
         "name": "otros usos",
         "count": 172
       },
       {
-        "name": "dotacional",
-        "count": 21
+        "name": "dotacional de servicios infraestructurales",
+        "count": 169
       },
       {
         "name": "garaje-aparcamiento",
         "count": 28
+      },
+      {
+        "name": "dotacional",
+        "count": 21
       }
     ],
     "2023": [
       {
         "name": "residencial",
-        "count": 1185
+        "count": 0
       },
       {
         "name": "servicios terciarios",
-        "count": 21
+        "count": 0
       },
       {
         "name": "industrial",
-        "count": 6
+        "count": 0
       },
       {
         "name": "dotacional de servicios colectivos",
-        "count": 38
-      },
-      {
-        "name": "dotacional de servicios infraestructurales",
-        "count": 12
+        "count": 0
       },
       {
         "name": "otros usos",
-        "count": 2
+        "count": 0
       },
       {
-        "name": "dotacional",
-        "count": 6
+        "name": "dotacional de servicios infraestructurales",
+        "count": 0
       },
       {
         "name": "garaje-aparcamiento",
-        "count": 5
+        "count": 0
+      },
+      {
+        "name": "dotacional",
+        "count": 0
       }
     ],
     "2024": [
       {
         "name": "residencial",
-        "count": 558
+        "count": 0
       },
       {
         "name": "servicios terciarios",
-        "count": 12
+        "count": 0
       },
       {
         "name": "industrial",
-        "count": 14
+        "count": 0
       },
       {
         "name": "dotacional de servicios colectivos",
-        "count": 21
-      },
-      {
-        "name": "dotacional de servicios infraestructurales",
-        "count": 2
+        "count": 0
       },
       {
         "name": "otros usos",
-        "count": 1
+        "count": 0
       },
       {
-        "name": "dotacional",
-        "count": 6
+        "name": "dotacional de servicios infraestructurales",
+        "count": 0
       },
       {
         "name": "garaje-aparcamiento",
-        "count": 3
+        "count": 0
+      },
+      {
+        "name": "dotacional",
+        "count": 0
       }
     ],
     "2025": [
       {
         "name": "residencial",
-        "count": 298
+        "count": 0
       },
       {
         "name": "servicios terciarios",
-        "count": 2
+        "count": 0
       },
       {
         "name": "industrial",
-        "count": 2
+        "count": 0
       },
       {
         "name": "dotacional de servicios colectivos",
-        "count": 16
-      },
-      {
-        "name": "dotacional de servicios infraestructurales",
-        "count": 1
+        "count": 0
       },
       {
         "name": "otros usos",
-        "count": 1
+        "count": 0
       },
       {
-        "name": "dotacional",
-        "count": 5
+        "name": "dotacional de servicios infraestructurales",
+        "count": 0
       },
       {
         "name": "garaje-aparcamiento",
+        "count": 0
+      },
+      {
+        "name": "dotacional",
         "count": 0
       }
     ],
     "2026": [
       {
         "name": "residencial",
-        "count": 27
+        "count": 0
       },
       {
         "name": "servicios terciarios",
@@ -655,10 +633,6 @@
       },
       {
         "name": "dotacional de servicios colectivos",
-        "count": 2
-      },
-      {
-        "name": "dotacional de servicios infraestructurales",
         "count": 0
       },
       {
@@ -666,12 +640,16 @@
         "count": 0
       },
       {
-        "name": "dotacional",
+        "name": "dotacional de servicios infraestructurales",
         "count": 0
       },
       {
         "name": "garaje-aparcamiento",
-        "count": 1
+        "count": 0
+      },
+      {
+        "name": "dotacional",
+        "count": 0
       }
     ]
   },
@@ -757,72 +735,72 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 2005
+          "count": 15751
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 1440
+          "count": 766
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 6
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 886
+          "count": 8882
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 1022
+          "count": 831
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 122
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 117
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 336
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
           "label": "Demolición",
-          "count": 5
+          "count": 0
         },
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 17
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 58
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 280
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 117
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 127
+          "count": 99
         }
       ]
     },
@@ -832,42 +810,42 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 3268
+          "count": 15215
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 1763
+          "count": 1442
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 47
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 2093
+          "count": 9742
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 968
+          "count": 902
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 45
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 30
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 104
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -877,27 +855,27 @@
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 19
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 17
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 372
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 17
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 68
+          "count": 102
         }
       ]
     },
@@ -907,42 +885,42 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 3893
+          "count": 15173
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 1889
+          "count": 1759
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 63
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 4113
+          "count": 9240
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 962
+          "count": 935
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 19
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 14
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 32
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -952,27 +930,27 @@
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 9
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 11
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 402
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 8
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 81
+          "count": 139
         }
       ]
     },
@@ -982,42 +960,42 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 1309
+          "count": 12656
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 800
+          "count": 1738
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 37
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 972
+          "count": 7591
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 342
+          "count": 787
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 4
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 11
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -1032,22 +1010,22 @@
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 4
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 134
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 2
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 32
+          "count": 147
         }
       ]
     }
@@ -1056,72 +1034,67 @@
     {
       "id": "vivienda_obra_menor",
       "label": "Obras menores en vivienda",
-      "count": 21722
+      "count": 70042
     },
     {
       "id": "local_actividad",
       "label": "Apertura o cambio en local",
-      "count": 12771
+      "count": 40162
     },
     {
       "id": "vivienda_obra",
       "label": "Obra en vivienda",
-      "count": 6399
+      "count": 6212
     },
     {
       "id": "local_obra",
       "label": "Obra en local comercial",
-      "count": 3486
-    },
-    {
-      "id": "consulta",
-      "label": "Consulta urbanística",
-      "count": 1202
+      "count": 3647
     },
     {
       "id": "edificio_reforma_conservacion",
       "label": "Reforma o conservación del edificio",
-      "count": 1122
-    },
-    {
-      "id": "tramite_generico",
-      "label": "Actuación urbanística registrada",
-      "count": 629
-    },
-    {
-      "id": "local_a_vivienda",
-      "label": "Local convertido en vivienda",
-      "count": 450
-    },
-    {
-      "id": "edificio_obra_grande",
-      "label": "Obra de nueva planta o ampliación",
-      "count": 444
+      "count": 639
     },
     {
       "id": "otro",
       "label": "Tramitación urbanística",
-      "count": 320
+      "count": 499
+    },
+    {
+      "id": "tramite_generico",
+      "label": "Actuación urbanística registrada",
+      "count": 485
+    },
+    {
+      "id": "edificio_obra_grande",
+      "label": "Obra de nueva planta o ampliación",
+      "count": 279
+    },
+    {
+      "id": "local_a_vivienda",
+      "label": "Local convertido en vivienda",
+      "count": 263
     },
     {
       "id": "obra_exterior",
       "label": "Obra en patio o exterior",
-      "count": 181
-    },
-    {
-      "id": "vivienda_uso",
-      "label": "Uso o apertura en vivienda",
-      "count": 153
+      "count": 91
     },
     {
       "id": "edificio_primera_ocupacion",
       "label": "Edificio listo para ocupar",
-      "count": 61
+      "count": 16
     },
     {
       "id": "edificio_demolicion",
       "label": "Demolición",
-      "count": 20
+      "count": 15
+    },
+    {
+      "id": "consulta",
+      "label": "Consulta urbanística",
+      "count": 14
     }
   ],
   "months": [
@@ -1176,7 +1149,13 @@
     "2026-01",
     "2026-02",
     "2026-03",
-    "2026-04"
+    "2026-04",
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10"
   ],
   "seriesByMonth": [
     {
@@ -1229,163 +1208,187 @@
     },
     {
       "month": "2023-01",
-      "total": 385
+      "total": 1941
     },
     {
       "month": "2023-02",
-      "total": 474
+      "total": 2000
     },
     {
       "month": "2023-03",
-      "total": 631
+      "total": 2553
     },
     {
       "month": "2023-04",
-      "total": 476
+      "total": 1952
     },
     {
       "month": "2023-05",
-      "total": 622
+      "total": 2388
     },
     {
       "month": "2023-06",
-      "total": 516
+      "total": 2628
     },
     {
       "month": "2023-07",
-      "total": 517
+      "total": 2466
     },
     {
       "month": "2023-08",
-      "total": 417
+      "total": 1589
     },
     {
       "month": "2023-09",
-      "total": 621
+      "total": 2113
     },
     {
       "month": "2023-10",
-      "total": 634
+      "total": 2343
     },
     {
       "month": "2023-11",
-      "total": 725
+      "total": 2554
     },
     {
       "month": "2023-12",
-      "total": 520
+      "total": 1802
     },
     {
       "month": "2024-01",
-      "total": 455
+      "total": 1969
     },
     {
       "month": "2024-02",
-      "total": 601
+      "total": 2227
     },
     {
       "month": "2024-03",
-      "total": 507
+      "total": 2211
     },
     {
       "month": "2024-04",
-      "total": 962
+      "total": 2509
     },
     {
       "month": "2024-05",
-      "total": 624
+      "total": 2345
     },
     {
       "month": "2024-06",
-      "total": 613
+      "total": 2499
     },
     {
       "month": "2024-07",
-      "total": 529
+      "total": 2599
     },
     {
       "month": "2024-08",
-      "total": 352
+      "total": 1587
     },
     {
       "month": "2024-09",
-      "total": 677
+      "total": 2263
     },
     {
       "month": "2024-10",
-      "total": 1369
+      "total": 2753
     },
     {
       "month": "2024-11",
-      "total": 1099
+      "total": 2477
     },
     {
       "month": "2024-12",
-      "total": 1023
+      "total": 1964
     },
     {
       "month": "2025-01",
-      "total": 767
+      "total": 2066
     },
     {
       "month": "2025-02",
-      "total": 960
+      "total": 2216
     },
     {
       "month": "2025-03",
-      "total": 1149
+      "total": 2342
     },
     {
       "month": "2025-04",
-      "total": 897
+      "total": 2095
     },
     {
       "month": "2025-05",
-      "total": 745
+      "total": 2304
     },
     {
       "month": "2025-06",
-      "total": 835
+      "total": 2577
     },
     {
       "month": "2025-07",
-      "total": 1132
+      "total": 2687
     },
     {
       "month": "2025-08",
-      "total": 1009
+      "total": 1648
     },
     {
       "month": "2025-09",
-      "total": 984
+      "total": 2406
     },
     {
       "month": "2025-10",
-      "total": 1118
+      "total": 2558
     },
     {
       "month": "2025-11",
-      "total": 1195
+      "total": 2324
     },
     {
       "month": "2025-12",
-      "total": 705
+      "total": 2023
     },
     {
       "month": "2026-01",
-      "total": 514
+      "total": 1905
     },
     {
       "month": "2026-02",
-      "total": 997
+      "total": 2389
     },
     {
       "month": "2026-03",
-      "total": 1079
+      "total": 2531
     },
     {
       "month": "2026-04",
-      "total": 1058
+      "total": 2323
+    },
+    {
+      "month": "2026-05",
+      "total": 2413
+    },
+    {
+      "month": "2026-06",
+      "total": 2716
+    },
+    {
+      "month": "2026-07",
+      "total": 2644
+    },
+    {
+      "month": "2026-08",
+      "total": 1590
+    },
+    {
+      "month": "2026-09",
+      "total": 2252
+    },
+    {
+      "month": "2026-10",
+      "total": 2156
     }
   ],
   "seriesByMonthActuacionQue": [
@@ -2295,12 +2298,12 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 104
+          "count": 1325
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 78
+          "count": 3
         },
         {
           "id": "vivienda_uso",
@@ -2310,27 +2313,27 @@
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 52
+          "count": 611
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 42
+          "count": 2
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 9
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 13
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 40
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -2340,27 +2343,27 @@
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 1
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 5
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 10
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 26
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 5
+          "count": 0
         }
       ]
     },
@@ -2370,12 +2373,12 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 165
+          "count": 1296
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 82
+          "count": 12
         },
         {
           "id": "vivienda_uso",
@@ -2385,57 +2388,57 @@
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 52
+          "count": 653
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 51
+          "count": 35
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 13
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 12
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 48
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
           "label": "Demolición",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 2
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 5
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 10
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 23
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 10
+          "count": 4
         }
       ]
     },
@@ -2445,12 +2448,12 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 223
+          "count": 1644
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 122
+          "count": 32
         },
         {
           "id": "vivienda_uso",
@@ -2460,57 +2463,57 @@
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 86
+          "count": 832
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 60
+          "count": 41
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 14
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 22
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 53
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
           "label": "Demolición",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 2
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 6
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 12
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 23
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 7
+          "count": 4
         }
       ]
     },
@@ -2520,12 +2523,12 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 137
+          "count": 1221
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 93
+          "count": 34
         },
         {
           "id": "vivienda_uso",
@@ -2535,307 +2538,7 @@
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 65
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 71
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 6
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 11
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 25
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 3
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 50
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 5
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 10
-        }
-      ]
-    },
-    {
-      "month": "2023-05",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 231
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 146
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 0
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 66
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 78
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 14
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 12
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 30
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 1
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 4
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 31
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 3
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2023-06",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 108
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 120
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 0
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 82
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 108
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 15
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 9
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 29
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 3
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 7
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 16
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 14
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2023-07",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 154
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 116
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 0
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 98
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 81
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 10
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 12
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 18
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 7
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 11
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 1
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 8
-        }
-      ]
-    },
-    {
-      "month": "2023-08",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 167
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 55
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 2
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 72
+          "count": 630
         },
         {
           "id": "local_obra",
@@ -2845,17 +2548,17 @@
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 3
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 5
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 20
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -2870,22 +2573,322 @@
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 8
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 17
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 5
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 5
+          "count": 9
+        }
+      ]
+    },
+    {
+      "month": "2023-05",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1447
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 76
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 804
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 57
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "month": "2023-06",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1570
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 68
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 897
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 89
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "month": "2023-07",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1409
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 82
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 894
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 74
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "month": "2023-08",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 894
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 34
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 605
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 52
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 4
         }
       ]
     },
@@ -2895,42 +2898,42 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 176
+          "count": 1151
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 140
+          "count": 86
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 65
+          "count": 728
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 147
+          "count": 132
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 11
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 8
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 25
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -2945,22 +2948,22 @@
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 1
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 24
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 4
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 19
+          "count": 16
         }
       ]
     },
@@ -2970,72 +2973,72 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 196
+          "count": 1352
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 160
+          "count": 100
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 66
+          "count": 773
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 119
+          "count": 108
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 12
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 9
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 13
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
           "label": "Demolición",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 1
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 5
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 32
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 7
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 12
+          "count": 10
         }
       ]
     },
@@ -3045,72 +3048,72 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 143
+          "count": 1425
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 197
+          "count": 147
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 2
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 101
+          "count": 808
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 158
+          "count": 140
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 9
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 25
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
           "label": "Demolición",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 3
+          "count": 0
         },
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 7
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 34
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 5
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 38
+          "count": 34
         }
       ]
     },
@@ -3120,12 +3123,12 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 201
+          "count": 1017
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 131
+          "count": 92
         },
         {
           "id": "vivienda_uso",
@@ -3135,27 +3138,27 @@
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 81
+          "count": 647
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 49
+          "count": 43
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 6
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 10
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -3170,17 +3173,17 @@
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 3
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 33
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 1
+          "count": 0
         },
         {
           "id": "otro",
@@ -3195,532 +3198,7 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 183
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 104
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 2
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 46
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 64
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 6
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 8
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 13
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 5
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 18
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 4
-        }
-      ]
-    },
-    {
-      "month": "2024-02",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 238
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 146
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 2
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 68
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 71
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 6
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 21
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 12
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 0
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 27
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 1
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 8
-        }
-      ]
-    },
-    {
-      "month": "2024-03",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 164
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 130
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 2
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 71
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 83
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 9
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 2
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 30
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 7
-        }
-      ]
-    },
-    {
-      "month": "2024-04",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 506
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 160
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 1
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 118
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 102
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 6
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 7
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 18
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 2
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 34
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2024-05",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 230
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 163
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 4
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 92
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 96
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 0
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 7
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 25
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 2
-        }
-      ]
-    },
-    {
-      "month": "2024-06",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 231
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 179
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 8
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 80
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 68
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 3
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 3
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 2
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 2
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 29
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 3
-        }
-      ]
-    },
-    {
-      "month": "2024-07",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 191
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 128
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 1
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 85
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 76
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 2
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 6
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 2
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 26
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 10
-        }
-      ]
-    },
-    {
-      "month": "2024-08",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 137
+          "count": 1145
         },
         {
           "id": "vivienda_obra",
@@ -3730,912 +3208,12 @@
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 4
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 53
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 51
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 1
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 0
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 2
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 0
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 24
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 4
-        }
-      ]
-    },
-    {
-      "month": "2024-09",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 269
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 155
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 8
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 68
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 128
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 1
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 0
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 0
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 36
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2024-10",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 418
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 181
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 8
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 603
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 96
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 1
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 5
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 3
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 39
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 8
-        }
-      ]
-    },
-    {
-      "month": "2024-11",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 390
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 196
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 5
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 357
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 78
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 12
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 2
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 49
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 1
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2024-12",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 311
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 145
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 2
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 452
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 55
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 6
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 0
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 35
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 3
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 7
-        }
-      ]
-    },
-    {
-      "month": "2025-01",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 285
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 143
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 4
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 243
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 38
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 1
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 4
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 3
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 38
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 7
-        }
-      ]
-    },
-    {
-      "month": "2025-02",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 395
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 137
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 4
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 287
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 71
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 3
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 4
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 49
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 6
-        }
-      ]
-    },
-    {
-      "month": "2025-03",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 368
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 190
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 4
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 410
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 118
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 4
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 5
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 2
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 4
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 38
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 4
-        }
-      ]
-    },
-    {
-      "month": "2025-04",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 336
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 160
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 3
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 260
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 74
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 3
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 4
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 49
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 1
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 5
-        }
-      ]
-    },
-    {
-      "month": "2025-05",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 285
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 128
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 5
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 215
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 75
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 2
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 0
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 2
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 0
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 26
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 2
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 4
-        }
-      ]
-    },
-    {
-      "month": "2025-06",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 276
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 166
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 4
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 310
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 36
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 1
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 0
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 1
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 1
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 33
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 6
-        }
-      ]
-    },
-    {
-      "month": "2025-07",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 262
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 189
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 6
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 504
-        },
-        {
-          "id": "local_obra",
-          "label": "Obra en local comercial",
-          "count": 136
-        },
-        {
-          "id": "local_a_vivienda",
-          "label": "Local convertido en vivienda",
-          "count": 0
-        },
-        {
-          "id": "edificio_obra_grande",
-          "label": "Obra de nueva planta o ampliación",
-          "count": 1
-        },
-        {
-          "id": "edificio_reforma_conservacion",
-          "label": "Reforma o conservación del edificio",
-          "count": 1
-        },
-        {
-          "id": "edificio_demolicion",
-          "label": "Demolición",
-          "count": 0
-        },
-        {
-          "id": "edificio_primera_ocupacion",
-          "label": "Edificio listo para ocupar",
-          "count": 1
-        },
-        {
-          "id": "obra_exterior",
-          "label": "Obra en patio o exterior",
-          "count": 0
-        },
-        {
-          "id": "consulta",
-          "label": "Consulta urbanística",
-          "count": 22
-        },
-        {
-          "id": "tramite_generico",
-          "label": "Actuación urbanística registrada",
-          "count": 0
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 10
-        }
-      ]
-    },
-    {
-      "month": "2025-08",
-      "tipos": [
-        {
-          "id": "vivienda_obra_menor",
-          "label": "Obras menores en vivienda",
-          "count": 165
-        },
-        {
-          "id": "vivienda_obra",
-          "label": "Obra en vivienda",
-          "count": 76
-        },
-        {
-          "id": "vivienda_uso",
-          "label": "Uso o apertura en vivienda",
-          "count": 15
-        },
-        {
-          "id": "local_actividad",
-          "label": "Apertura o cambio en local",
-          "count": 656
+          "count": 683
         },
         {
           "id": "local_obra",
@@ -4675,7 +3253,82 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 27
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "month": "2024-02",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1251
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 115
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 786
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 67
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
         },
         {
           "id": "tramite_generico",
@@ -4690,47 +3343,122 @@
       ]
     },
     {
-      "month": "2025-09",
+      "month": "2024-03",
       "tipos": [
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 354
+          "count": 1144
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 213
+          "count": 105
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 876
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 79
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
           "count": 7
+        }
+      ]
+    },
+    {
+      "month": "2024-04",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1356
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 118
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 232
+          "count": 936
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 133
+          "count": 96
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 4
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -4740,7 +3468,7 @@
         {
           "id": "edificio_primera_ocupacion",
           "label": "Edificio listo para ocupar",
-          "count": 1
+          "count": 0
         },
         {
           "id": "obra_exterior",
@@ -4750,62 +3478,62 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 26
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
           "count": 3
-        },
-        {
-          "id": "otro",
-          "label": "Tramitación urbanística",
-          "count": 8
         }
       ]
     },
     {
-      "month": "2025-10",
+      "month": "2024-05",
       "tipos": [
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 448
+          "count": 1298
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 187
+          "count": 128
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 346
+          "count": 824
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 87
+          "count": 91
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 5
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -4825,12 +3553,12 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 36
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 1
+          "count": 0
         },
         {
           "id": "otro",
@@ -4840,32 +3568,32 @@
       ]
     },
     {
-      "month": "2025-11",
+      "month": "2024-06",
       "tipos": [
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 444
+          "count": 1433
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 145
+          "count": 143
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 5
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 497
+          "count": 855
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 56
+          "count": 62
         },
         {
           "id": "local_a_vivienda",
@@ -4875,12 +3603,12 @@
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 4
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -4900,52 +3628,52 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 31
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 1
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 10
+          "count": 6
         }
       ]
     },
     {
-      "month": "2025-12",
+      "month": "2024-07",
       "tipos": [
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 275
+          "count": 1521
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 155
+          "count": 103
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 5
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 153
+          "count": 888
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 76
+          "count": 70
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 3
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
@@ -4955,7 +3683,7 @@
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -4975,7 +3703,307 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 27
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 17
+        }
+      ]
+    },
+    {
+      "month": "2024-08",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 851
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 64
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 618
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 47
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "month": "2024-09",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1244
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 136
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 749
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 123
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 11
+        }
+      ]
+    },
+    {
+      "month": "2024-10",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1455
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 166
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 1035
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 86
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 11
+        }
+      ]
+    },
+    {
+      "month": "2024-11",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1410
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 167
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 820
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 71
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
         },
         {
           "id": "tramite_generico",
@@ -4990,27 +4018,852 @@
       ]
     },
     {
-      "month": "2026-01",
+      "month": "2024-12",
       "tipos": [
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 200
+          "count": 1107
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 112
+          "count": 121
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 3
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 117
+          "count": 672
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 48
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 16
+        }
+      ]
+    },
+    {
+      "month": "2025-01",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1208
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 130
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 680
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 37
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 11
+        }
+      ]
+    },
+    {
+      "month": "2025-02",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1279
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 125
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 732
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 71
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 9
+        }
+      ]
+    },
+    {
+      "month": "2025-03",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1272
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 167
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 784
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 114
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "month": "2025-04",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1146
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 146
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 728
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 70
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 5
+        }
+      ]
+    },
+    {
+      "month": "2025-05",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1321
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 123
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 773
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 75
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 12
+        }
+      ]
+    },
+    {
+      "month": "2025-06",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1482
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 151
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 895
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 36
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 13
+        }
+      ]
+    },
+    {
+      "month": "2025-07",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1450
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 179
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 915
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 132
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 11
+        }
+      ]
+    },
+    {
+      "month": "2025-08",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 892
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 73
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 616
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 57
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "month": "2025-09",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1284
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 203
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 780
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 129
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 10
+        }
+      ]
+    },
+    {
+      "month": "2025-10",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1483
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 176
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 799
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 85
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 15
+        }
+      ]
+    },
+    {
+      "month": "2025-11",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1291
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 138
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 830
         },
         {
           "id": "local_obra",
@@ -5050,7 +4903,7 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 23
+          "count": 0
         },
         {
           "id": "tramite_generico",
@@ -5060,7 +4913,157 @@
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 6
+          "count": 12
+        }
+      ]
+    },
+    {
+      "month": "2025-12",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1065
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 148
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 708
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 76
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 26
+        }
+      ]
+    },
+    {
+      "month": "2026-01",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1103
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 109
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 632
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 53
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 8
         }
       ]
     },
@@ -5070,27 +5073,27 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 352
+          "count": 1242
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 260
+          "count": 251
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 11
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 203
+          "count": 777
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 113
+          "count": 108
         },
         {
           "id": "local_a_vivienda",
@@ -5100,12 +5103,12 @@
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 5
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -5120,12 +5123,12 @@
         {
           "id": "obra_exterior",
           "label": "Obra en patio o exterior",
-          "count": 4
+          "count": 0
         },
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 38
+          "count": 0
         },
         {
           "id": "tramite_generico",
@@ -5135,7 +5138,7 @@
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 10
+          "count": 11
         }
       ]
     },
@@ -5145,42 +5148,42 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 436
+          "count": 1330
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 242
+          "count": 229
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 8
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 238
+          "count": 864
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 97
+          "count": 96
         },
         {
           "id": "local_a_vivienda",
           "label": "Local convertido en vivienda",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 2
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 5
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -5200,17 +5203,17 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 38
+          "count": 0
         },
         {
           "id": "tramite_generico",
           "label": "Actuación urbanística registrada",
-          "count": 2
+          "count": 0
         },
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 10
+          "count": 12
         }
       ]
     },
@@ -5220,27 +5223,27 @@
         {
           "id": "vivienda_obra_menor",
           "label": "Obras menores en vivienda",
-          "count": 321
+          "count": 1272
         },
         {
           "id": "vivienda_obra",
           "label": "Obra en vivienda",
-          "count": 186
+          "count": 183
         },
         {
           "id": "vivienda_uso",
           "label": "Uso o apertura en vivienda",
-          "count": 15
+          "count": 0
         },
         {
           "id": "local_actividad",
           "label": "Apertura o cambio en local",
-          "count": 414
+          "count": 781
         },
         {
           "id": "local_obra",
           "label": "Obra en local comercial",
-          "count": 79
+          "count": 78
         },
         {
           "id": "local_a_vivienda",
@@ -5250,12 +5253,12 @@
         {
           "id": "edificio_obra_grande",
           "label": "Obra de nueva planta o ampliación",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_reforma_conservacion",
           "label": "Reforma o conservación del edificio",
-          "count": 1
+          "count": 0
         },
         {
           "id": "edificio_demolicion",
@@ -5275,7 +5278,7 @@
         {
           "id": "consulta",
           "label": "Consulta urbanística",
-          "count": 35
+          "count": 0
         },
         {
           "id": "tramite_generico",
@@ -5285,7 +5288,457 @@
         {
           "id": "otro",
           "label": "Tramitación urbanística",
-          "count": 6
+          "count": 9
+        }
+      ]
+    },
+    {
+      "month": "2026-05",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1371
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 171
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 797
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 59
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 15
+        }
+      ]
+    },
+    {
+      "month": "2026-06",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1595
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 216
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 819
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 72
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 14
+        }
+      ]
+    },
+    {
+      "month": "2026-07",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1531
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 144
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 895
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 57
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 17
+        }
+      ]
+    },
+    {
+      "month": "2026-08",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 808
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 111
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 570
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 88
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 13
+        }
+      ]
+    },
+    {
+      "month": "2026-09",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1267
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 161
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 712
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 91
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 21
+        }
+      ]
+    },
+    {
+      "month": "2026-10",
+      "tipos": [
+        {
+          "id": "vivienda_obra_menor",
+          "label": "Obras menores en vivienda",
+          "count": 1137
+        },
+        {
+          "id": "vivienda_obra",
+          "label": "Obra en vivienda",
+          "count": 163
+        },
+        {
+          "id": "vivienda_uso",
+          "label": "Uso o apertura en vivienda",
+          "count": 0
+        },
+        {
+          "id": "local_actividad",
+          "label": "Apertura o cambio en local",
+          "count": 744
+        },
+        {
+          "id": "local_obra",
+          "label": "Obra en local comercial",
+          "count": 85
+        },
+        {
+          "id": "local_a_vivienda",
+          "label": "Local convertido en vivienda",
+          "count": 0
+        },
+        {
+          "id": "edificio_obra_grande",
+          "label": "Obra de nueva planta o ampliación",
+          "count": 0
+        },
+        {
+          "id": "edificio_reforma_conservacion",
+          "label": "Reforma o conservación del edificio",
+          "count": 0
+        },
+        {
+          "id": "edificio_demolicion",
+          "label": "Demolición",
+          "count": 0
+        },
+        {
+          "id": "edificio_primera_ocupacion",
+          "label": "Edificio listo para ocupar",
+          "count": 0
+        },
+        {
+          "id": "obra_exterior",
+          "label": "Obra en patio o exterior",
+          "count": 0
+        },
+        {
+          "id": "consulta",
+          "label": "Consulta urbanística",
+          "count": 0
+        },
+        {
+          "id": "tramite_generico",
+          "label": "Actuación urbanística registrada",
+          "count": 0
+        },
+        {
+          "id": "otro",
+          "label": "Tramitación urbanística",
+          "count": 27
         }
       ]
     }
