@@ -1764,7 +1764,8 @@ if (buildFromSupabase) {
     }
   }
   await runMadridPostBuild({
-    skipLicencias: true,
+    // El snapshot municipal reciente sustituye los registros del conjunto retirado.
+    skipLicencias: !existsSync(madridLicenciasJsonlPath),
     skipUbicaciones: true,
     skipAmbitos: true,
     skipMetrics: true,
