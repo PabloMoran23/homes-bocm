@@ -1,0 +1,39 @@
+slug: sueca
+nombre: "Sueca"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.sueca.es"
+  adapter: municipio.adapters.sueca:SuecaAyuntamientoAdapter
+  config:
+    web_base: "https://www.sueca.es"
+    sede_base: "https://carpetaciutadana.sueca.es"
+    opensiac_prefix: "/opensiac6"
+    info_publica_url: "https://carpetaciutadana.sueca.es/opensiac6/informacionpublica/infopublica.action?edictos=1"
+    tramites_catalogo_url: "https://carpetaciutadana.sueca.es/opensiac6/informacionpublica/tramites_enter.action"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sueca/1.0"
+    insecure_ssl: true
+    centroid: [39.2028, -0.3111]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+      offsets: [8000, 10000, 12000]
+      ine_municipio: "46230"
+  notes: |
+    Web Drupal portalesmunicipales (DigitalValue): sección urbanisme, transparencia (PGOU, EATIM).
+    Tauler d'anuncis /val/listado-titulares/aviso (pàgines pagina-aviso).
+    Seu electrònica OpenSIAC6 (carpetaciutadana.sueca.es): informació pública / tablón edictos.
+    ICV WFS InventarioSuSuz (INE 46230) para geometría de ámbitos SU/SUZ.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
