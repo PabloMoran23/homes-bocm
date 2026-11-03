@@ -126,7 +126,7 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
                 cur.execute("SELECT pg_advisory_xact_lock(85020261103)")
     scope, unknown = [], 0
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT * FROM {table} WHERE (municipio_slug='madrid' AND fuente='madrid-opendata') OR (municipio_slug IS NULL AND fuente IS NULL) ORDER BY id")
+        cur.execute(f"SELECT id,licencia_key,municipio_slug,CASE WHEN municipio_slug IS NULL THEN raw_json END AS raw_json FROM {table} WHERE (municipio_slug='madrid' AND fuente='madrid-opendata') OR (municipio_slug IS NULL AND fuente IS NULL) ORDER BY id")
         for row in cur:
             if row["municipio_slug"] == "madrid" or (evidence and source_fingerprint(row["raw_json"] or {}) in evidence):
                 scope.append(row)
