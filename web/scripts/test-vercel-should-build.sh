@@ -118,13 +118,49 @@ make_fixture() {
   git -C "$repo" checkout -q -b skip-deploy-fixture
   printf 'marker\n' > "$repo/web/app/marker.tsx"
   FIX_SKIP_DEPLOY="$(commit "$repo" "chore: administrative batch [skip deploy]")"
+
+  git -C "$repo" checkout -q -b preview-outside "$FIX_BASE"
+  printf 'preview\n' > "$repo/municipio/cli.py"
+  FIX_PREVIEW_OUTSIDE="$(commit "$repo" "municipality only")"
+  mkdir -p "$repo/docs"
+  printf 'research\n' > "$repo/docs/research.md"
+  FIX_PREVIEW_OUTSIDE_SECOND="$(commit "$repo" "research follow-up")"
+
+  git -C "$repo" checkout -q -b preview-web "$FIX_BASE"
+  mkdir -p "$repo/web/app"
+  printf 'preview page\n' > "$repo/web/app/page.tsx"
+  FIX_PREVIEW_WEB="$(commit "$repo" "web in first PR commit")"
+  printf 'preview municipality\n' > "$repo/municipio/cli.py"
+  FIX_PREVIEW_WEB_SECOND="$(commit "$repo" "municipality in latest PR commit")"
   git -C "$repo" checkout -q main
+  git -C "$repo" remote add origin "file://$repo"
   install_script "$repo"
 }
 
 make_fixture
 
 SCRIPT="$TMP/origin/web/scripts/vercel-should-build.sh"
+
+run_case "first non-web preview skips" 0 "skip (no changes under web/, 1 files)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE" bash "$SCRIPT"
+
+run_case "non-web preview ignores unrelated main web changes" 0 "skip (no changes under web/, 2 files)" \
+  env VERCEL_ENV=preview VERCEL_GIT_PREVIOUS_SHA="$FIX_WEB" VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" bash "$SCRIPT"
+
+run_case "first web preview deploys" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_WEB" bash "$SCRIPT"
+
+run_case "whole PR includes earlier web commit" 1 "deploy (web/app/page.tsx)" \
+  env VERCEL_ENV=preview VERCEL_GIT_PREVIOUS_SHA="$FIX_PREVIEW_WEB" VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_WEB_SECOND" bash "$SCRIPT"
+
+run_case "non-web production skips without previous deployment" 0 "skip (no changes under web/, 2 files)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=production VERCEL_GIT_COMMIT_SHA="$FIX_OUTSIDE" bash "$SCRIPT"
+
+run_case "non-web production ignores lagging deployed SHA" 0 "skip (no changes under web/, 1 files)" \
+  env VERCEL_ENV=production VERCEL_GIT_PREVIOUS_SHA="$FIX_BASE" VERCEL_GIT_COMMIT_SHA="$FIX_DB_OTHER" bash "$SCRIPT"
+
+run_case "web production deploys without previous deployment" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=production VERCEL_GIT_COMMIT_SHA="$FIX_WEB" bash "$SCRIPT"
 
 run_case "marker skips without previous SHA" 0 "skip (explicit [skip deploy] in commit)" \
   env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_GIT_COMMIT_SHA="$FIX_SKIP_DEPLOY" \
@@ -181,6 +217,24 @@ run_case "rename out of web deploys" 1 "deploy (web/app/page.tsx)" \
   bash "$SCRIPT"
 
 # Depth-1 clone does not contain the previous commit. Fetch must recover it.
+git clone --quiet --depth=1 --branch preview-outside "file://$TMP/origin" "$TMP/shallow-preview"
+install_script "$TMP/shallow-preview"
+run_case "shallow first non-web preview recovers merge base and skips" 0 "skip (no changes under web/, 2 files)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" \
+  bash "$TMP/shallow-preview/web/scripts/vercel-should-build.sh"
+
+git clone --quiet --depth=1 --branch preview-web "file://$TMP/origin" "$TMP/shallow-preview-web"
+install_script "$TMP/shallow-preview-web"
+run_case "shallow preview detects earlier web commit" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_WEB_SECOND" \
+  bash "$TMP/shallow-preview-web/web/scripts/vercel-should-build.sh"
+
+git clone --quiet --depth=1 "file://$TMP/origin" "$TMP/shallow-production"
+install_script "$TMP/shallow-production"
+run_case "shallow production recovers parent" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=production VERCEL_GIT_COMMIT_SHA="$FIX_RENAME" \
+  bash "$TMP/shallow-production/web/scripts/vercel-should-build.sh"
+
 git clone --quiet --depth=1 "file://$TMP/origin" "$TMP/shallow"
 install_script "$TMP/shallow"
 SHALLOW_SCRIPT="$TMP/shallow/web/scripts/vercel-should-build.sh"
@@ -208,21 +262,19 @@ run_case "shallow fetch failure deploys" 1 "unavailable after fetch --depth=1" \
   env VERCEL_GIT_PREVIOUS_SHA="$FIX_MIX" VERCEL_GIT_COMMIT_SHA="$FIX_RENAME" \
   bash "$TMP/shallow-fail/web/scripts/vercel-should-build.sh"
 
-# ef510d6 touches web/app and must deploy. 891af37 and 11312bf do not.
-run_case "ef510d6 deploys web/app" 1 "deploy (web/app/page.tsx)" \
-  env VERCEL_GIT_PREVIOUS_SHA="891af373adab5c63203620683c1edae3263bb8dd" \
-  VERCEL_GIT_COMMIT_SHA="ef510d637d2c5f048e3b8f8b529baf9d7757bf0e" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+run_case "first preview with zero previous SHA skips" 0 "skip (no changes under web/, 1 files)" \
+  env VERCEL_ENV=preview VERCEL_GIT_PREVIOUS_SHA=0000000000000000000000000000000000000000 \
+  VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE" bash "$SCRIPT"
 
-run_case "891af37 skips outside web" 0 "skip (no changes under web/, 5 files)" \
-  env VERCEL_GIT_PREVIOUS_SHA="11312bfda51ccefe7037174ee77a4a6eb4de41db" \
-  VERCEL_GIT_COMMIT_SHA="891af373adab5c63203620683c1edae3263bb8dd" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+run_case "preview already merged in main skips" 0 "preview already included in main" \
+  env VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_SCOPE" bash "$SCRIPT"
 
-run_case "11312bf skips outside web" 0 "skip (no changes under web/, 7 files)" \
-  env VERCEL_GIT_PREVIOUS_SHA="49d6d95" \
-  VERCEL_GIT_COMMIT_SHA="11312bfda51ccefe7037174ee77a4a6eb4de41db" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+git clone --quiet --depth=1 --branch preview-outside "file://$TMP/origin" "$TMP/preview-unreachable"
+install_script "$TMP/preview-unreachable"
+git -C "$TMP/preview-unreachable" remote set-url origin "$TMP/not-a-repo"
+run_case "unavailable preview base reports uncertainty" 1 "cannot fetch preview base main" \
+  env VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" \
+  bash "$TMP/preview-unreachable/web/scripts/vercel-should-build.sh"
 
 if [ "$failures" -ne 0 ]; then
   echo "$failures test(s) failed" >&2

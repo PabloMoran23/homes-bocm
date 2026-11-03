@@ -298,6 +298,11 @@ def main(argv: list[str] | None = None) -> int:
         else:
             result = run_many(slugs, args.step)
         print(json.dumps(result, indent=2, ensure_ascii=False))
-        return 0
+        runs = result.get("municipios", {}).values() if "municipios" in result else [result]
+        return int(any(
+            "error" in step_result
+            for item in runs
+            for step_result in item.get("steps", {}).values()
+        ))
 
     return 0
