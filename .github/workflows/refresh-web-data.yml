@@ -93,7 +93,7 @@ jobs:
         run: python -m pip install --upgrade pip && pip install -r requirements-data-refresh.txt
 
       - name: Verify license refresh regressions
-        run: python3 -m unittest sector_geometry.test_madrid_licencias_download sector_geometry.test_madrid_licencias_current municipio.test_cli_errors municipio.test_madrid_pipeline
+        run: python3 -m unittest db.test_madrid_license_snapshot sector_geometry.test_madrid_licencias_download sector_geometry.test_madrid_licencias_current municipio.test_cli_errors municipio.test_madrid_pipeline
 
       - name: Check database connection before scraping
         timeout-minutes: 2

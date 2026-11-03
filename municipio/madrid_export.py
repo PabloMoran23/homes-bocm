@@ -367,13 +367,13 @@ def build_proyectos() -> list[dict[str, Any]]:
     return list(rows.values())
 
 
-def build_licencias() -> list[dict[str, Any]]:
+def build_licencias(jsonl_path: Path | None = None) -> list[dict[str, Any]]:
     from sync_madrid_public_to_supabase import collect_licencias
     from license_territory import resolve_territory
 
-    if not JSONL_LIC.is_file():
+    if not (jsonl_path or JSONL_LIC).is_file():
         return []
-    _inmuebles, actuaciones, _stats = collect_licencias()
+    _inmuebles, actuaciones, _stats = collect_licencias(jsonl_path=jsonl_path)
     rows: list[dict[str, Any]] = []
     for key, tup in actuaciones.items():
         if resolve_territory(tup[13].adapted)["municipioCode"] != "28079":

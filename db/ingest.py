@@ -175,6 +175,8 @@ def _owned_conn(conn) -> Iterator[Any]:
 def _next_licencia_ids(cur, keys: list[str]) -> dict[str, int]:
     if not keys:
         return {}
+    # The snapshot reconciliation uses the same lock before allocating IDs.
+    cur.execute(f"LOCK TABLE {SCHEMA}.licencia IN SHARE ROW EXCLUSIVE MODE")
     cur.execute(
         f"SELECT licencia_key, id FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)",
         (keys,),
@@ -1588,14 +1590,19 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manife
         if hijas_rows:
             for key, n in save_proyecto_hijas(hijas_rows, conn=ses.conn).items():
                 ses._bump(key, n)
-        inm_ids = save_inmuebles(lic_rows, conn=ses.conn)
-        if inm_ids:
-            ses._bump("inmueble", len(inm_ids))
-            for row in lic_rows:
-                ndp = str(row.get("ndp_edificio") or "")
-                if ndp and ndp in inm_ids:
-                    row["inmueble_id"] = inm_ids[ndp]
-        ses.save_licencias(lic_rows)
+        if manifest.slug == "madrid" and licencias_raw:
+            from db.madrid_license_snapshot import sync_snapshot
+            stats["madrid_licenses"] = sync_snapshot(ses.conn, licencias_raw, apply=True)
+            ses._bump("licencia", stats["madrid_licenses"]["rows"])
+        else:
+            inm_ids = save_inmuebles(lic_rows, conn=ses.conn)
+            if inm_ids:
+                ses._bump("inmueble", len(inm_ids))
+                for row in lic_rows:
+                    ndp = str(row.get("ndp_edificio") or "")
+                    if ndp and ndp in inm_ids:
+                        row["inmueble_id"] = inm_ids[ndp]
+            ses.save_licencias(lic_rows)
         ses.save_documentos(doc_rows)
         touch_last_ingest_at(manifest.slug, conn=ses.conn)
         stats["upserted"] = dict(ses.counts)

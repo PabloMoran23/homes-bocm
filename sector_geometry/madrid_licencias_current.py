@@ -5,6 +5,8 @@ import csv
 import io
 import json
 import urllib.request
+import unicodedata
+import re
 from collections import Counter
 from datetime import date, datetime, timezone
 from hashlib import sha256
@@ -35,8 +37,6 @@ def parse_csv(content: bytes, kind: str, *, origin: dict, locations: dict) -> li
         alta = source_date(raw, "FECHA_ALTA" if kind == "licencias" else "FECHA_ALTA_EXPEDIENTE")
         grant = source_date(raw, "FECHA_FIRMA_RESOLUCION") if kind == "licencias" else None
         year = int((grant or alta)[:4])
-        if year < 2023:
-            continue  # El histórico anterior sigue procediendo del conjunto antiguo.
         if kind == "licencias" and raw.get("RESOLUCION") != "Conceder":
             raise ValueError("Resolución distinta de concesión en el recurso de licencias otorgadas")
         ndp = raw["NDP"].strip()
@@ -57,8 +57,58 @@ def parse_csv(content: bytes, kind: str, *, origin: dict, locations: dict) -> li
             "_coordinate_origin": location.get("_territorial_origin") if location else None,
         })
     if not rows:
-        raise ValueError(f"{kind}: no contiene filas desde 2023")
+        raise ValueError(f"{kind}: no contiene filas")
     return rows
+
+
+def merge_snapshot_rows(historical: list[dict], current: list[dict]) -> tuple[list[dict], dict]:
+    from sector_geometry.madrid_licencias_download import licencia_key
+    from db.license_dates import parse_date
+
+    def registration(row):
+        procedure = unicodedata.normalize("NFKD", str(row.get("procedimiento") or "")).encode("ascii", "ignore").decode().lower()
+        if "declaracion responsable" not in procedure:
+            return None
+        alta = parse_date(row.get("fecha_de_alta"))["value"]
+        # A building/day match alone can conflate separate proceedings.
+        kind = unicodedata.normalize("NFKD", str(row.get("tipo_de_expediente") or "")).encode("ascii", "ignore").decode().lower()
+        kind = re.sub(r"[^a-z0-9]", "", kind)
+        return (str(row.get("ndp_edificio") or "").strip(), alta, kind) if alta and kind else None
+
+    current = [{**row, **({"_source_variants": list(row["_source_variants"])} if "_source_variants" in row else {})} for row in current]
+    current_matches = {}
+    historical_matches = Counter(registration(row) for row in historical if int(row.get("anio_dataset") or 0) < 2023)
+    for row in current:
+        identity = registration(row)
+        if identity and int(row["anio_dataset"]) < 2023:
+            current_matches.setdefault(identity, []).append(row)
+    overlapping = {identity for identity, rows in current_matches.items()
+                   if len(rows) == 1 and historical_matches[identity] == 1}
+    merged = {}
+    stats = {"historicalRowsSuperseded": 0, "duplicateRowsCollapsed": 0, "currentRows": len(current)}
+    for row in historical:
+        if int(row.get("anio_dataset") or 0) >= 2023:
+            continue
+        if registration(row) in overlapping:
+            target = current_matches[registration(row)][0]
+            target.setdefault("_source_variants", []).append(row)
+            stats["historicalRowsSuperseded"] += 1
+            continue
+        key = licencia_key(row, anio=int(row["anio_dataset"]))
+        if key in merged:
+            prior = merged[key]
+            variants = prior.get("_source_variants", []) + [{k: v for k, v in prior.items() if k != "_source_variants"}]
+            row = {**row, "_source_variants": variants}
+            stats["duplicateRowsCollapsed"] += 1
+        merged[key] = row
+    for row in current:
+        key = licencia_key(row, anio=int(row["anio_dataset"]))
+        if key in merged:
+            if merged[key] != row:
+                raise ValueError(f"Filas contradictorias para el mismo expediente y edificio: {key}")
+            stats["duplicateRowsCollapsed"] += 1
+        merged[key] = row
+    return list(merged.values()), stats
 
 
 def refresh(output_dir: Path, raw_dir: Path, jsonl_out: Path, summary_out: Path) -> dict:
@@ -87,7 +137,7 @@ def refresh(output_dir: Path, raw_dir: Path, jsonl_out: Path, summary_out: Path)
         ndp = str(row.get("ndp_edificio") or "").strip()
         if ndp and any(row.get(key) for key in GEO_FIELDS[:6]):
             locations[ndp] = row
-    rows = [row for row in previous if int(row.get("anio_dataset") or 0) < 2023]
+    current_rows = []
     resources = historical_resources
     cached = {}
     for kind, (dataset, resource, filename) in DATASETS.items():
@@ -99,17 +149,19 @@ def refresh(output_dir: Path, raw_dir: Path, jsonl_out: Path, summary_out: Path)
         origin = {"municipio_slug": "madrid", "adapter": "madrid-opendata", "url": url,
                   "dataset": dataset, "resourceSha256": sha256(content).hexdigest()}
         records = parse_csv(content, kind, origin=origin, locations=locations)
-        rows.extend(records)
+        current_rows.extend(records)
         cached[kind] = content
         resources[kind] = {"url": url, "dataset": dataset, "sha256": origin["resourceSha256"],
                            "downloadedThisRun": True, "downloadedAt": datetime.now(timezone.utc).isoformat(),
                            "factualUpdatedAt": None, "rows": len(records)}
-        print(f"{kind}: {len(records)} filas desde 2023", flush=True)
+        print(f"{kind}: {len(records)} filas del CSV completo", flush=True)
+    rows, reconciliation = merge_snapshot_rows(previous, current_rows)
     # Publicar únicamente tras descargar y validar ambos recursos.
     output_dir.mkdir(parents=True, exist_ok=True)
     raw_dir.mkdir(parents=True, exist_ok=True)
     summary = {"generatedAt": datetime.now(timezone.utc).isoformat(),
-               "source": "datos.madrid.es: histórico 300193; licencias 640505 y declaraciones responsables 133556 desde 2023",
+               "source": "datos.madrid.es: histórico 300193 y CSV completos de licencias 640505 y declaraciones responsables 133556",
+               "reconciliation": reconciliation,
                "sourceSnapshot": {"mode": "current-csv-download", "resources": resources, "factualUpdatedAt": None},
                "totalRows": len(rows), "byYear": dict(Counter(str(row["anio_dataset"]) for row in rows))}
     temp = jsonl_out.with_suffix(".jsonl.tmp")
