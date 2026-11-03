@@ -332,11 +332,11 @@ export async function buildMadridLicenciasWeb(opts) {
   const sourceSummary = existsSync(summaryPath) ? JSON.parse(readFileSync(summaryPath, "utf8")) : null;
   const snapshot = sourceSummary?.sourceSnapshot;
   const sourceSnapshot = snapshot ? { ...snapshot, resources: Object.fromEntries(
-    Object.entries(snapshot.resources || {}).filter(([year]) => years.includes(Number(year)))) } : null;
+    Object.entries(snapshot.resources || {}).filter(([year, resource]) => resource.dataset || years.includes(Number(year)))) } : null;
   const index = {
     generatedAt: new Date().toISOString(),
     coverageStatus: "partial",
-    source: "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
+    source: sourceSummary?.source || "datos.madrid.es dataset 300193-0-licencias-urbanisticas",
     sourceSnapshot,
     temporalScope: { minYear: minYear ?? Math.min(...years), years, basis: "normalized_license_date_or_dataset_year",
       description: "Año de fecha normalizada o ejercicio municipal cuando no hay fecha; generatedAt es reproceso, no actualización factual de la fuente" },
