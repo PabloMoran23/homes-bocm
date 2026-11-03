@@ -41,7 +41,7 @@ run_case() {
   esac
   if [ "$expected" -eq 0 ]; then
     case "$out" in
-      *"vercel-should-build: skip (no changes under web/"*|*"vercel-should-build: skip (explicit [skip deploy] in commit)"*) ;;
+      *"vercel-should-build: skip (no changes under web/"*|*"vercel-should-build: skip (explicit [skip deploy] in commit)"*|*"vercel-should-build: skip (unverified web changes:"*) ;;
       *)
         fail "$name: skip without an explicit reason. output: $out"
         return
@@ -272,9 +272,33 @@ run_case "preview already merged in main skips" 0 "preview already included in m
 git clone --quiet --depth=1 --branch preview-outside "file://$TMP/origin" "$TMP/preview-unreachable"
 install_script "$TMP/preview-unreachable"
 git -C "$TMP/preview-unreachable" remote set-url origin "$TMP/not-a-repo"
-run_case "unavailable preview base reports uncertainty" 1 "cannot fetch preview base main" \
+run_case "unavailable preview base skips with uncertainty reason" 0 "cannot fetch preview base main" \
   env VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" \
   bash "$TMP/preview-unreachable/web/scripts/vercel-should-build.sh"
+
+# Match Vercel's reconstructed clone: no origin, only HEAD and shallow objects.
+# Rewrite the public repository URL to our fixture to keep these tests offline.
+remote_less_clone() {
+  local branch="$1" repo="$2"
+  git clone --quiet --depth=1 --branch "$branch" "file://$TMP/origin" "$repo"
+  git -C "$repo" remote remove origin
+  git -C "$repo" config "url.file://$TMP/origin.insteadOf" https://github.com/PabloMoran23/homes-bocm.git
+  install_script "$repo"
+}
+remote_less_clone preview-outside "$TMP/no-remote-preview"
+run_case "Vercel clone without origin skips non-web PR" 0 "skip (no changes under web/, 2 files)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" \
+  bash "$TMP/no-remote-preview/web/scripts/vercel-should-build.sh"
+
+remote_less_clone preview-web "$TMP/no-remote-web"
+run_case "Vercel clone without origin still detects earlier web commit" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_WEB_SECOND" \
+  bash "$TMP/no-remote-web/web/scripts/vercel-should-build.sh"
+
+remote_less_clone main "$TMP/no-remote-production"
+run_case "Vercel production without origin recovers parent" 1 "deploy (web/app/page.tsx)" \
+  env -u VERCEL_GIT_PREVIOUS_SHA VERCEL_ENV=production VERCEL_GIT_COMMIT_SHA="$FIX_RENAME" \
+  bash "$TMP/no-remote-production/web/scripts/vercel-should-build.sh"
 
 if [ "$failures" -ne 0 ]; then
   echo "$failures test(s) failed" >&2
