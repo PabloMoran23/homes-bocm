@@ -45,6 +45,18 @@ APIs en público: `/api/boletin-area`, `/api/geocode-address`, `/api/nti-asset`.
    municipio (adapters, `data/municipios/`, cola, workflow de post-merge):
    `web/scripts/vercel-should-build.sh` + `ignoreCommand` en `vercel.json` omiten el build.
 
+Las previews comparan toda la rama con su ancestro común con `main`, incluso
+cuando Vercel no proporciona `VERCEL_GIT_PREVIOUS_SHA` en la primera preview.
+En producción se compara el merge/squash con su primer padre: un merge que solo
+toca scrapers no debe publicar cambios web de merges anteriores omitidos.
+El script recupera el historial necesario en clones superficiales. Si no puede
+determinar el diff, conserva el comportamiento de construir y deja el motivo
+en el log. `[skip deploy]` omite siempre el build.
+
+Una rama antigua conserva su propia versión del filtro: debe incorporar `main`
+para aplicar estas reglas a nuevas previews. Los merges en `main` usan el filtro
+actualizado. La regresión se comprueba en `check-vercel-build-filter.yml`.
+
 `vercel.json` fija edición pública y omite `build-data` en Vercel; los JSON/GeoJSON
 deben estar commiteados en `web/public/data/`.
 
