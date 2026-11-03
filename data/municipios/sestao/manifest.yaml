@@ -1,0 +1,30 @@
+slug: sestao
+nombre: "Sestao"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.sestao.eus"
+  adapter: municipio.adapters.sestao:SestaoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sestao/1.0"
+    portal_timeout_s: 12
+    opendata_timeout_s: 15
+    centroid: [43.3097, -2.9897]
+    bizkaia_municipio_id: "84"
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/Plangintza_Planeamiento/MapServer"
+  notes: |
+    SharePoint sestao.eus (urbanismo Ibarzaharra, tablón trámites) + Registro PUR Diputación
+    (municipio id 84) + Open Data Bizkaia + ArcGIS Plangintza_Planeamiento (clasificación suelo).
+    Sin boletín regional en cola.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
