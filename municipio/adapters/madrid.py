@@ -115,13 +115,12 @@ class MadridAyuntamientoAdapter(AyuntamientoAdapter):
             if JSONL_LIC.is_file():
                 return {"skipped": True, "reason": "licencias existentes; MADRID_LICENCIAS no activo"}
             return {"skipped": True, "reason": "sin madrid_licencias.jsonl y MADRID_LICENCIAS no activo"}
-        args: list[str] = []
-        if years:
-            args.extend(["--years", years])
-        if merge:
-            args.append("--merge-jsonl")
+        # El conjunto anual 300193 se ha retirado. Los dos CSV actuales ya
+        # contienen el histórico reciente completo; refresh conserva lo anterior.
+        args: list[str] = ["--current"]
         self._run(LICENCIAS_MODULE, args)
-        return {"status": "ok", "years": years, "merged": merge}
+        return {"status": "ok", "since_year": 2023, "historical_preserved": True,
+                "datasets": ["640505", "133556"]}
 
     def _write_state(self, path: Path, payload: dict[str, Any]) -> None:
         path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
