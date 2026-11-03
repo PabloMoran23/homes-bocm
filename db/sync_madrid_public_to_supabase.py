@@ -464,6 +464,8 @@ def sync_sigma_ambitos(cur) -> int:
 
 
 def licencia_key(row: dict[str, Any], *, anio: int | None) -> str:
+    if row.get("numero_expediente") and row.get("source_dataset"):
+        return sha256(f"{row['source_dataset']}|{row['numero_expediente']}|{row.get('ndp_edificio', '')}".encode()).hexdigest()[:32]
     parts = [
         str(anio or row.get("anio_dataset") or row.get("anioDataset") or ""),
         str(row.get("ndp_edificio") or row.get("ndpEdificio") or ""),
@@ -550,7 +552,7 @@ def collect_licencias(*, years: set[int] | None = None) -> tuple[dict[str, dict[
             null_if_empty(str(row.get("unidad_responsable") or row.get("unidad") or "")),
             lat,
             lng,
-            Json({**row, "temporal": temporal, "source_dataset": "https://datos.madrid.es/portal/site/egob/", "source": "madrid-opendata", "id_origen": key}),
+            Json({**row, "temporal": temporal, "source_dataset": row.get("source_dataset") or "https://datos.madrid.es/portal/site/egob/", "source": "madrid-opendata", "id_origen": key}),
         )
 
     stats["inmuebles"] = len(inmuebles)
