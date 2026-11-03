@@ -99,3 +99,18 @@ class SnapshotIntegrationTest(unittest.TestCase):
             self.assertEqual(cur.fetchall(), [('other',), ('legacy',)])
             cur.execute("SELECT tgenabled FROM pg_trigger WHERE tgrelid='pg_temp.licencia'::regclass")
             self.assertEqual(cur.fetchall(), [('O',), ('O',)])
+
+    def test_second_batch_failure_rolls_back_the_first_batch(self):
+        from psycopg2.errors import CheckViolation
+        rows = [record(f'bulk-{i:05d}', '640505' if i % 2 else '133556') for i in range(10001)]
+        with self.conn.cursor() as cur:
+            cur.execute("ALTER TABLE pg_temp.licencia ADD CONSTRAINT reject_last CHECK(licencia_key <> 'bulk-10000')")
+        self.conn.commit()
+        with self.assertRaises(CheckViolation):
+            sync_snapshot(self.conn, rows, evidence=self.evidence, apply=True, schema='pg_temp')
+        self.conn.rollback()
+        with self.conn.cursor() as cur:
+            cur.execute('SELECT licencia_key FROM pg_temp.licencia ORDER BY id')
+            self.assertEqual(cur.fetchall(), [('other',), ('legacy',)])
+            cur.execute("SELECT tgenabled FROM pg_trigger WHERE tgrelid='pg_temp.licencia'::regclass")
+            self.assertEqual(cur.fetchall(), [('O',), ('O',)])

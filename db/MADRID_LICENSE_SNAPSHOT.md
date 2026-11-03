@@ -18,7 +18,10 @@ No activa la política global de clasificación. Durante la sustitución, bajo e
 bloqueo de escritores, pausa únicamente los dos triggers derivados de esa tabla:
 la clasificación ya está calculada y se registra una sola invalidación territorial
 del lote. Restaura su modo original antes del commit; un rollback también revierte
-la pausa. Las restricciones y los demás triggers siguen activos.
+la pausa. Las restricciones y los demás triggers siguen activos. Escribe en lotes de 10.000
+dentro de la misma transacción y analiza e indexa las tablas temporales antes de
+los cruces. Solo durante la reconciliación amplía el límite de cada sentencia a
+15 minutos y después restaura el límite de la conexión del llamador.
 
 Para un replay independiente, primero ejecutar sin `--apply`:
 

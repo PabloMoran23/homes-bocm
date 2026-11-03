@@ -165,6 +165,9 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
     if len(keys) < .8 * len(scope):
         raise ValueError("El snapshot pierde más del 20% de registros; no se modifica la base")
     with conn.cursor() as cur:
+        cur.execute("SELECT current_setting('statement_timeout')")
+        previous_timeout = cur.fetchone()[0]
+        cur.execute("SELECT set_config('statement_timeout','900000',true)")
         cur.execute("SELECT conname FROM pg_constraint WHERE contype='f' AND confrelid=%s::regclass", (table,))
         if cur.fetchall():
             raise RuntimeError("Hay referencias externas a licencias; se requiere migrar esos vínculos primero")
@@ -176,12 +179,15 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
                 stream.write(str(row["id"]) + "\n")
             stream.seek(0)
             cur.copy_expert("COPY madrid_license_scope(id) FROM STDIN", stream)
+        cur.execute("ANALYZE madrid_license_scope(id)")
         cur.execute(f"SELECT count(*) FROM {table} l JOIN madrid_license_scope s USING(id)")
         if cur.fetchone()[0] != len(scope):
             raise RuntimeError("La carga anterior cambió durante la preparación; repetir")
         batch = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
         cur.execute(f"INSERT INTO {schema}.madrid_license_snapshot_backup SELECT %s,l.id,to_jsonb(l) FROM {table} l JOIN madrid_license_scope s USING(id)", (batch,))
         cur.execute(f"CREATE TEMP TABLE madrid_license_links ON COMMIT DROP AS SELECT id,inserted_at,proyecto_id,proyecto_match_method,proyecto_match_score,proyecto_sigma_layer_kind,proyecto_linked_at FROM {table} JOIN madrid_license_scope USING(id)")
+        cur.execute("CREATE UNIQUE INDEX ON madrid_license_links(id)")
+        cur.execute("ANALYZE madrid_license_links(id)")
         cur.execute("""CREATE TEMP TABLE madrid_license_stage (
           id bigint, licencia_key text PRIMARY KEY, ndp text NOT NULL, anio_dataset integer,
           fecha_alta text,fecha_concesion text,procedimiento text,tipo_expediente text,
@@ -210,6 +216,8 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
         cur.execute(f"""WITH ids AS (SELECT licencia_key,row_number() OVER(ORDER BY licencia_key)+(SELECT coalesce(max(id),0) FROM {table}) AS ident FROM madrid_license_stage WHERE id IS NULL)
           UPDATE madrid_license_stage s SET id=ids.ident FROM ids WHERE ids.licencia_key=s.licencia_key""")
         cur.execute("CREATE UNIQUE INDEX ON madrid_license_stage(id)")
+        cur.execute("ANALYZE madrid_license_stage(id,licencia_key,ndp)")
+        cur.execute("ANALYZE madrid_license_scope(id)")
         outside_sql = f"""SELECT count(*),md5(string_agg(l.id::text||':'||md5(to_jsonb(l)::text),',' ORDER BY l.id)) FROM {table} l
           WHERE NOT EXISTS(SELECT 1 FROM madrid_license_scope x WHERE x.id=l.id)
             AND NOT EXISTS(SELECT 1 FROM madrid_license_stage x WHERE x.id=l.id)"""
@@ -234,26 +242,42 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
             cur.execute(f'ALTER TABLE {table} DISABLE TRIGGER "{name}"')
         _LOG.info("Copia y staging listos; sustituyendo el lote en la transacción")
         cur.execute(f"DELETE FROM {table} l USING madrid_license_scope s WHERE l.id=s.id")
-        cur.execute(f"""INSERT INTO {table}(id,licencia_key,inmueble_id,anio_dataset,fecha_alta,fecha_concesion,
+        insert_sql = f"""INSERT INTO {table}(id,licencia_key,inmueble_id,anio_dataset,fecha_alta,fecha_concesion,
           procedimiento,tipo_expediente,uso,interesado,objeto,unidad,lat,lng,raw_json,municipio_slug,fuente,id_origen,
           inserted_at,updated_at,proyecto_id,proyecto_match_method,proyecto_match_score,proyecto_sigma_layer_kind,proyecto_linked_at)
           SELECT s.id,s.licencia_key,i.id,s.anio_dataset,s.fecha_alta,s.fecha_concesion,s.procedimiento,s.tipo_expediente,
           s.uso,s.interesado,s.objeto,s.unidad,coalesce(s.lat,i.lat),coalesce(s.lng,i.lng),s.raw_json,
           'madrid','madrid-opendata',s.licencia_key,coalesce(o.inserted_at,now()),now(),
           o.proyecto_id,o.proyecto_match_method,o.proyecto_match_score,o.proyecto_sigma_layer_kind,o.proyecto_linked_at
-          FROM madrid_license_stage s JOIN {schema}.inmueble i ON i.ndp_edificio=s.ndp LEFT JOIN madrid_license_links o ON o.id=s.id""")
-        if cur.rowcount != len(keys):
+          FROM madrid_license_stage s JOIN {schema}.inmueble i ON i.ndp_edificio=s.ndp LEFT JOIN madrid_license_links o ON o.id=s.id
+          WHERE s.id BETWEEN %s AND %s"""
+        cur.execute("SELECT id FROM madrid_license_stage ORDER BY id")
+        ordered_ids = [r[0] for r in cur.fetchall()]
+        inserted = 0
+        for offset in range(0, len(ordered_ids), 10000):
+            batch_ids = ordered_ids[offset:offset + 10000]
+            bounds = (batch_ids[0], batch_ids[-1])
+            if offset == 0:
+                cur.execute("EXPLAIN " + insert_sql, bounds)
+                _LOG.info("Plan del primer lote: %s", "; ".join(r[0] for r in cur.fetchall()))
+            cur.execute(insert_sql, bounds)
+            inserted += cur.rowcount
+            _LOG.info("Insertadas %s / %s licencias", inserted, len(keys))
+        if inserted != len(keys):
             raise RuntimeError("Recuento insertado distinto del snapshot")
         for name, mode in paused:
             cur.execute(f'ALTER TABLE {table} {modes[mode]} TRIGGER "{name}"')
         if any(name == "licencia_territory_invalidation" for name, _ in paused):
             cur.execute(f"""INSERT INTO {schema}.license_territory_rebuild VALUES ('madrid',now(),'license_changed')
               ON CONFLICT(municipio_slug) DO UPDATE SET requested_at=excluded.requested_at,reason=excluded.reason""")
-        cur.execute(f"DELETE FROM {schema}.entity_reprocess_queue q WHERE q.entity_table='licencia' AND (EXISTS(SELECT 1 FROM madrid_license_scope s WHERE s.id::text=q.entity_id) OR EXISTS(SELECT 1 FROM madrid_license_stage s WHERE s.id::text=q.entity_id))")
+        cur.execute(f"""DELETE FROM {schema}.entity_reprocess_queue q USING
+          (SELECT id::text AS entity_id FROM madrid_license_scope UNION SELECT id::text FROM madrid_license_stage) s
+          WHERE q.entity_table='licencia' AND q.entity_id=s.entity_id""")
         cur.execute(outside_sql)
         if cur.fetchone() != outside_before:
             raise RuntimeError("Se ha modificado una licencia ajena al snapshot de Madrid")
-        cur.execute(f"INSERT INTO {schema}.madrid_license_snapshot_runs(batch_id,source_digest,row_count) VALUES(%s,%s,%s)", (batch,source_digest,len(keys)))
+        cur.execute(f"INSERT INTO {schema}.madrid_license_snapshot_runs(batch_id,source_digest,row_count,applied_at) VALUES(%s,%s,%s,clock_timestamp())", (batch,source_digest,len(keys)))
+        cur.execute("SELECT set_config('statement_timeout',%s,true)", (previous_timeout,))
     return {**report, "status": "applied", "batch_id": batch, "outside_rows_unchanged": outside_before[0]}
 
 
