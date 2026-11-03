@@ -3994,11 +3994,11 @@ municipios:
 - slug: villanueva-de-la-serena
   nombre: Villanueva de la Serena
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-03T22:02:44.695543+00:00'
+  last_run: '2026-11-03T22:07:02.324389+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1124
   notes: Sin boletín asociado
   comunidad_autonoma: extremadura
   provincia: Badajoz
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-03T22:02:44.714930+00:00'
+updated_at: '2026-11-03T22:07:02.331007+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
