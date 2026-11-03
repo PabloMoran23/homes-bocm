@@ -1,0 +1,29 @@
+slug: ribeira
+nombre: "Ribeira"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.ribeira.gal"
+  adapter: municipio.adapters.ribeira:RibeiraAyuntamientoAdapter
+  config:
+    web_base: "https://www.ribeira.gal"
+    sede_base: "https://sede.ribeira.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ribeira/1.0"
+    max_siotuga_desarrollo: 80
+    centroid: [42.5539, -8.9914]
+  notes: |
+    Web corporativa Liferay (planeamento, exposiciones, PERI/PIRE).
+    Sede sede.ribeira.gal (catálogo trámites urbanismo; sin listado de licencias concedidas).
+    Planeamiento inventariado SIOTUGA (INE 15057). Tablón /anuncios enlaza contenido legacy 404.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
