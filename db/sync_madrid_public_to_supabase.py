@@ -465,8 +465,7 @@ def sync_sigma_ambitos(cur) -> int:
 
 def licencia_key(row: dict[str, Any], *, anio: int | None) -> str:
     if row.get("numero_expediente") and row.get("source_dataset"):
-        from sector_geometry.madrid_licencias_download import licencia_key as current_key
-        return current_key(row, anio=anio)
+        return sha256(f"{row['source_dataset']}|{row['numero_expediente']}|{row.get('ndp_edificio', '')}".encode()).hexdigest()[:32]
     parts = [
         str(anio or row.get("anio_dataset") or row.get("anioDataset") or ""),
         str(row.get("ndp_edificio") or row.get("ndpEdificio") or ""),

@@ -48,7 +48,9 @@ class CurrentSourcesTest(unittest.TestCase):
         self.assertNotIn("coordenadas_x", other)
 
     def test_key_survives_corrected_grant_date(self):
+        from db.sync_madrid_public_to_supabase import licencia_key as sync_key
         row = {"source_dataset": "640505", "numero_expediente": "350/2026/1", "ndp_edificio": "123"}
+        self.assertEqual(licencia_key(row, anio=2026), sync_key(row, anio=2026))
         self.assertEqual(licencia_key(row, anio=2025), licencia_key({**row, "fecha_concesin": "2026-01-01"}, anio=2026))
         self.assertNotEqual(licencia_key(row, anio=2026), licencia_key({**row, "ndp_edificio": "456"}, anio=2026))
 
