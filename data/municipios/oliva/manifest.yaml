@@ -1,0 +1,51 @@
+slug: oliva
+nombre: "Oliva"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.oliva.es"
+  adapter: municipio.adapters.oliva:OlivaAyuntamientoAdapter
+  config:
+    sede_base: "https://oliva.sedelectronica.es"
+    board_url: "https://oliva.sedelectronica.es/board"
+    transparency_urbanismo_url: "https://transparencia.oliva.es/es/transparencia/pla-general-d-ordenacio-urbana-pgou"
+    urbanismo_url: "https://www.oliva.es/es/pagina/enlaces-de-interes-urbanistico"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-oliva/1.0"
+    centroid: [38.9197, -0.1194]
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:Planeamiento.Zonificacion"
+      ine_cod_mun: "46181"
+  notes: |
+    Fuentes: Drupal DigitalValue www.oliva.es (PGOU, planeamiento, mapas) +
+    portal transparencia transparencia.oliva.es +
+    sede espublico gestiona (tablón /board, catálogo /dossier) +
+    ICV GVA WFS zonificación (cod_ine_mun 46181).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-0.18, 38.84]
+            - [-0.03, 38.84]
+            - [-0.03, 38.96]
+            - [-0.18, 38.96]
+            - [-0.18, 38.84]
+      crs: EPSG:4326
+      axis_order: xy
