@@ -1,0 +1,29 @@
+slug: moron-de-la-frontera
+nombre: "Morón de la Frontera"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://www.morondelafrontera.es"
+  adapter: municipio.adapters.moron_de_la_frontera:MoronDeLaFronteraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-moron-de-la-frontera/1.0"
+    web_base: "https://www.morondelafrontera.es"
+    sede_base: "https://morondelafrontera.sedelectronica.es"
+    board_url: "https://morondelafrontera.sedelectronica.es/board/"
+    transparency_url: "https://morondelafrontera.sedelectronica.es/transparency"
+    nuevoplan_base: "https://morondelafrontera.nuevoplan.es"
+    centroid: [37.1219, -5.4540]
+  notes: |
+    Web municipal eXisto + sede espublico gestiona (tablón /board/, transparencia).
+    POU en tramitación: morondelafrontera.nuevoplan.es (WP REST media).
+    Formularios urbanismo descargables en web (licencias, DR, comunicaciones).
+    Sin visor GIS municipal enlazable a expedientes concretos.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
