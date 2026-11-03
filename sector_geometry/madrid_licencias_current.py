@@ -75,6 +75,12 @@ def merge_snapshot_rows(historical: list[dict], current: list[dict]) -> tuple[li
         kind = re.sub(r"[^a-z0-9]", "", kind)
         return (str(row.get("ndp_edificio") or "").strip(), alta, kind) if alta and kind else None
 
+    # A previous full snapshot also contains current-source rows from 2022.
+    # Replay their archived legacy aliases, rather than treating the previous
+    # CSV row as a historical duplicate and nesting it on every refresh.
+    historical = [old for row in historical
+                  for old in (row.get("_source_variants", [])
+                              if row.get("numero_expediente") and row.get("source_dataset") else [row])]
     current = [{**row, **({"_source_variants": list(row["_source_variants"])} if "_source_variants" in row else {})} for row in current]
     current_matches = {}
     historical_matches = Counter(registration(row) for row in historical if int(row.get("anio_dataset") or 0) < 2023)

@@ -55,6 +55,8 @@ class CurrentSourcesTest(unittest.TestCase):
         rows, stats = merge_snapshot_rows([historical], [current])
         self.assertEqual(rows[0]["numero_expediente"], current["numero_expediente"])
         self.assertIn(historical, rows[0]["_source_variants"])
+        repeated, _ = merge_snapshot_rows(rows, [current])
+        self.assertEqual(repeated, rows)
         self.assertEqual(stats["historicalRowsSuperseded"], 1)
         rows, stats = merge_snapshot_rows([], [current, current])
         self.assertEqual(len(rows), 1)
