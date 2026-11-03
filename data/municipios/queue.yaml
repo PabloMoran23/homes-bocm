@@ -3797,11 +3797,11 @@ municipios:
 - slug: molins-de-rei
   nombre: Molins de Rei
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-03T04:01:35.694382+00:00'
+  last_run: '2026-11-03T04:04:34.501174+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1111
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-03T04:01:35.709269+00:00'
+updated_at: '2026-11-03T04:04:34.511555+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
