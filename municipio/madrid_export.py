@@ -433,8 +433,9 @@ def export_licencias(manifest: MunicipioManifest) -> dict[str, Any]:
     manifest.ensure_output_dir()
     licencias = build_licencias()
     lic_path = manifest.output_dir / "licencias.jsonl"
-    if licencias:
-        _write_jsonl(lic_path, licencias)
+    if not licencias:
+        raise RuntimeError("Madrid: exportación de licencias vacía; se conserva el JSONL anterior")
+    _write_jsonl(lic_path, licencias)
     return {
         "status": "ok",
         "licencias": len(licencias),
