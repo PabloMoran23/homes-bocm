@@ -1,0 +1,29 @@
+slug: caravaca-de-la-cruz
+nombre: "Caravaca de la Cruz"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://caravaca.sedipualba.es"
+  adapter: municipio.adapters.caravaca_de_la_cruz:CaravacaDeLaCruzAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-caravaca-de-la-cruz/1.0"
+    web_base: "https://caravacadelacruz.es"
+    sede_base: "https://caravaca.sedipualba.es"
+    catalogo_url: "https://caravaca.sedipualba.es/catalogoservicios.aspx?ambito=&area=887"
+    centroid: [38.1056, -1.8632]
+  notes: |
+    WordPress caravacadelacruz.es (normativa/planeamiento) + sede Sedipualba (tablón/catálogo).
+    Geometría parcial vía WFS SITMURCIA plu_ze_37_mun_uso_suelo (Ambito).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  centroid_lat: 38.1056
+  centroid_lng: -1.8632
