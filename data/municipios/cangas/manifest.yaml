@@ -1,0 +1,50 @@
+slug: cangas
+nombre: "Cangas"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://cangas.gal"
+  adapter: municipio.adapters.cangas:CangasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cangas/1.0"
+    sede_base: "https://cangas.sedelectronica.gal"
+    board_url: "https://cangas.sedelectronica.gal/board"
+    insecure_ssl: true
+    sede_timeout_s: 45
+    max_siotuga_desarrollo: 80
+    centroid: [42.2641, -8.7845]
+  notes: |
+    Drupal cangas.gal (urbanismo, PXOM, PEPRI, PDFs) + sede espublico gestiona
+    (taboleiro /board, carpetas transparencia) + inventario SIOTUGA INE 36008.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-8.86, 42.18],
+              [-8.68, 42.18],
+              [-8.68, 42.34],
+              [-8.86, 42.34],
+              [-8.86, 42.18],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Concello de Cangas (Morrazo, INE 36008)"
+
+geocode:
+  jitter_missing: true
