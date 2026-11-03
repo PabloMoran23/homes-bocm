@@ -3830,11 +3830,11 @@ municipios:
 - slug: sant-andreu-de-la-barca
   nombre: Sant Andreu de la Barca
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-03T10:01:26.913854+00:00'
+  last_run: '2026-11-03T10:06:42.250662+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1114
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Barcelona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-03T10:01:26.926961+00:00'
+updated_at: '2026-11-03T10:06:42.257210+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
