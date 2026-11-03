@@ -1,0 +1,25 @@
+slug: sant-vicenc-dels-horts
+nombre: "Sant Vicenç dels Horts"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://svh.cat"
+  adapter: municipio.adapters.sant_vicenc_dels_horts:SantVicencDelsHortsAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-vicenc-dels-horts/1.0"
+    geometry:
+      cod_ine_mun: "08263"
+      arcgis_expedients_layer: "https://geoportal.amb.cat/geoserveisapp/rest/services/Planejament/Expedients/MapServer/3"
+  notes: |
+    Web corporativa WordPress (svh.cat) + transparència urbanisme.
+    Planejament: Geoportal AMB (ArcGIS expedients), RPUC/MUC Generalitat.
+    Licencias: catàleg tràmits svh.cat + instància genèrica seu-e (826340003); sense tabló de concesions.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
