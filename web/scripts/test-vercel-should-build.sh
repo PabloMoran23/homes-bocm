@@ -262,21 +262,19 @@ run_case "shallow fetch failure deploys" 1 "unavailable after fetch --depth=1" \
   env VERCEL_GIT_PREVIOUS_SHA="$FIX_MIX" VERCEL_GIT_COMMIT_SHA="$FIX_RENAME" \
   bash "$TMP/shallow-fail/web/scripts/vercel-should-build.sh"
 
-# ef510d6 touches web/app and must deploy. 891af37 and 11312bf do not.
-run_case "ef510d6 deploys web/app" 1 "deploy (web/app/page.tsx)" \
-  env VERCEL_GIT_PREVIOUS_SHA="891af373adab5c63203620683c1edae3263bb8dd" \
-  VERCEL_GIT_COMMIT_SHA="ef510d637d2c5f048e3b8f8b529baf9d7757bf0e" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+run_case "first preview with zero previous SHA skips" 0 "skip (no changes under web/, 1 files)" \
+  env VERCEL_ENV=preview VERCEL_GIT_PREVIOUS_SHA=0000000000000000000000000000000000000000 \
+  VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE" bash "$SCRIPT"
 
-run_case "891af37 skips outside web" 0 "skip (no changes under web/, 5 files)" \
-  env VERCEL_GIT_PREVIOUS_SHA="11312bfda51ccefe7037174ee77a4a6eb4de41db" \
-  VERCEL_GIT_COMMIT_SHA="891af373adab5c63203620683c1edae3263bb8dd" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+run_case "preview already merged in main skips" 0 "preview already included in main" \
+  env VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_SCOPE" bash "$SCRIPT"
 
-run_case "11312bf skips outside web" 0 "skip (no changes under web/, 7 files)" \
-  env VERCEL_GIT_PREVIOUS_SHA="49d6d95" \
-  VERCEL_GIT_COMMIT_SHA="11312bfda51ccefe7037174ee77a4a6eb4de41db" \
-  bash "$ROOT/web/scripts/vercel-should-build.sh"
+git clone --quiet --depth=1 --branch preview-outside "file://$TMP/origin" "$TMP/preview-unreachable"
+install_script "$TMP/preview-unreachable"
+git -C "$TMP/preview-unreachable" remote set-url origin "$TMP/not-a-repo"
+run_case "unavailable preview base reports uncertainty" 1 "cannot fetch preview base main" \
+  env VERCEL_ENV=preview VERCEL_GIT_COMMIT_SHA="$FIX_PREVIEW_OUTSIDE_SECOND" \
+  bash "$TMP/preview-unreachable/web/scripts/vercel-should-build.sh"
 
 if [ "$failures" -ne 0 ]; then
   echo "$failures test(s) failed" >&2
