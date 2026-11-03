@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       refresh_licencias:
-        description: "Forzar descarga y sync de licencias (por defecto solo dia 17 del mes)"
+        description: "Descargar licencias (desactivar solo para reexportar la caché)"
         type: boolean
-        default: false
+        default: true
   schedule:
     # Lunes 03:17 UTC (~05:17 CEST en verano) — SIGMA + visor
     - cron: "17 3 * * 1"
-    # Dia 17 de cada mes 03:17 UTC — incluye sync de licencias
+    # Día 17 de cada mes 03:17 UTC — refresco adicional
     - cron: "17 3 17 * *"
 
 permissions:
@@ -24,6 +24,10 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    env:
+      PGCONNECT_TIMEOUT: "15"
+      PGOPTIONS: "-c statement_timeout=300000 -c lock_timeout=30000"
+      PYTHONUNBUFFERED: "1"
 
     steps:
       - name: Checkout
@@ -88,6 +92,23 @@ jobs:
       - name: Install Python dependencies
         run: python -m pip install --upgrade pip && pip install -r requirements-data-refresh.txt
 
+      - name: Verify license refresh regressions
+        run: python3 -m unittest sector_geometry.test_madrid_licencias_download sector_geometry.test_madrid_licencias_current municipio.test_cli_errors municipio.test_madrid_pipeline
+
+      - name: Check database connection before scraping
+        timeout-minutes: 2
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          python3 - <<'PY'
+          import psycopg2
+          from db.ingest import pg_url
+          with psycopg2.connect(pg_url(), connect_timeout=15) as conn:
+              with conn.cursor() as cur:
+                  cur.execute('SELECT 1')
+          print('Supabase connection OK')
+          PY
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -99,7 +120,14 @@ jobs:
         working-directory: web
         run: npm ci
 
+      - name: Verify license web contracts
+        working-directory: web
+        run: |
+          node scripts/test-license-current.mjs
+          npm run test:license-dates
+
       - name: Refresh Madrid public datasets
+        timeout-minutes: 60
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -107,19 +135,15 @@ jobs:
             echo "SUPABASE_DB_URL is required for direct public data sync." >&2
             exit 1
           fi
-          YEAR=$(date -u +%Y)
-          PREV=$((YEAR - 1))
-          REFRESH_LIC=0
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "true" ]; then
-            REFRESH_LIC=1
-          elif [ "$(date -u +%d)" = "17" ]; then
-            REFRESH_LIC=1
+          REFRESH_LIC=1
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "false" ]; then
+            REFRESH_LIC=0
           fi
           python3 -m municipio run --municipio madrid --step proyectos_update
           python3 -m municipio run --municipio madrid --step enrich_geometry
           python3 -m municipio run --municipio madrid --step geocode
           if [ "$REFRESH_LIC" = "1" ]; then
-            echo "Licencias: descarga ${PREV},${YEAR} y upsert (tras proyectos)."
+            echo "Licencias y declaraciones: descarga de los CSV actuales desde 2023 y upsert."
             MADRID_LICENCIAS=1 python3 -m municipio run --municipio madrid --step licencias_update
           else
             echo "Licencias: se reexporta el JSONL cacheado si existe (sin descarga)."
@@ -139,6 +163,7 @@ jobs:
 
 
       - name: Reclassify changed entities and check activity
+        timeout-minutes: 30
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: python3 db/entity_reprocess.py
@@ -155,6 +180,7 @@ jobs:
           retention-days: 30
 
       - name: Build public data files
+        timeout-minutes: 30
         working-directory: web
         env:
           BUILD_DATA_SCOPE: madrid-public
@@ -195,7 +221,7 @@ jobs:
           fi
 
       - name: Save generated data cache
-        if: always()
+        if: success()
         uses: actions/cache/save@v4
         with:
           path: output
