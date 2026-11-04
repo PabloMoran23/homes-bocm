@@ -1,0 +1,24 @@
+slug: molins-de-rei
+nombre: "Molins de Rei"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://molinsderei.cat"
+  adapter: municipio.adapters.molins_de_rei:MolinsDeReiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-molins-de-rei/1.0"
+    sede_base: "https://www.molinsderei.net"
+    centroid: [41.414, 2.017]
+  notes: |
+    Web corporativa WordPress (CA) — secció Urbanisme i projectes sector Llicorelles.
+    Seu electrònica STA (molinsderei.net): tauler d'anuncis (PTS2_TABLON) + catàleg (CATSERV, EACAT).
+    RPUC/PGOU exp. 277777 i visor MUC (INE 08130). Geoportal AMB i visor PEPHA patrimoni.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
