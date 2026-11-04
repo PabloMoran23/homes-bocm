@@ -1,0 +1,36 @@
+slug: adra
+nombre: "Adra"
+provincia: Almería
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://adra.sedelectronica.es"
+  adapter: municipio.adapters.adra:AdraAyuntamientoAdapter
+  config:
+    sede_base: "https://adra.sedelectronica.es"
+    board_url: "https://adra.sedelectronica.es/board/"
+    web_urbanismo_url: "https://www.adra.es/web/guest/w/urbanismo1"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-adra/1.0"
+    cod_ine: "04003"
+    centroid: [36.74997, -3.01309]
+  notes: |
+    Fuentes: web Liferay (Urbanismo y Obras Públicas), tablón sede espublico gestiona,
+    página Urbanismo en sede, WFS Diputación Almería (sectores SIU cod_ine 04003), visor Dipalme.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+
+geocode:
+  jitter_missing: false
