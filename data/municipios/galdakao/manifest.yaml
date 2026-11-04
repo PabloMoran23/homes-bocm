@@ -1,0 +1,28 @@
+slug: galdakao
+nombre: "Galdakao"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.galdakao.eus"
+  adapter: municipio.adapters.galdakao:GaldakaoAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-galdakao/1.0"
+    sede_base: "https://galdakao.egoitzaelektronikoa.eus"
+    bizkaia_municipio_id: "36"
+    centroid_lat: 43.2308
+    centroid_lng: -2.8444
+    geometry_enrich: true
+    arcgis_map_url: "https://geo.bizkaia.eus/arcgisserverinspire/rest/services/LurraldeAntolamendua_PlanificacionTerritorial/PX_Bilbao_Metropolitano_inf/MapServer"
+    planeamiento_layer_ids: [100, 119, 120, 121, 122, 134]
+  notes: |
+    Sede espublico gestiona (tablón / dossier) + Registro PUR Diputación Foral (municipio 36).
+    Web corporativa galdakao.eus puede no responder desde datacenters; PUR y sede son fuentes principales.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
