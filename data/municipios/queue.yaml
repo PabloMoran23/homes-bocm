@@ -4016,11 +4016,11 @@ municipios:
 - slug: adra
   nombre: Adra
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-04T02:03:01.447097+00:00'
+  last_run: '2026-11-04T02:08:46.631359+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1126
   notes: Sin boletín asociado
   comunidad_autonoma: andalucia
   provincia: Almería
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-04T02:03:01.460755+00:00'
+updated_at: '2026-11-04T02:08:46.638378+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
