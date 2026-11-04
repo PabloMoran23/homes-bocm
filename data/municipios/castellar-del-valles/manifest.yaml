@@ -1,0 +1,44 @@
+slug: castellar-del-valles
+nombre: "Castellar del Vallès"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.castellarvalles.cat"
+  adapter: municipio.adapters.castellar_del_valles:CastellarDelVallesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castellar-del-valles/1.0"
+    web_base: "https://www.castellarvalles.cat"
+    seu_base: "https://seu.castellarvalles.cat"
+    centroid: [41.6239, 2.0855]
+    etauler_url: "https://tauler.seu.cat/inici.do?idens=805170005"
+    geoportal_url: "http://geoportal.castellarvalles.cat/urbanisme/"
+    muc_visor_url: "https://ptop.gencat.cat/muc-visor/AppJava/home.do?municipi=08047&set-locale=ca"
+  notes: |
+    CMS municipal (castellarvalles.cat / seu.castellarvalles.cat): expedients en tramitació
+    i aprovats, POUM, e-TRAM urbanisme, e-TAULER idens=805170005. Geoportal TecnoGeoWS (partial).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - - [2.02, 41.58]
+          - [2.15, 41.58]
+          - [2.15, 41.67]
+          - [2.02, 41.67]
+          - [2.02, 41.58]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado término municipal (INE 08047; geoportal TecnoGeoWS sin API por expediente)"
