@@ -1,0 +1,29 @@
+slug: erandio
+nombre: "Erandio"
+provincia: Bizkaia
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://tramitegunea.erandio.eus"
+  adapter: municipio.adapters.erandio:ErandioAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-erandio/1.0"
+    centroid: [43.3048, -2.9456]
+    bizkaia_municipio_id: "902"
+    geometry_enrich: true
+    geometry_max_rows: 40
+  notes: |
+    Tramitegunea (manual trámites/licencias) + app.erandio.eus (Territorio).
+    Instrumentos de planeamiento: Registro PUR Diputación Foral (municipio id 902).
+    Geometría parcial: ArcGIS Plangintza (clasificación suelo + NombreAmbito).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
