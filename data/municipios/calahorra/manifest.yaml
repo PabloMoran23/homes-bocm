@@ -1,0 +1,25 @@
+slug: calahorra
+nombre: "Calahorra"
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+
+portal:
+  base_url: "https://calahorra.es"
+  adapter: municipio.adapters.calahorra:CalahorraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-calahorra/1.0"
+    sede_base: "https://sede.calahorra.es"
+    wfs_url: "https://gis.calahorra.es/geoserver/calahorra_urban_city_instrumentos/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=calahorra_urban_city_instrumentos:instrumentos&outputFormat=application/json&srsName=EPSG:4326&count=500"
+    centroid: [42.3055, -1.9652]
+  notes: |
+    WordPress (calahorra.es) CPT documento + categoría Urbanismo.
+    Sede STA (T-Systems): tablón PTS2_TABLON (dataset TABLON) y catálogo de trámites UR*.
+    Visor UrbanCity (gis.calahorra.es) expone instrumentos de planeamiento vía GeoServer WFS.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
