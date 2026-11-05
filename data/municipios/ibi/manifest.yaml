@@ -1,0 +1,35 @@
+slug: ibi
+nombre: Ibi
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: https://www.ibi.es
+  adapter: municipio.adapters.ibi:IbiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: poc-bocm-ibi/1.0
+    centroid: [38.625, -0.575]
+    cod_ine_mun: "03077"
+    wfs_max_startindex: 9000
+    sede_base: https://ibi.sedipualba.es
+    geometry:
+      kind: icv_wfs
+      wfs_url: https://terramapas.icv.gva.es/0702_Planeamiento
+      type_name: ms:InventarioSuSuz
+  notes: |
+    WordPress (ibi.es) secciones urbanismo/PGOU/PP/PRI + sede sedipualba
+    (tablón RSS + catálogo Urbanismo área 1522 GU/TE) + ICV WFS InventarioSuSuz.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
