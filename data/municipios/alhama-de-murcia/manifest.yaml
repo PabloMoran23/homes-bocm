@@ -1,0 +1,29 @@
+slug: alhama-de-murcia
+nombre: "Alhama de Murcia"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://ayuntamiento.alhamademurcia.es"
+  adapter: municipio.adapters.alhama_de_murcia:AlhamaDeMurciaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-alhama-de-murcia/1.0"
+    web_base: "https://ayuntamiento.alhamademurcia.es"
+    cod_ine: "30003"
+    centroid: [37.8511, -1.4250]
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Alhama%20de%20Murcia%27&outputFormat=application/json&srsName=EPSG:4326"
+  notes: |
+    Web municipal ASP (planeamientos, tablon.asp, documentos en tramitación, PGMO en datos.alhamademurcia.es).
+    Sede alhamademurcia.sedelectronica.es responde «Sede Electrónica Indeterminada» (sin tablón usable).
+    Geometría parcial vía WFS SITMURCIA plu_ze_37_mun_uso_suelo (ámbitos PGMO).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
