@@ -2,7 +2,7 @@
 """Exporta al sitemap las fichas investigadas con más contenido, sin modificar Supabase.
 
 Con SUPABASE_DB_URL o DATABASE_URL en el entorno:
-  python3 db/export_sitemap_projects.py              # tope por defecto: 2000
+  python3 db/export_sitemap_projects.py              # tope por defecto: 5000
   python3 db/export_sitemap_projects.py --limit 500  # o SITEMAP_PROJECT_LIMIT=500
 Después, incluir el JSON generado en el despliegue de la web.
 
@@ -28,7 +28,7 @@ import psycopg2
 
 from entity_reprocess import require_policy_active
 
-DEFAULT_LIMIT = 2000
+DEFAULT_LIMIT = 5000
 
 QUERY = """
 WITH latest AS (

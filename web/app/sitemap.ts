@@ -17,9 +17,9 @@ const PUBLIC_PAGES: {
   { path: "/madrid/estadisticas", changeFrequency: "weekly", priority: 0.8 },
 ];
 
-const DEFAULT_PROJECT_LIMIT = 2000;
+const DEFAULT_PROJECT_LIMIT = 5000;
 
-/** Tope de fichas en el sitemap (SITEMAP_PROJECT_LIMIT, por defecto 2000). */
+/** Tope de fichas en el sitemap (SITEMAP_PROJECT_LIMIT, por defecto 5000). */
 function projectLimit(): number {
   const raw = process.env.SITEMAP_PROJECT_LIMIT?.trim();
   if (!raw) return DEFAULT_PROJECT_LIMIT;
