@@ -12,7 +12,8 @@ Criterio de calidad (sobre la última investigación de cada proyecto):
   - calidad = min(datos, 10) + 2 * min(hallazgos, 5) + min(resumen_chars / 500, 6)
               + 5 si la investigación está completa  (máximo 31)
   - Orden: calidad DESC, investigado_at DESC, proyecto_id.
-Solo entran proyectos visibles en homes.proyecto_actividad (política de publicación).
+Solo entran proyectos visibles en homes.proyecto_actividad.
+El sitemap no exige activar ni reprocesar la política global de publicación.
 
 La consulta lee proyecto_investigacion completa (payload grande): tarda ~1 min en el
 plan Micro, por eso se ejecuta offline y la web solo lee el JSON estático.
@@ -25,8 +26,6 @@ from datetime import timezone
 from pathlib import Path
 
 import psycopg2
-
-from entity_reprocess import require_policy_active
 
 DEFAULT_LIMIT = 5000
 
@@ -96,7 +95,6 @@ def main() -> None:
     with psycopg2.connect(url, connect_timeout=15) as conn:
         conn.set_session(readonly=True)
         with conn.cursor() as cur:
-            require_policy_active(cur)
             # Solo para esta transacción de lectura; no cambia la configuración de la BD.
             cur.execute("SET LOCAL statement_timeout = '300s'")
             cur.execute(QUERY, {"limit": limit})

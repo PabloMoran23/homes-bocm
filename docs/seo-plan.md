@@ -21,7 +21,7 @@ Homes concentra licencias urbanísticas, proyectos SIGMA y anuncios BOCM de Madr
 | `lang="es"` | ✅ | `app/layout.tsx` |
 | Metadata global (title, description, OG) | ✅ | `app/opengraph-image.tsx` 1200×630 |
 | `robots.ts` | ✅ | Bloquea rutas dev-only en edición pública |
-| `sitemap.xml` | ✅ | ~3.909 URLs (4 estáticas + ~3.905 proyectos) |
+| `sitemap.xml` | ✅ | 5.005 URLs (5 estáticas + 5.000 fichas investigadas, ordenadas por calidad) |
 | `NEXT_PUBLIC_SITE_URL` | ✅ | `https://homes-urbanismo.es` en Vercel |
 | Metadata dinámica en fichas | ✅ | `/proyecto/[id]`, `/ubicacion/[ndp]` |
 | Canonical explícito | ✅ | `lib/seo.ts` → layout, estáticas y fichas |
@@ -205,7 +205,7 @@ Distribución: LinkedIn, prensa urbanística, grupos de vecinos.
 1. GSC → queries, páginas, CTR bajo → mejorar title/description
 2. Páginas con impresiones sin clics → reescribir snippet
 3. Fichas con tráfico → enriquecer contenido
-4. Tras refresh semanal de datos → sitemap se regenera en deploy (no acción manual)
+4. Regenerar `web/public/data/sitemap-projects.json` con `python3 db/export_sitemap_projects.py` (tope predeterminado: 5.000 fichas); incluir el JSON en el despliegue. El exportador mantiene los filtros de contenido y no exige activar el control global de publicación.
 
 ---
 
