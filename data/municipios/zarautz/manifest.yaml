@@ -1,0 +1,25 @@
+slug: zarautz
+nombre: "Zarautz"
+provincia: Gipuzkoa
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.zarautz.eus"
+  adapter: municipio.adapters.zarautz:ZarautzAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-zarautz/1.0"
+    centroid: [43.2857, -2.1748]
+    due_api: "https://w390w.gipuzkoa.net/WAS/CORP/DUERegistroPlaneamientoWEB/api/record/?municipality=zarautz"
+    uzt_home: "https://uzt.gipuzkoa.eus/WAS/AYTO/USCServicioCiudadanoVer15WEB/home.do?ayto=79"
+  notes: |
+    CMS Liferay (www.zarautz.eus). Planeamiento: API JSON Registro DUE Diputación Gipuzkoa
+    (municipality=zarautz) + índices B5M. Licencias: catálogo informativo sede UZT (ayto=79);
+    exposición pública provincial udal.egoitza.gipuzkoa.eus?De=07915.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
