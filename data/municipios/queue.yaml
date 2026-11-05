@@ -4530,11 +4530,11 @@ municipios:
 - slug: sant-feliu-de-guixols
   nombre: Sant Feliu de Guíxols
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-05T18:02:59.879034+00:00'
+  last_run: '2026-11-05T18:09:14.840084+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1146
   notes: Sin boletín asociado
   comunidad_autonoma: catalunya
   provincia: Girona
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-05T18:02:59.893553+00:00'
+updated_at: '2026-11-05T18:09:14.847463+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
