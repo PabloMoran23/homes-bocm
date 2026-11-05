@@ -1,0 +1,52 @@
+slug: almansa
+nombre: "Almansa"
+provincia: Albacete
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://almansa.es"
+  adapter: municipio.adapters.almansa:AlmansaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almansa/1.0"
+    sede_base: "https://almansa.sedipualba.es"
+    web_base: "https://almansa.es"
+    geometry:
+      kind: arcgis_mapserver
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "02009"
+    centroid: [38.8692, -1.0971]
+  notes: |
+    WordPress almansa.es (trámites obra/licencias, biblioteca documentos dlp_document).
+    Sede Sedipualba almansa.sedipualba.es (tablón RSS/HTML, catálogo trámites genéricos).
+    Geometría PGOU vía ArcGIS CLM Planeamiento_Municipal (COD_INE 02009).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-1.35, 38.65],
+              [-0.85, 38.65],
+              [-0.85, 39.05],
+              [-1.35, 39.05],
+              [-1.35, 38.65],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox Almansa (Albacete) + PGOU CLM COD_INE=02009"
+
+geocode:
+  jitter_missing: true
