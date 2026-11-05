@@ -1,0 +1,34 @@
+slug: villanueva-de-la-serena
+nombre: "Villanueva de la Serena"
+provincia: Badajoz
+comunidad_autonoma: extremadura
+
+portal:
+  base_url: "https://villanuevadelaserena.es"
+  adapter: municipio.adapters.villanueva_de_la_serena:VillanuevaDeLaSerenaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villanueva-de-la-serena/1.0"
+    sede_base: "https://sede.villanuevadelaserena.es"
+    tablon_page: "https://sede.villanuevadelaserena.es/portal/noEstatica.do?opc_id=268&ent_id=1&idioma=1"
+    catalogo_tramites_url: "https://sede.villanuevadelaserena.es/sede/catalogoTramites.do?opcion=detalle&idApl=2&ent_id=1&idioma=1"
+    seed_pages:
+      - "https://villanuevadelaserena.es/plan-edil/"
+      - "https://villanuevadelaserena.es/plan-de-actuacion-integrado/"
+      - "https://villanuevadelaserena.es/agenda-urbana-espanola/"
+      - "https://villanuevadelaserena.es/portal-de-la-transparencia/normativa/normativa-sobre-urbanismo-y-medio-ambiente/"
+    centroid: [38.9706, -5.7973]
+  notes: |
+    WordPress (Plan EDIL/PAI, Agenda Urbana, normativa) +
+    sede STA tablón electrónico JSON (opc_id=268, CSRF) +
+    catálogo trámites URBANISMO (licencias informativas).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
