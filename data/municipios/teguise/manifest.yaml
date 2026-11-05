@@ -1,0 +1,28 @@
+slug: teguise
+nombre: "Teguise"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://teguise.es"
+  adapter: municipio.adapters.teguise:TeguiseAyuntamientoAdapter
+  config:
+    web_base: "https://teguise.es"
+    sede_base: "https://sede.teguise.es"
+    board_url: "https://sede.teguise.es/board"
+    dossier_url: "https://sede.teguise.es/dossier"
+    sitcan_package: planeamiento-urbanistico-de-teguise
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/35024/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-teguise/1.0"
+    centroid: [29.0595, -13.5640]
+  notes: |
+    WordPress Avada (tablón teguise.es) + sede ATM-Maggioli (sede.teguise.es: informe urbanístico, tablón SPA).
+    SITCAN planeamiento-urbanistico-de-teguise + GEOBDP Grafcan INE 35024 (geometría instrumentos planeamiento).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
