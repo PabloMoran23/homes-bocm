@@ -1,0 +1,30 @@
+slug: las-torres-de-cotillas
+nombre: "Las Torres de Cotillas"
+provincia: Murcia
+comunidad_autonoma: murcia
+
+portal:
+  base_url: "https://lastorresdecotillas.sedelectronica.es"
+  adapter: municipio.adapters.las_torres_de_cotillas:LasTorresDeCotillasAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "Mozilla/5.0 poc-bocm-las-torres-de-cotillas/1.0"
+    web_base: "https://www.lastorresdecotillas.es"
+    sede_base: "https://lastorresdecotillas.sedelectronica.es"
+    board_url: "https://lastorresdecotillas.sedelectronica.es/board"
+    transparency_url: "https://lastorresdecotillas.sedelectronica.es/transparency"
+    planeamiento_transparency: "https://lastorresdecotillas.sedelectronica.es/transparency/7cfea38d-ece8-4801-a2cc-9924f3449c8d/"
+    cod_ine: "30043"
+    centroid: [38.0278, -1.24]
+    wfs_url: "https://mapas-gis-inter.carm.es/geoserver/SIT_USU_PLA_URB_CARM/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=SIT_USU_PLA_URB_CARM:plu_ze_37_mun_uso_suelo&CQL_FILTER=Municipio%3D%27Las%20Torres%20de%20Cotillas%27&count=1000&outputFormat=application/json&srsName=EPSG:4326"
+  notes: |
+    Web municipal Drupal + sede espublico gestiona (tablón /board, transparencia planeamiento G13).
+    Consulta expedientes requiere login. WFS SITMURCIA plu_ze_37 sin polígonos (IDERM en curso 2026).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
