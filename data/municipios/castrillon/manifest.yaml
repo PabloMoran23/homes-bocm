@@ -1,0 +1,52 @@
+# Objetivo: licencias + proyectos desde el PORTAL del ayuntamiento (no BOCM).
+
+slug: castrillon
+nombre: "Castrillón"
+provincia: Asturias
+comunidad_autonoma: asturias
+
+portal:
+  base_url: "https://castrillon.es"
+  adapter: municipio.adapters.castrillon:CastrillonAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-castrillon/1.0"
+    centroid: [43.549274488601874, -5.9925006031076435]
+    rpgur_base: "https://www54.asturias.es/rpgur/action/publico"
+    rpgur_concejo_id: "16"
+    wfs_url: "http://visorrpgur.asturias.es:8090/geoserver/E79_ENTIDADES_URBANISTICAS/ows"
+    wfs_layer: "E79_ENTIDADES_URBANISTICAS:n01_AMBITO_INSTRUMENTO_CONSULTAS"
+    wfs_municipio_id: "33016"
+    max_pleno_articles: 12
+  notes: |
+    Portal Joomla + sede electrónica (Sedipualba).
+    Planeamiento regional: RPGUR Principado (concejo Castrillón) + visor sigvisor.
+    Expedientes urbanísticos en orden del día de plenos (HTML).
+    Geometría: WFS visorrpgur por id_municipio INE 33016 cuando el servicio responde.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [
+            [-6.053703864, 43.49830503],
+            [-5.926979895, 43.49830503],
+            [-5.926979895, 43.593055022],
+            [-6.053703864, 43.593055022],
+            [-6.053703864, 43.49830503],
+          ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox IGN administrativeunit Castrillón (nationalcode 34033333016)"
