@@ -1,0 +1,49 @@
+slug: valle-de-egues
+nombre: "Valle de Egüés / Eguesibar"
+provincia: Navarra
+comunidad_autonoma: navarra
+
+portal:
+  base_url: "https://sedeelectronica.valledeegues.es"
+  adapter: municipio.adapters.valle_de_egues:ValleDeEguesAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valle-de-egues/1.0"
+    centroid_lat: 42.824
+    centroid_lon: -1.551
+    geometry:
+      kind: idena_wfs
+      wfs_url: "https://idena.navarra.es/ogc/wfs"
+      type_name: "IDENA:INFOTU_Pol_PlanUrbMun"
+      cql_filter: "MUNICIPIO ILIKE '%Eg%es%'"
+  notes: |
+    Sede Sedipualba (sedeelectronica.valledeegues.es): tablón RSS/HTML + catálogo trámites urbanísticos.
+    Web ayuntamiento: PGM / Estrategia y Modelo de Ocupación Territorial.
+    IDENA WFS: delimitación planeamiento municipal vigente (SIUN).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-1.62, 42.77],
+              [-1.48, 42.77],
+              [-1.48, 42.88],
+              [-1.62, 42.88],
+              [-1.62, 42.77],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox IDENA INFOTU_Pol_PlanUrbMun (Valle de Egües)"
