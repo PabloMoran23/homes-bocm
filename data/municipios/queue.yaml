@@ -4588,11 +4588,11 @@ municipios:
 - slug: valle-de-egues
   nombre: Valle de Egüés / Eguesibar
   bocm_count: 0
-  status: in_progress
+  status: done
   attempts: 1
-  last_run: '2026-11-06T02:02:45.941504+00:00'
+  last_run: '2026-11-06T02:09:30.225268+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1150
   notes: Sin boletín asociado
   comunidad_autonoma: navarra
   provincia: Navarra
@@ -92744,7 +92744,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-06T02:02:45.957319+00:00'
+updated_at: '2026-11-06T02:09:30.236451+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
