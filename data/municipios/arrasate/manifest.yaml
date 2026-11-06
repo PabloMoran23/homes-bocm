@@ -1,0 +1,45 @@
+slug: arrasate
+nombre: "Arrasate / Mondragón"
+provincia: Gipuzkoa
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.arrasate.eus"
+  adapter: municipio.adapters.arrasate:ArrasateAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-arrasate/1.0"
+    exposicion_url: "https://www.arrasate.eus/es/ayuntamiento/transparencia/decisiones-normativa-y-documentacion/documentacion-en-exposicion-publica"
+    arcgis_query_url: "https://gis.arrasate.eus/server/rest/services/Arrasate_planeamendua/Arrasate_planeamendua/MapServer/21/query"
+    arcgis_page_size: 200
+    arcgis_max_features: 60
+  notes: |
+    Plone (es/eu): carpeta «documentación en exposición pública» (transparencia).
+    Expedientes urbanísticos y otros documentos con título + PDFs (p. ej. Publicación GAO).
+    Visor municipal GeoArrasate (ArcGIS) con servicios de planeamiento (capa LURZO HIRITARREZINA).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-2.70, 42.98],
+              [-2.35, 42.98],
+              [-2.35, 43.18],
+              [-2.70, 43.18],
+              [-2.70, 42.98],
+            ]
+      crs: EPSG:4326
+      axis_order: xy

@@ -532,11 +532,6 @@ municipios:
   last_error: null
   pr_url: https://github.com/PabloMoran23/homes-bocm/pull/918
   notes: Sin boletín asociado
-  attempts: 0
-  last_run: null
-  last_error: null
-  pr_url: null
-  notes: Sin boletín asociado
   comunidad_autonoma: cantabria
   provincia: Cantabria
 - slug: albacete
@@ -4682,11 +4677,11 @@ municipios:
 - slug: arrasate
   nombre: Arrasate / Mondragón
   bocm_count: 0
-  status: pending
-  attempts: 0
-  last_run: null
+  status: done
+  attempts: 1
+  last_run: '2026-11-06T12:10:56.754385+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1153
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Gipuzkoa
