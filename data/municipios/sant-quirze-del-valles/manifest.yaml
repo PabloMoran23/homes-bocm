@@ -1,0 +1,18 @@
+slug: sant-quirze-del-valles
+nombre: Sant Quirze del Vallès
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08238'
+portal:
+  base_url: https://www.santquirzevalles.cat
+  adapter: municipio.adapters.sant_quirze_del_valles:SantQuirzeDelVallesAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,18 @@
+slug: a-estrada
+nombre: A Estrada
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36017'
+portal:
+  base_url: https://aestrada.gal
+  adapter: municipio.adapters.a_estrada:AEstradaAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
