@@ -1,0 +1,25 @@
+slug: tarancon
+nombre: Tarancón
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16203'
+portal:
+  base_url: https://tarancon.sedelectronica.es
+  adapter: municipio.adapters.tarancon:TaranconAyuntamientoAdapter
+  config:
+    ine_code: '16203'
+  notes: >-
+    Inventario público 8.3 Normativa urbanística, enlazado por la web municipal.
+    Agrupa tomos, memorias, planos y anuncios por instrumento. Cobertura parcial;
+    no acredita vigencia ni ejecución. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Tarancón, Tarancon]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

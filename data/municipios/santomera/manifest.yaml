@@ -1,0 +1,24 @@
+slug: santomera
+nombre: Santomera
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30901'
+portal:
+  base_url: https://santomera.es/planeamiento/
+  adapter: municipio.adapters.santomera:SantomeraAyuntamientoAdapter
+  config:
+    verify_tls: false
+  notes: >-
+    Inventario municipal de planeamiento y sus páginas documentales, cobertura parcial.
+    La cadena TLS no se valida en el entorno comprobado; excepción explícita limitada
+    a este adaptador. Documentos informativos, sin geometría verificada.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: pasaia
+nombre: Pasaia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20064'
+portal:
+  base_url: https://www.pasaia.eus
+  adapter: municipio.adapters.pasaia:PasaiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento, con recorrido de carpetas y documentos
+    agrupados por instrumento. Cobertura parcial; no incluye noticias de obras,
+    PGOU en elaboración ni registro completo de modificaciones. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Pasaia]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

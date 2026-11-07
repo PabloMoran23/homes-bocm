@@ -1,0 +1,27 @@
+slug: llica-d-amunt
+nombre: Lliçà d'Amunt
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08107'
+portal:
+  base_url: https://www.llicamunt.cat
+  adapter: municipio.adapters.llica_d_amunt:LlicaDAmuntAyuntamientoAdapter
+  config:
+    ine_code: '08107'
+  notes: >-
+    Instantáneas completas de Planejament urbanístic y Estudis de detall.
+    Documentos agrupados por instrumento. Cobertura parcial del planeamiento
+    municipal; no incluye todo el RPUC ni todas las obras públicas.
+    Sin fechas de acuerdo verificadas ni geometrías; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Lliçà d'Amunt
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

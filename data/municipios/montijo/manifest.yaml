@@ -1,0 +1,20 @@
+slug: montijo
+nombre: Montijo
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06088'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.montijo:MontijoAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial regional SITEX enlazado por el ayuntamiento; instrumentos vigentes, no vigentes y en trámite de Montijo (id SITEX 123).
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Planeamiento municipal servido por la Junta de Extremadura; procedencia regional explícita en cada registro. Cobertura parcial respecto a obras y licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

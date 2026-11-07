@@ -1,0 +1,25 @@
+slug: arenys-de-mar
+nombre: Arenys de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08006'
+portal:
+  base_url: https://arenysdemar.cat
+  adapter: municipio.adapters.arenys_de_mar:ArenysDeMarAyuntamientoAdapter
+  config:
+    ine_code: '08006'
+    user_agent: municipio-arenys-de-mar/1.0
+  notes: >-
+    Inventario municipal de Planejament general, categoría 368: POUM y modificaciones,
+    con documentos agrupados por instrumento y expediente RPUC enlazado.
+    Cobertura municipal parcial; no garantiza vigencia jurídica ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

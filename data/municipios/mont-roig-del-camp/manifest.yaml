@@ -1,0 +1,24 @@
+slug: mont-roig-del-camp
+nombre: Mont-roig del Camp
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43092'
+portal:
+  base_url: https://mont-roig.cat
+  adapter: municipio.adapters.mont_roig_del_camp:MontRoigDelCampAyuntamientoAdapter
+  config:
+    ine_code: '43092'
+  notes: >-
+    Snapshot parcial de dos inventarios municipales de información pública,
+    con documentos agrupados por proyecto. Sin fechas ni geometría inferidas;
+    publication_ready false. No representa todo el planeamiento municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

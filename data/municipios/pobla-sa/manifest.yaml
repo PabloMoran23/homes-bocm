@@ -1,0 +1,26 @@
+slug: pobla-sa
+nombre: Pobla, Sa
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07044'
+portal:
+  base_url: https://sapobla.cat
+  adapter: municipio.adapters.pobla_sa:PoblaSaAyuntamientoAdapter
+  config:
+    ine_code: '07044'
+    user_agent: municipio-pobla-sa/1.0
+  notes: >-
+    Inventario municipal de documentos NNSS en Urbanisme. Cobertura parcial:
+    un instrumento con documentos relacionados, sin histórico completo,
+    fechas de aprobación del plan base ni geometría verificados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ['Pobla, Sa', 'Sa Pobla', 'sa Pobla']
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

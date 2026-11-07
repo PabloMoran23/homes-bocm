@@ -1,0 +1,19 @@
+slug: manzanares
+nombre: Manzanares
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13053'
+portal:
+  base_url: https://www.manzanares.es/ayuntamiento/urbanismo
+  adapter: municipio.adapters.manzanares:ManzanaresAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del POM, modificaciones y Plan Parcial del Sector 5; cobertura municipal parcial, sin inferir vigencia ni fechas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

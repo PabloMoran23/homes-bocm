@@ -1,0 +1,20 @@
+slug: sopela
+nombre: Sopela
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48085'
+portal:
+  base_url: https://sopelaplanorokorra.eus
+  adapter: municipio.adapters.sopela:SopelaAyuntamientoAdapter
+  config: {}
+  notes: Portal municipal específico de la revisión del PGOU, acreditado por BOB-2024a112-(II-3047).
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Un instrumento con sus documentos; cobertura parcial, sin histórico general de obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

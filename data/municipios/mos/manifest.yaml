@@ -1,0 +1,24 @@
+slug: mos
+nombre: Mos
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36033'
+portal:
+  base_url: https://www.mos.es
+  adapter: municipio.adapters.mos:MosAyuntamientoAdapter
+  config:
+    ine_code: '36033'
+  notes: >-
+    Inventario SIOTUGA enlazado desde la web municipal. Cobertura parcial de
+    planeamiento general y de desarrollo, con antecedentes y documentos agrupados.
+    Vigencia actual y geometría no verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios de solicitud y anuncios de contratación excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

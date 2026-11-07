@@ -1,0 +1,26 @@
+slug: palau-solita-i-plegamans
+nombre: Palau-solità i Plegamans
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08156'
+portal:
+  base_url: https://www.palauplegamans.cat
+  adapter: municipio.adapters.palau_solita_i_plegamans:PalauSolitaIPlegamansAyuntamientoAdapter
+  config:
+    ine_code: '08156'
+    user_agent: municipio-palau-solita-i-plegamans/1.0
+  notes: >-
+    Snapshot de los inventarios municipales POUM y modificaciones, planeamiento
+    derivado, urbanización y reparcelación, con documentos agrupados.
+    Cobertura municipal parcial; no incluye todo RPUC ni obras fuera de estos
+    inventarios. Sin geometría verificada; consultas previas solas excluidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: la-algaba
+nombre: La Algaba
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41007'
+portal:
+  base_url: https://laalgaba.sedelectronica.es/transparency/5985c8b3-4e2b-44ac-be3d-bd5515df4147/
+  adapter: municipio.adapters.la_algaba:LaAlgabaAyuntamientoAdapter
+  config: {}
+  notes: Carpeta PGOU de la sede oficial. Documentos agrupados por instrumento; cobertura municipal parcial, sin inferir aprobación, vigencia o geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Plan general y reformados de modificaciones presentes en la carpeta PGOU; no comprende el resto del árbol de transparencia ni el tablón.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

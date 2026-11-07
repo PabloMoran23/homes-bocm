@@ -1,0 +1,22 @@
+slug: alginet
+nombre: Alginet
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46031'
+portal:
+  base_url: https://web.alginet.es/
+  adapter: municipio.adapters.alginet:AlginetAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios oficiales PGOU y versión preliminar del PGE mediante API pública
+    WordPress. Cobertura parcial e histórica, sin afirmar vigencia o ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: La página Llicències contiene formularios, no concesiones verificadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

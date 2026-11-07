@@ -1,0 +1,21 @@
+slug: sanlucar-la-mayor
+nombre: Sanlúcar la Mayor
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41087'
+portal:
+  base_url: https://transparencia.sanlucarlamayor.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-e-Innovaciones-de-Planeamiento
+  adapter: municipio.adapters.sanlucar_la_mayor:SanlucarLaMayorAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental paginado; documentos agrupados por instrumento, cobertura parcial y sin afirmar vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sanlúcar la Mayor
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: canovelles
+nombre: Canovelles
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08041'
+portal:
+  base_url: https://www.canovelles.cat
+  adapter: municipio.adapters.canovelles:CanovellesAyuntamientoAdapter
+  config:
+    ine_code: '08041'
+  notes: >-
+    Inventario oficial de proyectos de obras, página estática completa.
+    Cobertura municipal parcial; documentos agrupados por entrada del inventario.
+    Sin fechas extraídas de PDF ni geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: El apartado de licencias contiene información pública de un expediente en curso, no concesiones verificadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

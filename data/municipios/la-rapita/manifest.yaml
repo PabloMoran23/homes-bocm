@@ -1,0 +1,28 @@
+slug: la-rapita
+nombre: La Ràpita
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43136'
+portal:
+  base_url: https://seu.larapita.cat
+  adapter: municipio.adapters.la_rapita:LaRapitaAyuntamientoAdapter
+  config:
+    ine_code: '43136'
+    allow_expired_certificate: true
+  notes: >-
+    Inventario municipal del POUM base con documentos agrupados. Cobertura parcial,
+    sin modificaciones posteriores ni geometría. Excepción TLS explícita para el
+    endpoint público fijo: certificado caducado; sin redirecciones.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Ràpita
+    - Sant Carles de la Ràpita
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

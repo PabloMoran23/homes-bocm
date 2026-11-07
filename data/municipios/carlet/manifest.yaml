@@ -1,0 +1,19 @@
+slug: carlet
+nombre: Carlet
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46085'
+portal:
+  base_url: https://carlet.sedelectronica.es/transparency/589a7057-d378-4c62-af6c-dad93cd7d7ed/
+  adapter: municipio.adapters.carlet:CarletAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento (7.1) y PAI Ausias March II UE-2 (7.10); cobertura parcial, sin inferir vigencia o concesiones.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

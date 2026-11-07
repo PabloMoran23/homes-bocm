@@ -1,0 +1,26 @@
+slug: alcaniz
+nombre: Alcañiz
+provincia: Teruel
+comunidad_autonoma: aragon
+codigo_ine: '44013'
+portal:
+  base_url: https://sede2.alcaniz.es
+  adapter: municipio.adapters.alcaniz:AlcanizAyuntamientoAdapter
+  config:
+    ine_code: '44013'
+    user_agent: municipio-alcaniz/1.0
+  notes: >-
+    Inventarios municipales de PGOU y proyectos de obra en transparencia.
+    Cobertura parcial; documentos agrupados por instrumento, sin geometría
+    verificada ni registro de licencias concedidas. publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Alcañiz]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

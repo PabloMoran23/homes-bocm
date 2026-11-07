@@ -1,0 +1,21 @@
+slug: bailen
+nombre: Bailén
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23010'
+portal:
+  base_url: https://pgoubailen.es/index.html
+  adapter: municipio.adapters.bailen:BailenAyuntamientoAdapter
+  config: {}
+  notes: Archivo PGOU enlazado desde Urbanismo municipal. Cobertura documental parcial, sin acreditar vigencia actual.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Bailén, Bailen]
+  notes: Instrumentos agrupados con sus documentos; no se incluyen formularios ni licitaciones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,27 @@
+slug: corbera-de-llobregat
+nombre: Corbera de Llobregat
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08072'
+portal:
+  base_url: https://www.corberadellobregat.cat
+  adapter: municipio.adapters.corbera_de_llobregat:CorberaDeLlobregatAyuntamientoAdapter
+  config:
+    ine_code: '08072'
+    user_agent: municipio-corbera/1.0
+  notes: >-
+    Inventario actual Urbanisme i territori: expedientes de reparcelación y
+    proyectos ejecutivos de prevención de incendios, con documentos agrupados.
+    Cobertura municipal parcial. Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Corbera de Llobregat
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
