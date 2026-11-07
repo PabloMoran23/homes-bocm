@@ -1,0 +1,20 @@
+slug: puerto-lumbreras
+nombre: Puerto Lumbreras
+provincia: Murcia
+comunidad_autonoma: Región de Murcia
+codigo_ine: '30033'
+portal:
+  base_url: https://www.puertolumbreras.es
+  adapter: municipio.adapters.puerto_lumbreras:PuertoLumbrerasAyuntamientoAdapter
+  config:
+    ine_code: '30033'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
