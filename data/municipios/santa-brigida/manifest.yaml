@@ -1,0 +1,21 @@
+slug: santa-brigida
+nombre: Santa Brígida
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35021'
+portal:
+  base_url: https://www.santabrigida.es
+  adapter: municipio.adapters.santa_brigida:SantaBrigidaAyuntamientoAdapter
+  config:
+    max_pages: 8
+  notes: Comunicados de obras concretas, no licencias concedidas ni registro de expedientes;
+    publicación desactivada por falta de geometría real.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

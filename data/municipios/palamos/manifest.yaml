@@ -1,0 +1,20 @@
+slug: palamos
+nombre: Palamós
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17118'
+portal:
+  base_url: https://www.palamos.cat/POUM/index.html
+  adapter: municipio.adapters.palamos:PalamosAyuntamientoAdapter
+  config: {}
+  notes: Inventario público oficial de planes/proyectos concretos. Cobertura parcial
+    documentada; sin geometría verificada ni publicación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

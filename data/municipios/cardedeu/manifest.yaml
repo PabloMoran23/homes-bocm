@@ -1,0 +1,20 @@
+slug: cardedeu
+nombre: Cardedeu
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: 08046
+portal:
+  base_url: https://www.cardedeu.cat/temes/planejament-i-gestio-urbanistica/poum-pla-dordenacio-urbanistica-municipal-de-cardedeu
+  adapter: municipio.adapters.cardedeu:CardedeuAyuntamientoAdapter
+  config: {}
+  notes: Inventario público oficial de planes/proyectos concretos. Cobertura parcial
+    documentada; sin geometría verificada ni publicación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

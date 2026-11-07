@@ -1,0 +1,20 @@
+slug: fuente-alamo-de-murcia
+nombre: Fuente Álamo de Murcia
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30021'
+portal:
+  base_url: https://ayto-fuentealamo.es
+  adapter: municipio.adapters.fuente_alamo_de_murcia:FuenteAlamoDeMurciaAyuntamientoAdapter
+  config:
+    ine_code: '30021'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
