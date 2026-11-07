@@ -1,0 +1,25 @@
+slug: matadepera
+nombre: Matadepera
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08120'
+portal:
+  base_url: https://www.matadepera.cat
+  adapter: municipio.adapters.matadepera:MatadeperaAyuntamientoAdapter
+  config:
+    ine_code: '08120'
+  notes: >-
+    Inventario oficial de proyectos locales de obra ordinaria en seu-e.cat.
+    Snapshot completo de la página; un registro por agrupación publicada,
+    conservando todos los enlaces documentales. Cobertura municipal parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Matadepera]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, formularios ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

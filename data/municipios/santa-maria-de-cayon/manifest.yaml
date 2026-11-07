@@ -1,0 +1,23 @@
+slug: santa-maria-de-cayon
+nombre: Santa María de Cayón
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39074'
+portal:
+  base_url: https://www.santamariadecayon.es
+  adapter: municipio.adapters.santa_maria_de_cayon:SantaMariaDeCayonAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento PGOU; documentos municipales y BOC. Requiere pdftotext instalado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Santa María de Cayón
+  notes: Cobertura parcial de instrumentos publicados; no inventario de obras ni licencias.
+licencias:
+  enabled: false
+  notes: Los formularios municipales no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

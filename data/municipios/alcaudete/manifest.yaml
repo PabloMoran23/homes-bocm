@@ -1,0 +1,25 @@
+slug: alcaudete
+nombre: Alcaudete
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23003'
+portal:
+  base_url: https://www.alcaudete.es
+  adapter: municipio.adapters.alcaudete:AlcaudeteAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Estudios de Detalle de Alcaudete en el inventario de planeamiento enlazado
+    actualmente por Diputación de Jaén. Fuente secundaria oficial, cobertura
+    parcial y retrospectiva; no se afirma vigencia. Requiere pdftotext preinstalado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Alcaudete]
+  notes: El adaptador utiliza el inventario provincial; los registros indican su procedencia real.
+licencias:
+  enabled: false
+  notes: Sin registro público de licencias concedidas verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

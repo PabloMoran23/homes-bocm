@@ -1,0 +1,24 @@
+slug: mora
+nombre: Mora
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45106'
+portal:
+  base_url: https://www.mora.es
+  adapter: municipio.adapters.mora:MoraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario regional oficial enlazado por Planeamiento Municipal del ayuntamiento.
+    Cobertura parcial de planeamiento general y paquete documental asociado;
+    no inventario independiente de modificaciones ni de obras físicas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Mora]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

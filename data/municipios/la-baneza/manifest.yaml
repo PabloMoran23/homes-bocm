@@ -1,0 +1,22 @@
+slug: la-baneza
+nombre: La Bañeza
+provincia: León
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '24010'
+portal:
+  base_url: https://aytobaneza.sedelectronica.es/transparency/f5fc0e43-eda2-4d84-98c9-d5608595b9d3/
+  adapter: municipio.adapters.la_baneza:LaBanezaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    PGOU del inventario actual de normativa urbanística, con documentos agrupados
+    del índice municipal archivado. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios y expedientes en exposición no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: premia-de-dalt
+nombre: Premià de Dalt
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08230'
+portal:
+  base_url: https://www.premiadedalt.cat
+  adapter: municipio.adapters.premia_de_dalt:PremiaDeDaltAyuntamientoAdapter
+  config:
+    ine_code: '08230'
+  notes: >-
+    Inventario oficial de planeamiento y proyectos técnicos. Cobertura parcial:
+    grupos inequívocos de instrumentos y obras; carpetas que mezclan instrumentos
+    excluidas explícitamente. Documentos agrupados, sin fechas inferidas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Premià de Dalt
+licencias:
+  enabled: false
+  notes: La página de licencias describe trámites, no concesiones verificadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

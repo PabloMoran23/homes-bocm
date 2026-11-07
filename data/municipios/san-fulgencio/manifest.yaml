@@ -1,0 +1,24 @@
+slug: san-fulgencio
+nombre: San Fulgencio
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03118'
+portal:
+  base_url: https://www.sanfulgencio.es
+  adapter: municipio.adapters.san_fulgencio:SanFulgencioAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del Plan General y modificación nº 3, con documentos
+    agrupados. Cobertura parcial; ZIP rotulado modificación nº 1 ambiguo y excluido.
+    Requiere pdftotext disponible en el entorno. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [San Fulgencio]
+licencias:
+  enabled: false
+  notes: El catálogo de solicitudes no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

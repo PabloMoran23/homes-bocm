@@ -1,0 +1,27 @@
+slug: santa-margarida-de-montbui
+nombre: Santa Margarida de Montbui
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08250'
+portal:
+  base_url: https://www.montbui.cat
+  adapter: municipio.adapters.santa_margarida_de_montbui:SantaMargaridaDeMontbuiAyuntamientoAdapter
+  config:
+    ine_code: '08250'
+    user_agent: municipio-santa-margarida-de-montbui/1.0
+  notes: >-
+    Inventario documental del POUM enlazado por el Ayuntamiento. Un instrumento
+    con documentos de varias fases; aprobación inicial de 27/11/2025, no definitiva.
+    Cobertura parcial, sin geometría verificada y publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Santa Margarida de Montbui
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

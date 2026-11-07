@@ -1,0 +1,23 @@
+slug: ansoain
+nombre: Ansoáin / Antsoain
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31016'
+portal:
+  base_url: https://www.ansoain.es
+  adapter: municipio.adapters.ansoain:AnsoainAyuntamientoAdapter
+  config: {}
+  notes: Inventarios actuales de planes espaciales sectoriales y PEAU en participación;
+    cobertura parcial, sin aprobación ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Ansoáin
+    - Antsoain
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

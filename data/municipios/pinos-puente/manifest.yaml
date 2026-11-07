@@ -1,0 +1,20 @@
+slug: pinos-puente
+nombre: Pinos Puente
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18158'
+portal:
+  base_url: https://www.pinos-puente.org/ayuntamiento/
+  adapter: municipio.adapters.pinos_puente:PinosPuenteAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales del PGOU y de Instrumentos de ordenación; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Pinos Puente]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: l-escala
+nombre: "L'Escala"
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17062'
+portal:
+  base_url: https://www.lescala.cat
+  adapter: municipio.adapters.l_escala:LEscalaAyuntamientoAdapter
+  config:
+    ine_code: '17062'
+    user_agent: municipio-l-escala/1.0
+  notes: >-
+    Cobertura parcial del inventario municipal de planeamiento con documentos
+    agrupados por instrumento. No acredita vigencia ni aprobación definitiva.
+    Sin geometrías verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

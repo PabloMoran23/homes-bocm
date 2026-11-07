@@ -1,0 +1,27 @@
+slug: ripoll
+nombre: Ripoll
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17147'
+portal:
+  base_url: https://ripoll.cat
+  adapter: municipio.adapters.ripoll:RipollAyuntamientoAdapter
+  config:
+    ine_code: '17147'
+    user_agent: municipio-ripoll/1.0
+    fallback_ipv4: 104.21.32.1
+  notes: >-
+    Inventario municipal de proyectos de obras aprobados o en aprobación.
+    Cobertura parcial, sin geometrías. Fallback de conexión Cloudflare con
+    certificado TLS, SNI y Host ripoll.cat verificados; se usa solo si falla DNS/directo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ripoll]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

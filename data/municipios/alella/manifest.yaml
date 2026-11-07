@@ -1,0 +1,23 @@
+slug: alella
+nombre: Alella
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08003'
+portal:
+  base_url: https://alella.cat
+  adapter: municipio.adapters.alella:AlellaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de proyectos de obras con fichas y documentos agrupados.
+    Cobertura parcial: no incluye el inventario separado de planeamiento vigente.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

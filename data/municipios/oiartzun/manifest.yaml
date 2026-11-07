@@ -1,0 +1,24 @@
+slug: oiartzun
+nombre: Oiartzun
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20063'
+portal:
+  base_url: https://www.oiartzun.eus
+  adapter: municipio.adapters.oiartzun:OiartzunAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios oficiales en euskera del Plan General y sus modificaciones.
+    Documentos agrupados por instrumento. Cobertura parcial sin planeamiento
+    de desarrollo, obras ni licencias. Fechas de listado conservadas sin
+    atribuirles semántica de publicación o acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Oiartzun]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

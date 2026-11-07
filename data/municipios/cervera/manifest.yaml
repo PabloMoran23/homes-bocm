@@ -1,0 +1,26 @@
+slug: cervera
+nombre: Cervera
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25072'
+portal:
+  base_url: https://cervera.cat
+  adapter: municipio.adapters.cervera:CerveraAyuntamientoAdapter
+  config:
+    ine_code: '25072'
+    user_agent: municipio-cervera/1.0
+  notes: >-
+    Edictos municipales de planeamiento del BOP de Lleida descubiertos mediante
+    el inventario oficial CIDO. Cobertura parcial: PDF directos del BOP actual;
+    excluye enlaces BOP antiguos y DOGC. Fases verificadas en el original.
+    Sin geometrías verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Inventario de licencias fuera del alcance de este adaptador.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

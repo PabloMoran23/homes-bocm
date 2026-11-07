@@ -1,0 +1,19 @@
+slug: alfaro
+nombre: Alfaro
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+codigo_ine: '26011'
+portal:
+  base_url: https://alfaro.es/agendaurbana/plan-de-accion-alfaro/
+  adapter: municipio.adapters.alfaro:AlfaroAyuntamientoAdapter
+  config: {}
+  notes: Catálogo municipal de la Agenda Urbana; cobertura parcial de propuestas físicas e instrumentos, sin acreditar aprobación ni ejecución actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

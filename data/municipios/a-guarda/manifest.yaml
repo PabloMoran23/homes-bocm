@@ -1,0 +1,20 @@
+slug: a-guarda
+nombre: A Guarda
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36023'
+portal:
+  base_url: https://www.aguarda.es
+  adapter: municipio.adapters.a_guarda:AGuardaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios municipales de ordenanzas urbanísticas y planos; cobertura parcial documental del PXOU y modificación nº1.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

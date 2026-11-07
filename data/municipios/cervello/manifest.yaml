@@ -1,0 +1,24 @@
+slug: cervello
+nombre: Cervelló
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08068'
+portal:
+  base_url: https://www.cervello.cat
+  adapter: municipio.adapters.cervello:CervelloAyuntamientoAdapter
+  config:
+    ine_code: '08068'
+  notes: >-
+    Inventario paginado de obra pública municipal. Documentos y anuncios de cada
+    proyecto agrupados. Cobertura parcial; no incluye el registro RPUC ni licencias.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

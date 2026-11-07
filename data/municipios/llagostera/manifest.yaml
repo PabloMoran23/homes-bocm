@@ -1,0 +1,24 @@
+slug: llagostera
+nombre: Llagostera
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17089'
+portal:
+  base_url: https://www.llagostera.cat
+  adapter: municipio.adapters.llagostera:LlagosteraAyuntamientoAdapter
+  config:
+    ine_code: '17089'
+  notes: >-
+    Inventario oficial de proyectos de obra municipal en seu-e.cat, documentos
+    agrupados por expediente. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Llagostera]
+licencias:
+  enabled: false
+  notes: No se extraen licencias concedidas; los proyectos no son licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

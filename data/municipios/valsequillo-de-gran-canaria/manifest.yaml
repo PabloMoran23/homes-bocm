@@ -1,0 +1,25 @@
+slug: valsequillo-de-gran-canaria
+nombre: Valsequillo de Gran Canaria
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35031'
+portal:
+  base_url: https://opendata.sitcan.es
+  adapter: municipio.adapters.valsequillo_de_gran_canaria:ValsequilloDeGranCanariaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial autonómico SITCAN del planeamiento municipal, con índices
+    documentales IDECanarias. Cobertura parcial; no inventario de obras ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Valsequillo de Gran Canaria
+  notes: El adaptador usa el catálogo oficial del Gobierno de Canarias; cada registro conserva esa procedencia.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

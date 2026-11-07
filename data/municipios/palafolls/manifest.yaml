@@ -1,0 +1,25 @@
+slug: palafolls
+nombre: Palafolls
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08155'
+portal:
+  base_url: https://www.palafolls.cat
+  adapter: municipio.adapters.palafolls:PalafollsAyuntamientoAdapter
+  config:
+    ine_code: '08155'
+    user_agent: municipio-palafolls/1.0
+  notes: >-
+    Inventario municipal de normativa: documentos del plan general agrupados en
+    un instrumento. Cobertura parcial, incluye documento histórico marcado como
+    no vigente. Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: pego
+nombre: Pego
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03102'
+portal:
+  base_url: https://pego.org
+  adapter: municipio.adapters.pego:PegoAyuntamientoAdapter
+  config:
+    ine_code: '03102'
+    user_agent: municipio-pego/1.0
+  notes: >-
+    Inventario documental municipal de PGOU, plan parcial Calvari I,
+    modificaciones puntuales y planes especiales. Cobertura histórica parcial;
+    no acredita vigencia consolidada ni geometría. Documentos agrupados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Pego]
+licencias:
+  enabled: false
+  notes: La información pública de una licencia ambiental no acredita su concesión.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
