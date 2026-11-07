@@ -1,0 +1,18 @@
+slug: o-porrino
+nombre: O Porriño
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36039'
+portal:
+  base_url: https://oporrino.org
+  adapter: municipio.adapters.o_porrino:OPorrinoAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

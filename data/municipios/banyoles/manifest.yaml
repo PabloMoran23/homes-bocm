@@ -1,0 +1,20 @@
+slug: banyoles
+nombre: Banyoles
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17015'
+portal:
+  base_url: https://seu.banyoles.cat
+  adapter: municipio.adapters.banyoles:BanyolesAyuntamientoAdapter
+  config:
+    ine_code: '17015'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

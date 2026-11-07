@@ -1,0 +1,20 @@
+slug: archena
+nombre: Archena
+provincia: Murcia
+comunidad_autonoma: murcia
+codigo_ine: '30009'
+portal:
+  base_url: https://transparencia.archena.es
+  adapter: municipio.adapters.archena:ArchenaAyuntamientoAdapter
+  config:
+    ine_code: '30009'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
