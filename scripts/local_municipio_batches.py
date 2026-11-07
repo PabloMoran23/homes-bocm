@@ -300,11 +300,15 @@ def main(argv=None):
                     row.setdefault('history', []).append({**{k: row.get(k) for k in ('worker', 'batch', 'status')}, 'reason': args.reason, 'released_at': now()})
                     row.update(status='pending', worker=None, batch=None, updated_at=now())
                 else:
-                    valid = {'assigned': {'review', 'blocked'}, 'review': {'accepted', 'blocked'}}
+                    valid = {'assigned': {'review', 'blocked'}, 'review': {'accepted', 'blocked'}, 'accepted': {'blocked'}}
                     if args.status not in valid.get(row['status'], set()):
                         raise ValueError('Invalid status transition')
                     if args.status == 'accepted':
                         validate_manifest(repo, row['slug'])
+                    row.setdefault('history', []).append({
+                        'status': row['status'], 'evidence': row.get('evidence'),
+                        'changed_at': now(), 'next_status': args.status,
+                    })
                     row.update(status=args.status, evidence=args.evidence, updated_at=now())
                 output = row
         print(json.dumps({'dry_run': not args.apply, 'result': output}, indent=2, ensure_ascii=False))

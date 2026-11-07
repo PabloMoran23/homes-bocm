@@ -50,6 +50,8 @@ python3 "$REPO/scripts/local_municipio_batches.py" --repo "$REPO" --ledger "$STA
 
 El helper registra la declaración de revisión y comprueba las opciones seguras del manifest; no certifica la extracción ni interpreta el texto de `--evidence`. El orquestador debe comprobar esas evidencias y el guard de integración antes del merge. El campo `worker` es control de coherencia, no autenticación.
 
+Si aparece una PR concurrente u otra evidencia que invalida la aceptación antes de integrar, se puede pasar de `accepted` a `blocked` con `set-status`. El historial conserva la revisión anterior. Retirar del diff los archivos de ese municipio, conservarlos como evidencia fuera del repositorio y reservar un sustituto; no cerrar ni modificar la PR ajena.
+
 Para bloquear usar `set-status --status blocked --evidence "motivo concreto"`. Las reservas no caducan automáticamente. Tras comprobar que un trabajador ha parado, se puede ejecutar explícitamente `release --ine-code ... --worker ... --reason "..."`; conserva un historial y devuelve el municipio a pendientes. No liberar una reserva mientras el trabajador sigue ejecutándose.
 
 ## Integración sin despliegue

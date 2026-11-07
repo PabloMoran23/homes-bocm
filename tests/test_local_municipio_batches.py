@@ -7,6 +7,8 @@ import tempfile
 import subprocess
 import unittest
 import yaml
+import contextlib
+import io
 
 SPEC = importlib.util.spec_from_file_location('local_batches', Path(__file__).resolve().parents[1] / 'scripts/local_municipio_batches.py')
 m = importlib.util.module_from_spec(SPEC)
@@ -19,6 +21,25 @@ def concurrent_reserve(path, repo, worker):
 
 
 class BatchesTest(unittest.TestCase):
+    def test_invalidate_accepted_retains_review_evidence(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            repo = root / 'repo'
+            repo.mkdir()
+            ledger = root / 'ledger.json'
+            ledger.write_text(json.dumps({'repo': str(repo), 'municipios': [{
+                'ine_code': '28001', 'slug': 'test', 'worker': 'one',
+                'status': 'accepted', 'batch': 'a', 'evidence': 'review.json',
+            }]}))
+            with contextlib.redirect_stdout(io.StringIO()):
+                m.main(['--repo', str(repo), '--ledger', str(ledger), '--apply',
+                        'set-status', '--ine-code', '28001', '--worker', 'one',
+                        '--status', 'blocked', '--evidence', 'concurrent-pr.json'])
+            row = json.loads(ledger.read_text())['municipios'][0]
+            self.assertEqual(row['status'], 'blocked')
+            self.assertEqual(row['evidence'], 'concurrent-pr.json')
+            self.assertEqual(row['history'][0]['evidence'], 'review.json')
+
     def test_cap_and_replacement(self):
         ledger = {'municipios': [{'ine_code': str(i), 'slug': str(i), 'status': 'pending'} for i in range(80)]}
         self.assertEqual(len(m.reserve(ledger, 'a', 'one', 35)), 35)
