@@ -108,6 +108,9 @@ def inspect(repo, ledger_path, batch, base, deployment_audit):
     changes = {}
     for line in git(repo, 'diff', '--name-status', '--no-renames', base, 'HEAD').splitlines():
         status, path = line.split('\t', 1)
+        target = repo / path
+        if not target.is_file() or any(part.is_symlink() for part in (target, *target.parents) if part != repo and repo in part.parents):
+            raise ValueError(f'Batch output is not a regular file: {path}')
         if path == 'requirements-municipio.txt' and status == 'M':
             before = git(repo, 'show', f'{base}:requirements-municipio.txt').splitlines()
             after = (repo / path).read_text().splitlines()

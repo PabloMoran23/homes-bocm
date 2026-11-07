@@ -54,7 +54,7 @@ Para bloquear usar `set-status --status blocked --evidence "motivo concreto"`. L
 
 ## Integración sin despliegue
 
-Preparar cada PR en una rama limpia con una base fijada. El bootstrap del controlador debe quedar fuera del diff del lote: esta validación solo admite archivos nuevos municipales. Los cambios de infraestructura, queue, web, workflows, archivos existentes y symlinks se rechazan.
+Preparar cada PR en una rama limpia con una base fijada. Para diffs que solo incluyan los tres entregables municipales se puede usar la comprobación estrecha siguiente. No admite el bootstrap del controlador ni las pruebas de adaptadores; para la rama agregada completa se debe usar `local_municipio_preflight.py`, descrito más abajo. Los cambios de queue, web, workflows y symlinks se rechazan.
 
 ```bash
 python3 "$REPO/scripts/local_municipio_batches.py" --repo "$REPO" --ledger "$STATE" validate-batch --batch batch-001 --base COMMIT_BASE
