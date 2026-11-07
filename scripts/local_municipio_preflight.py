@@ -13,6 +13,8 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
+from concurrent.futures import ThreadPoolExecutor
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +31,17 @@ TOOLING = {
 
 def git(repo, *args):
     return subprocess.check_output(['git', *args], cwd=repo, text=True).strip()
+
+
+def gh_read(repo, *args):
+    """Bounded retries for read-only GitHub requests; never accept missing data."""
+    for attempt in range(3):
+        try:
+            return subprocess.check_output(['gh', *args], cwd=repo, text=True, timeout=90)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            if attempt == 2:
+                raise
+            time.sleep(attempt + 1)
 
 
 def assert_workflows(repo):
@@ -64,15 +77,17 @@ def assert_workflows(repo):
 def assert_no_competing_pr(repo, slugs):
     branch = git(repo, 'branch', '--show-current')
     # The list is deliberately bounded; a full page is treated as incomplete.
-    raw = subprocess.check_output(['gh', 'pr', 'list', '--repo', 'PabloMoran23/homes-bocm', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName'], cwd=repo, text=True)
+    raw = gh_read(repo, 'pr', 'list', '--repo', 'PabloMoran23/homes-bocm', '--state', 'open', '--limit', '1000', '--json', 'number,headRefName')
     prs = json.loads(raw)
     if len(prs) >= 1000:
         raise ValueError('Open PR inventory may be truncated')
     conflicts = []
-    for pr in prs:
-        if pr['headRefName'] == branch:
-            continue
-        raw = subprocess.check_output(['gh', 'api', '--paginate', f'repos/PabloMoran23/homes-bocm/pulls/{pr["number"]}/files', '--jq', '.[].filename'], cwd=repo, text=True)
+    other_prs = [pr for pr in prs if pr['headRefName'] != branch]
+    def read_files(pr):
+        return pr, gh_read(repo, 'api', '--paginate', f'repos/PabloMoran23/homes-bocm/pulls/{pr["number"]}/files', '--jq', '.[].filename')
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        inventories = list(pool.map(read_files, other_prs))
+    for pr, raw in inventories:
         for path in raw.splitlines():
             parts = path.split('/')
             if len(parts) >= 4 and parts[:2] == ['data', 'municipios'] and parts[2] in slugs:

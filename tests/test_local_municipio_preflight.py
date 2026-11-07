@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 SPEC = importlib.util.spec_from_file_location('preflight', Path(__file__).resolve().parents[1] / 'scripts/local_municipio_preflight.py')
 preflight = importlib.util.module_from_spec(SPEC)
@@ -11,6 +12,16 @@ SPEC.loader.exec_module(preflight)
 
 
 class PreflightTests(unittest.TestCase):
+    def test_read_retry_and_exhaustion_fail_closed(self):
+        error = subprocess.CalledProcessError(1, ['gh', 'api'])
+        with patch.object(preflight.time, 'sleep'), patch.object(preflight.subprocess, 'check_output', side_effect=[error, 'complete']) as call:
+            self.assertEqual(preflight.gh_read(Path('/tmp'), 'api', 'test'), 'complete')
+            self.assertEqual(call.call_count, 2)
+        with patch.object(preflight.time, 'sleep'), patch.object(preflight.subprocess, 'check_output', side_effect=error) as call:
+            with self.assertRaises(subprocess.CalledProcessError):
+                preflight.gh_read(Path('/tmp'), 'api', 'test')
+            self.assertEqual(call.call_count, 3)
+
     def test_publication_workflow_trigger_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
