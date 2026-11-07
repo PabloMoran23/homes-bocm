@@ -1,0 +1,20 @@
+slug: utebo
+nombre: Utebo
+provincia: Zaragoza
+comunidad_autonoma: Aragón
+codigo_ine: '50272'
+portal:
+  base_url: https://www.utebo.es
+  adapter: municipio.adapters.utebo:UteboAyuntamientoAdapter
+  config:
+    ine_code: '50272'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

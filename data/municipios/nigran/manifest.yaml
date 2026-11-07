@@ -1,0 +1,20 @@
+slug: nigran
+nombre: Nigrán
+provincia: Pontevedra
+comunidad_autonoma: Galicia
+codigo_ine: '36035'
+portal:
+  base_url: https://nigran.sedelectronica.gal
+  adapter: municipio.adapters.nigran:NigranAyuntamientoAdapter
+  config:
+    ine_code: '36035'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
