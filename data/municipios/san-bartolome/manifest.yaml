@@ -1,0 +1,20 @@
+slug: san-bartolome
+nombre: San Bartolomé
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35018'
+portal:
+  base_url: https://opendata.sitcan.es
+  adapter: municipio.adapters.san_bartolome:SanBartolomeAyuntamientoAdapter
+  config:
+    ine_code: '35018'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

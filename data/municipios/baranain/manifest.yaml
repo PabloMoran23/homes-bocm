@@ -1,0 +1,20 @@
+slug: baranain
+nombre: Barañáin / Barañain
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31901'
+portal:
+  base_url: https://www.baranain.es
+  adapter: municipio.adapters.baranain:BaranainAyuntamientoAdapter
+  config:
+    ine_code: '31901'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

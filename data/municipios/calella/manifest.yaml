@@ -1,0 +1,20 @@
+slug: calella
+nombre: Calella
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08035'
+portal:
+  base_url: https://www.calella.cat
+  adapter: municipio.adapters.calella:CalellaAyuntamientoAdapter
+  config:
+    ine_code: '08035'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
