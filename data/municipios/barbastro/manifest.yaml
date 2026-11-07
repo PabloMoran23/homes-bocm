@@ -1,0 +1,24 @@
+slug: barbastro
+nombre: Barbastro
+provincia: Huesca
+comunidad_autonoma: aragon
+codigo_ine: '22048'
+portal:
+  base_url: https://barbastro.org
+  adapter: municipio.adapters.barbastro:BarbastroAyuntamientoAdapter
+  config:
+    ine_code: '22048'
+  notes: >-
+    Inventario oficial de Estudios de Detalle, una entidad por página con sus
+    documentos. Cobertura municipal parcial; vigencia, fechas y geometría sin verificar.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Barbastro]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

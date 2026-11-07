@@ -1,0 +1,26 @@
+slug: cuarte-de-huerva
+nombre: Cuarte de Huerva
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50089'
+portal:
+  base_url: https://cuartedehuerva.es
+  adapter: municipio.adapters.cuarte_de_huerva:CuarteDeHuervaAyuntamientoAdapter
+  config:
+    ine_code: '50089'
+  notes: >-
+    Inventario parcial de planeamiento municipal: PGOU con memoria y planos,
+    y estudio de detalle de manzana 5 sector 5.2 El Plano con anuncio BOPZ.
+    Requiere pdftotext, disponible en el entorno verificado. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Cuarte de Huerva
+licencias:
+  enabled: false
+  notes: No hay registro verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

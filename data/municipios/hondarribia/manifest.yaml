@@ -1,0 +1,22 @@
+slug: hondarribia
+nombre: Hondarribia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20036'
+portal:
+  base_url: https://www.hondarribia.eus
+  adapter: municipio.adapters.hondarribia:HondarribiaAyuntamientoAdapter
+  config:
+    ine_code: '20036'
+  notes: >-
+    Inventario municipal de recursos urbanísticos: nuevo PGOU provisional y Plan
+    Director Muralla, con documentación agrupada. Cobertura parcial; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,23 @@
+slug: tuineje
+nombre: Tuineje
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35030'
+portal:
+  base_url: https://transparencia.tuineje.es/es/informacion-del-plan-insular-o-general-de-ordenacion-y-de-los-planes-y-proyectos-de-desarrollo-del
+  adapter: municipio.adapters.tuineje:TuinejeAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo de planeamiento del Gobierno de Canarias enlazado por el ayuntamiento.
+    Expedientes generales y de desarrollo con documentos agrupados. Cobertura
+    municipal parcial, sin afirmar vigencia actual, ejecución ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

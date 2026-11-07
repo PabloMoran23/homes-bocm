@@ -1,0 +1,23 @@
+slug: la-roda
+nombre: La Roda
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02069'
+portal:
+  base_url: https://laroda.es
+  adapter: municipio.adapters.la_roda:LaRodaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial: inventario documental del POM y proyectos técnicos de
+    edificios del PAI. Estado actual de aprobación del POM no verificado;
+    información de consultas de 2021. Sin geometría ni fechas inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

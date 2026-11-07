@@ -1,0 +1,25 @@
+slug: canet-de-mar
+nombre: Canet de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08040'
+portal:
+  base_url: https://www.canetdemar.cat
+  adapter: municipio.adapters.canet_de_mar:CanetDeMarAyuntamientoAdapter
+  config:
+    ine_code: '08040'
+  notes: >-
+    Inventario municipal de instrumentos de planeamiento con edictos DOGC.
+    Cobertura parcial; conserva contexto de nulidad del POUM y suspensión del
+    planeamiento. No certifica vigencia. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Canet de Mar]
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

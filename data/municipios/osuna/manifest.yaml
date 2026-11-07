@@ -1,0 +1,19 @@
+slug: osuna
+nombre: Osuna
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41068'
+portal:
+  base_url: https://transparencia.osuna.es/es/transparencia/indicadores-de-transparencia/indicador/Modificaciones-aprobadas-del-PGOU-y-los-Planes-parciales-aprobados-00027/
+  adapter: municipio.adapters.osuna:OsunaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental paginado de instrumentos identificables; cobertura parcial, sin inferir vigencia ni ejecución.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

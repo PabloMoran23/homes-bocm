@@ -1,0 +1,19 @@
+slug: punta-umbria
+nombre: Punta Umbría
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21060'
+portal:
+  base_url: https://umbria.sedelectronica.es/transparency/fd6042f5-c1a2-4aa0-af1b-92906ac0cb95/
+  adapter: municipio.adapters.punta_umbria:PuntaUmbriaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento; documentos agrupados por instrumento. Cobertura parcial, sin afirmar vigencia ni concesión de licencias.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: azpeitia
+nombre: Azpeitia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20018'
+portal:
+  base_url: https://www.azpeitia.eus
+  adapter: municipio.adapters.azpeitia:AzpeitiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de planeamiento. Cobertura parcial de instrumentos con
+    expediente explícito y documentos PDF enlazados, agrupados por expediente.
+    Excluye entradas antiguas sin número y convenios. Fechas y geometría desconocidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Azpeitia]
+licencias:
+  enabled: false
+  notes: No se extraen formularios, solicitudes ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

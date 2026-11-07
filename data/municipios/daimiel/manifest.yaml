@@ -1,0 +1,20 @@
+slug: daimiel
+nombre: Daimiel
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13039'
+portal:
+  base_url: https://www.daimiel.es/es/transparencia-normativa-sobre-urbanismo-y-medio-ambiente
+  adapter: municipio.adapters.daimiel:DaimielAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales del POM 2009 y modificaciones; cobertura parcial, sin inferir vigencia, fechas ni geometría.
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

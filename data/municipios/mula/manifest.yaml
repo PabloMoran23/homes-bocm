@@ -1,0 +1,22 @@
+slug: mula
+nombre: Mula
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30029'
+portal:
+  base_url: https://mula.es/web/urbanismo-y-patrimonio/
+  adapter: municipio.adapters.mula:MulaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios municipales de planeamiento y proyecto de acceso al Castillo.
+    Documentos agrupados por instrumento. Cobertura parcial; sin geometría
+    verificada ni registro de licencias concedidas. publication_ready false.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

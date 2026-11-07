@@ -1,0 +1,21 @@
+slug: ermua
+nombre: Ermua
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48034'
+portal:
+  base_url: https://www.ermua.eus
+  adapter: municipio.adapters.ermua:ErmuaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planes: PGOU, modificaciones y planes especiales.
+    Cobertura parcial, sin licencias concedidas ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

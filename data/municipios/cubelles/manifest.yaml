@@ -1,0 +1,23 @@
+slug: cubelles
+nombre: Cubelles
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08074'
+portal:
+  base_url: https://www.cubelles.cat/ajuntament/urbanisme/projectes
+  adapter: municipio.adapters.cubelles:CubellesAyuntamientoAdapter
+  config:
+    ine_code: '08074'
+  notes: >-
+    Inventario municipal actual Projectes y fichas con documentos técnicos agrupados.
+    Cobertura municipal parcial; sin geometría verificada ni registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

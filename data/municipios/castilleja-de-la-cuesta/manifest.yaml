@@ -1,0 +1,25 @@
+slug: castilleja-de-la-cuesta
+nombre: Castilleja de la Cuesta
+codigo_ine: '41029'
+provincia: Sevilla
+comunidad_autonoma: andalucia
+portal:
+  base_url: https://transparencia.castillejadelacuesta.es
+  adapter: municipio.adapters.castilleja_de_la_cuesta:CastillejaDeLaCuestaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal IND-53: instrumentos y proyectos de planeamiento
+    y gestión urbanística, agrupados por galería y ámbito, con todas las páginas
+    anunciadas. Cobertura parcial, sin afirmar vigencia, ejecución o concesión.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Castilleja de la Cuesta
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

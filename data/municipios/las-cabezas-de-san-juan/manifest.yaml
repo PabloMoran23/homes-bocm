@@ -1,0 +1,22 @@
+slug: las-cabezas-de-san-juan
+nombre: Las Cabezas de San Juan
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41020'
+portal:
+  base_url: https://www.lascabezasdesanjuan.es
+  adapter: municipio.adapters.las_cabezas_de_san_juan:LasCabezasDeSanJuanAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales oficiales del PGOM y del plan parcial SUBS-R.2 Ranchillo; cobertura parcial, sin inferir aprobación definitiva.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Las Cabezas de San Juan
+  notes: Un registro por instrumento, con todos los enlaces de su sección. No es un inventario exhaustivo del planeamiento municipal.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

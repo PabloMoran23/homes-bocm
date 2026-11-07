@@ -1,0 +1,19 @@
+slug: ejea-de-los-caballeros
+nombre: Ejea de los Caballeros
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50095'
+portal:
+  base_url: https://www.ejea.es/areas/urbanismo/
+  adapter: municipio.adapters.ejea_de_los_caballeros:EjeaDeLosCaballerosAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento; agrupa el PGOU y las partes de cada modificación. Sin inferir aprobación ni vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

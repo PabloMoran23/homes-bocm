@@ -1,0 +1,26 @@
+slug: gondomar
+nombre: Gondomar
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36021'
+portal:
+  base_url: https://concellodegondomar.gal
+  adapter: municipio.adapters.gondomar:GondomarAyuntamientoAdapter
+  config:
+    ine_code: '36021'
+  notes: >-
+    Inventario oficial municipal de SIOTUGA (Xunta de Galicia), clases 13 y 18.
+    Portal municipal devuelve 403 al extractor. Cobertura parcial de planeamiento;
+    no certifica vigencia jurídica. Documentos agrupados por ID del instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Gondomar]
+  notes: Fuente efectiva xunta_siotuga conservada en cada registro; sin geometría.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

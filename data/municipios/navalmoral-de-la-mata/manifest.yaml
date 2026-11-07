@@ -1,0 +1,23 @@
+slug: navalmoral-de-la-mata
+nombre: Navalmoral de la Mata
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10131'
+portal:
+  base_url: https://www.aytonavalmoral.es/tramites/plan-general-municipal/
+  adapter: municipio.adapters.navalmoral_de_la_mata:NavalmoralDeLaMataAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial: documentación del nuevo PGM en elaboración y participación;
+    un instrumento con todos sus PDF enlazados. Sin aprobación, fechas ni geometría
+    verificadas. No representa el inventario histórico ni obras públicas completas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

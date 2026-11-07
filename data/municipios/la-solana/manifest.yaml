@@ -1,0 +1,20 @@
+slug: la-solana
+nombre: La Solana
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13079'
+portal:
+  base_url: https://www.lasolana.es
+  adapter: municipio.adapters.la_solana:LaSolanaAyuntamientoAdapter
+  config: {}
+  notes: Dos inventarios de planeamiento del portal de transparencia; documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [La Solana]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

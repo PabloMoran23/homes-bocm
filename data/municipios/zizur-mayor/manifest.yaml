@@ -1,0 +1,19 @@
+slug: zizur-mayor
+nombre: Zizur Mayor / Zizur Nagusia
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31907'
+portal:
+  base_url: https://www.zizurmayor.es
+  adapter: municipio.adapters.zizur_mayor:ZizurMayorAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales del Plan Municipal, Plan Parcial Ardoi y exposición del nuevo PUM; cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

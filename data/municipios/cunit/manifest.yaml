@@ -1,0 +1,25 @@
+slug: cunit
+nombre: Cunit
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43051'
+portal:
+  base_url: https://www.cunit.cat
+  adapter: municipio.adapters.cunit:CunitAyuntamientoAdapter
+  config:
+    ine_code: '43051'
+  notes: >-
+    Instantánea completa del inventario municipal Planejament publicado, cobertura
+    parcial del municipio. Fichas y documentos agrupados por instrumento, incluido
+    el Pla Parcial SUD2 en dos fases. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cunit]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se acredita un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

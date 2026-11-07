@@ -1,0 +1,26 @@
+slug: benetusser
+nombre: Benetússer
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46054'
+portal:
+  base_url: https://www.benetusser2030.es
+  adapter: municipio.adapters.benetusser:BenetusserAyuntamientoAdapter
+  config:
+    ine_code: '46054'
+    user_agent: municipio-benetusser/1.0
+  notes: >-
+    Catálogo municipal Benetússer 2030: referencias a PGOU, PUAM, EMUS y Agenda
+    Urbana de Reconstrucción. Cobertura parcial, sin verificar vigencia jurídica
+    ni ejecución. La web principal falla; se conservan sus enlaces documentales.
+    Fechas y geometría desconocidas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: El catálogo de trámites no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: sada
+nombre: Sada
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15075'
+portal:
+  base_url: https://www.sada.gal
+  adapter: municipio.adapters.sada:SadaAyuntamientoAdapter
+  config: {}
+  notes: Cuatro expedientes documentales enlazados desde Alcaldía y Urbanismo; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Sada]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
