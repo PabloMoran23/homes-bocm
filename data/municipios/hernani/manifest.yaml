@@ -1,0 +1,18 @@
+slug: hernani
+nombre: Hernani
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20040'
+portal:
+  base_url: https://www.hernani.eus
+  adapter: municipio.adapters.hernani:HernaniAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

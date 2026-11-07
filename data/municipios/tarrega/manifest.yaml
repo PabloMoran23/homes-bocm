@@ -1,0 +1,20 @@
+slug: tarrega
+nombre: Tàrrega
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25217'
+portal:
+  base_url: https://www.tarrega.cat/urbanisme/poum
+  adapter: municipio.adapters.tarrega:TarregaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento actual. Sin geometría verificada; publicación
+    y schedule desactivados.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

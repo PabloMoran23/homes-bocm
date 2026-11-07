@@ -1,0 +1,18 @@
+slug: manilva
+nombre: Manilva
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29068'
+portal:
+  base_url: https://manilva.es/documentos/
+  adapter: municipio.adapters.manilva:ManilvaAyuntamientoAdapter
+  config: {}
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

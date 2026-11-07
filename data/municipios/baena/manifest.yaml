@@ -1,0 +1,20 @@
+slug: baena
+nombre: Baena
+provincia: Córdoba
+comunidad_autonoma: Andalucía
+codigo_ine: '14007'
+portal:
+  base_url: https://www.baena.es
+  adapter: municipio.adapters.baena:BaenaAyuntamientoAdapter
+  config:
+    ine_code: '14007'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

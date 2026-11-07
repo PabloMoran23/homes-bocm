@@ -1,0 +1,18 @@
+slug: la-zubia
+nombre: La Zubia
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18193'
+portal:
+  base_url: https://lazubia.es
+  adapter: municipio.adapters.la_zubia:LaZubiaAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

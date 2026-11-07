@@ -1,0 +1,20 @@
+slug: les-franqueses-del-valles
+nombre: Les Franqueses del Vallès
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08086'
+portal:
+  base_url: https://www.lesfranqueses.cat
+  adapter: municipio.adapters.les_franqueses_del_valles:LesFranquesesDelVallesAyuntamientoAdapter
+  config:
+    ine_code: '08086'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

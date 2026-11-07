@@ -1,0 +1,20 @@
+slug: chipiona
+nombre: Chipiona
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11016'
+portal:
+  base_url: https://www.aytochipiona.com/delegaciones/urbanismo/
+  adapter: municipio.adapters.chipiona:ChipionaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial de planeamiento/proyectos concretos; sin geometría real
+    verificada ni ejecución programada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

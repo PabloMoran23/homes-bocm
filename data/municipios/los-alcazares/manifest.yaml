@@ -1,0 +1,18 @@
+slug: los-alcazares
+nombre: Los Alcázares
+provincia: Murcia
+comunidad_autonoma: murcia
+codigo_ine: '30902'
+portal:
+  base_url: https://losalcazares.es
+  adapter: municipio.adapters.los_alcazares:LosAlcazaresAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

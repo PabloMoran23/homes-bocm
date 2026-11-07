@@ -1,0 +1,20 @@
+slug: parets-del-valles
+nombre: Parets del Vallès
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: 08159
+portal:
+  base_url: https://www.parets.cat/ajuntament/informacio-oficial/urbanisme/planejament-urbanistic-derivat.html
+  adapter: municipio.adapters.parets_del_valles:ParetsDelVallesAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento actual. Sin geometría verificada; publicación
+    y schedule desactivados.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

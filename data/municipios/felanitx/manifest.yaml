@@ -1,0 +1,20 @@
+slug: felanitx
+nombre: Felanitx
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07022'
+portal:
+  base_url: https://felanitx.org
+  adapter: municipio.adapters.felanitx:FelanitxAyuntamientoAdapter
+  config:
+    ine_code: '07022'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

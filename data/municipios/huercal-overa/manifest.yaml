@@ -1,0 +1,18 @@
+slug: huercal-overa
+nombre: Huércal-Overa
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04053'
+portal:
+  base_url: https://www.huercal-overa.es
+  adapter: municipio.adapters.huercal_overa:HuercalOveraAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

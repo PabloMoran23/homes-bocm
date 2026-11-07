@@ -1,0 +1,18 @@
+slug: vilassar-de-mar
+nombre: Vilassar de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08219'
+portal:
+  base_url: http://www.vilassardemar.cat
+  adapter: municipio.adapters.vilassar_de_mar:VilassarDeMarAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: monforte-de-lemos
+nombre: Monforte de Lemos
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27031'
+portal:
+  base_url: https://www.monfortedelemos.es/gl/urbanismo/planespecialcascohistorico/gl
+  adapter: municipio.adapters.monforte_de_lemos:MonforteDeLemosAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento actual. Sin geometría verificada; publicación
+    y schedule desactivados.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

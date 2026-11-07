@@ -1,0 +1,20 @@
+slug: moana
+nombre: Moaña
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36029'
+portal:
+  base_url: https://concellodemoana.org
+  adapter: municipio.adapters.moana:MoanaAyuntamientoAdapter
+  config:
+    ine_code: '36029'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

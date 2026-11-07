@@ -1,0 +1,20 @@
+slug: monzon
+nombre: Monzón
+provincia: Huesca
+comunidad_autonoma: aragon
+codigo_ine: '22158'
+portal:
+  base_url: https://www.xn--monzn-3ta.es/estudios-y-planes-propios
+  adapter: municipio.adapters.monzon:MonzonAyuntamientoAdapter
+  config: {}
+  notes: Inventario público oficial de planes/proyectos concretos. Cobertura parcial
+    documentada; sin geometría verificada ni publicación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

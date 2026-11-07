@@ -1,0 +1,5 @@
+# Nigrán — 2026-11-07
+
+Official current source https://nigran.sedelectronica.gal/info.0 returned HTTP200. Its current links publish “Plan Xeral de Ordenación Municipal (Documento aprobado provisionalmente - 2026)”. This is the live electronic-office instrument inventory, not a selected historical news article. Each run rediscovers the current document folder and preserves the exact stated stage. The referenced public Dropbox folder returned HTTP200 and page title “PXOM SEDE”. Third-party storage is treated only as a document destination authenticated by the official municipal link.
+
+One PXOM instrument; no fabricated per-sector projects. Only a year is supplied in the source, so no invented approval/publication day. Coverage is the current linked PXOM, not every planning amendment or granted licence. Geometry is not exposed by the source HTML, and the folder's document drawings have not been georeferenced or parsed as a verified GIS dataset. Coordinates null, publication_ready=false, schedule and jitter disabled.

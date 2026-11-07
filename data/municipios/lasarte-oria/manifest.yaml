@@ -1,0 +1,20 @@
+slug: lasarte-oria
+nombre: Lasarte-Oria
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20902'
+portal:
+  base_url: https://www.lasarte-oria.eus
+  adapter: municipio.adapters.lasarte_oria:LasarteOriaAyuntamientoAdapter
+  config:
+    ine_code: '20902'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: cabra
+nombre: Cabra
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14013'
+portal:
+  base_url: https://cabra.eu/plan-general-de-ordenacion-urbanistica/
+  adapter: municipio.adapters.cabra:CabraAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial de planeamiento/proyectos concretos; sin geometría real
+    verificada ni ejecución programada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

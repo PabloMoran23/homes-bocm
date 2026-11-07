@@ -1,0 +1,20 @@
+slug: malgrat-de-mar
+nombre: Malgrat de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08110'
+portal:
+  base_url: https://www.ajmalgrat.cat
+  adapter: municipio.adapters.malgrat_de_mar:MalgratDeMarAyuntamientoAdapter
+  config:
+    ine_code: '08110'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

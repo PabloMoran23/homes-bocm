@@ -1,0 +1,20 @@
+slug: torredembarra
+nombre: Torredembarra
+provincia: Tarragona
+comunidad_autonoma: Cataluña
+codigo_ine: '43153'
+portal:
+  base_url: https://torredembarra.cat
+  adapter: municipio.adapters.torredembarra:TorredembarraAyuntamientoAdapter
+  config:
+    ine_code: '43153'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

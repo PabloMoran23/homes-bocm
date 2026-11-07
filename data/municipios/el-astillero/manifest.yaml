@@ -1,0 +1,20 @@
+slug: el-astillero
+nombre: El Astillero
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39008'
+portal:
+  base_url: https://www.astillero.es/content/urbanismo
+  adapter: municipio.adapters.el_astillero:ElAstilleroAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial de planeamiento/proyectos concretos; sin geometría real
+    verificada ni ejecución programada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,5 @@
+# Baena — 2026-11-07
+
+Live official inventory https://www.baena.es/documentos-de-urbanismo/ returned HTTP200 and publishes eleven sheets beneath “Planos PGOU casco urbano de Baena”. Each run rediscovers links by the labelled plan entries, grouping the sheets as ONE actual PGOU instrument. Declaration forms and ICIO self-assessment forms are excluded. Sample sheet 1 returned HTTP200/application/pdf, 447126 bytes; image-only drawing with no text coordinates verified.
+
+The page additionally directs users to the Junta planning register using a tutorial with manual recovery from an application error; this adapter does not claim that broader register. Coverage is the published urban-core PGOU sheets, not all municipal instruments or construction projects. No approval/publication date is exposed for the grouped instrument; upload year is not used as approval date. No reliable machine geometry obtained; image sheets would need verified georeferencing. publication_ready=false, scheduling/jitter disabled, no licence rows.

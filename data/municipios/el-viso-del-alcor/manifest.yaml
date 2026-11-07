@@ -1,0 +1,20 @@
+slug: el-viso-del-alcor
+nombre: El Viso del Alcor
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41102'
+portal:
+  base_url: https://www.elvisodelalcor.org
+  adapter: municipio.adapters.el_viso_del_alcor:ElVisoDelAlcorAyuntamientoAdapter
+  config:
+    ine_code: '41102'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

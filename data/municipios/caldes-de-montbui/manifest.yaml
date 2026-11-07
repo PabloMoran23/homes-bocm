@@ -1,0 +1,20 @@
+slug: caldes-de-montbui
+nombre: Caldes de Montbui
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: 08033
+portal:
+  base_url: https://seu-e.cat/ca/web/caldesdemontbui/govern-obert-i-transparencia/accio-de-govern-i-normativa/urbanisme/planejament-urbanistic
+  adapter: municipio.adapters.caldes_de_montbui:CaldesDeMontbuiAyuntamientoAdapter
+  config: {}
+  notes: Inventario público oficial de planes/proyectos concretos. Cobertura parcial
+    documentada; sin geometría verificada ni publicación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

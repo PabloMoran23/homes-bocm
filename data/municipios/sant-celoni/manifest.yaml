@@ -1,0 +1,20 @@
+slug: sant-celoni
+nombre: Sant Celoni
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: 08202
+portal:
+  base_url: https://santceloni.cat/11437
+  adapter: municipio.adapters.sant_celoni:SantCeloniAyuntamientoAdapter
+  config: {}
+  notes: Inventario público oficial de planes/proyectos concretos. Cobertura parcial
+    documentada; sin geometría verificada ni publicación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

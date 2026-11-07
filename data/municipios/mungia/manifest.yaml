@@ -1,0 +1,20 @@
+slug: mungia
+nombre: Mungia
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48069'
+portal:
+  base_url: http://mungiaplanorokorra.eus/
+  adapter: municipio.adapters.mungia:MungiaAyuntamientoAdapter
+  config: {}
+  notes: Micrositio de plan expresamente delegado por web municipal; inventario de
+    documentos técnicos del plan. Sin geometría; publicación desactivada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

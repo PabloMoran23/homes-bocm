@@ -1,0 +1,20 @@
+slug: albolote
+nombre: Albolote
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18003'
+portal:
+  base_url: https://albolote.org
+  adapter: municipio.adapters.albolote:AlboloteAyuntamientoAdapter
+  config:
+    ine_code: '18003'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

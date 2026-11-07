@@ -1,0 +1,21 @@
+slug: guardamar-del-segura
+nombre: Guardamar del Segura
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03076'
+portal:
+  base_url: https://www.guardamardelsegura.es
+  adapter: municipio.adapters.guardamar_del_segura:GuardamarDelSeguraAyuntamientoAdapter
+  config:
+    max_pages: 5
+  notes: Comunicados de obras concretas, no licencias concedidas ni registro de expedientes;
+    publicación desactivada por falta de geometría real.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

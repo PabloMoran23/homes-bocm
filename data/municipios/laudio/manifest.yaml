@@ -1,0 +1,20 @@
+slug: laudio
+nombre: Laudio/Llodio
+provincia: Álava
+comunidad_autonoma: País Vasco
+codigo_ine: '01036'
+portal:
+  base_url: https://laudio.eus
+  adapter: municipio.adapters.laudio:LaudioAyuntamientoAdapter
+  config:
+    ine_code: '01036'
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No public granted-licence register verified; application forms excluded.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

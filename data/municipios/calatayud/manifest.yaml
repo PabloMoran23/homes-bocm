@@ -1,0 +1,18 @@
+slug: calatayud
+nombre: Calatayud
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50067'
+portal:
+  base_url: https://www.calatayud.es
+  adapter: municipio.adapters.calatayud:CalatayudAyuntamientoAdapter
+  config: {}
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
