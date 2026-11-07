@@ -1,0 +1,26 @@
+slug: la-seu-d-urgell
+nombre: La Seu d'Urgell
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25203'
+portal:
+  base_url: https://www.laseu.cat
+  adapter: municipio.adapters.la_seu_d_urgell:LaSeuDUrgellAyuntamientoAdapter
+  config:
+    ine_code: '25203'
+  notes: >-
+    Inventarios municipales de planeamiento general, derivado y movilidad.
+    Documentos agrupados por página de instrumento; cobertura municipal parcial.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Seu d'Urgell
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

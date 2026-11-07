@@ -1,0 +1,25 @@
+slug: santa-margalida
+nombre: Santa Margalida
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07055'
+portal:
+  base_url: https://ajsantamargalida.sedelectronica.es
+  adapter: municipio.adapters.santa_margalida:SantaMargalidaAyuntamientoAdapter
+  config:
+    ine_code: '07055'
+  notes: >-
+    Inventario público de planeamiento de la sede electrónica. Documentos
+    agrupados por instrumento. Cobertura parcial e histórica; no acredita
+    vigencia actual, obras ejecutadas ni licencias concedidas. Sin geometrías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Santa Margalida]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un inventario de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

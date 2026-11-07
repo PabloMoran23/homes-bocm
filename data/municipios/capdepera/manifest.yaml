@@ -1,0 +1,23 @@
+slug: capdepera
+nombre: Capdepera
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07014'
+portal:
+  base_url: https://ajcapdepera.net/ca/enllacos/urbanisme
+  adapter: municipio.adapters.capdepera:CapdeperaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento y texto consolidado NNSS enlazado al
+    BOIB. Cobertura parcial; carpetas vacías y enlaces inválidos excluidos.
+    Sin geometrías verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios municipales no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

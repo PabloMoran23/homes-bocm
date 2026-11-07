@@ -1,0 +1,21 @@
+slug: estepa
+nombre: Estepa
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41041'
+portal:
+  base_url: https://transparencia.estepa.es/
+  adapter: municipio.adapters.estepa:EstepaAyuntamientoAdapter
+  config: {}
+  notes: Dos inventarios oficiales de planeamiento; documentos agrupados por instrumento, con paginación completa.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Estepa]
+  notes: Cobertura parcial del planeamiento publicado; no acredita vigencia ni concesiones de licencia.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

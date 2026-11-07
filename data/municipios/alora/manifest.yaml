@@ -1,0 +1,24 @@
+slug: alora
+nombre: Álora
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29012'
+portal:
+  base_url: https://www.alora.es/Inicio/
+  adapter: municipio.adapters.alora:AloraAyuntamientoAdapter
+  config:
+    ine_code: '29012'
+  notes: >-
+    Inventario documental actual enlazado en el menú municipal: avance del PGOM,
+    Normas Subsidiarias y estudio de detalle Calle Mirasierra. Cobertura parcial,
+    sin afirmar vigencia, aprobación definitiva ni geometría.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

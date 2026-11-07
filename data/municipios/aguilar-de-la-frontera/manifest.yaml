@@ -1,0 +1,24 @@
+slug: aguilar-de-la-frontera
+nombre: Aguilar de la Frontera
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14002'
+portal:
+  base_url: https://bop.dipucordoba.es
+  adapter: municipio.adapters.aguilar_de_la_frontera:AguilarDeLaFronteraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Publicaciones del Ayuntamiento (anunciante 389) en el BOP de Córdoba.
+    Cobertura parcial de planes parciales identificados por sector, desde 2010.
+    Documentos agrupados por instrumento; no acredita vigencia ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Aguilar de la Frontera]
+licencias:
+  enabled: false
+  notes: No se extraen concesiones de licencias ni formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

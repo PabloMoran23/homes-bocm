@@ -1,0 +1,23 @@
+slug: campo-de-criptana
+nombre: Campo de Criptana
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13028'
+portal:
+  base_url: https://transparencia.campodecriptana.es
+  adapter: municipio.adapters.campo_de_criptana:CampoDeCriptanaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental oficial de instrumentos de planeamiento. Cobertura
+    parcial; documentos agrupados por instrumento, sin fechas ni geometrías
+    inferidas. No acredita vigencia jurídica ni ejecución de obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se extraen licencias concedidas ni formularios ni estadísticas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

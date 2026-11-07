@@ -1,0 +1,22 @@
+slug: palos-de-la-frontera
+nombre: Palos de la Frontera
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21055'
+portal:
+  base_url: https://www.juntadeandalucia.es/medioambiente/daepu/
+  adapter: municipio.adapters.palos_de_la_frontera:PalosDeLaFronteraAyuntamientoAdapter
+  config: {}
+  notes: Registro autonómico oficial DAEPU filtrado por municipio y provincia; cobertura ambiental parcial, no inventario completo municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Palos de la Frontera
+  notes: Instrumentos municipales publicados por la Junta; source en cada registro identifica junta_de_andalucia. No se infiere aprobación urbanística.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

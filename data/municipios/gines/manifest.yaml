@@ -1,0 +1,21 @@
+slug: gines
+nombre: Gines
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41047'
+portal:
+  base_url: https://transparencia.gines.es/es/
+  adapter: municipio.adapters.gines:GinesAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial del PGOU y modificaciones no estructurales; documentos agrupados por instrumento.
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Gines]
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

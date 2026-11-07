@@ -1,0 +1,26 @@
+slug: orpesa
+nombre: Orpesa / Oropesa del Mar
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '12085'
+ine_code: '12085'
+portal:
+  base_url: https://www.oropesadelmar.es
+  adapter: municipio.adapters.orpesa:OrpesaAyuntamientoAdapter
+  config:
+    ine_code: '12085'
+  notes: >-
+    Archivo público de Urbanismo enlazado por el ayuntamiento a Google Drive.
+    Documentos agrupados por instrumento; cobertura parcial, sin aprobación o
+    vigencia inferida a partir del nombre ni fechas de modificación de Drive.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ['Orpesa / Oropesa del Mar', 'Orpesa', 'Oropesa del Mar']
+licencias:
+  enabled: false
+  notes: Formularios excluidos; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

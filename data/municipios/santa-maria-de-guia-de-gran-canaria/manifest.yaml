@@ -1,0 +1,24 @@
+slug: santa-maria-de-guia-de-gran-canaria
+nombre: Santa María de Guía de Gran Canaria
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35023'
+portal:
+  base_url: https://santamariadeguia.es
+  adapter: municipio.adapters.santa_maria_de_guia_de_gran_canaria:SantaMariaDeGuiaDeGranCanariaAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento aprobado: PGO, PERI La Atalaya y PEPRI Guía.
+    Documentos agrupados por instrumento. PGO: PDFs de portada e índice enlazado,
+    sin recorrer sus secciones anidadas. No constituye un registro exhaustivo o
+    certificación de vigencia jurídica actual. Sin geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

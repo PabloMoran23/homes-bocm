@@ -1,0 +1,21 @@
+slug: betanzos
+nombre: Betanzos
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15009'
+portal:
+  base_url: https://concello.betanzos.es/urbanismo/
+  adapter: municipio.adapters.betanzos:BetanzosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del inventario documental PXOM enlazado desde Urbanismo.
+    Versión de aprobación inicial de 2021; no acredita vigencia ni fase actual.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

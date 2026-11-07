@@ -1,0 +1,23 @@
+slug: albox
+nombre: Albox
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04006'
+portal:
+  base_url: https://www.dipalme.org
+  adapter: municipio.adapters.albox:AlboxAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial Urbanismo del Ayuntamiento de Albox alojado en Dipalme.
+    Cobertura documental parcial, sin fechas inferidas ni geometrías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Albox]
+licencias:
+  enabled: false
+  notes: No se extraen formularios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

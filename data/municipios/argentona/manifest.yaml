@@ -1,0 +1,25 @@
+slug: argentona
+nombre: Argentona
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08009'
+portal:
+  base_url: https://argentona.cat
+  adapter: municipio.adapters.argentona:ArgentonaAyuntamientoAdapter
+  config:
+    ine_code: '08009'
+  notes: >-
+    Inventarios municipales de documentos en exposición pública y aprobados.
+    Proyectos físicos e instrumentos urbanísticos; versiones agrupadas con enlaces.
+    Cobertura parcial sin fechas de acuerdo ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Argentona]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

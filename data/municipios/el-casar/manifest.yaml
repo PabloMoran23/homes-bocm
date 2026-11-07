@@ -1,0 +1,26 @@
+slug: el-casar
+nombre: El Casar
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19071'
+portal:
+  base_url: https://elcasar.es
+  adapter: municipio.adapters.el_casar:ElCasarAyuntamientoAdapter
+  config:
+    ine_code: '19071'
+  notes: >-
+    Inventario oficial del POM vigente y modificaciones, con documentos agrupados
+    por instrumento. Cobertura parcial, sin geometría ni fechas de aprobación
+    verificadas. No incluye noticias, contratación ni formularios de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - El Casar
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

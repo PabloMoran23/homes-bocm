@@ -1,0 +1,19 @@
+slug: teror
+nombre: Teror
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35027'
+portal:
+  base_url: https://teror.es/urbanismo/
+  adapter: municipio.adapters.teror:TerorAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales municipales del PGO Supletorio y PEPRI; vigencia y fechas legales no verificadas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

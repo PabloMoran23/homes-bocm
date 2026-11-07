@@ -1,0 +1,19 @@
+slug: cehegin
+nombre: Cehegín
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30017'
+portal:
+  base_url: https://transparencia.cehegin.es/p/182-modificacion-de-las-obras-mas-importantes
+  adapter: municipio.adapters.cehegin:CeheginAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial de obras físicas en hojas de cálculo municipales; sin estado actual verificado.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

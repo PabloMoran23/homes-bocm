@@ -1,0 +1,22 @@
+slug: andoain
+nombre: Andoain
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20009'
+portal:
+  base_url: https://www.andoain.eus
+  adapter: municipio.adapters.andoain:AndoainAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario de exposición pública, cobertura parcial. Estudios de detalle con
+    memoria y planos agrupados por instrumento. Fechas del BOG diferenciadas de
+    las fechas del inventario, que presenta discrepancias. Requiere pdftotext.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

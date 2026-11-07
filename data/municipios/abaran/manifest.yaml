@@ -1,0 +1,21 @@
+slug: abaran
+nombre: Abarán
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30002'
+portal:
+  base_url: https://abaran.es/plan-general-municipal-de-ordenacion-de-abaran/
+  adapter: municipio.adapters.abaran:AbaranAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal del PGMO y modificaciones publicadas, agrupando documentos por instrumento; cobertura parcial sin fechas ni geometría verificadas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Abarán, Abaran]
+  notes: No equivale a registro completo ni a obras ejecutadas o licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: montgat
+nombre: Montgat
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08126'
+portal:
+  base_url: https://www.montgat.cat
+  adapter: municipio.adapters.montgat:MontgatAyuntamientoAdapter
+  config:
+    ine_code: '08126'
+  notes: >-
+    Inventario municipal de procesos en exposición pública; documentos de las
+    Mallorquines agrupados por instrumento. Cobertura municipal parcial, sin
+    geometría verificada; publication_ready false. No acredita ejecución ni
+    concesión de licencias. TLS verificado con certificado cruzado oficial ISRG.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

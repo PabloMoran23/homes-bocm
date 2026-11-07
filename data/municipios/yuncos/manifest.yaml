@@ -1,0 +1,23 @@
+slug: yuncos
+nombre: Yuncos
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45205'
+portal:
+  base_url: https://yuncos.sedelectronica.es/transparency/88406f55-4cff-40e9-b00f-eb5d4101f315/
+  adapter: municipio.adapters.yuncos:YuncosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial 7.1 Planeamiento Urbanístico, recorrido completo con
+    subcarpetas y Mostrar más. Agrupa instrumentos identificables por sus títulos.
+    Cobertura municipal parcial; no acredita vigencia ni aprobación. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin registro público de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

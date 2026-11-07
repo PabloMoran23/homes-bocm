@@ -1,0 +1,27 @@
+slug: torroella-de-montgri
+nombre: Torroella de Montgrí
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17199'
+portal:
+  base_url: https://www.torroella-estartit.cat
+  adapter: municipio.adapters.torroella_de_montgri:TorroellaDeMontgriAyuntamientoAdapter
+  config:
+    ine_code: '17199'
+    user_agent: municipio-torroella/1.0
+  notes: >-
+    Cobertura parcial del inventario municipal en trámite: apartados 2.2 y 2.3.
+    Un registro por instrumento con documentos agrupados. No se extraen fechas
+    de los PDF ni geometría. Se excluyen 2.1, PLATER y el registro histórico RPUC.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Torroella de Montgrí
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

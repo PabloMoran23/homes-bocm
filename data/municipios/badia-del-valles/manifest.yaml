@@ -1,0 +1,23 @@
+slug: badia-del-valles
+nombre: Badia del Vallès
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08904'
+portal:
+  base_url: https://www.badiadelvalles.cat
+  adapter: municipio.adapters.badia_del_valles:BadiaDelVallesAyuntamientoAdapter
+  config:
+    ine_code: '08904'
+  notes: >-
+    Inventario municipal de planeamiento vigente, agrupado por instrumento con
+    documentos y procedencia. Cobertura parcial; sin fechas ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: salobrena
+nombre: Salobreña
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18173'
+portal:
+  base_url: https://www.ayto-salobrena.es/web/plan-general-de-ordenacion-urbana-2001/
+  adapter: municipio.adapters.salobrena:SalobrenaAyuntamientoAdapter
+  config:
+    ine_code: '18173'
+  notes: Inventario documental municipal del PGOU 2001, agrupado como un instrumento. Cobertura parcial; sin acreditar vigencia, fechas de aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; los formularios no son concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
