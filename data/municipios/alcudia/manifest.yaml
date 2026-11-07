@@ -1,0 +1,36 @@
+slug: alcudia
+nombre: "Alcúdia"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://alcudia.net"
+  adapter: municipio.adapters.alcudia:AlcudiaAyuntamientoAdapter
+  config:
+    web_base: "https://alcudia.net"
+    sede_base: "https://alcudia.eadministracio.cat"
+    board_url: "https://alcudia.eadministracio.cat/board"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alcudia/1.0"
+    centroid: [39.853, 3.121]
+    geometry:
+      kind: idelma_wfs
+      wfs_url: "https://ide.idelma.cat/geoserver/M003_URBANISME/wfs"
+      type_name: "M003_URBANISME:exp_absis"
+      max_features: 500
+  notes: |
+    Web municipal OpenCms/Tresdigits (alcudia.net, subweb /Urbanisme).
+    Sede espublico eadministracio.cat (misma IP que alcudia.sedelectronica.es; puede bloquear datacenters).
+    Visor Citymap TecnoGeo + SAC ABS-Atlas (sac.alcudia.net) + SITMUN IDELMA.
+    WFS exp_absis M003 (patrón Pollença); geometría partial si el servidor responde.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
