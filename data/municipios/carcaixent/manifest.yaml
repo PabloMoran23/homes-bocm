@@ -1,0 +1,42 @@
+slug: carcaixent
+nombre: "Carcaixent"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.carcaixent.es"
+  adapter: municipio.adapters.carcaixent:CarcaixentAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-carcaixent/1.0"
+    web_base: "https://www.carcaixent.es"
+    sede_base: "https://carcaixent.sedelectronica.es"
+    board_url: "https://carcaixent.sedelectronica.es/board"
+    cod_ine_mun: "46083"
+    insecure_ssl: true
+    centroid: [39.12097, -0.44728]
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+      bbox: "39.0566988,-0.5044569,39.1454756,-0.3340837,urn:ogc:def:crs:EPSG::4326"
+  notes: |
+    Drupal www.carcaixent.es (sección Territori + noticias/PDFs) +
+    sede espublico gestiona (board + catálogo urbanístico) +
+    ICV WFS InventarioSuSuz filtrado por bbox municipal (cod_ine_mun 46083).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
