@@ -1,0 +1,22 @@
+slug: formentera
+nombre: Formentera
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07024'
+portal:
+  base_url: https://www.consellinsulardeformentera.cat
+  adapter: municipio.adapters.formentera:FormenteraAyuntamientoAdapter
+  config: {}
+  notes: Inventario curado de instrumentos de planeamiento del área de Urbanismo del Consell.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Formentera]
+  notes: Revisión NNSS y modificaciones PTI; fases y documentos agrupados. Cobertura parcial, no todo el tablón histórico.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,22 @@
+slug: bueu
+nombre: Bueu
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36004'
+portal:
+  base_url: https://concellodebueu.gal
+  adapter: municipio.adapters.bueu:BueuAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal del PXOM. Un instrumento con todos sus
+    documentos agrupados. Cobertura parcial, sin archivo de obras ni noticias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

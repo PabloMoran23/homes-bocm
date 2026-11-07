@@ -1,0 +1,24 @@
+slug: la-bisbal-d-emporda
+nombre: La Bisbal d'Empordà
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17022'
+portal:
+  base_url: https://labisbal.cat
+  adapter: municipio.adapters.la_bisbal_d_emporda:LaBisbalDEmpordaAyuntamientoAdapter
+  config:
+    ine_code: '17022'
+  notes: >-
+    Inventario municipal Obres locals, instantánea completa de esa página.
+    Documentos agrupados por proyecto. Cobertura municipal parcial; sin fechas
+    de acuerdo verificadas ni geometría extraída; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios y suspensiones de licencias no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

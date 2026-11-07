@@ -1,0 +1,25 @@
+slug: huetor-vega
+nombre: Huétor Vega
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18101'
+portal:
+  base_url: https://huetorvega.org
+  adapter: municipio.adapters.huetor_vega:HuetorVegaAyuntamientoAdapter
+  config:
+    ine_code: '18101'
+  notes: >-
+    Dos inventarios oficiales de planeamiento: NNSS y adaptación parcial PGOU.
+    Memorias y planos agrupados por instrumento; modificaciones con BOP enlazado.
+    Cobertura parcial, sin inferir vigencia jurídica, fechas de acuerdo ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Huétor Vega, Huetor Vega]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

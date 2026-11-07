@@ -1,0 +1,23 @@
+slug: etxebarri
+nombre: Etxebarri
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48029'
+portal:
+  base_url: https://www.etxebarri.eus
+  adapter: municipio.adapters.etxebarri:EtxebarriAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental del nuevo PGOU municipal. Un instrumento con sus
+    documentos; cobertura parcial, sin aprobación, fechas o geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Etxebarri]
+licencias:
+  enabled: false
+  notes: Los formularios de obra mayor no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

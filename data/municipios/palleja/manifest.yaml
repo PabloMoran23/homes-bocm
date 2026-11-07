@@ -1,0 +1,24 @@
+slug: palleja
+nombre: Pallejà
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08157'
+portal:
+  base_url: https://www.palleja.cat
+  adapter: municipio.adapters.palleja:PallejaAyuntamientoAdapter
+  config:
+    ine_code: '08157'
+  notes: >-
+    Instantánea del tablón oficial vigente, con paginación completa y documentos
+    agrupados por expediente. Cobertura parcial de obras físicas con memoria o
+    proyecto técnico; no es un archivo histórico ni inventario de todo el planeamiento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; se excluyen solicitudes.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

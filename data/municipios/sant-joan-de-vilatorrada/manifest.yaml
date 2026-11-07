@@ -1,0 +1,27 @@
+slug: sant-joan-de-vilatorrada
+nombre: Sant Joan de Vilatorrada
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08218'
+portal:
+  base_url: https://www.santjoanvilatorrada.cat
+  adapter: municipio.adapters.sant_joan_de_vilatorrada:SantJoanDeVilatorradaAyuntamientoAdapter
+  config:
+    ine_code: '08218'
+    user_agent: municipio-sant-joan-de-vilatorrada/1.0
+  notes: >-
+    Inventario municipal parcial del POUM y sus modificaciones y planes especiales.
+    Fechas de aprobación separadas de publicación. Descargas municipales de consulta
+    sin carácter oficial; el registro autoritativo es RPUC. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Joan de Vilatorrada
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no constituyen licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

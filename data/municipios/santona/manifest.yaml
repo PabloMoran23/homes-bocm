@@ -1,0 +1,26 @@
+slug: santona
+nombre: Santoña
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39079'
+portal:
+  base_url: https://santona.es
+  adapter: municipio.adapters.santona:SantonaAyuntamientoAdapter
+  config:
+    ine_code: '39079'
+    user_agent: municipio-santona/1.0
+  notes: >-
+    Cobertura parcial del índice documental municipal del PGOU. Un instrumento
+    con sus documentos agrupados. No se verifica la consolidación jurídica ni
+    todas las modificaciones posteriores. Requiere pdftohtml (Poppler).
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Santoña]
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

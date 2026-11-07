@@ -1,0 +1,23 @@
+slug: haro
+nombre: Haro
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+codigo_ine: '26071'
+portal:
+  base_url: https://www.haro.org
+  adapter: municipio.adapters.haro:HaroAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de instrumentos discretos de modificación y desarrollo.
+    Cobertura parcial de planeamiento, sin registro de licencias concedidas.
+    Fechas de publicación BOR según ficha; no son fechas de publicación web.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Haro]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

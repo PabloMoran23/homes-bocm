@@ -1,0 +1,22 @@
+slug: cantillana
+nombre: Cantillana
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41023'
+portal:
+  base_url: https://transparencia.cantillana.es/es/
+  adapter: municipio.adapters.cantillana:CantillanaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de planeamiento del indicador 53; cobertura parcial municipal.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cantillana]
+  notes: Un registro por instrumento con todos sus documentos; sin inferir vigencia ni geometría.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

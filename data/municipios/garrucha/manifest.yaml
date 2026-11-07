@@ -1,0 +1,21 @@
+slug: garrucha
+nombre: Garrucha
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04049'
+portal:
+  base_url: https://www.garrucha.es
+  adapter: municipio.adapters.garrucha:GarruchaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios oficiales de planeamiento de Normas y Normas en Trámite de Aprobación; cobertura parcial, sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Garrucha
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

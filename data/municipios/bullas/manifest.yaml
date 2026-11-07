@@ -1,0 +1,19 @@
+slug: bullas
+nombre: Bullas
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30012'
+portal:
+  base_url: https://www.bullas.es/areas-municipales/urbanismo/
+  adapter: municipio.adapters.bullas:BullasAyuntamientoAdapter
+  config: {}
+  notes: Paquete documental del PGMO enlazado por Urbanismo; cobertura parcial municipal.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

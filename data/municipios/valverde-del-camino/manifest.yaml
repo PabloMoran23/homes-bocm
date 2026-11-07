@@ -1,0 +1,21 @@
+slug: valverde-del-camino
+nombre: Valverde del Camino
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21072'
+portal:
+  base_url: https://valverdedelcamino.sedelectronica.es
+  adapter: municipio.adapters.valverde_del_camino:ValverdeDelCaminoAyuntamientoAdapter
+  config: {}
+  notes: Cobertura parcial del apartado 7.0 DOCUMENTOS EN TRAMITACION; carpetas con instrumentos identificables y documentos públicos, sin afirmar aprobación o vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Valverde del Camino
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

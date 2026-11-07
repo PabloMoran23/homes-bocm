@@ -1,0 +1,25 @@
+slug: cabanillas-del-campo
+nombre: Cabanillas del Campo
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19058'
+portal:
+  base_url: https://aytocabanillas.org
+  adapter: municipio.adapters.cabanillas_del_campo:CabanillasDelCampoAyuntamientoAdapter
+  config:
+    ine_code: '19058'
+  notes: >-
+    POM documental: planos y memoria del índice municipal, más anuncios del
+    texto refundido en el nivel raíz de planeamiento de la sede electrónica.
+    Cobertura parcial; no se recorren las carpetas dinámicas de otros instrumentos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cabanillas del Campo]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: arrigorriaga
+nombre: Arrigorriaga
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48011'
+portal:
+  base_url: https://www.arrigorriaga.eus/es/departamentos/barrios-urbanismo-y-vivienda
+  adapter: municipio.adapters.arrigorriaga:ArrigorriagaAyuntamientoAdapter
+  config: {}
+  notes: Cuatro planes municipales de infraestructuras; API pública de documentos y subcarpetas. Cobertura parcial, sin PGOU de la sede electrónica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Un registro por plan con todos sus documentos; no acredita aprobación, vigencia jurídica ni ejecución de obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: vilamarxant
+nombre: Vilamarxant
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46256'
+portal:
+  base_url: https://prevencionincendiosgva.es/Planificacion/DetallePlanesMunicipio/532
+  adapter: municipio.adapters.vilamarxant:VilamarxantAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente autonómica oficial SIGIF del plan local de prevención de incendios
+    forestales municipal. Cobertura parcial, un instrumento con sus documentos;
+    no inventario general de obras ni planeamiento urbanístico.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Adaptador municipal sobre inventario autonómico; los registros identifican la Generalitat como fuente.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

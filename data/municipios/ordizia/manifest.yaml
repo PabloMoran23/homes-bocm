@@ -1,0 +1,23 @@
+slug: ordizia
+nombre: Ordizia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20076'
+portal:
+  base_url: https://www.ordizia.eus
+  adapter: municipio.adapters.ordizia:OrdiziaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura documental parcial: árbol completo del PGOU Avance 2017 y estudios
+    de detalle con PDF directo en Urbanismo. No acredita vigencia ni aprobación
+    definitiva. Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

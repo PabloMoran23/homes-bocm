@@ -1,0 +1,20 @@
+slug: baiona
+nombre: Baiona
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36003'
+portal:
+  base_url: https://www.baiona.gal/concejalia-de-urbanismo-vivienda-infraestructuras-y-patrimonio/
+  adapter: municipio.adapters.baiona:BaionaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales municipales del PXOM y PEPCHAB; cobertura parcial sin fechas ni geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Baiona]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

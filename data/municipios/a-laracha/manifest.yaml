@@ -1,0 +1,25 @@
+slug: a-laracha
+nombre: A Laracha
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15041'
+portal:
+  base_url: https://www.alaracha.gal
+  adapter: municipio.adapters.a_laracha:ALarachaAyuntamientoAdapter
+  config:
+    ine_code: '15041'
+  notes: >-
+    Inventarios documentales municipales del PXOM y Plan Especial Equipamentos
+    Educativos, descubiertos desde Urbanismo. Cobertura parcial, sin fechas
+    explícitas en HTML ni geometría verificada; no se deduce vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [A Laracha, Laracha]
+licencias:
+  enabled: false
+  notes: No se ha verificado registro de licencias concedidas. Se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

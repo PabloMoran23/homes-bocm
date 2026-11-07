@@ -1,0 +1,23 @@
+slug: azkoitia
+nombre: Azkoitia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20017'
+portal:
+  base_url: https://azkoitia.eus
+  adapter: municipio.adapters.azkoitia:AzkoitiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del PGOU descubierto en el inventario municipal de planes
+    en tramitación. Acuerdo de inicio y publicación BOG separados; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Azkoitia]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes de licencia ni se acredita un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

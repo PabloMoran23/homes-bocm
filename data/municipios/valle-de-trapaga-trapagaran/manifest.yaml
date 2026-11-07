@@ -1,0 +1,19 @@
+slug: valle-de-trapaga-trapagaran
+nombre: Valle de Trápaga-Trapagaran
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48080'
+portal:
+  base_url: https://www.trapagaran.net
+  adapter: municipio.adapters.valle_de_trapaga_trapagaran:ValleDeTrapagaTrapagaranAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de proyectos de urbanización y documentación por fases, con paginación completa.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
