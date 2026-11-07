@@ -1,0 +1,21 @@
+slug: brenes
+nombre: Brenes
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41018'
+portal:
+  base_url: https://www.aytobrenes.es
+  adapter: municipio.adapters.brenes:BrenesAyuntamientoAdapter
+  config: {}
+  notes: Cobertura parcial de actuaciones físicas previstas descritas por el Ayuntamiento; no acredita aprobación ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Brenes]
+  notes: Parque del Bodegón y antiguo Mercado de Abastos; propuestas municipales con fuente descriptiva, sin expediente técnico verificado.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

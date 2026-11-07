@@ -1,0 +1,23 @@
+slug: noia
+nombre: Noia
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15057'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.noia:NoiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial SIOTUGA de la Xunta para Noia, INE 15057.
+    Planeamiento general y de desarrollo con documentos agrupados por instrumento.
+    Cobertura parcial: excluye histórico, ordenación territorial, obras y licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Noia]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

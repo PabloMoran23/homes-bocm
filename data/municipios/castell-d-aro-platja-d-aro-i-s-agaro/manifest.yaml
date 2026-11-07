@@ -1,0 +1,26 @@
+slug: castell-d-aro-platja-d-aro-i-s-agaro
+nombre: Castell d'Aro, Platja d'Aro i s'Agaró
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17048'
+portal:
+  base_url: https://ciutada.platjadaro.com
+  adapter: municipio.adapters.castell_d_aro_platja_d_aro_i_s_agaro:CastellDAroPlatjaDAroISAgaroAyuntamientoAdapter
+  config:
+    ine_code: '17048'
+    user_agent: municipio-research-17048/1.0
+  notes: >-
+    Cobertura parcial del inventario municipal de planeamiento En tràmit.
+    Un registro por instrumento con todos los documentos enlazados y sus hitos.
+    No incluye planeamiento vigente ni inventario completo de obras.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

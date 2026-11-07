@@ -1,0 +1,24 @@
+slug: bergara
+nombre: Bergara
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20074'
+portal:
+  base_url: https://www.bergara.eus
+  adapter: municipio.adapters.bergara:BergaraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Índice oficial de Urbanismo: cobertura parcial de planes especiales, estudios
+    de detalle y proyectos de urbanización y reparcelación. Documentación histórica
+    y reciente; no presupone vigencia ni aprobación. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Bergara]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; no se extraen solicitudes.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

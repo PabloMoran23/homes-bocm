@@ -1,0 +1,20 @@
+slug: torredonjimeno
+nombre: Torredonjimeno
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23087'
+portal:
+  base_url: https://tosiria.sedelectronica.es/transparency/9ec75040-0b30-44e0-b159-f4477431ab0a/
+  adapter: municipio.adapters.torredonjimeno:TorredonjimenoAyuntamientoAdapter
+  config: {}
+  notes: Carpeta oficial PLANEAMIENTO URBANÍSTICO; documentos agrupados por instrumento. Cobertura parcial municipal, sin inferir vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Avance de asentamientos y POU del Conjunto Histórico; no incluye otras carpetas de urbanismo.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

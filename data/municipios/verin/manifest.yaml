@@ -1,0 +1,20 @@
+slug: verin
+nombre: Verín
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32085'
+portal:
+  base_url: https://www.verin.es/planeamento/
+  adapter: municipio.adapters.verin:VerinAyuntamientoAdapter
+  config: {}
+  notes: Catálogo municipal de planeamiento; seis inventarios Snap2HTML completos. Cobertura parcial, sin inferir vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Documentos agrupados por instrumento; excluye los visores heredados PXOM 2012 y PEPRI, licitaciones y noticias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

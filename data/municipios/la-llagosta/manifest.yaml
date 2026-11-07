@@ -1,0 +1,24 @@
+slug: la-llagosta
+nombre: La Llagosta
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08105'
+portal:
+  base_url: https://www.llagosta.cat
+  adapter: municipio.adapters.la_llagosta:LaLlagostaAyuntamientoAdapter
+  config:
+    ine_code: '08105'
+  notes: >-
+    Inventario municipal actual de exposición pública. Proyectos de obras y
+    planes espaciales con documentos agrupados. Cobertura parcial, sin histórico
+    completo ni geometría de expediente verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

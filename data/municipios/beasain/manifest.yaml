@@ -1,0 +1,23 @@
+slug: beasain
+nombre: Beasain
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20019'
+portal:
+  base_url: https://www.beasain.eus
+  adapter: municipio.adapters.beasain:BeasainAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental público del PGOU: recorrido de carpetas y paginación,
+    un instrumento con documentos agrupados. Cobertura municipal parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Beasain]
+licencias:
+  enabled: false
+  notes: Sin inventario verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

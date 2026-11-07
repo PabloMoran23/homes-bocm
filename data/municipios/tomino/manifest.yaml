@@ -1,0 +1,20 @@
+slug: tomino
+nombre: Tomiño
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36054'
+portal:
+  base_url: https://tomino.gal
+  adapter: municipio.adapters.tomino:TominoAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento y urbanización; documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Cobertura parcial; sin extracción de geometría ni fechas desde documentos enlazados.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

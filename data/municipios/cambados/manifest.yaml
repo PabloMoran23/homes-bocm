@@ -1,0 +1,27 @@
+slug: cambados
+nombre: Cambados
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36006'
+portal:
+  base_url: https://cambados.sedelectronica.gal
+  adapter: municipio.adapters.cambados:CambadosAyuntamientoAdapter
+  config:
+    ine_code: '36006'
+  notes: >-
+    Inventario de planeamiento de SIOTUGA (Xunta de Galicia), enlazado por la
+    sede municipal como NORMATIVA URBANÍSTICA. Cobertura parcial de las clases
+    14, 13 y 18; excluye histórico y ordenación territorial. Un registro por
+    instrumento con sus documentos agrupados. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cambados]
+  notes: Fuente material Xunta SIOTUGA; no acredita obras ejecutadas ni licencias.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

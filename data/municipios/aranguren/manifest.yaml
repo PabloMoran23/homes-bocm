@@ -1,0 +1,25 @@
+slug: aranguren
+nombre: Aranguren
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31023'
+portal:
+  base_url: https://www.aranguren.es
+  adapter: municipio.adapters.aranguren:ArangurenAyuntamientoAdapter
+  config:
+    ine_code: '31023'
+  notes: >-
+    Sección municipal del Plan General Municipal contrastada con su anuncio BON.
+    Cobertura parcial: no incorpora modificaciones de SIUN/Transparencia ni noticias.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Aranguren, Valle de Aranguren]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

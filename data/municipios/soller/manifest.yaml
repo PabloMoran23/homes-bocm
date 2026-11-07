@@ -1,0 +1,24 @@
+slug: soller
+nombre: Sóller
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07061'
+portal:
+  base_url: https://ajsoller.net
+  adapter: municipio.adapters.soller:SollerAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental de tres instrumentos de planeamiento. Cobertura parcial:
+    no extrae expedientes en tramitación de la sede electrónica. Conserva documentos
+    y fechas de listado sin atribuirlas a aprobación. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Sóller, Soller]
+licencias:
+  enabled: false
+  notes: No se extraen licencias concedidas; se excluyen formularios y guías.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: ordes
+nombre: Ordes
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15059'
+portal:
+  base_url: https://concello.ordes.gal
+  adapter: municipio.adapters.ordes:OrdesAyuntamientoAdapter
+  config:
+    ine_code: '15059'
+  notes: >-
+    Inventario municipal del PXOM vigente y documentos de su tramitación.
+    Cobertura parcial, un instrumento con documentos agrupados; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Ordes
+  notes: No cubre la totalidad del planeamiento de desarrollo ni las obras públicas.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas. Se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

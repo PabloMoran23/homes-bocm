@@ -1,0 +1,26 @@
+slug: santa-coloma-de-farners
+nombre: Santa Coloma de Farners
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17180'
+portal:
+  base_url: https://www.scf.cat
+  adapter: municipio.adapters.santa_coloma_de_farners:SantaColomaDeFarnersAyuntamientoAdapter
+  config:
+    ine_code: '17180'
+  notes: >-
+    Planeamiento municipal del RPUC enlazado por la sede oficial. Recorre toda
+    la consulta básica y agrupa documentos por expediente. Cobertura parcial;
+    excluye planes supramunicipales con otro municipio principal. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Santa Coloma de Farners
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

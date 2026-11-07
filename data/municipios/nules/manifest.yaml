@@ -1,0 +1,25 @@
+slug: nules
+nombre: Nules
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '12082'
+portal:
+  base_url: https://nules.sedelectronica.es/transparency/78972904-42ef-4ad2-88f7-9508369feada/
+  adapter: municipio.adapters.nules:NulesAyuntamientoAdapter
+  config:
+    ine_code: '12082'
+  notes: >-
+    Inventario municipal 7.4 de proyectos de obras públicas. Cobertura parcial:
+    no incluye planeamiento, programas de actuación ni licencias. Agrupa todos
+    los documentos de cada carpeta de proyecto y conserva sus enlaces estables.
+    No acredita ejecución, vigencia, fechas de acuerdo ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: La sección de licencias no se extrae ni se interpreta como concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

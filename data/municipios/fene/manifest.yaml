@@ -1,0 +1,25 @@
+slug: fene
+nombre: Fene
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15035'
+portal:
+  base_url: https://www.fene.gal
+  adapter: municipio.adapters.fene:FeneAyuntamientoAdapter
+  config:
+    ine_code: '15035'
+    user_agent: municipio-fene/1.0
+  notes: >-
+    Inventario documental municipal del PXOM, un instrumento con sus documentos
+    agrupados. Cobertura parcial: no incluye otros instrumentos ni obras.
+    Fechas y geometría no verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

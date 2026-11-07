@@ -1,0 +1,25 @@
+slug: ceuti
+nombre: Ceutí
+provincia: Murcia
+comunidad_autonoma: region-murcia
+codigo_ine: '30018'
+portal:
+  base_url: https://ceuti.es
+  adapter: municipio.adapters.ceuti:CeutiAyuntamientoAdapter
+  config:
+    ine_code: '30018'
+    user_agent: municipio-ceuti/1.0
+  notes: >-
+    Inventario municipal de documentos de planeamiento agrupados por instrumento.
+    Cobertura parcial, sin fechas extraídas de PDF ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ceutí, Ceuti]
+licencias:
+  enabled: false
+  notes: Los formularios no acreditan licencias concedidas. Sin registro público verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

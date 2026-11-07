@@ -1,0 +1,25 @@
+slug: abrera
+nombre: Abrera
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08001'
+portal:
+  base_url: https://www.ajuntamentabrera.cat
+  adapter: municipio.adapters.abrera:AbreraAyuntamientoAdapter
+  config:
+    ine_code: '08001'
+    user_agent: municipio-abrera/1.0
+  notes: >-
+    Inventario municipal de documentación a exposición pública. Cobertura parcial,
+    documentos agrupados por instrumento, sin fechas ni geometría verificadas.
+    No es un registro de licencias concedidas. publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

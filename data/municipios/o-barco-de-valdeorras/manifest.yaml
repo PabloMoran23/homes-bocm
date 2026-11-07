@@ -1,0 +1,24 @@
+slug: o-barco-de-valdeorras
+nombre: O Barco de Valdeorras
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32009'
+portal:
+  base_url: https://www.concellodobarco.gal
+  adapter: municipio.adapters.o_barco_de_valdeorras:OBarcoDeValdeorrasAyuntamientoAdapter
+  config:
+    ine_code: '32009'
+  notes: >-
+    Inventario SIOTUGA de la Xunta, enlazado por Urbanismo municipal.
+    Clases 14 y 13 completas; cobertura municipal parcial y sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [O Barco de Valdeorras, 'Barco de Valdeorras, O']
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, formularios ni concesiones no verificadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
