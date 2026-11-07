@@ -1,0 +1,23 @@
+slug: jodar
+nombre: Jódar
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23053'
+portal:
+  base_url: https://www.jodar.es
+  adapter: municipio.adapters.jodar:JodarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Publicaciones oficiales WordPress, recorridas con paginación completa.
+    Cobertura parcial de proyectos físicos nombrados expresamente en anuncios
+    municipales de financiación; no inventario completo de obras o planeamiento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

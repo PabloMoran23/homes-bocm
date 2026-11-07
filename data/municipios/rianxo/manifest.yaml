@@ -1,0 +1,20 @@
+slug: rianxo
+nombre: Rianxo
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15072'
+portal:
+  base_url: https://concelloderianxo.gal/pxom
+  adapter: municipio.adapters.rianxo:RianxoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del PXOM; fases provisional e inicial agrupadas en un instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Cobertura parcial; estado y acuerdo según página municipal, sin afirmar aprobación definitiva.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

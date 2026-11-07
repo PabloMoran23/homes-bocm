@@ -1,0 +1,20 @@
+slug: villamartin
+nombre: Villamartín
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11041'
+portal:
+  base_url: https://villamartin.sedelectronica.es
+  adapter: municipio.adapters.villamartin:VillamartinAyuntamientoAdapter
+  config: {}
+  notes: Inventario 7.1 de planeamiento, con carpetas y paginación Wicket; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villamartín, Villamartin]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: vegas-del-genil
+nombre: Vegas del Genil
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18911'
+portal:
+  base_url: https://vegasdelgenil.sedelectronica.es/transparency/
+  adapter: municipio.adapters.vegas_del_genil:VegasDelGenilAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario público de 7.1 Planeamiento Urbanístico, con paginación Gestiona.
+    Documentos agrupados por carpeta o expediente identificable; cobertura parcial,
+    sin inferir aprobación, vigencia, fechas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vegas del Genil]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

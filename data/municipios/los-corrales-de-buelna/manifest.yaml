@@ -1,0 +1,24 @@
+slug: los-corrales-de-buelna
+nombre: Los Corrales de Buelna
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39025'
+portal:
+  base_url: https://loscorralesdebuelna.sedelectronica.es
+  adapter: municipio.adapters.los_corrales_de_buelna:LosCorralesDeBuelnaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario público de Urbanismo del portal municipal de transparencia.
+    Agrupa documentos por instrumento y recorre Mostrar más. Cobertura parcial;
+    sin geometrías ni fechas exactas en los metadatos del inventario.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Los Corrales de Buelna, 'Corrales de Buelna, Los']
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni solicitudes como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

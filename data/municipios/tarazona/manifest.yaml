@@ -1,0 +1,20 @@
+slug: tarazona
+nombre: Tarazona
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50251'
+portal:
+  base_url: https://www.tarazona.es/tarazona-tematico/urbanismo-y-obras-publicas/plan-general-ordenacion-urbana
+  adapter: municipio.adapters.tarazona:TarazonaAyuntamientoAdapter
+  config: {}
+  notes: Árbol documental municipal del PGOU, agrupado en un instrumento. Cobertura parcial; sin acreditar vigencia, fechas de aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas. Se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

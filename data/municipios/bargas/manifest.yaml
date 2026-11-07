@@ -1,0 +1,24 @@
+slug: bargas
+nombre: Bargas
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45019'
+portal:
+  base_url: https://www.bargas.es
+  adapter: municipio.adapters.bargas:BargasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de expedientes de planeamiento y PAUs. Documentos técnicos
+    agrupados por unidad de actuación. Cobertura parcial; sin fechas acreditadas
+    en el índice ni geometría vectorial vinculada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Bargas]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, formularios ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

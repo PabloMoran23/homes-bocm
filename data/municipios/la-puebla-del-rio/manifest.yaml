@@ -1,0 +1,23 @@
+slug: la-puebla-del-rio
+nombre: La Puebla del Río
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41079'
+portal:
+  base_url: https://transparencia.lapuebladelrio.es/es/transparencia/indicadores-de-transparencia/indicador/50.-PLAN-GENERAL-DE-ORDENACION-URBANA-PGOU-Y-LOS-MAPAS-Y-PLANOS-QUE-LO-DETALLAN/
+  adapter: municipio.adapters.la_puebla_del_rio:LaPueblaDelRioAyuntamientoAdapter
+  config: {}
+  notes: Inventario del indicador 50, documentos agrupados por instrumento y paginación independiente de galerías. Cobertura parcial; no acredita vigencia ni nuevas aprobaciones.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Puebla del Río
+  notes: NN.SS., adaptación parcial, PGOM y POU; sin fechas inferidas ni coordenadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

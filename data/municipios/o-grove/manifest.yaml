@@ -1,0 +1,19 @@
+slug: o-grove
+nombre: O Grove
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36022'
+portal:
+  base_url: https://concellodogrove.es/contido.html?id=80&submenu=23
+  adapter: municipio.adapters.o_grove:OGroveAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales de planeamiento; versiones agrupadas, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

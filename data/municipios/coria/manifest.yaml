@@ -1,0 +1,24 @@
+slug: coria
+nombre: Coria
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10067'
+portal:
+  base_url: https://coria.org
+  adapter: municipio.adapters.coria:CoriaAyuntamientoAdapter
+  config:
+    ine_code: '10067'
+  notes: >-
+    Inventario municipal del nuevo PGM y revisión del PECH; fechas del avance
+    del PGM contrastadas con DOE. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Coria]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

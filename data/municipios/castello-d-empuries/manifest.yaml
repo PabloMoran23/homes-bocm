@@ -1,0 +1,23 @@
+slug: castello-d-empuries
+nombre: Castelló d'Empúries
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17047'
+portal:
+  base_url: https://www.castello.cat
+  adapter: municipio.adapters.castello_d_empuries:CastelloDEmpuriesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Snapshot de los dos inventarios municipales de planeamiento; una ficha por
+    instrumento con sus documentos agrupados. Cobertura parcial, sin geometría
+    verificada ni fechas legales inferidas de las etiquetas documentales.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

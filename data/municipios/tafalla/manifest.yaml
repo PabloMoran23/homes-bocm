@@ -1,0 +1,24 @@
+slug: tafalla
+nombre: Tafalla
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31227'
+portal:
+  base_url: https://www.tafalla.es
+  adapter: municipio.adapters.tafalla:TafallaAyuntamientoAdapter
+  config:
+    ine_code: '31227'
+  notes: >-
+    Inventario documental municipal del PERI Centro Histórico y PMUS.
+    Cobertura parcial; no inventario completo SIUN. Fechas y fase jurídica
+    desconocidas; documentos agrupados por instrumento, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,22 @@
+slug: sonseca
+nombre: Sonseca
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45163'
+portal:
+  base_url: https://www.sonseca.es/documentos/
+  adapter: municipio.adapters.sonseca:SonsecaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de documentos: un instrumento NNSS con sus documentos
+    agrupados. Cobertura parcial, sin afirmar vigencia, aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Solicitudes de licencia excluidas; no se verificó un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

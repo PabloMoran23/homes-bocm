@@ -1,0 +1,25 @@
+slug: quintanar-de-la-orden
+nombre: Quintanar de la Orden
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45142'
+portal:
+  base_url: https://www.quintanardelaorden.es
+  adapter: municipio.adapters.quintanar_de_la_orden:QuintanarDeLaOrdenAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Índice municipal de Normas Urbanísticas. Una colección NNSS con sus documentos,
+    incluidos planos rotulados con modificaciones. Cobertura parcial y sin fechas
+    de acuerdo acreditadas ni geometría vectorial; no acredita vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Quintanar de la Orden
+licencias:
+  enabled: false
+  notes: Sin registro verificado de concesiones; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

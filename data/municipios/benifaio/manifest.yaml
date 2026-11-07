@@ -1,0 +1,20 @@
+slug: benifaio
+nombre: Benifaió
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46060'
+portal:
+  base_url: https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/4%20VALENCIA/46060%20BENIFAI%D3/
+  adapter: municipio.adapters.benifaio:BenifaioAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial GVA de planeamiento municipal depositado; cobertura parcial, documentos agrupados por instrumento y anotaciones retenidas. No acredita vigencia actual.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Instrumentos municipales publicados por la Generalitat, no registro de obras ni licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

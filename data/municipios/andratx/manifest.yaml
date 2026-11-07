@@ -1,0 +1,26 @@
+slug: andratx
+nombre: Andratx
+codigo_ine: '07005'
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+portal:
+  base_url: https://transparencia.andratx.es
+  adapter: municipio.adapters.andratx:AndratxAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial /t/planeamiento. NNSS 2023 y refós agrupados;
+    modificaciones, estudios de detalle y gestión urbanística. Excluye
+    NNSS 2007 derogadas. Documentos bilingües agrupados por instrumento.
+    Fechas conservadas como texto de fuente, sin inferir acuerdos ni concesiones.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Andratx]
+  notes: Cobertura parcial de planeamiento publicado, sin geometría verificada.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

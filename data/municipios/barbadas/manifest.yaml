@@ -1,0 +1,25 @@
+slug: barbadas
+nombre: Barbadás
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32008'
+portal:
+  base_url: https://www.barbadas.es
+  adapter: municipio.adapters.barbadas:BarbadasAyuntamientoAdapter
+  config:
+    ine_code: '32008'
+  notes: >-
+    Inventario oficial SIOTUGA enlazado desde Urbanismo municipal. Planeamiento
+    general y de desarrollo, documentos agrupados por instrumento. Cobertura
+    municipal parcial; no acredita por sí sola vigencia jurídica actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Sin geometría verificada; publication_ready false. Excluye archivo histórico y planes supramunicipales.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: berriozar
+nombre: Berriozar
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31903'
+portal:
+  base_url: https://www.berriozar.es
+  adapter: municipio.adapters.berriozar:BerriozarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Planeamiento PG de SIUN Navarra enlazado desde el inventario municipal.
+    Municipio SIUN 903, provincia 31. Todas las páginas y detalles; documentos
+    agrupados por instrumento. Cobertura parcial, sin geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Berriozar]
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

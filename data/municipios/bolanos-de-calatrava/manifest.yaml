@@ -1,0 +1,27 @@
+slug: bolanos-de-calatrava
+nombre: Bolaños de Calatrava
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13023'
+portal:
+  base_url: https://bolanosdecalatrava.es
+  adapter: municipio.adapters.bolanos_de_calatrava:BolanosDeCalatravaAyuntamientoAdapter
+  config:
+    ine_code: '13023'
+    verify_tls: false
+  notes: >-
+    Inventario municipal del POM y modificaciones, con documentos agrupados.
+    TLS no verificable en la comprobación: excepción explícita para este portal
+    público, sin credenciales; requests emite aviso. Cobertura parcial, sin
+    interpretar PDF ni atribuir fechas o vigencia a partir de nombres de archivo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Bolaños de Calatrava]
+licencias:
+  enabled: false
+  notes: No se ha identificado un registro verificable de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

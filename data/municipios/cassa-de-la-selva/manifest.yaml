@@ -1,0 +1,26 @@
+slug: cassa-de-la-selva
+nombre: Cassà de la Selva
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17044'
+ine_code: '17044'
+portal:
+  base_url: https://www.cassa.cat
+  adapter: municipio.adapters.cassa_de_la_selva:CassaDeLaSelvaAyuntamientoAdapter
+  config:
+    ine_code: '17044'
+  notes: >-
+    Inventario oficial Projectes d'obra enlazado mediante iframe municipal.
+    Documentos agrupados por expediente; excluye estructura de costes del servicio.
+    Cobertura parcial municipal, sin geometrías ni fechas de aprobación inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cassà de la Selva]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

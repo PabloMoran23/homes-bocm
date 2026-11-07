@@ -1,0 +1,19 @@
+slug: beniel
+nombre: Beniel
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30010'
+portal:
+  base_url: https://sede.beniel.regiondemurcia.es
+  adapter: municipio.adapters.beniel:BenielAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal actual de planeamiento en transparencia; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

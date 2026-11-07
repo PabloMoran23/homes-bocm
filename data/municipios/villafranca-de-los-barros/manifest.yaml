@@ -1,0 +1,24 @@
+slug: villafranca-de-los-barros
+nombre: Villafranca de los Barros
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06149'
+portal:
+  base_url: https://doe.juntaex.es
+  adapter: municipio.adapters.villafranca_de_los_barros:VillafrancaDeLosBarrosAyuntamientoAdapter
+  config:
+    start_date: '2026-01-01'
+  notes: >-
+    Anuncios municipales de aprobación inicial de planeamiento en el DOE desde
+    2026-01-01. Cobertura parcial por organismo, título y fase; no es inventario
+    consolidado de planeamiento vigente. Conserva expediente y formatos del anuncio.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

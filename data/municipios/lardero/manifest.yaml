@@ -1,0 +1,23 @@
+slug: lardero
+nombre: Lardero
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+codigo_ine: '26084'
+portal:
+  base_url: https://www.aytolardero.org/plan-general-municipal/
+  adapter: municipio.adapters.lardero:LarderoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal del Plan General Municipal, agrupado como
+    un instrumento. Cobertura parcial, sin verificar vigencia consolidada,
+    acuerdos de aprobación ni geometría. No es un registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: La página de Urbanismo publica requisitos y formularios, no concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

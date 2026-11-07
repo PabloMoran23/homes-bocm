@@ -1,0 +1,28 @@
+slug: laviana
+nombre: Laviana
+provincia: Asturias
+comunidad_autonoma: principado-de-asturias
+codigo_ine: '33032'
+portal:
+  base_url: https://www.ayto-laviana.es
+  adapter: municipio.adapters.laviana:LavianaAyuntamientoAdapter
+  config:
+    ine_code: '33032'
+  notes: >-
+    Inventario RPGUR del Principado enlazado por el Ayuntamiento. Consulta
+    municipal de Laviana (concejo 32), estado vigente; todas sus páginas.
+    Un registro por instrumento, documentos agrupados. Sin geometrías extraídas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Laviana, Pola de Laviana]
+  notes: >-
+    Planeamiento y proyectos de gestión urbanística; no inventario exhaustivo
+    de obras. Excluye convenios, instrumentos históricos y en tramitación.
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
