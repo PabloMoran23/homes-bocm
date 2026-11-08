@@ -1,0 +1,24 @@
+slug: amurrio
+nombre: Amurrio
+provincia: Álava
+comunidad_autonoma: pais-vasco
+codigo_ine: '01002'
+portal:
+  base_url: https://udala.amurrio.eus
+  adapter: municipio.adapters.amurrio:AmurrioAyuntamientoAdapter
+  config:
+    ine_code: '01002'
+  notes: >-
+    Inventarios municipales PGOU y Planes Urbanismo. Documentos agrupados por
+    instrumento. Cobertura parcial, sin fechas inferidas ni geometría vectorial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Amurrio]
+licencias:
+  enabled: false
+  notes: La página de licencias describe trámites; no acredita concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

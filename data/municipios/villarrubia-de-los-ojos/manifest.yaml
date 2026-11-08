@@ -1,0 +1,28 @@
+slug: villarrubia-de-los-ojos
+nombre: Villarrubia de los Ojos
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13096'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/planeamiento-municipal-cloned
+  adapter: municipio.adapters.villarrubia_de_los_ojos:VillarrubiaDeLosOjosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Planeamiento municipal del inventario oficial autonómico, filtrado por INE 13096.
+    Cobertura parcial de planeamiento general; archivo ZIP por instrumento.
+    Sin registro verificado de licencias ni geometría del instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villarrubia de los Ojos
+  notes: >-
+    El selector ayuntamiento usa el adaptador de portal. La procedencia real de
+    los registros es la Junta de Comunidades de Castilla-La Mancha.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

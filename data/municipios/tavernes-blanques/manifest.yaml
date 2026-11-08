@@ -1,0 +1,20 @@
+slug: tavernes-blanques
+nombre: Tavernes Blanques
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46237'
+portal:
+  base_url: https://mediambient.gva.es/auto/urbanismo/reg-planeamiento/4%20VALENCIA/46237%20TAVERNES%20BLANQUES/
+  adapter: municipio.adapters.tavernes_blanques:TavernesBlanquesAyuntamientoAdapter
+  config: {}
+  notes: Registro oficial autonómico del planeamiento municipal; documentos agrupados por expediente. Cobertura parcial, sin inferir vigencia ni aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Planeamiento municipal conservado por la Generalitat Valenciana; procedencia autonómica explícita en los registros. Excluye expedientes anulados y no incluye todo el planeamiento en tramitación.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

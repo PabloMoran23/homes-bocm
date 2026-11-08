@@ -1,0 +1,26 @@
+slug: caudete
+nombre: Caudete
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02025'
+portal:
+  base_url: https://www.caudete.org
+  adapter: municipio.adapters.caudete:CaudeteAyuntamientoAdapter
+  config:
+    ine_code: '02025'
+  notes: >-
+    Inventario municipal de las Normas Subsidiarias: un instrumento agrupado con
+    texto, planos y documentos de aprobación. Cobertura parcial; el índice excluye
+    modificaciones puntuales y estudios de detalle. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Caudete
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

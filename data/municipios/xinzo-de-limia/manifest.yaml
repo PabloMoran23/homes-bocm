@@ -1,0 +1,27 @@
+slug: xinzo-de-limia
+nombre: Xinzo de Limia
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32032'
+portal:
+  base_url: https://territorioeurbanismo.xunta.gal
+  adapter: municipio.adapters.xinzo_de_limia:XinzoDeLimiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Registro oficial autonómico de planeamiento, filtrado por provincia 32
+    y concello 696 (identificador interno de la Xunta, no código INE).
+    Procedencia Xunta explícita en cada registro. Cobertura municipal parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Xinzo de Limia]
+  notes: >-
+    El contrato del pipeline usa ayuntamiento; la fuente real es el registro
+    autonómico de instrumentos del municipio, no una noticia municipal.
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, formularios ni concesiones no verificadas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

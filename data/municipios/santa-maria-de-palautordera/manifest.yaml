@@ -1,0 +1,26 @@
+slug: santa-maria-de-palautordera
+nombre: Santa Maria de Palautordera
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08259'
+portal:
+  base_url: https://www.smpalautordera.cat
+  adapter: municipio.adapters.santa_maria_de_palautordera:SantaMariaDePalautorderaAyuntamientoAdapter
+  config:
+    ine_code: '08259'
+    user_agent: municipio-santa-maria-de-palautordera/1.0
+  notes: >-
+    Snapshot de los inventarios municipales del POUM y obra municipal ordinaria.
+    Documentos agrupados por instrumento. Cobertura parcial, sin geometría
+    verificada; publication_ready false. No incluye todas las modificaciones
+    posteriores publicadas en boletines ni un registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

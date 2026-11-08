@@ -1,0 +1,21 @@
+slug: consuegra
+nombre: Consuegra
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45053'
+portal:
+  base_url: https://aytoconsuegra.es
+  adapter: municipio.adapters.consuegra:ConsuegraAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de Normas Subsidiarias, texto refundido y planos agrupados en un instrumento. Cobertura parcial; vigencia jurídica no comprobada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Consuegra]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

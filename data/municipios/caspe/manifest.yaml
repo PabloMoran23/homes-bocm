@@ -1,0 +1,21 @@
+slug: caspe
+nombre: Caspe
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50074'
+portal:
+  base_url: https://www.caspe.es/urbanismo-y-obras/
+  adapter: municipio.adapters.caspe:CaspeAyuntamientoAdapter
+  config: {}
+  notes: Archivo municipal del PGOU enlazado desde Urbanismo; documentos agrupados en un instrumento, sin afirmar vigencia ni aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Caspe]
+  notes: Cobertura parcial del archivo documental PGOU, no registro completo de actuaciones ni modificaciones posteriores.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

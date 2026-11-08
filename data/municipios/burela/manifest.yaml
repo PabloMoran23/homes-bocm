@@ -1,0 +1,23 @@
+slug: burela
+nombre: Burela
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27902'
+portal:
+  base_url: https://burela.org
+  adapter: municipio.adapters.burela:BurelaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Biblioteca de planeamiento enlazada desde Urbanismo: PXOM y modificación puntual.
+    Cobertura parcial, documentos agrupados por instrumento, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Burela]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

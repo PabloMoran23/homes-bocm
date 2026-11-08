@@ -1,0 +1,22 @@
+slug: ribadeo
+nombre: Ribadeo
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27051'
+portal:
+  base_url: https://www.ribadeo.gal/urbanismo/
+  adapter: municipio.adapters.ribadeo:RibadeoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial SIOTUGA enlazado por Urbanismo municipal. Planeamiento
+    general y de desarrollo; cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios municipales no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

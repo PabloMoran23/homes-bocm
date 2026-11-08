@@ -1,0 +1,25 @@
+slug: alcanar
+nombre: Alcanar
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43004'
+portal:
+  base_url: https://alcanar.eadministracio.cat
+  adapter: municipio.adapters.alcanar:AlcanarAyuntamientoAdapter
+  config:
+    ine_code: '43004'
+  notes: >-
+    Instrumentos de planeamiento publicados en el tablón vigente de la sede.
+    Recorre toda la paginación y agrupa documentos por expediente.
+    Cobertura parcial, sin geometría verificada ni histórico completo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Alcanar]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; excluye formularios y contratación.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

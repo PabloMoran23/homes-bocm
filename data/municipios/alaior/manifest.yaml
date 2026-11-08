@@ -1,0 +1,25 @@
+slug: alaior
+nombre: Alaior
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07002'
+portal:
+  base_url: https://www.aj-alaior.org
+  adapter: municipio.adapters.alaior:AlaiorAyuntamientoAdapter
+  config:
+    ine_code: '07002'
+  notes: >-
+    Inventario público de aprobación inicial del PG y POD. Documentación agrupada
+    por instrumento, con avisos BOIB e informes compartidos. Cobertura parcial;
+    no acredita vigencia actual ni aprobación definitiva. Requiere pdftotext.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Alaior]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; suspensiones y formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

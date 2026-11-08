@@ -1,0 +1,23 @@
+slug: villava
+nombre: Villava / Atarrabia
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31258'
+portal:
+  base_url: https://www.villava.es
+  adapter: municipio.adapters.villava:VillavaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario de transparencia y documentación histórica del PGM enlazado.
+    Cobertura parcial; acuerdos históricos no acreditan estado actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villava, Atarrabia, Villava / Atarrabia]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

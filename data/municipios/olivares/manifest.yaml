@@ -1,0 +1,22 @@
+slug: olivares
+nombre: Olivares
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41067'
+portal:
+  base_url: https://transparencia.olivares.es
+  adapter: municipio.adapters.olivares:OlivaresAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Galerías oficiales de instrumentos nombrados en indicadores 50, 53 y 54.
+    Cobertura parcial; documentos agrupados, sin inferir vigencia ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios y calificación ambiental no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

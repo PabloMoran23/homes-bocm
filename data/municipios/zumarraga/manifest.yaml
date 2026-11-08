@@ -1,0 +1,23 @@
+slug: zumarraga
+nombre: Zumarraga
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20080'
+portal:
+  base_url: https://www.zumarraga.eus
+  adapter: municipio.adapters.zumarraga:ZumarragaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Portal del PGOU enlazado por el ayuntamiento; inventario documental en
+    castellano agrupado en un instrumento en elaboración. Cobertura parcial,
+    sin fechas administrativas ni geometría verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

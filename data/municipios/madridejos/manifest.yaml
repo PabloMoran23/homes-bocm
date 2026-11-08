@@ -1,0 +1,22 @@
+slug: madridejos
+nombre: Madridejos
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45087'
+portal:
+  base_url: https://madridejos.es
+  adapter: municipio.adapters.madridejos:MadridejosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal de planeamiento. Documentos agrupados por POM
+    y modificación; cobertura parcial, sin geometría ni fechas extraídas de PDF.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

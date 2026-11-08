@@ -1,0 +1,19 @@
+slug: alguazas
+nombre: Alguazas
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30007'
+portal:
+  base_url: https://alguazas.es/ordenanzas-municipales/
+  adapter: municipio.adapters.alguazas:AlguazasAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal; cobertura parcial limitada a las Normas Subsidiarias, sin afirmar vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: zumaia
+nombre: Zumaia
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20081'
+portal:
+  base_url: https://zumaia.eus
+  adapter: municipio.adapters.zumaia:ZumaiaAyuntamientoAdapter
+  config:
+    user_agent: municipio-zumaia/1.0
+  notes: >-
+    Inventario municipal de exposición pública, pestañas abiertas y cerradas.
+    Cobertura parcial de instrumentos urbanísticos y proyectos de urbanización;
+    documentos agrupados por instrumento. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Las solicitudes de licencia del inventario no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

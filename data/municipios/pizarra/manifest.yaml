@@ -1,0 +1,25 @@
+slug: pizarra
+nombre: Pizarra
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29080'
+portal:
+  base_url: https://www.juntadeandalucia.es/medioambiente/daepu/
+  adapter: municipio.adapters.pizarra:PizarraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial autonómico DAEPU filtrado por municipio principal PIZARRA,
+    Málaga. Instrumentos urbanísticos documentados por expedientes ambientales,
+    agrupando sus documentos. Cobertura parcial, sin afirmar aprobación
+    urbanística ni vigencia. Portal PGOU provincial responde HTTP 202 vacío.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Fuente oficial alternativa Junta de Andalucía; el campo source selecciona el adaptador de portal.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

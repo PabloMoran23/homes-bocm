@@ -1,0 +1,22 @@
+slug: caldas-de-reis
+nombre: Caldas de Reis
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36005'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=36005
+  adapter: municipio.adapters.caldas_de_reis:CaldasDeReisAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico de planeamiento del municipio, con documentos agrupados por instrumento.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Caldas de Reis]
+  notes: Fuente material Xunta de Galicia (SIOTUGA), no noticias ni anuncios de contratación. Cobertura parcial del universo de proyectos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: penarroya-pueblonuevo
+nombre: Peñarroya-Pueblonuevo
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14052'
+portal:
+  base_url: https://penarroyapueblonuevo.es/ayuntamiento/ayuntamiento-documentos/
+  adapter: municipio.adapters.penarroya_pueblonuevo:PenarroyaPueblonuevoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del PMUS municipal; cobertura parcial sin acreditar aprobación ni ejecución.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Peñarroya-Pueblonuevo
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

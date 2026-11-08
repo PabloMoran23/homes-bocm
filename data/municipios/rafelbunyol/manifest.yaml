@@ -1,0 +1,24 @@
+slug: rafelbunyol
+nombre: Rafelbunyol
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46207'
+portal:
+  base_url: https://gobiernoabierto.rafelbunyol.es
+  adapter: municipio.adapters.rafelbunyol:RafelbunyolAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de modificaciones puntuales del planeamiento vigente.
+    Documentos agrupados por instrumento; fechas de catálogo de significado
+    no especificado. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Rafelbunyol, Rafelbuñol]
+licencias:
+  enabled: false
+  notes: No hay registro de concesiones verificado; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: calasparra
+nombre: Calasparra
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30013'
+portal:
+  base_url: https://calasparra.org/urbanisme/
+  adapter: municipio.adapters.calasparra:CalasparraAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal vía API pública WordPress; cobertura parcial sin vigencia ni aprobación inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Calasparra]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

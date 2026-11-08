@@ -1,0 +1,24 @@
+slug: solsona
+nombre: Solsona
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25207'
+portal:
+  base_url: https://www.ajsolsona.cat
+  adapter: municipio.adapters.solsona:SolsonaAyuntamientoAdapter
+  config:
+    ine_code: '25207'
+    user_agent: municipio-solsona/1.0
+  notes: >-
+    Inventario municipal de proyectos en exposición pública, con documentos técnicos
+    agrupados por proyecto. Cobertura parcial, sin licencias ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Las solicitudes de licencia no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
