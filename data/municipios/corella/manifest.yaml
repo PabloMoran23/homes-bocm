@@ -1,0 +1,24 @@
+slug: corella
+nombre: Corella
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31077'
+portal:
+  base_url: https://www.corella.es
+  adapter: municipio.adapters.corella:CorellaAyuntamientoAdapter
+  config:
+    ine_code: '31077'
+  notes: >-
+    Inventario documental del PGM, agrupando EMOT y PUM con todos sus enlaces.
+    Cobertura parcial; sin fechas o fase declaradas en el HTML ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Corella]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

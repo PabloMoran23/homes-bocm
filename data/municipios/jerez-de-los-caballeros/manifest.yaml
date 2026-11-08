@@ -1,0 +1,25 @@
+slug: jerez-de-los-caballeros
+nombre: Jerez de los Caballeros
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06070'
+portal:
+  base_url: https://jerezcaballeros.es
+  adapter: municipio.adapters.jerez_de_los_caballeros:JerezDeLosCaballerosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario SITEX de la Junta de Extremadura enlazado desde Urbanismo municipal.
+    Instrumentos municipales vigentes y en trámite, con documentos agrupados.
+    Cobertura parcial; excluye no vigentes y planes territoriales. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Jerez de los Caballeros
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

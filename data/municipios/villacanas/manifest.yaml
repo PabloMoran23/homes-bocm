@@ -1,0 +1,26 @@
+slug: villacanas
+nombre: Villacañas
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45185'
+portal:
+  base_url: https://www.aytovillacanas.com
+  adapter: municipio.adapters.villacanas:VillacanasAyuntamientoAdapter
+  config:
+    ine_code: '45185'
+  notes: >-
+    Catálogo municipal Trámites (categoría 109), paginación completa, y PDF oficiales
+    del POM refundido julio 2001. Un único instrumento con nueve documentos.
+    Cobertura parcial, sin historial completo de modificaciones, licencias u obras.
+    Requiere pdftotext del sistema. Sin geometría extraída; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villacañas, Villacanas]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

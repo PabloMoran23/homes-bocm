@@ -1,0 +1,25 @@
+slug: moncofa
+nombre: Moncofa
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '12077'
+portal:
+  base_url: https://moncofa.com
+  adapter: municipio.adapters.moncofa:MoncofaAyuntamientoAdapter
+  config:
+    ine_code: '12077'
+    user_agent: municipio-moncofa/1.0
+  notes: >-
+    Inventario municipal de documentación técnica de Belcaire Sur y PAI
+    manzanas 1 y 2 Casablanca. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Moncofa]
+licencias:
+  enabled: false
+  notes: Formularios y edictos de información pública no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

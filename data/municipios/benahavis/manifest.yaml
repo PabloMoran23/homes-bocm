@@ -1,0 +1,29 @@
+slug: benahavis
+nombre: Benahavís
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29023'
+portal:
+  base_url: https://benahavis.sedelectronica.es
+  adapter: municipio.adapters.benahavis:BenahavisAyuntamientoAdapter
+  config:
+    ine_code: '29023'
+  notes: >-
+    Inventario público de urbanismo de la sede electrónica. Se recorre toda su
+    paginación; extracción semántica parcial de cuatro familias de instrumentos
+    contrastadas con sus documentos. No acredita vigencia ni licencia concedida.
+    Fechas de creación de documentos conservadas sólo como metadatos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Benahavís, Benahavis]
+  notes: >-
+    Proindiviso A Real de la Quinta, estudio de detalle Tajos Blancos/La Zagaleta,
+    modificación ED El Madroñal 3-4-5 y PPO La Fuente. Sin geometría verificada.
+licencias:
+  enabled: false
+  notes: Formularios y solicitudes no constituyen licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

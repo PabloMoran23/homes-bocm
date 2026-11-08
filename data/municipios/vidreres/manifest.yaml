@@ -1,0 +1,25 @@
+slug: vidreres
+nombre: Vidreres
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17213'
+portal:
+  base_url: https://vidreres.cat
+  adapter: municipio.adapters.vidreres:VidreresAyuntamientoAdapter
+  config:
+    ine_code: '17213'
+  notes: >-
+    Inventario municipal PGOU: documentos agrupados por instrumento.
+    Cobertura parcial sin fechas de aprobación ni geometría verificadas.
+    Enlaces Drive conservados por procedencia municipal; asociaciones ambiguas señaladas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vidreres]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

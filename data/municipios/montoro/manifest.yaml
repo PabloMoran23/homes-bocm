@@ -1,0 +1,20 @@
+slug: montoro
+nombre: Montoro
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14043'
+portal:
+  base_url: https://montoro.es/urbanismo/
+  adapter: municipio.adapters.montoro:MontoroAyuntamientoAdapter
+  config: {}
+  notes: Documentos del Plan de Acción de Agenda Urbana y del Plan Municipal de Vivienda y Suelo; cobertura parcial, sin archivo Drive ni noticias de obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Montoro]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

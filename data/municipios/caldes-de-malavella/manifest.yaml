@@ -1,0 +1,25 @@
+slug: caldes-de-malavella
+nombre: Caldes de Malavella
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17033'
+portal:
+  base_url: https://caldesdemalavella.cat
+  adapter: municipio.adapters.caldes_de_malavella:CaldesDeMalavellaAyuntamientoAdapter
+  config:
+    ine_code: '17033'
+  notes: >-
+    Cobertura parcial del POUM original enlazado como vigente por Urbanisme.
+    Agrupa normativa DOGC y enlaces del mismo expediente RPUC. Requiere pdftotext.
+    No incluye todas las modificaciones ni el inventario de obras públicas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Caldes de Malavella]
+licencias:
+  enabled: false
+  notes: La información pública de solicitudes no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

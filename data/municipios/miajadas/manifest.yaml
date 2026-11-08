@@ -1,0 +1,25 @@
+slug: miajadas
+nombre: Miajadas
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10121'
+portal:
+  base_url: https://miajadas.org
+  adapter: municipio.adapters.miajadas:MiajadasAyuntamientoAdapter
+  config:
+    ine_code: '10121'
+  notes: >-
+    Inventario oficial SITEX de la Junta de Extremadura, municipio interno 378.
+    Solo instrumentos vigentes; portal municipal devuelve HTTP 403 al extractor.
+    Documentos agrupados por figura, sin geometría verificada ni cobertura de obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Miajadas]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

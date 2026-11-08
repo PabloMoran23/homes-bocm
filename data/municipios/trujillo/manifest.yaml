@@ -1,0 +1,24 @@
+slug: trujillo
+nombre: Trujillo
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10195'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.trujillo:TrujilloAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Registro oficial autonómico SITEX, municipio interno 482 (no es código INE).
+    Instrumentos de planeamiento agrupados por figura, con documentos y trámites.
+    Cobertura municipal parcial, sin geometría ni certificación de vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Fuente material Junta de Extremadura SITEX; source identifica esa procedencia en cada registro.
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

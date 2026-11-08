@@ -1,0 +1,24 @@
+slug: zalla
+nombre: Zalla
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48096'
+portal:
+  base_url: https://www.zalla.eus
+  adapter: municipio.adapters.zalla:ZallaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental del nuevo PGOU en su micrositio municipal, reconocido
+    por el BOB. Un solo instrumento; documentos agrupados y enlaces conservados.
+    Cobertura parcial, sin geometría ni fechas inferidas de archivos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Zalla]
+licencias:
+  enabled: false
+  notes: Formularios y procedimientos excluidos; no hay registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

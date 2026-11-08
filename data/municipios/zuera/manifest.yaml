@@ -1,0 +1,25 @@
+slug: zuera
+nombre: Zuera
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50298'
+ine_code: '50298'
+portal:
+  base_url: https://www.ayunzuera.com
+  adapter: municipio.adapters.zuera:ZueraAyuntamientoAdapter
+  config:
+    ine_code: '50298'
+  notes: >-
+    Inventario municipal de planeamiento, documentos agrupados por instrumento.
+    Cobertura parcial; sin geometría ni fechas jurídicas verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Zuera]
+licencias:
+  enabled: false
+  notes: No hay inventario de licencias concedidas verificado. Formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

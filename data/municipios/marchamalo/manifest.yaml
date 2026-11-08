@@ -1,0 +1,24 @@
+slug: marchamalo
+nombre: Marchamalo
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19171'
+portal:
+  base_url: https://www.marchamalo.com
+  adapter: municipio.adapters.marchamalo:MarchamaloAyuntamientoAdapter
+  config:
+    user_agent: municipio-marchamalo/1.0
+  notes: >-
+    Inventario municipal de normativa urbanística, con documentos y carpetas
+    enlazados por el Ayuntamiento. Cobertura parcial; no se enumeran los
+    contenidos internos de Drive ni los instrumentos sin enlace documental.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

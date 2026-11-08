@@ -1,0 +1,27 @@
+slug: abanto-y-ciervana-abanto-zierbena
+nombre: Abanto y Ciérvana-Abanto Zierbena
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48002'
+portal:
+  base_url: https://www.abanto-zierbena.eus
+  adapter: municipio.adapters.abanto_y_ciervana_abanto_zierbena:AbantoZierbenaAyuntamientoAdapter
+  config:
+    ine_code: '48002'
+  notes: >-
+    Inventario oficial de Planificación urbanística: instrumentos individuales y
+    documentos agrupados por página. Cobertura parcial; excluye los catálogos PGOU
+    y PERIS, el reglamento del consejo y la sección Gestión urbanística.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Abanto y Ciérvana-Abanto Zierbena
+    - Abanto Zierbena
+licencias:
+  enabled: false
+  notes: Sin inventario verificado de licencias concedidas; no se extraen solicitudes.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

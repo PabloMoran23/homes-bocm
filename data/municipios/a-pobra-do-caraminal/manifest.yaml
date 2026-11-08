@@ -1,0 +1,25 @@
+slug: a-pobra-do-caraminal
+nombre: A Pobra do Caramiñal
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15067'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.a_pobra_do_caraminal:APobraDoCaraminalAdapter
+  config: {}
+  notes: >-
+    Inventario oficial autonómico SIOTUGA filtrado por INE 15067.
+    Planeamiento general y de desarrollo, clases 14 y 13 completas.
+    No cubre inventario histórico, IOT, obras ni licencias. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [A Pobra do Caramiñal, 'Pobra do Caramiñal, A']
+  notes: Instrumentos municipales publicados por la Xunta; source identifica siotuga_xunta.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,22 @@
+slug: tocina
+nombre: Tocina
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41092'
+portal:
+  base_url: https://www.tocina.es/es/ayuntamiento/pgou/
+  adapter: municipio.adapters.tocina:TocinaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales del PGOU y adaptación LOUA, incluyendo corrección; cobertura parcial y vigencia no verificada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Tocina
+    - Tocina y Los Rosales
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

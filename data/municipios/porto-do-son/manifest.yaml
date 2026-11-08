@@ -1,0 +1,22 @@
+slug: porto-do-son
+nombre: Porto do Son
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15071'
+portal:
+  base_url: https://portodoson.gal
+  adapter: municipio.adapters.porto_do_son:PortoDoSonAyuntamientoAdapter
+  config:
+    ine_code: '15071'
+  notes: >-
+    Inventario oficial Proxectos: PEID y obras de humanización con documentos.
+    Cobertura parcial; sin geometría verificada ni licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

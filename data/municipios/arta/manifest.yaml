@@ -1,0 +1,24 @@
+slug: arta
+nombre: Artà
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07006'
+portal:
+  base_url: https://www.arta.cat/ajuntament/fitxaServeis.php?id=123
+  adapter: municipio.adapters.arta:ArtaAyuntamientoAdapter
+  config:
+    ine_code: '07006'
+  notes: >-
+    Cobertura parcial del inventario de Normas subsidiarias y modificaciones
+    puntuales enlazadas. Documentos agrupados por instrumento, sin geometría
+    ni fechas de acuerdo inferidas. No es un texto consolidado completo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

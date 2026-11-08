@@ -1,0 +1,19 @@
+slug: reocin
+nombre: Reocín
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39060'
+portal:
+  base_url: https://reocin.wpcomstaging.com/urbanismo/
+  adapter: municipio.adapters.reocin:ReocinAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de Urbanismo; cobertura parcial de instrumentos documentados, sin estado jurídico inferido.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

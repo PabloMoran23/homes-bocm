@@ -1,0 +1,22 @@
+slug: cisterniga
+nombre: Cistérniga
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '47052'
+portal:
+  base_url: https://www.lacisterniga.es/normativa-urbanistica-pt?page=0
+  adapter: municipio.adapters.cisterniga:CisternigaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal Urbanismo paginado; fichas y anexos agrupados por instrumento.
+licencias:
+  enabled: false
+  notes: Formularios y solicitudes excluidos; sin registro verificado de concesiones.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cistérniga, La Cistérniga]
+  notes: Cobertura parcial del inventario documental; fechas de rango del CMS sin interpretación jurídica.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

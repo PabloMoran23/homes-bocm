@@ -1,0 +1,24 @@
+slug: tona
+nombre: Tona
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08283'
+portal:
+  base_url: https://tona.cat
+  adapter: municipio.adapters.tona:TonaAyuntamientoAdapter
+  config:
+    ine_code: '08283'
+  notes: >-
+    Inventario municipal de obras públicas, con documentos agrupados por expediente
+    e hitos de aprobación y ejecución separados. Cobertura parcial del municipio;
+    sin geometría verificada ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni anuncios de contratación como licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

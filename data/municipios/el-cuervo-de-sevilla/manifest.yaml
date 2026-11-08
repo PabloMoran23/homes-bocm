@@ -1,0 +1,19 @@
+slug: el-cuervo-de-sevilla
+nombre: El Cuervo de Sevilla
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41903'
+portal:
+  base_url: https://transparencia.elcuervodesevilla.es/es/transparencia/indicadores-de-transparencia/indicador/50.-Esta-publicado-el-Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan.-00004/
+  adapter: municipio.adapters.el_cuervo_de_sevilla:ElCuervoDeSevillaAyuntamientoAdapter
+  config: {}
+  notes: Inventario NNSS agrupado en un instrumento; recorre todas las páginas enlazadas. Cobertura parcial municipal, sin vigencia consolidada ni geometría verificada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

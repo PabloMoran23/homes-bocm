@@ -1,0 +1,20 @@
+slug: arico
+nombre: Arico
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38005'
+portal:
+  base_url: https://datos.canarias.es/catalogos/general/dataset/planeamiento-urbanistico-de-arico
+  adapter: municipio.adapters.arico:AricoAyuntamientoAdapter
+  config: {}
+  notes: Catálogo oficial regional de instrumentos de Arico y sus documentos; cobertura parcial, sin garantía de vigencia actual.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Planeamiento municipal publicado por Gobierno de Canarias/GRAFCAN; cada registro declara su procedencia regional.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

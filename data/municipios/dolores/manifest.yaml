@@ -1,0 +1,22 @@
+slug: dolores
+nombre: Dolores
+provincia: Alicante
+comunidad_autonoma: comunidad-valenciana
+codigo_ine: '03064'
+portal:
+  base_url: https://www.dolores.es/el-ayuntamiento/departamentos-municipales/urbanismo/
+  adapter: municipio.adapters.dolores:DoloresAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del PGOU, agrupando descarga completa y documentos.
+    Cobertura parcial; no acredita vigencia ni aprobación. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

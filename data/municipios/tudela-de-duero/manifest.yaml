@@ -1,0 +1,24 @@
+slug: tudela-de-duero
+nombre: Tudela de Duero
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '47175'
+portal:
+  base_url: https://tudeladeduero.ayuntamientosdevalladolid.es/
+  adapter: municipio.adapters.tudela_de_duero:TudelaDeDueroAyuntamientoAdapter
+  config:
+    ine_code: '47175'
+  notes: >-
+    Archivo de Planeamiento JCyL enlazado por Normativa Urbanística municipal.
+    Vista actual completa paginada; cobertura parcial, sin históricos ni afirmación
+    de vigencia. Documentos agrupados por instrumento; sin geometría verificada.
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; formularios excluidos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

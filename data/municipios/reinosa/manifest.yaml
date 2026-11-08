@@ -1,0 +1,19 @@
+slug: reinosa
+nombre: Reinosa
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39059'
+portal:
+  base_url: https://www.aytoreinosa.es/normativa/
+  adapter: municipio.adapters.reinosa:ReinosaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental PGOU; cobertura parcial, sin acreditar vigencia ni fechas de acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

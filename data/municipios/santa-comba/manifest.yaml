@@ -1,0 +1,19 @@
+slug: santa-comba
+nombre: Santa Comba
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15077'
+portal:
+  base_url: https://plan-unico.dacoruna.gal/santa-comba/
+  adapter: municipio.adapters.santa_comba:SantaCombaAyuntamientoAdapter
+  config: {}
+  notes: Inventario POS+ de la Deputación enlazado desde la web municipal. Cobertura parcial de obras aprobadas, no licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

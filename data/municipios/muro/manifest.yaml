@@ -1,0 +1,25 @@
+slug: muro
+nombre: Muro
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07039'
+portal:
+  base_url: https://ajmuro.net
+  adapter: municipio.adapters.muro:MuroAyuntamientoAdapter
+  config:
+    ine_code: '07039'
+  notes: >-
+    Estudios de detalle documentados en Pla general d'ordenació urbana y
+    Exposició Pública. Cobertura parcial de archivo; no acredita vigencia,
+    aprobación ni licencias. Fechas de fichero conservadas con semántica desconocida.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Muro]
+licencias:
+  enabled: false
+  notes: Formularios de Urbanisme excluidos; no registro verificado de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

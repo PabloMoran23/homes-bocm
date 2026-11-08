@@ -1,0 +1,19 @@
+slug: palomares-del-rio
+nombre: Palomares del Río
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41070'
+portal:
+  base_url: https://www.palomaresdelrio.es/
+  adapter: municipio.adapters.palomares_del_rio:PalomaresDelRioAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales oficiales de planeamiento; cobertura parcial, sin inferir vigencia ni geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,23 @@
+slug: olias-del-rey
+nombre: Olías del Rey
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45122'
+portal:
+  base_url: https://www.ayuntamientodeoliasdelrey.com/urbanismo/
+  adapter: municipio.adapters.olias_del_rey:OliasDelReyAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de la revisión de Normas Subsidiarias. Un instrumento
+    con sus documentos agrupados. Cobertura parcial, sin fechas administrativas,
+    vigencia ni geometría verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
