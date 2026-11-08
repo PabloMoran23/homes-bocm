@@ -1,0 +1,27 @@
+slug: vilassar-de-dalt
+nombre: Vilassar de Dalt
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08214'
+portal:
+  base_url: https://www.vilassardedalt.cat
+  adapter: municipio.adapters.vilassar_de_dalt:VilassarDeDaltAyuntamientoAdapter
+  config:
+    ine_code: '08214'
+  notes: >-
+    Dos inventarios documentales municipales: POUM y planeamiento en trámite.
+    Documentos agrupados por instrumento; anexos del POUM conservados juntos.
+    Cobertura parcial sin fechas de aprobación ni geometría verificadas.
+    Pertenecer al índice en trámite no acredita el estado jurídico actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Vilassar de Dalt
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

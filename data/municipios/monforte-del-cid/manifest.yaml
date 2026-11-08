@@ -1,0 +1,23 @@
+slug: monforte-del-cid
+nombre: Monforte del Cid
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03088'
+portal:
+  base_url: https://monfortedelcid.sedelectronica.es
+  adapter: municipio.adapters.monforte_del_cid:MonforteDelCidAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del inventario oficial: documentos directos del Plan General.
+    Excluye subcarpetas de modificaciones y estudios de detalle, planes de desarrollo
+    y planeamiento en tramitación. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios excluidos; sin registro verificado de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

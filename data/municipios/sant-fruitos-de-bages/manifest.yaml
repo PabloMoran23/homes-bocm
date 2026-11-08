@@ -1,0 +1,25 @@
+slug: sant-fruitos-de-bages
+nombre: Sant Fruitós de Bages
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08213'
+portal:
+  base_url: https://santfruitosdebages.eadministracio.cat
+  adapter: municipio.adapters.sant_fruitos_de_bages:SantFruitosDeBagesAyuntamientoAdapter
+  config:
+    ine_code: '08213'
+    user_agent: municipio-sant-fruitos-de-bages/1.0
+  notes: >-
+    Inventario documental oficial del POUM en aprobación inicial. Agrupa todos los
+    documentos y comprueba su número contra el índice. Cobertura municipal parcial;
+    sin fechas extraídas del contenido PDF ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud y la suspensión de licencias no son concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: cintruenigo
+nombre: Cintruénigo
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31072'
+portal:
+  base_url: https://www.cintruenigo.com/cintruenigo/urbanismo/
+  adapter: municipio.adapters.cintruenigo:CintruenigoAyuntamientoAdapter
+  config: {}
+  notes: Planeamiento oficial SIUN de Navarra enlazado desde Urbanismo municipal. Incluye histórico; no acredita obras ejecutadas ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

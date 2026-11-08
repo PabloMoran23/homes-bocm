@@ -1,0 +1,27 @@
+slug: la-mojonera
+nombre: La Mojonera
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04903'
+portal:
+  base_url: https://www.juntadeandalucia.es/medioambiente/daepu/resolucions
+  adapter: municipio.adapters.la_mojonera:LaMojoneraAyuntamientoAdapter
+  config:
+    ine_code: '04903'
+  notes: >-
+    Inventario oficial de evaluación ambiental de la Junta filtrado y validado
+    para La Mojonera (Almería). Agrupación por expediente ambiental con todos
+    los documentos asociados. Cobertura parcial; no acredita aprobación del
+    planeamiento ni vigencia. Web municipal bloqueada por control JavaScript
+    en las peticiones directas. Sin geometría; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Instrumentos municipales publicados en el inventario ambiental autonómico; origen real junta_andalucia en cada registro.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

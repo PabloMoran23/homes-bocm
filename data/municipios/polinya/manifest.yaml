@@ -1,0 +1,26 @@
+slug: polinya
+nombre: Polinyà
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08167'
+portal:
+  base_url: https://www.polinya.cat
+  adapter: municipio.adapters.polinya:PolinyaAyuntamientoAdapter
+  config:
+    ine_code: '08167'
+    user_agent: municipio-polinya/1.0
+  notes: >-
+    Cobertura parcial del PGOU: refundido municipal de trabajo, no texto legal
+    oficial. Documentos agrupados por instrumento. Sin fechas verificadas ni
+    geometría; publication_ready false. El inventario remite al RPUC.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Polinyà]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

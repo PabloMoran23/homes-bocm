@@ -1,0 +1,20 @@
+slug: salceda-de-caselas
+nombre: Salceda de Caselas
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36049'
+portal:
+  base_url: https://salcedadecaselas.gal
+  adapter: municipio.adapters.salceda_de_caselas:SalcedaDeCaselasAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial municipal de planeamiento alojado por la Xunta en SIOTUGA.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Snapshot completo de clases 14, 13 y 18; cobertura municipal parcial, sin geometría verificada.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

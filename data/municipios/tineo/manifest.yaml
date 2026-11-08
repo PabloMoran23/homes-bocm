@@ -1,0 +1,23 @@
+slug: tineo
+nombre: Tineo
+provincia: Asturias
+comunidad_autonoma: principado-de-asturias
+codigo_ine: '33073'
+portal:
+  base_url: https://www.tineo.es
+  adapter: municipio.adapters.tineo:TineoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de instrumentos en tramitación. Cobertura parcial;
+    las fases son las anunciadas en la página, no una garantía de actualidad
+    administrativa. Sin fechas ni geometría verificadas por el extractor.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

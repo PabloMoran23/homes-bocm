@@ -1,0 +1,25 @@
+slug: villamediana-de-iregua
+nombre: Villamediana de Iregua
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+codigo_ine: '26168'
+portal:
+  base_url: https://villamedianadeiregua.org
+  adapter: municipio.adapters.villamediana_de_iregua:VillamedianaDeIreguaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal del PGM y sus instrumentos derivados publicados.
+    Cobertura parcial; no acredita vigencia consolidada ni geometría. Conserva
+    documentos agrupados y recorre categorías y paginación completas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villamediana de Iregua
+licencias:
+  enabled: false
+  notes: Los impresos de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

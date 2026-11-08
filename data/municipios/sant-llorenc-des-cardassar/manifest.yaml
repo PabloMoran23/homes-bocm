@@ -1,0 +1,30 @@
+slug: sant-llorenc-des-cardassar
+nombre: Sant Llorenç des Cardassar
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07051'
+portal:
+  base_url: https://www.caib.es
+  adapter: municipio.adapters.sant_llorenc_des_cardassar:SantLlorencDesCardassarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente oficial autonómica CAIB, Servei d'Avaluació Ambiental. Inventarios de
+    documentos ambientales en evaluación simplificada y documentos iniciales en
+    evaluación ordinaria. Sólo instrumentos estratégicos E de este municipio;
+    cobertura parcial, sin inferir aprobación, vigencia, fechas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Llorenç des Cardassar
+  notes: >-
+    Adaptador directo de planeamiento municipal publicado por CAIB. El campo
+    source de cada registro identifica caib; ayuntamiento selecciona el flujo
+    de adaptador directo del esquema compartido, no el organismo editor.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro accesible de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

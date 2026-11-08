@@ -1,0 +1,27 @@
+slug: binissalem
+nombre: Binissalem
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07008'
+portal:
+  base_url: https://www.ajbinissalem.net
+  adapter: municipio.adapters.binissalem:BinissalemAyuntamientoAdapter
+  config:
+    ine_code: '07008'
+  notes: >-
+    Inventario municipal de instrumentos de planeamiento en vigor; documentos
+    agrupados por instrumento. Cobertura parcial, sin fechas de aprobación
+    inferidas, sin geometría y sin publicación automática. La categoría del
+    inventario no acredita la fase individual de los PDF enlazados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Binissalem
+licencias:
+  enabled: false
+  notes: El registro municipal consultado no expone expedientes de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

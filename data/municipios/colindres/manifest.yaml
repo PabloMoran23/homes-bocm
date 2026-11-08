@@ -1,0 +1,23 @@
+slug: colindres
+nombre: Colindres
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39023'
+portal:
+  base_url: https://www.colindres.es
+  adapter: municipio.adapters.colindres:ColindresAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal del PGOU 1964 y modificaciones puntuales.
+    Cobertura parcial; sin verificación de vigencia jurídica, fechas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Colindres]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

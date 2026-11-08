@@ -1,0 +1,20 @@
+slug: umbrete
+nombre: Umbrete
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41094'
+portal:
+  base_url: https://transparencia.umbrete.es/es/
+  adapter: municipio.adapters.umbrete:UmbreteAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de instrumentos en indicadores 50, 53 y 55; cobertura parcial, sin determinación de vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Umbrete]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

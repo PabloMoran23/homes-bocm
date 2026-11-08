@@ -1,0 +1,19 @@
+slug: herencia
+nombre: Herencia
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13047'
+portal:
+  base_url: https://herencia.es/seccion/noticias/obras-urbanismo
+  adapter: municipio.adapters.herencia:HerenciaAyuntamientoAdapter
+  config: {}
+  notes: Cobertura parcial de obras físicas documentadas en noticias oficiales desde 2026; archivo AJAX completo. Sin inferir licencias, fechas de acuerdo ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

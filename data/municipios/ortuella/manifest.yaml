@@ -1,0 +1,26 @@
+slug: ortuella
+nombre: Ortuella
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48083'
+portal:
+  base_url: https://www.ortuella.eus
+  adapter: municipio.adapters.ortuella:OrtuellaAyuntamientoAdapter
+  config:
+    ine_code: '48083'
+    user_agent: municipio-ortuella/1.0
+  notes: >-
+    Inventario público de páginas de Urbanismo vía SharePoint OData, con paginación.
+    Cobertura parcial: PGOU, catálogo de patrimonio y plan de acción del paisaje.
+    Documentos agrupados con procedencia; sin fechas legales ni geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ortuella]
+licencias:
+  enabled: false
+  notes: Los formularios y explicaciones de otorgamiento no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

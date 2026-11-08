@@ -1,0 +1,21 @@
+slug: campillos
+nombre: Campillos
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29032'
+portal:
+  base_url: https://campillos.sedelectronica.es
+  adapter: municipio.adapters.campillos:CampillosAyuntamientoAdapter
+  config: {}
+  notes: Tablón vigente; proyectos de actuación extraordinaria agrupados por expediente. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Campillos]
+licencias:
+  enabled: false
+  notes: La categoría Licencias Urbanísticas no acredita una licencia concedida; se extraen únicamente proyectos documentados.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

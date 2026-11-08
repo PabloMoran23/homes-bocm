@@ -1,0 +1,27 @@
+slug: almussafes
+nombre: Almussafes
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46035'
+portal:
+  base_url: https://almussafes.net
+  adapter: municipio.adapters.almussafes:AlmussafesAyuntamientoAdapter
+  config:
+    ine_code: '46035'
+    user_agent: municipio-almussafes/1.0
+  notes: >-
+    Inventario finito PLANTEJAMENT VIGENT de Urbanisme–Serveis. Un registro por
+    instrumento, conservando documentos agrupados y su procedencia municipal.
+    Cobertura municipal parcial; no incluye el archivo de transparencia ni el
+    nuevo PGE en tramitación. Sin fechas ni geometría verificadas en esta tabla.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Almussafes]
+licencias:
+  enabled: false
+  notes: Los formularios y anuncios de información pública no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
