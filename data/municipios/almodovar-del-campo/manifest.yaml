@@ -1,0 +1,22 @@
+slug: almodovar-del-campo
+nombre: Almodóvar del Campo
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13015'
+portal:
+  base_url: https://www.almodovardelcampo.es/plan-de-ordenacion-municipal/
+  adapter: municipio.adapters.almodovar_del_campo:AlmodovarDelCampoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del POM en segunda información pública; cobertura parcial y vigencia no verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Almodóvar del Campo
+licencias:
+  enabled: false
+  notes: Solicitudes de licencia excluidas; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

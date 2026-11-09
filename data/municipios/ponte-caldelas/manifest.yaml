@@ -1,0 +1,25 @@
+slug: ponte-caldelas
+nombre: Ponte Caldelas
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36043'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.ponte_caldelas:PonteCaldelasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial municipal de planeamiento de la Xunta (SIOTUGA), INE 36043.
+    Cobertura parcial de planeamiento general, desarrollo, histórico y delimitaciones
+    rurales. Excluye ordenación territorial y expedientes en tramitación no inventariados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ponte Caldelas]
+  notes: La procedencia real de cada registro es xunta_siotuga; sin geometría verificada.
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

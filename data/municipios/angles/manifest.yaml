@@ -1,0 +1,24 @@
+slug: angles
+nombre: Anglès
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17008'
+portal:
+  base_url: https://som.angles.cat
+  adapter: municipio.adapters.angles:AnglesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal Som.Anglès de proyectos: obras físicas documentadas
+    en fichas históricas. Cobertura parcial, sin registro de licencias ni
+    geometrías verificadas; publication_ready false. No representa todas las
+    obras actuales. Se conservan enlaces documentales por proyecto.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

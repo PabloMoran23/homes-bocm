@@ -1,0 +1,19 @@
+slug: ribadesella
+nombre: Ribadesella
+provincia: Asturias
+comunidad_autonoma: principado-de-asturias
+codigo_ine: '33056'
+portal:
+  base_url: https://www.ayto-ribadesella.es/proyectos-financiados-en-el-ayuntamiento-de-ribadesella
+  adapter: municipio.adapters.ribadesella:RibadesellaAyuntamientoAdapter
+  config: {}
+  notes: Inventario PRTR municipal; cobertura parcial de intervenciones físicas, sin fechas de aprobación ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

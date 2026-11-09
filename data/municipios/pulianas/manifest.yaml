@@ -1,0 +1,28 @@
+slug: pulianas
+nombre: Pulianas
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18165'
+portal:
+  base_url: https://www.juntadeandalucia.es/medioambiente/daepu/
+  adapter: municipio.adapters.pulianas:PulianasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente oficial autonómica: inventario de evaluación ambiental estratégica
+    filtrado por municipio principal PULIANAS y verificado contra provincia GRANADA.
+    Cobertura municipal parcial, no inventario completo del Ayuntamiento.
+    Cada expediente agrupa sus resoluciones y documentos; no acredita aprobación
+    urbanística ni vigencia. Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: >-
+    Canal municipal de proyectos con procedencia real Junta de Andalucía indicada
+    en cada registro. Solo instrumentos presentes en el inventario ambiental.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

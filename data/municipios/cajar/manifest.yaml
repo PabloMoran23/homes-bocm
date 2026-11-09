@@ -1,0 +1,22 @@
+slug: cajar
+nombre: Cájar
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18036'
+portal:
+  base_url: https://cajar.sedelectronica.es/transparency
+  adapter: municipio.adapters.cajar:CajarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario público de obras e infraestructuras de la sede municipal.
+    Documentos agrupados por proyecto; cobertura parcial, sin geometría ni
+    fechas de acuerdo verificadas. No acredita ejecución ni vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

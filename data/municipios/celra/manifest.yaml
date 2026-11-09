@@ -1,0 +1,25 @@
+slug: celra
+nombre: Celrà
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17049'
+portal:
+  base_url: https://www.celra.cat
+  adapter: municipio.adapters.celra:CelraAyuntamientoAdapter
+  config:
+    ine_code: '17049'
+    user_agent: municipio-celra/1.0
+  notes: >-
+    Inventario municipal de planeamiento vigente, agrupado por instrumento con sus
+    documentos. Cobertura parcial del municipio, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: No representa un histórico completo del RPUC ni un inventario de obras.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: yepes
+nombre: Yepes
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45202'
+portal:
+  base_url: https://www.yepes.es
+  adapter: municipio.adapters.yepes:YepesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del Plan de ordenación municipal; planos y normas
+    agrupados como un instrumento. Cobertura parcial, sin aprobación acreditada
+    ni geometría vectorial. Fechas de subida conservadas en cada documento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Yepes]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

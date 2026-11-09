@@ -1,0 +1,23 @@
+slug: entrambasaguas
+nombre: Entrambasaguas
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39028'
+portal:
+  base_url: https://entrambasaguas.org/normativa-urbanistica
+  adapter: municipio.adapters.entrambasaguas:EntrambasaguasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de Normativa Urbanística: documentos de las Normas
+    Subsidiarias agrupados en un instrumento. Cobertura parcial, sin acreditar
+    vigencia consolidada, fechas de aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se extraen formularios, anuncios de contratación ni actas como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

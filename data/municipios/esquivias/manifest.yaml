@@ -1,0 +1,24 @@
+slug: esquivias
+nombre: Esquivias
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45064'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/registros/pau-to
+  adapter: municipio.adapters.esquivias:EsquiviasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Registro oficial autonómico de PAU de Toledo filtrado por Esquivias.
+    Cobertura parcial de instrumentos municipales; no inventario completo de obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Esquivias]
+  notes: La procedencia real es el registro autonómico JCCM, indicada en cada registro.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de concesiones; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

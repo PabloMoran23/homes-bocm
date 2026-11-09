@@ -1,0 +1,25 @@
+slug: la-canonja
+nombre: La Canonja
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43907'
+portal:
+  base_url: https://www.lacanonja.cat
+  adapter: municipio.adapters.la_canonja:LaCanonjaAyuntamientoAdapter
+  config:
+    ine_code: '43907'
+    user_agent: municipio-la-canonja/1.0
+  notes: >-
+    Catálogo municipal del POUM con expediente oficial RPUC enlazado.
+    Cobertura parcial de un instrumento, sin fechas ni geometría verificadas.
+    El inventario documental interno del RPUC no se extrae.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

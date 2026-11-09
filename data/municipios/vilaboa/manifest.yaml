@@ -1,0 +1,21 @@
+slug: vilaboa
+nombre: Vilaboa
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36058'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=36058
+  adapter: municipio.adapters.vilaboa:VilaboaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico del planeamiento aprobado de Vilaboa; cobertura parcial, sin geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vilaboa]
+  notes: Fuente efectiva Xunta de Galicia (SIOTUGA), clases 14, 13 y 18. No obras ni planeamiento en tramitación.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

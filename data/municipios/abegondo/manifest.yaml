@@ -1,0 +1,20 @@
+slug: abegondo
+nombre: Abegondo
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15001'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario?inv=1&idconcello=15001
+  adapter: municipio.adapters.abegondo:AbegondoAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial SIOTUGA enlazado por el Concello; incluye históricos identificados y documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Cobertura parcial de planeamiento publicado por Xunta, sin registro de obras ni licencias concedidas.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

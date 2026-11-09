@@ -1,0 +1,24 @@
+slug: valga
+nombre: Valga
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36056'
+portal:
+  base_url: https://www.valga.gal
+  adapter: municipio.adapters.valga:ValgaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente autonómica oficial: inventario AAE de planes en tramitación de la Xunta,
+    filtrado por Valga y contrastado con cada ficha y sus documentos. Cobertura
+    parcial, sin histórico completo, licencias concedidas ni geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Instrumentos municipales publicados por la Xunta; registros con source=xunta.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

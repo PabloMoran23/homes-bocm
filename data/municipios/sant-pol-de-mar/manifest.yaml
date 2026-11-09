@@ -1,0 +1,28 @@
+slug: sant-pol-de-mar
+nombre: Sant Pol de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08235'
+portal:
+  base_url: https://www.santpol.cat
+  adapter: municipio.adapters.sant_pol_de_mar:SantPolDeMarAyuntamientoAdapter
+  config:
+    ine_code: '08235'
+    user_agent: municipio-sant-pol-de-mar/1.0
+  notes: >-
+    Inventario municipal de proyectos de obras, completo para la página node/14628.
+    Categorías de exposición pública, contratación, ejecución y ejecutados;
+    documentos y versiones agrupados. Cobertura parcial del municipio: no incluye
+    todo el planeamiento ni un registro de licencias. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Pol de Mar
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

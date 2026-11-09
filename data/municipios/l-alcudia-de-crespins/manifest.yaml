@@ -1,0 +1,24 @@
+slug: l-alcudia-de-crespins
+nombre: l'Alcúdia de Crespins
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46020'
+portal:
+  base_url: https://transparencia.acrespins.es
+  adapter: municipio.adapters.l_alcudia_de_crespins:LAlcudiaDeCrespinsAyuntamientoAdapter
+  config:
+    ine_code: '46020'
+  notes: >-
+    Inventario municipal de planes urbanísticos y documentación del PGOU 2023.
+    Cobertura parcial municipal; no es un registro de licencias ni de todas las obras.
+    Fechas de publicación y aprobación no verificadas por este extractor.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

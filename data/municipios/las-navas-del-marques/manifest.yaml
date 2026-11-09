@@ -1,0 +1,23 @@
+slug: las-navas-del-marques
+nombre: Las Navas del Marqués
+provincia: Ávila
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '05168'
+portal:
+  base_url: https://lasnavasdelmarques.es
+  adapter: municipio.adapters.las_navas_del_marques:LasNavasDelMarquesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo oficial JCyL enlazado por Normativa Urbanística municipal.
+    Inventario actual sin históricos; instrumentos y documentos agrupados por ID.
+    Cobertura parcial, sin coordenadas ni fase de aprobación inferida.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios excluidos; sin registro verificado de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

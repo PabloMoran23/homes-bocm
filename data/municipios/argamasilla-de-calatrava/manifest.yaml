@@ -1,0 +1,25 @@
+slug: argamasilla-de-calatrava
+nombre: Argamasilla de Calatrava
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13020'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/planeamiento/sistema-de-informacion-urbana
+  adapter: municipio.adapters.argamasilla_de_calatrava:ArgamasillaDeCalatravaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente alternativa oficial autonómica SIU, filtrada por INE 13020.
+    Un instrumento con paquete cartográfico agrupado; cobertura parcial.
+    El portal municipal devuelve verificación al cliente HTTP.
+    Sin fechas jurídicas ni geometría del instrumento verificadas.
+proyectos:
+  enabled: true
+  source: jccm-siu
+  notes: Inventario informativo SIU; no acredita vigencia jurídica actual ni obras ejecutadas.
+licencias:
+  enabled: false
+  notes: No hay registro público de concesiones verificado. Formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

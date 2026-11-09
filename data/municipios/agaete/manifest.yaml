@@ -1,0 +1,21 @@
+slug: agaete
+nombre: Agaete
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35001'
+portal:
+  base_url: https://opendata.sitcan.es/dataset/planeamiento-urbanistico-de-agaete
+  adapter: municipio.adapters.agaete:AgaeteAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico de instrumentos de Agaete; cobertura histórica parcial, sin afirmar vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Agaete]
+  notes: La ruta de extracción ayuntamiento usa el inventario autonómico SITCAN; procedencia real en cada registro.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

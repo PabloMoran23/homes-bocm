@@ -1,0 +1,24 @@
+slug: agramunt
+nombre: Agramunt
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25003'
+portal:
+  base_url: https://www.agramunt.cat
+  adapter: municipio.adapters.agramunt:AgramuntAyuntamientoAdapter
+  config:
+    ine_code: '25003'
+    user_agent: municipio-agramunt/1.0
+  notes: >-
+    Inventario municipal de instrumentos urbanísticos y documentos agrupados.
+    Cobertura histórica parcial; sin geometrías verificadas ni registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de obras no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

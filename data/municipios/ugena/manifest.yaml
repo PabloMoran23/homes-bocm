@@ -1,0 +1,23 @@
+slug: ugena
+nombre: Ugena
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45176'
+portal:
+  base_url: https://ugena.sedelectronica.es
+  adapter: municipio.adapters.ugena:UgenaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial parcial: Normas Subsidiarias y Plan Parcial Sector 13 El Llano.
+    Documentos agrupados por instrumento. Sin fechas ni geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ugena]
+licencias:
+  enabled: false
+  notes: Listados históricos publicados, fuera del alcance de este adaptador.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

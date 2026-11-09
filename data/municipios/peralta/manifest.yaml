@@ -1,0 +1,27 @@
+slug: peralta
+nombre: Peralta / Azkoien
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31202'
+portal:
+  base_url: https://aytoperalta.com
+  adapter: municipio.adapters.peralta:PeraltaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de proyectos de fondos europeos. Cobertura parcial de
+    actuaciones físicas, sin fechas de aprobación ni ejecución acreditadas.
+    No cubre todos los instrumentos del SIUN ni el tablón municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Peralta
+    - Azkoien
+    - Peralta / Azkoien
+licencias:
+  enabled: false
+  notes: Solicitudes y formularios no acreditan concesiones. Sin registro verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
