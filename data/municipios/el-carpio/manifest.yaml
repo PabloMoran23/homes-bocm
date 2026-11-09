@@ -1,0 +1,19 @@
+slug: el-carpio
+nombre: El Carpio
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14018'
+portal:
+  base_url: https://ayunelcarpio.es/transparencia-en-materias-de-urbanismo-obras-publicas-y-medio-ambiente/
+  adapter: municipio.adapters.el_carpio:ElCarpioAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial del PGOU; sin afirmar vigencia ni aprobación definitiva.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

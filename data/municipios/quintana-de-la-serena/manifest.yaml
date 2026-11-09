@@ -1,0 +1,19 @@
+slug: quintana-de-la-serena
+nombre: Quintana de la Serena
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06109'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.quintana_de_la_serena:QuintanaDeLaSerenaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico de planeamiento municipal vigente o en trámite; cobertura parcial de proyectos, sin licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: cortegana
+nombre: Cortegana
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21025'
+portal:
+  base_url: https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf
+  adapter: municipio.adapters.cortegana:CorteganaAyuntamientoAdapter
+  config: {}
+  notes: Fuente oficial autonómica SITUA; inventario parcial de planeamiento general aprobado de Cortegana, Huelva.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cortegana]
+  notes: La ruta de adaptador municipal consulta la Junta; los registros identifican su procedencia autonómica. No cubre todo el planeamiento de desarrollo ni obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

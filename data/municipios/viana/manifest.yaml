@@ -1,0 +1,20 @@
+slug: viana
+nombre: Viana
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31251'
+portal:
+  base_url: https://www.viana.es
+  adapter: municipio.adapters.viana:VianaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal PRTR; cobertura parcial de actuaciones físicas DUS 5000.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: No constituye inventario completo de obras ni de planeamiento.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

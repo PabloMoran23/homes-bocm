@@ -1,0 +1,22 @@
+slug: navalvillar-de-pela
+nombre: Navalvillar de Pela
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06091'
+portal:
+  base_url: https://doe.juntaex.es/busquedas/bus_avanzada.php
+  adapter: municipio.adapters.navalvillar_de_pela:NavalvillarDePelaAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial DOE desde 2024; UE3 y modificación 20-1/2019. Publicaciones municipales y autonómicas agrupadas por instrumento.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Navalvillar de Pela
+  notes: Planeamiento y gestión urbanística; no implica licencia concedida ni obra ejecutada. DOE es el repositorio oficial de publicación.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

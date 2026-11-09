@@ -1,0 +1,21 @@
+slug: navas-de-san-juan
+nombre: Navas de San Juan
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23063'
+portal:
+  base_url: https://navasdesanjuan.es
+  adapter: municipio.adapters.navas_de_san_juan:NavasDeSanJuanAyuntamientoAdapter
+  config: {}
+  notes: Registro municipal y planeamiento en elaboración; documentos agrupados, cobertura parcial sin geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Navas de San Juan]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

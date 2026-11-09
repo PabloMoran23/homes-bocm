@@ -1,0 +1,21 @@
+slug: borox
+nombre: Borox
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45021'
+portal:
+  base_url: https://www.ayuntamientodeborox.com/index.php/ayun/urbanismo
+  adapter: municipio.adapters.borox:BoroxAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal parcial de documentos de las Normas Subsidiarias; no acredita vigencia ni aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Borox]
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

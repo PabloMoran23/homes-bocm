@@ -1,0 +1,26 @@
+slug: el-papiol
+nombre: El Papiol
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08158'
+portal:
+  base_url: https://www.elpapiol.cat
+  adapter: municipio.adapters.el_papiol:ElPapiolAyuntamientoAdapter
+  config:
+    ine_code: '08158'
+    user_agent: municipio-el-papiol/1.0
+  notes: >-
+    Dos inventarios completos de exposición pública: planeamiento y proyectos.
+    Documentación agrupada por expediente. Cobertura municipal parcial; sin
+    geometría verificada, publication_ready false. No registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [El Papiol, el Papiol]
+licencias:
+  enabled: false
+  notes: La exposición de actividades no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

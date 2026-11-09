@@ -1,0 +1,21 @@
+slug: santaella
+nombre: Santaella
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14060'
+portal:
+  base_url: https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf
+  adapter: municipio.adapters.santaella:SantaellaAyuntamientoAdapter
+  config: {}
+  notes: Inventario autonómico oficial SITUA, consulta de planes aprobados para INE 14060. Cobertura parcial, sin registro de obras o licencias municipales.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Santaella]
+  notes: El valor source es la categoría del pipeline; el editor real es Junta de Andalucía y consta en cada registro.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

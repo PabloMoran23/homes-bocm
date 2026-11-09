@@ -1,0 +1,21 @@
+slug: iniesta
+nombre: Iniesta
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16113'
+portal:
+  base_url: https://iniesta.sedelectronica.es/transparency/bef8cbc5-581e-4c0b-8163-aaa156086a1c/
+  adapter: municipio.adapters.iniesta:IniestaAyuntamientoAdapter
+  config: {}
+  notes: Sección 7.1 de planeamiento; agrupa documentos por instrumento y excluye carpetas vacías. Cobertura parcial, sin afirmar vigencia.
+licencias:
+  enabled: false
+  notes: El catálogo de solicitudes no constituye un registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Iniesta]
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

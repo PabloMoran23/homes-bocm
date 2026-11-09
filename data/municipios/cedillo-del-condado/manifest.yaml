@@ -1,0 +1,23 @@
+slug: cedillo-del-condado
+nombre: Cedillo del Condado
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45047'
+portal:
+  base_url: https://cedillodelcondado.sedelectronica.es
+  adapter: municipio.adapters.cedillo_del_condado:CedilloDelCondadoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Carpeta oficial del Plan de Ordenación Municipal, agrupado como un instrumento
+    con todos sus documentos y subcarpetas. Cobertura parcial; no acredita aprobación
+    ni vigencia. Sin fechas de acuerdo ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

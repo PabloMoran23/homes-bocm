@@ -1,0 +1,28 @@
+slug: casas-ibanez
+nombre: Casas-Ibáñez
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02024'
+portal:
+  base_url: https://casasibanez.es
+  adapter: municipio.adapters.casas_ibanez:CasasIbanezAyuntamientoAdapter
+  config:
+    ine_code: '02024'
+  notes: >-
+    Cobertura parcial del POM: normas urbanísticas consolidadas y plano de
+    clasificación, calificación y alturas, agrupados en un solo instrumento.
+    Documentación informativa, sin acreditación de vigencia jurídica completa,
+    fechas de acuerdo ni geometría vectorial verificada. No incluye el tablón.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Casas-Ibáñez
+    - Casas Ibáñez
+licencias:
+  enabled: false
+  notes: Las solicitudes y declaraciones responsables son formularios, no concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

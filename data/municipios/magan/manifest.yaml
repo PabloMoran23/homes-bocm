@@ -1,0 +1,25 @@
+slug: magan
+nombre: Magán
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45088'
+portal:
+  base_url: https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0
+  adapter: municipio.adapters.magan:MaganAyuntamientoAdapter
+  config:
+    ine_code: '45088'
+    user_agent: municipio-magan/1.0
+  notes: >-
+    Depósito oficial JCCM de planeamiento municipal. Un instrumento NNSS-B con
+    documentos agrupados en ZIP. Cobertura parcial e informativa; sin geometría
+    del instrumento verificada ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Adaptador municipal con fuente regional oficial JCCM; registros source=jccm.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

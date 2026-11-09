@@ -1,0 +1,19 @@
+slug: pinseque
+nombre: Pinseque
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50209'
+portal:
+  base_url: https://pinseque.es/areas/urbanismo/
+  adapter: municipio.adapters.pinseque:PinsequeAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del PGOU y modificaciones; cobertura parcial sin vigencia ni ejecución verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: igorre
+nombre: Igorre
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48094'
+portal:
+  base_url: https://www.igorre.net
+  adapter: municipio.adapters.igorre:IgorreAyuntamientoAdapter
+  config: {}
+  notes: Colección municipal del PGOU, agrupando fases y documentos en un instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

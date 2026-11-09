@@ -1,0 +1,22 @@
+slug: cobisa
+nombre: Cobisa
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45052'
+portal:
+  base_url: https://cobisa.es/
+  adapter: municipio.adapters.cobisa:CobisaAyuntamientoAdapter
+  config: {}
+  notes: Inventario REST público de noticias municipales; cobertura parcial de obras realizadas con descripción explícita.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cobisa]
+  notes: Obras físicas descritas como realizadas; no equivale a inventario completo de expedientes ni de planeamiento.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

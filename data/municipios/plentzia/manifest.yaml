@@ -1,0 +1,23 @@
+slug: plentzia
+nombre: Plentzia
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48077'
+portal:
+  base_url: https://plentziaplanorokorra.eus/
+  adapter: municipio.adapters.plentzia:PlentziaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Portal del PGOU promovido por el Ayuntamiento, mantenido por el equipo redactor.
+    Un instrumento en elaboración con sus documentos; cobertura parcial, sin fechas
+    de aprobación ni geometría verificada. No es un inventario de obras o licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
