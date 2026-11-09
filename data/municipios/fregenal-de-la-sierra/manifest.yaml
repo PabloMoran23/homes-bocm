@@ -1,0 +1,22 @@
+slug: fregenal-de-la-sierra
+nombre: Fregenal de la Sierra
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06050'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.fregenal_de_la_sierra:FregenalDeLaSierraAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico SITEX de instrumentos municipales; cobertura parcial de proyectos, sin licencias ni geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Fregenal de la Sierra
+  notes: El canal ayuntamiento usa como fuente documental el inventario oficial de la Junta de Extremadura, identificado en cada registro.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

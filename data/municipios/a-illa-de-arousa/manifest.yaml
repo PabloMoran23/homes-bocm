@@ -1,0 +1,23 @@
+slug: a-illa-de-arousa
+nombre: A Illa de Arousa
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36901'
+portal:
+  base_url: https://www.ailladearousa.es/urbanismo-obras-e-deportes/
+  adapter: municipio.adapters.a_illa_de_arousa:AIllaDeArousaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario SIOTUGA enlazado por Urbanismo del Concello. Planeamiento general
+    y de desarrollo: una ficha por instrumento, con todos sus documentos.
+    Cobertura parcial; no certifica vigencia ni extrae geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

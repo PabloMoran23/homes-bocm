@@ -1,0 +1,21 @@
+slug: oliva-de-la-frontera
+nombre: Oliva de la Frontera
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06093'
+portal:
+  base_url: https://olivafrontera.com/plan-general-municipal/
+  adapter: municipio.adapters.oliva_de_la_frontera:OlivaDeLaFronteraAdapter
+  config: {}
+  notes: Árbol público de documentos del PGM, versión de aprobación inicial. Un instrumento con sus documentos; cobertura parcial del planeamiento municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Oliva de la Frontera
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

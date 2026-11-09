@@ -1,0 +1,26 @@
+slug: cadrete
+nombre: Cadrete
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50066'
+portal:
+  base_url: https://cadrete.sedelectronica.es
+  adapter: municipio.adapters.cadrete:CadreteAyuntamientoAdapter
+  config:
+    ine_code: '50066'
+  notes: >-
+    Inventario parcial de instrumentos nombrados Plan General, Plan Parcial y
+    Plan Especial en 7.1 del portal de transparencia. Documentos agrupados por
+    carpeta de instrumento, con paginación y recuentos comprobados. Sin fechas
+    verificadas ni geometría. La inclusión no acredita vigencia o aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cadrete]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: alcala-del-valle
+nombre: Alcalá del Valle
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11002'
+portal:
+  base_url: https://www.alcaladelvalle.es
+  adapter: municipio.adapters.alcala_del_valle:AlcalaDelValleAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Índice municipal de artículos, recorrido completo de su paginación.
+    Solo modificaciones puntuales del PGOU/planeamiento con documentos PDF.
+    Cobertura documental parcial; no acredita aprobación ni estado actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Alcalá del Valle
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

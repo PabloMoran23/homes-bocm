@@ -1,0 +1,23 @@
+slug: collbato
+nombre: Collbató
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08069'
+portal:
+  base_url: https://www.collbato.cat
+  adapter: municipio.adapters.collbato:CollbatoAyuntamientoAdapter
+  config:
+    ine_code: '08069'
+  notes: >-
+    Inventario municipal de obras y PGOU con documentos agrupados. Cobertura
+    parcial; no verifica vigencia de edictos ni extrae fechas de PDF o geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

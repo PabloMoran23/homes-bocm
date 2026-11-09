@@ -1,0 +1,24 @@
+slug: camarinas
+nombre: Camariñas
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15016'
+portal:
+  base_url: https://camarinas.net
+  adapter: municipio.adapters.camarinas:CamarinasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Biblioteca de planeamiento enlazada desde Urbanismo: PXOM, PEPRI y modificación
+    puntual del PXOM. Un registro por instrumento, con todos los PDF enlazados
+    en sus índices anidados. Cobertura parcial, sin inferir concesión ni aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Camariñas]
+licencias:
+  enabled: false
+  notes: Los formularios de la sede no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

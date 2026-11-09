@@ -1,0 +1,23 @@
+slug: vila-de-cruces
+nombre: Vila de Cruces
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36059'
+portal:
+  base_url: https://viladecruces.es
+  adapter: municipio.adapters.vila_de_cruces:VilaDeCrucesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial de planeamiento publicado en Urbanismo y enlazado desde
+    Ordenanzas. Documentos agrupados por instrumento. Fases según publicación,
+    sin verificar vigencia jurídica actual. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: villamanrique-de-la-condesa
+nombre: Villamanrique de la Condesa
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41097'
+portal:
+  base_url: https://transparencia.villamanriquedelacondesa.es/es/transparencia/indicadores-de-transparencia/indicador/Usos-y-destinos-del-suelo-00024/
+  adapter: municipio.adapters.villamanrique_de_la_condesa:VillamanriqueDeLaCondesaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial de proyectos de actuación; no acredita aprobación ni licencia concedida.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

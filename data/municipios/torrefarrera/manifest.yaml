@@ -1,0 +1,25 @@
+slug: torrefarrera
+nombre: Torrefarrera
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25228'
+portal:
+  base_url: https://www.torrefarrera.cat
+  adapter: municipio.adapters.torrefarrera:TorrefarreraAyuntamientoAdapter
+  config:
+    ine_code: '25228'
+  notes: >-
+    Inventarios municipales de planeamiento e información pública. Cobertura
+    parcial, documentos agrupados por instrumento, sin geometría ni extracción
+    automática de fechas del contenido PDF. Texto refós de carácter informativo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Torrefarrera]
+licencias:
+  enabled: false
+  notes: No hay inventario verificado de licencias concedidas; solicitudes excluidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

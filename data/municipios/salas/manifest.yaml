@@ -1,0 +1,22 @@
+slug: salas
+nombre: Salas
+provincia: Asturias
+comunidad_autonoma: asturias
+codigo_ine: '33059'
+portal:
+  base_url: https://www.ayto-salas.es
+  adapter: municipio.adapters.salas:SalasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Paquete documental municipal del PGO, agrupado en un instrumento.
+    Cobertura parcial, sin acreditar vigencia, fechas ni geometría del paquete.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

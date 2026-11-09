@@ -1,0 +1,25 @@
+slug: llanca
+nombre: Llançà
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17092'
+portal:
+  base_url: https://llanca.eadministracio.cat
+  adapter: municipio.adapters.llanca:LlancaAyuntamientoAdapter
+  config:
+    ine_code: '17092'
+  notes: >-
+    Inventario oficial actual WEB - Projectes Tècnics: todas las carpetas anuales
+    publicadas, un registro por expediente con documentos agrupados.
+    Cobertura parcial municipal; sin geometría ni fechas verificadas en documentos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Llançà, Llanca]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

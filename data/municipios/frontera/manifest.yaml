@@ -1,0 +1,22 @@
+slug: frontera
+nombre: Frontera
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38013'
+portal:
+  base_url: https://www.aytofrontera.org/ayuntamiento/planeamiento.html
+  adapter: municipio.adapters.frontera:FronteraAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de instrumentos de planeamiento y sus documentos. Cobertura parcial, sin fechas ni geometría inferidas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Frontera
+    - La Frontera
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

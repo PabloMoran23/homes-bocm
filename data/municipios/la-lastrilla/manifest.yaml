@@ -1,0 +1,27 @@
+slug: la-lastrilla
+nombre: La Lastrilla
+provincia: Segovia
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '40112'
+portal:
+  base_url: https://servicios.jcyl.es/PlanPublica/
+  adapter: municipio.adapters.la_lastrilla:LaLastrillaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal INE 40112 del archivo oficial PLAU de la Junta de
+    Castilla y León. Recorre todas las páginas de planeamiento y gestión,
+    agrupando los ficheros por identificador de instrumento. Cobertura parcial:
+    no incluye convenios, sentencias, ordenación supramunicipal, PLAI ni obras
+    ajenas al archivo. Las fechas son las del inventario, no verificadas en PDF.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [La Lastrilla, 'Lastrilla, La', LASTRILLA (LA)]
+  notes: Fuente autonómica oficial de instrumentos del municipio; no registro de obras completo.
+licencias:
+  enabled: false
+  notes: El catálogo de solicitudes no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

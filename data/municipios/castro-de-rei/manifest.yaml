@@ -1,0 +1,24 @@
+slug: castro-de-rei
+nombre: Castro de Rei
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27010'
+portal:
+  base_url: https://www.castroderei.gal
+  adapter: municipio.adapters.castro_de_rei:CastroDeReiAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo municipal del PXOM aprobado definitivo. Recorrido completo de carpetas
+    y documentos agrupados en un instrumento. Cobertura parcial, sin fechas
+    explícitas en el inventario y sin geometría vinculada verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Castro de Rei]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

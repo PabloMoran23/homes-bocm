@@ -1,0 +1,27 @@
+slug: a-caniza
+nombre: A Cañiza
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36009'
+portal:
+  base_url: https://www.caniza.org
+  adapter: municipio.adapters.a_caniza:ACanizaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Planeamiento municipal publicado por la Xunta en SIOTUGA, INE 36009.
+    Inventarios completos de las clases general, desarrollo, histórico y núcleos
+    rurales; cobertura parcial respecto al conjunto de actuaciones municipales.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ['A Cañiza', 'A Caniza', 'Cañiza, A']
+  notes: >-
+    La ruta ayuntamiento utiliza el adapter municipal; la procedencia real de cada
+    registro es siotuga_xunta. Documentos agrupados por ID de instrumento.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

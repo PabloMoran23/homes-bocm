@@ -1,0 +1,24 @@
+slug: castejon
+nombre: Castejón
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31070'
+portal:
+  base_url: https://sedeelectronica.castejon.com
+  adapter: municipio.adapters.castejon:CastejonAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Tablón municipal vigente sin filtrar. Cobertura parcial: información pública
+    de bienes y derechos afectados por proyectos, con documentos municipales.
+    No incluye histórico, inventario completo de obras ni registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Castejón]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

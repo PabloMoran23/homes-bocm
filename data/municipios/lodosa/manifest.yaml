@@ -1,0 +1,20 @@
+slug: lodosa
+nombre: Lodosa
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31157'
+portal:
+  base_url: https://www.lodosa.es
+  adapter: municipio.adapters.lodosa:LodosaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de proyectos europeos; cobertura parcial de obras y equipamientos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Lodosa]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

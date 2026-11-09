@@ -1,0 +1,29 @@
+slug: cacabelos
+nombre: Cacabelos
+provincia: León
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '24030'
+portal:
+  base_url: https://www.cacabelos.org
+  adapter: municipio.adapters.cacabelos:CacabelosAyuntamientoAdapter
+  config:
+    ine_code: '24030'
+  notes: >-
+    Archivo oficial PLAU de la Junta enlazado desde Normativa urbanística municipal.
+    Instrumentos agrupados por cDocId con todos los ficheros del listado asociado.
+    Cobertura parcial: inventario actual sin históricos; no obras ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Cacabelos
+  notes: >-
+    Fechas de publicación y acuerdo separadas, sin inferir aprobación o vigencia.
+    Sin geometrías verificadas; publication_ready false.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

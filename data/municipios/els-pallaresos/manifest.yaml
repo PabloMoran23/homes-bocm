@@ -1,0 +1,26 @@
+slug: els-pallaresos
+nombre: Els Pallaresos
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43100'
+portal:
+  base_url: https://elspallaresos.cat
+  adapter: municipio.adapters.els_pallaresos:ElsPallaresosAyuntamientoAdapter
+  config:
+    ine_code: '43100'
+    user_agent: municipio-els-pallaresos/1.0
+  notes: >-
+    Cobertura parcial del avance del POUM: inventario oficial CIDO, anuncio DOGC
+    y documentos municipales de participación. Requiere pdftotext disponible.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Els Pallaresos, Pallaresos]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

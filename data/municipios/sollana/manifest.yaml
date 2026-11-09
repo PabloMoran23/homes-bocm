@@ -1,0 +1,27 @@
+slug: sollana
+nombre: Sollana
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46233'
+portal:
+  base_url: https://sollana.sedelectronica.es
+  adapter: municipio.adapters.sollana:SollanaAyuntamientoAdapter
+  config:
+    ine_code: '46233'
+    user_agent: municipio-sollana/1.0
+  notes: >-
+    Inventario público de transparencia 7.1.1: Normas Subsidiarias, modificaciones
+    y planes parciales. Texto normativo 7.3.1 agrupado con las Normas Subsidiarias.
+    Snapshot completo de esas ramas, con Mostrar más y recuentos verificados.
+    Cobertura municipal parcial; sin fechas, aprobación, vigencia o geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Sollana]
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario público de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

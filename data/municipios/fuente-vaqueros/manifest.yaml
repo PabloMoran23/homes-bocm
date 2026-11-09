@@ -1,0 +1,23 @@
+slug: fuente-vaqueros
+nombre: Fuente Vaqueros
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18079'
+portal:
+  base_url: https://www.fuente-vaqueros.com/normativa/
+  adapter: municipio.adapters.fuente_vaqueros:FuenteVaquerosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Biblioteca urbanística municipal actual: adaptación parcial a la LOUA y
+    revisión de NNSS. Documentos agrupados por instrumento. Cobertura parcial,
+    sin acreditar vigencia, fechas de aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

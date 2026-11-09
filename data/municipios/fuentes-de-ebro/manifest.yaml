@@ -1,0 +1,24 @@
+slug: fuentes-de-ebro
+nombre: Fuentes de Ebro
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50115'
+portal:
+  base_url: https://fuentesdeebro.sedelectronica.es
+  adapter: municipio.adapters.fuentes_de_ebro:FuentesDeEbroAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario vigente del tablón oficial. Solo anuncios explícitos de aprobación
+    de instrumentos urbanísticos o proyectos de obras, agrupados por expediente.
+    Cobertura parcial, sin histórico, licencias ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Fuentes de Ebro]
+licencias:
+  enabled: false
+  notes: Formularios y anuncios de contratación no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: cabrera-de-mar
+nombre: Cabrera de Mar
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08029'
+portal:
+  base_url: https://www.cabrerademar.cat
+  adapter: municipio.adapters.cabrera_de_mar:CabreraDeMarAyuntamientoAdapter
+  config:
+    ine_code: '08029'
+    user_agent: municipio-cabrera-de-mar/1.0
+  notes: >-
+    Inventario municipal de planeamiento vigente, recorrido completo de su árbol
+    salvo mapa acústico. Documentos agrupados por instrumento; cobertura parcial
+    del municipio. Sin geometrías verificadas ni fechas inferidas de los PDF.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cabrera de Mar]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: los-silos
+nombre: Los Silos
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38042'
+portal:
+  base_url: https://www.lossilos.es/plan-urbanistico-3/
+  adapter: municipio.adapters.los_silos:LosSilosAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de PGO y Plan Especial; cobertura parcial, sin fechas ni geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Los Silos]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
