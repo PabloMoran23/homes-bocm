@@ -1,0 +1,22 @@
+slug: guadassuar
+nombre: Guadassuar
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46139'
+portal:
+  base_url: https://www.guadassuar.es/urbanisme/
+  adapter: municipio.adapters.guadassuar:GuadassuarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento aprobado y en tramitación. Documentos
+    agrupados por instrumento; cobertura parcial, sin fechas ni geometría inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,23 @@
+slug: porcuna
+nombre: Porcuna
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23069'
+portal:
+  base_url: https://porcuna.sedelectronica.es/transparency
+  adapter: municipio.adapters.porcuna:PorcunaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios públicos 7.1 Planeamiento urbanístico y 7.4 Obras públicas.
+    Documentos agrupados por instrumento; cobertura parcial, sin fechas ni
+    geometría verificadas. Censo de amianto excluido.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

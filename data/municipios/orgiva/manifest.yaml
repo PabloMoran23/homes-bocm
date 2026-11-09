@@ -1,0 +1,19 @@
+slug: orgiva
+nombre: Órgiva
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18147'
+portal:
+  base_url: https://orgiva.sedelectronica.es/transparency/dfa36414-bbe5-4574-a2c1-ce698b725e59/
+  adapter: municipio.adapters.orgiva:OrgivaAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial de planeamiento general; PBOM agrupado con todos sus documentos y Plan de Delimitación de Suelo Urbano. Sin afirmar aprobación ni vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

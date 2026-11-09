@@ -1,0 +1,24 @@
+slug: gorliz
+nombre: Gorliz
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48043'
+portal:
+  base_url: https://www.gorliz.eus
+  adapter: municipio.adapters.gorliz:GorlizAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios municipales de PGOU y desarrollo actual. Documentos agrupados por
+    instrumento; cobertura parcial, sin geometría. Los boletines se leen con el
+    ejecutable pdftotext preinstalado. No se determina vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Gorliz]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

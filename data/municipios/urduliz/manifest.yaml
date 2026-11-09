@@ -1,0 +1,21 @@
+slug: urduliz
+nombre: Urduliz
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48089'
+portal:
+  base_url: https://www.urduliz.eus
+  adapter: municipio.adapters.urduliz:UrdulizAyuntamientoAdapter
+  config: {}
+  notes: Inventarios municipales de planeamiento de desarrollo y documentación del PGOU.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Urduliz]
+  notes: Cobertura parcial; documentos agrupados por instrumento, sin inferir aprobación.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: borriol
+nombre: Borriol
+provincia: Castellón
+comunidad_autonoma: comunidad-valenciana
+codigo_ine: '12031'
+portal:
+  base_url: https://www.borriol.es/es/proyectos-de-urbanizacion/
+  adapter: municipio.adapters.borriol:BorriolAyuntamientoAdapter
+  config: {}
+  notes: Cobertura parcial del expediente documental de urbanización l'Abeller enlazado por el Ayuntamiento; no registro de licencias ni inventario completo municipal.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

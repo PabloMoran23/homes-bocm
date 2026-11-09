@@ -1,0 +1,24 @@
+slug: yebes
+nombre: Yebes
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19326'
+portal:
+  base_url: https://yebes.sedelectronica.es
+  adapter: municipio.adapters.yebes:YebesAyuntamientoAdapter
+  config:
+    ine_code: '19326'
+  notes: >-
+    Inventario parcial de cuatro instrumentos/proyectos de las carpetas 7.1,
+    7.5, 7.7 y 7.8 del portal de transparencia. Documentos agrupados por instrumento,
+    incluidas subcarpetas. No acredita vigencia ni ejecución. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,27 @@
+slug: san-cibrao-das-vinas
+nombre: San Cibrao das Viñas
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32075'
+portal:
+  base_url: https://sancibrao.es
+  adapter: municipio.adapters.san_cibrao_das_vinas:SanCibraoDasVinasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Planeamiento del municipio en el registro oficial de la Xunta, filtro concello=677,
+    provincia=32. Cobertura parcial; archivos enlazados sujetos a CAPTCHA.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - San Cibrao das Viñas
+  notes: >-
+    Extracción del registro autonómico ROTPG, no de noticias municipales.
+    source=ayuntamiento es la ruta del adaptador del portal; cada registro identifica source=xunta.
+licencias:
+  enabled: false
+  notes: Formularios municipales excluidos; no se acredita un inventario de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

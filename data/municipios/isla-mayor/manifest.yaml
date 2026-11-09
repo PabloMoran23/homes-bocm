@@ -1,0 +1,23 @@
+slug: isla-mayor
+nombre: Isla Mayor
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41902'
+portal:
+  base_url: https://www.islamayor.es/es/pgom/documentacion/
+  adapter: municipio.adapters.isla_mayor:IslaMayorAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental del nuevo PGOM, agrupado como un instrumento con todos
+    sus documentos y secciones. Cobertura parcial; no incluye el archivo histórico
+    de planeamiento de transparencia ni acredita aprobación definitiva.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

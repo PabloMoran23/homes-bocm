@@ -1,0 +1,24 @@
+slug: numancia-de-la-sagra
+nombre: Numancia de la Sagra
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45119'
+portal:
+  base_url: https://www.ayuntamientonumanciadelasagra.com
+  adapter: municipio.adapters.numancia_de_la_sagra:NumanciaDeLaSagraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario de información urbanística y subinventarios documentales del sector 7.
+    Cobertura parcial, sin inferir aprobación, vigencia, fechas o geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Numancia de la Sagra
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

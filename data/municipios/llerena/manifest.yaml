@@ -1,0 +1,21 @@
+slug: llerena
+nombre: Llerena
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06074'
+portal:
+  base_url: https://llerena.org
+  adapter: municipio.adapters.llerena:LlerenaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios actuales del PGM, sus modificaciones y proyectos de obras públicas; cobertura parcial sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Llerena]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

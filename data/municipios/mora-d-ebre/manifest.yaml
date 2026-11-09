@@ -1,0 +1,24 @@
+slug: mora-d-ebre
+nombre: Móra d'Ebre
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43093'
+portal:
+  base_url: https://www.moradebre.cat
+  adapter: municipio.adapters.mora_d_ebre:MoraDEbreAyuntamientoAdapter
+  config:
+    ine_code: '43093'
+  notes: >-
+    Inventario municipal de modificaciones de Normas Subsidiarias. Cobertura
+    parcial del planeamiento; documentos agrupados por instrumento. Sin geometría
+    verificada ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ["Móra d'Ebre", "Móra d’Ebre"]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

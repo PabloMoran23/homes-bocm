@@ -1,0 +1,23 @@
+slug: coristanco
+nombre: Coristanco
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15029'
+portal:
+  base_url: https://coristanco.gal/urbanismo/
+  adapter: municipio.adapters.coristanco:CoristancoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del PXOM: un instrumento con índice y cinco tomos.
+    Cobertura parcial, sin fechas ni geometría verificadas en la página fuente.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Coristanco]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

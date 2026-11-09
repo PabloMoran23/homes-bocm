@@ -1,0 +1,26 @@
+slug: vielha-e-mijaran
+nombre: Vielha e Mijaran
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25243'
+portal:
+  base_url: http://www.vielha-mijaran.org
+  adapter: municipio.adapters.vielha_e_mijaran:VielhaEMijaranAyuntamientoAdapter
+  config:
+    ine_code: '25243'
+    user_agent: municipio-vielha-e-mijaran/1.0
+  notes: >-
+    Inventario municipal de instrumentos urbanísticos con fichas y documentos
+    agrupados. Cobertura parcial, sin fechas ni geometrías verificadas.
+    HTTPS falla por certificado; HTTP oficial accesible. No acredita vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vielha e Mijaran]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: celanova
+nombre: Celanova
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32024'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario.php?inv=1&idconcello=32024
+  adapter: municipio.adapters.celanova:CelanovaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial SIOTUGA enlazado desde Urbanismo en www.celanova.gal.
+    Planeamiento municipal general, desarrollo, histórico y delimitaciones;
+    cobertura parcial de proyectos, sin geometría verificada. Fuente documental
+    Xunta de Galicia, no registro de obras ni licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

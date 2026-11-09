@@ -1,0 +1,24 @@
+slug: cerdedo-cotobade
+nombre: Cerdedo-Cotobade
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36902'
+portal:
+  base_url: https://www.cerdedo-cotobade.gal
+  adapter: municipio.adapters.cerdedo_cotobade:CerdedoCotobadeAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento estatutario enlazado desde Urbanismo.
+    Cobertura parcial; excluye noticias, trámites, PMUS y Axenda Urbana.
+    Documentos agrupados por instrumento, sin fechas inferidas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cerdedo-Cotobade, Cerdedo, Cotobade]
+licencias:
+  enabled: false
+  notes: Los formularios no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

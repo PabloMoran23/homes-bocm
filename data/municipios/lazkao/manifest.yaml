@@ -1,0 +1,24 @@
+slug: lazkao
+nombre: Lazkao
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20049'
+portal:
+  base_url: https://www.lazkao.eus
+  adapter: municipio.adapters.lazkao:LazkaoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios documentales NNSS (visor enlazado municipal) y diagnóstico del nuevo PGOU.
+    Un registro por instrumento, conservando anexos; cobertura parcial, sin fechas
+    de aprobación ni geometría asignada. No acredita vigencia jurídica consolidada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Lazkao]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: membrilla
+nombre: Membrilla
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13054'
+portal:
+  base_url: https://membrilla.es
+  adapter: municipio.adapters.membrilla:MembrillaAyuntamientoAdapter
+  config:
+    ine_code: '13054'
+  notes: >-
+    Inventario documental de planeamiento municipal. Agrupa anexos por instrumento
+    y verifica los PDF enlazados. Cobertura parcial; no acredita licencias,
+    estado de ejecución ni vigencia jurídica. Sin geometría; fechas no extraídas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Membrilla]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

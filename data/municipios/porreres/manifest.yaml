@@ -1,0 +1,24 @@
+slug: porreres
+nombre: Porreres
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07043'
+portal:
+  base_url: https://porreres.cat
+  adapter: municipio.adapters.porreres:PorreresAyuntamientoAdapter
+  config:
+    ine_code: '07043'
+  notes: >-
+    Inventario municipal Expedients, recorrido completo de sus ramas de planeamiento.
+    Versiones y anexos agrupados por instrumento. Cobertura parcial municipal;
+    sin fechas de aprobación ni geometrías inferidas. publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

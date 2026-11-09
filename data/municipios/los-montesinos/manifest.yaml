@@ -1,0 +1,26 @@
+slug: los-montesinos
+nombre: Los Montesinos
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03903'
+portal:
+  base_url: https://www.losmontesinos.es
+  adapter: municipio.adapters.los_montesinos:LosMontesinosAyuntamientoAdapter
+  config:
+    ine_code: '03903'
+    user_agent: municipio-los-montesinos/1.0
+  notes: >-
+    Inventario municipal de planeamiento: documentos agrupados por instrumento,
+    sin inferir vigencia, fechas de aprobación ni geometría. Cobertura parcial;
+    no incluye la web PGOU enlazada, inaccesible por DNS en la investigación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Los Montesinos]
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

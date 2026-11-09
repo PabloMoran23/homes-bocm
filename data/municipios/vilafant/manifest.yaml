@@ -1,0 +1,26 @@
+slug: vilafant
+nombre: Vilafant
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17221'
+portal:
+  base_url: https://www.vilafant.cat
+  adapter: municipio.adapters.vilafant:VilafantAyuntamientoAdapter
+  config:
+    ine_code: '17221'
+    user_agent: municipio-vilafant/1.0
+  notes: >-
+    Cobertura parcial de la página municipal Planejament i Projectes en tràmit:
+    sección documental 2024 en adelante y sección completa 2020-23.
+    Archivo 2013-19 y anuncios dinámicos del e-Tauler excluidos.
+    Documentos agrupados por instrumento; sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
