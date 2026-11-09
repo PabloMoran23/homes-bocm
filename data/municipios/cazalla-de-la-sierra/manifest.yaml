@@ -1,0 +1,22 @@
+slug: cazalla-de-la-sierra
+nombre: Cazalla de la Sierra
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41032'
+portal:
+  base_url: https://www.cazalladelasierra.es/
+  adapter: municipio.adapters.cazalla_de_la_sierra:CazallaDeLaSierraAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales oficiales de PBOM y adaptación parcial NNSS a LOUA; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cazalla de la Sierra]
+  notes: Un registro por instrumento, documentos agrupados; no acredita aprobación ni vigencia.
+licencias:
+  enabled: false
+  notes: Sin registro público de concesiones verificado; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

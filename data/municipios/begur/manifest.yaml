@@ -1,0 +1,25 @@
+slug: begur
+nombre: Begur
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17013'
+portal:
+  base_url: https://begur.cat
+  adapter: municipio.adapters.begur:BegurAyuntamientoAdapter
+  config:
+    ine_code: '17013'
+    user_agent: municipio-begur/1.0
+  notes: >-
+    Inventario de obras municipales en ejecución y páginas documentales del POUM
+    en trámite y oficial. Cobertura parcial, sin fechas ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Begur]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin inventario verificado de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

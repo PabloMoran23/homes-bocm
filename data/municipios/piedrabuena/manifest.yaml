@@ -1,0 +1,19 @@
+slug: piedrabuena
+nombre: Piedrabuena
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13063'
+portal:
+  base_url: https://piedrabuena.es
+  adapter: municipio.adapters.piedrabuena:PiedrabuenaAyuntamientoAdapter
+  config: {}
+  notes: Archivo municipal completo; selección temática limitada a tres obras verificadas, documentadas en RESEARCH.md.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: sineu
+nombre: Sineu
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07060'
+portal:
+  base_url: https://ajsineu.net
+  adapter: municipio.adapters.sineu:SineuAyuntamientoAdapter
+  config:
+    ine_code: '07060'
+  notes: >-
+    Inventario municipal Urbanisme, cobertura parcial de documentos históricos
+    agrupados por instrumento. No acredita vigencia, concesiones ni ejecución.
+    Fechas de fichero conservadas sin interpretarlas como publicación o acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

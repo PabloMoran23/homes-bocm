@@ -1,0 +1,22 @@
+slug: godelleta
+nombre: Godelleta
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46136'
+portal:
+  base_url: https://godelleta.sedelectronica.es/transparency/
+  adapter: municipio.adapters.godelleta:GodelletaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios públicos 7.1 y 7.3 de la sede electrónica. Documentos agrupados
+    por instrumento, cobertura parcial sin vigencia, fechas ni geometría inferidas.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

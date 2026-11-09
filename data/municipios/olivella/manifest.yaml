@@ -1,0 +1,26 @@
+slug: olivella
+nombre: Olivella
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08148'
+portal:
+  base_url: https://www.olivella.cat
+  adapter: municipio.adapters.olivella:OlivellaAyuntamientoAdapter
+  config:
+    ine_code: '08148'
+  notes: >-
+    Inventario municipal oficial de proyectos y planes en seu-e.cat: nueve
+    secciones de aprobación y actualización de precios. Instantánea parcial,
+    sin histórico exhaustivo. Fechas de actualización separadas de acuerdos
+    y publicaciones. Documentos agrupados por instrumento; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Olivella]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

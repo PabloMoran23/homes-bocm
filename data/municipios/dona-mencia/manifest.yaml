@@ -1,0 +1,19 @@
+slug: dona-mencia
+nombre: Doña Mencía
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14022'
+portal:
+  base_url: https://donamencia.es/urbanismo-general/
+  adapter: municipio.adapters.dona_mencia:DonaMenciaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento general; documentos agrupados por instrumento, sin afirmar vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

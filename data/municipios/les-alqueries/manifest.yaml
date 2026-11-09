@@ -1,0 +1,22 @@
+slug: les-alqueries
+nombre: les Alqueries / Alquerías del Niño Perdido
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '12901'
+portal:
+  base_url: https://www.lesalqueries.es/es/administracion/urbanismo
+  adapter: municipio.adapters.les_alqueries:LesAlqueriesAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de Urbanismo; cobertura parcial, sin afirmar vigencia o aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - les Alqueries
+    - Alquerías del Niño Perdido
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

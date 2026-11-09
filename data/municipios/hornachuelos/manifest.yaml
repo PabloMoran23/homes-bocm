@@ -1,0 +1,22 @@
+slug: hornachuelos
+nombre: Hornachuelos
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14036'
+portal:
+  base_url: https://hornachuelos.es
+  adapter: municipio.adapters.hornachuelos:HornachuelosAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental oficial del PGOU. Cobertura parcial sin afirmar vigencia ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Hornachuelos
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

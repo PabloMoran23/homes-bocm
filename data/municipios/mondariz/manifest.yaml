@@ -1,0 +1,24 @@
+slug: mondariz
+nombre: Mondariz
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36030'
+portal:
+  base_url: https://mondariz.sedelectronica.gal
+  adapter: municipio.adapters.mondariz:MondarizAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal SIOTUGA da Xunta enlazado desde a sede municipal.
+    Planeamento xeral, desenvolvemento e delimitacións de núcleo rural.
+    Cobertura parcial: sen histórico, instrumentos supramunicipais, obras nin
+    plans en tramitación; sen xeometría verificada, publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Non se verificou un rexistro público de licenzas concedidas; exclúense formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

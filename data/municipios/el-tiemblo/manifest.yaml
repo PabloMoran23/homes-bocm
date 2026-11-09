@@ -1,0 +1,26 @@
+slug: el-tiemblo
+nombre: El Tiemblo
+provincia: Ávila
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '05241'
+portal:
+  base_url: https://www.eltiemblo.es
+  adapter: municipio.adapters.el_tiemblo:ElTiembloAyuntamientoAdapter
+  config:
+    ine_code: '05241'
+  notes: >-
+    Inventario de planeamiento urbanístico (libro PU) del archivo oficial PLAU
+    de la Junta de Castilla y León, enlazado desde Urbanismo municipal.
+    Cobertura parcial: excluye gestión urbanística GU y ordenación territorial OT,
+    históricos desmarcados; sin registro de licencias ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [El Tiemblo, 'Tiemblo, El', TIEMBLO (EL)]
+licencias:
+  enabled: false
+  notes: Los formularios para solicitar licencias no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

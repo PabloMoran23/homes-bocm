@@ -1,0 +1,23 @@
+slug: albuixech
+nombre: Albuixech
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46014'
+portal:
+  base_url: https://albuixech.sedelectronica.es
+  adapter: municipio.adapters.albuixech:AlbuixechAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario público actual de normas subsidiarias y modificaciones, agrupado
+    por instrumento con todos los documentos paginados. Cobertura municipal parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Albuixech, Albuixec]
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; trámites excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: la-luisiana
+nombre: La Luisiana
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41056'
+portal:
+  base_url: https://transparencia.laluisiana.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00066
+  adapter: municipio.adapters.la_luisiana:LaLuisianaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal del PGOU y sus cuatro galerías documentales; recorre paginación. Sin afirmar vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [La Luisiana]
+  notes: Un instrumento PGOU con documentos agrupados. Cobertura parcial; excluye proyectos de actuación, noticias y contratación.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

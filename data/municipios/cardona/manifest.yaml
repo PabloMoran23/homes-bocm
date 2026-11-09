@@ -1,0 +1,24 @@
+slug: cardona
+nombre: Cardona
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08047'
+portal:
+  base_url: https://www.cardona.cat
+  adapter: municipio.adapters.cardona:CardonaAyuntamientoAdapter
+  config:
+    ine_code: '08047'
+  notes: >-
+    Inventario público RPUC enlazado por el ayuntamiento. Planes con municipio
+    principal Cardona; documentos agrupados por expediente. Cobertura parcial,
+    sin geometrías verificadas y publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: El catálogo de trámites no acredita licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: fuente-de-cantos
+nombre: Fuente de Cantos
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06052'
+portal:
+  base_url: https://www.fuentedecantos.eu
+  adapter: municipio.adapters.fuente_de_cantos:FuenteDeCantosAyuntamientoAdapter
+  config: {}
+  notes: Archivo WordPress de modificaciones de Normas Subsidiarias; cobertura parcial, no registro de licencias ni garantía de vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Fuente de Cantos
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

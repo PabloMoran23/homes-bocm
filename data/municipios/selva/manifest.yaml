@@ -1,0 +1,24 @@
+slug: selva
+nombre: Selva
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07058'
+portal:
+  base_url: https://ajselva.net
+  adapter: municipio.adapters.selva:SelvaAyuntamientoAdapter
+  config:
+    ine_code: '07058'
+  notes: >-
+    Inventarios municipales del PDSU y catálogo de elementos y espacios protegidos.
+    Recorrido completo de sus carpetas, con documentos agrupados por instrumento.
+    Cobertura parcial; sin geometría extraída ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Selva]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

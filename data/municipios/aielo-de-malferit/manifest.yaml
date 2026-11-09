@@ -1,0 +1,19 @@
+slug: aielo-de-malferit
+nombre: Aielo de Malferit
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46042'
+portal:
+  base_url: https://www.aielodemalferit.es
+  adapter: municipio.adapters.aielo_de_malferit:AieloDeMalferitAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales PGOU y actuaciones urbanísticas; cobertura parcial, sin inferir vigencia ni fechas de acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: niebla
+nombre: Niebla
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21053'
+portal:
+  base_url: https://www.niebla.es/es/descargas/
+  adapter: municipio.adapters.niebla:NieblaAyuntamientoAdapter
+  config:
+    tls_verify: false
+  notes: >-
+    Inventario municipal de documentos del PGOU, agrupados como un instrumento.
+    El servidor no permite verificar su cadena TLS con los certificados del entorno;
+    tls_verify es una excepción explícita para esta fuente pública, sin credenciales.
+    Cobertura parcial, sin acreditar vigencia ni aprobación definitiva.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Niebla]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

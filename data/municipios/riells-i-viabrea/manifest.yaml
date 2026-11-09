@@ -1,0 +1,26 @@
+slug: riells-i-viabrea
+nombre: Riells i Viabrea
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17146'
+portal:
+  base_url: https://riellsiviabrea.cat
+  adapter: municipio.adapters.riells_i_viabrea:RiellsIViabreaAyuntamientoAdapter
+  config:
+    ine_code: '17146'
+    user_agent: municipio-riells-i-viabrea/1.0
+  notes: >-
+    Inventario oficial de información pública con documentos agrupados por
+    instrumento. Cobertura parcial de proyectos técnicos y planeamiento;
+    sin registro histórico completo, fechas exactas ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Riells i Viabrea]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, formularios ni suspensiones como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: puig-reig
+nombre: Puig-reig
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08175'
+portal:
+  base_url: https://www.seu-e.cat/ca/web/puig-reig
+  adapter: municipio.adapters.puig_reig:PuigReigAyuntamientoAdapter
+  config:
+    ine_code: '08175'
+  notes: >-
+    Cinco inventarios oficiales de urbanismo. Instrumentos y proyectos agrupados
+    con sus enlaces documentales; cobertura parcial, sin fechas de aprobación ni
+    geometría verificadas. Las fechas de actualización no son fechas de acuerdos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Puig-reig]
+licencias:
+  enabled: false
+  notes: No se extraen licencias concedidas ni formularios de solicitud.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

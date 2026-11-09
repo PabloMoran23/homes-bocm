@@ -1,0 +1,22 @@
+slug: turre
+nombre: Turre
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04093'
+portal:
+  base_url: https://www.turre.es
+  adapter: municipio.adapters.turre:TurreAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal actual de Planeamiento Urbanístico, desplegando las
+    categorías XPages. Cobertura parcial, sin histórico ni licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

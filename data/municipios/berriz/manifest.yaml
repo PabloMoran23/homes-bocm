@@ -1,0 +1,23 @@
+slug: berriz
+nombre: Berriz
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48019'
+portal:
+  base_url: https://www.berriz.eus
+  adapter: municipio.adapters.berriz:BerrizAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de expedientes en exposición pública. Proyectos de
+    rehabilitación y estudios de detalle con documentos, agrupados por instrumento.
+    Cobertura parcial; no acredita licencias concedidas. Fechas y geometría no extraídas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Berriz]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

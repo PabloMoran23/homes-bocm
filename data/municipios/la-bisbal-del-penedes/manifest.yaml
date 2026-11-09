@@ -1,0 +1,24 @@
+slug: la-bisbal-del-penedes
+nombre: La Bisbal del Penedès
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43028'
+portal:
+  base_url: https://bisbalpenedes.com
+  adapter: municipio.adapters.la_bisbal_del_penedes:LaBisbalDelPenedesAyuntamientoAdapter
+  config:
+    ine_code: '43028'
+    user_agent: municipio-la-bisbal-del-penedes/1.0
+  notes: >-
+    Inventarios municipales Urbanisme y Actuacions anteriors. Documentos agrupados
+    por instrumento. Cobertura parcial, sin geometría verificada; publication_ready=false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas. Formularios e instrucciones excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

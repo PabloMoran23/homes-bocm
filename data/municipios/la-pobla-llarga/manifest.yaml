@@ -1,0 +1,22 @@
+slug: la-pobla-llarga
+nombre: la Pobla Llarga
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46203'
+portal:
+  base_url: https://lapoblallarga.sedelectronica.es
+  adapter: municipio.adapters.la_pobla_llarga:LaPoblaLlargaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del PGOU; cobertura parcial de planeamiento, sin inferir vigencia ni fechas de acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - la Pobla Llarga
+    - Pobla Llarga (la)
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

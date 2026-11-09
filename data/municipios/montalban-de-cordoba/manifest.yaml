@@ -1,0 +1,21 @@
+slug: montalban-de-cordoba
+nombre: Montalbán de Córdoba
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14040'
+portal:
+  base_url: https://montalbandecordoba.es
+  adapter: municipio.adapters.montalban_de_cordoba:MontalbanDeCordobaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de Urbanismo; cobertura parcial, sin inferir vigencia ni aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Montalbán de Córdoba
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

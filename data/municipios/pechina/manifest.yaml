@@ -1,0 +1,21 @@
+slug: pechina
+nombre: Pechina
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04074'
+portal:
+  base_url: https://www.pechina.es
+  adapter: municipio.adapters.pechina:PechinaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de la adaptación parcial de las NN.SS. a la LOUA; cobertura parcial, sin afirmar vigencia actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Pechina
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

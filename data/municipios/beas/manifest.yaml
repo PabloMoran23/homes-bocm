@@ -1,0 +1,20 @@
+slug: beas
+nombre: Beas
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21011'
+portal:
+  base_url: https://www.aytobeas.es/es/ayuntamiento/publicaciones-oficiales/Planeamiento-Urbanistico/
+  adapter: municipio.adapters.beas:BeasAyuntamientoAdapter
+  config:
+    tls_verify: false
+  notes: Inventario documental parcial; excepción TLS explícita por cadena de certificados no verificable en ejecución live. Sin fechas ni vigencia inferidas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

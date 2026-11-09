@@ -1,0 +1,25 @@
+slug: consell
+nombre: Consell
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07016'
+portal:
+  base_url: https://ajconsell.net
+  adapter: municipio.adapters.consell:ConsellAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento agrupado por instrumento, con documentos,
+    subcarpetas y paginación. Cobertura parcial; sin inferir vigencia ni fechas
+    jurídicas de las fechas de archivos. Dominio canónico sin www; se conservan
+    referencias legadas sin verificar y se informan carpetas vacías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Consell]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
