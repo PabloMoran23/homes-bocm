@@ -1,0 +1,27 @@
+slug: villares-de-la-reina
+nombre: Villares de la Reina
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '37362'
+portal:
+  base_url: https://villaresdelareina.es
+  adapter: municipio.adapters.villares_de_la_reina:VillaresDeLaReinaAyuntamientoAdapter
+  config:
+    ine_code: '37362'
+    user_agent: municipio-villares-de-la-reina/1.0
+  notes: >-
+    Inventario municipal de obras de una página, modificado en 2021 según la
+    API oficial. Fases históricas de la fuente, sin vigencia actual verificada.
+    Cobertura parcial, sin coordenadas ni fechas individuales de aprobación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villares de la Reina
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

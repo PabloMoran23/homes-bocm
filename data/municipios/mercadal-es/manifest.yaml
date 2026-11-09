@@ -1,0 +1,23 @@
+slug: mercadal-es
+nombre: Mercadal, Es
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07037'
+portal:
+  base_url: https://www.aj-esmercadal.org
+  adapter: municipio.adapters.mercadal_es:MercadalEsAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventarios municipales de normas subsidiarias y avance PGOU. Documentos
+    agrupados por instrumento; cobertura municipal parcial, sin fechas inferidas
+    ni geometría verificada. Véase RESEARCH.md.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; no se verificó un registro público de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

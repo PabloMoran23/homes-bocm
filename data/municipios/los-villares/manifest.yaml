@@ -1,0 +1,24 @@
+slug: los-villares
+nombre: Los Villares
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23099'
+portal:
+  base_url: https://www.losvillares.com/ayuntamiento/urbanismo/
+  adapter: municipio.adapters.los_villares:LosVillaresAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal actual de instrumentos urbanísticos, agrupados por tabla con sus documentos. Cobertura parcial, sin fechas inferidas ni geometría.
+licencias:
+  enabled: false
+  notes: El formulario de declaración responsable no es un registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Los Villares
+    - Villares, Los
+  notes: Solo instrumentos enlazados desde Urbanismo; no es un histórico completo ni acredita vigencia actual.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

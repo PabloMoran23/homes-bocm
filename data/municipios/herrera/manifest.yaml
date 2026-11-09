@@ -1,0 +1,19 @@
+slug: herrera
+nombre: Herrera
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41050'
+portal:
+  base_url: https://transparencia.herrera.es/es/transparencia/indicadores-de-transparencia/indicador/Plan-General-de-Ordenacion-Urbana-PGOU-y-los-mapas-y-planos-que-lo-detallan-00019/
+  adapter: municipio.adapters.herrera:HerreraAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial de modificaciones del PGOU; un registro por instrumento con todos sus documentos. Sin inferir vigencia, aprobación ni geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

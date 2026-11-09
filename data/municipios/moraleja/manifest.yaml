@@ -1,0 +1,21 @@
+slug: moraleja
+nombre: Moraleja
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10128'
+portal:
+  base_url: https://www.moraleja.es
+  adapter: municipio.adapters.moraleja:MoralejaAyuntamientoAdapter
+  config: {}
+  notes: Tablón municipal de Obras y Urbanismo; cobertura parcial de planeamiento y reparcelaciones, con anuncios y documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Moraleja
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: ulldecona
+nombre: Ulldecona
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43156'
+portal:
+  base_url: https://ulldecona.cat
+  adapter: municipio.adapters.ulldecona:UlldeconaAyuntamientoAdapter
+  config:
+    ine_code: '43156'
+  notes: >-
+    Inventario estático de planeamiento de la sede municipal. Cobertura parcial;
+    documentos agrupados por instrumento. Sin geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ulldecona]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

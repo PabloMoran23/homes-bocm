@@ -1,0 +1,21 @@
+slug: maria-de-huerva
+nombre: María de Huerva
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50163'
+portal:
+  base_url: https://mariadehuerva.org/ayuntamiento/urbanismo/pgou/
+  adapter: municipio.adapters.maria_de_huerva:MariaDeHuervaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del PGOU, agrupando normas, fichas, planos y catálogo.
+    Cobertura parcial del planeamiento; sin fechas legales ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

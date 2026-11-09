@@ -1,0 +1,20 @@
+slug: san-adrian
+nombre: San Adrián
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31215'
+portal:
+  base_url: https://transparencia.sanadrian.es/documentacion/relevancia-juridica/urbanismo-plan-general-municipal/
+  adapter: municipio.adapters.san_adrian:SanAdrianAyuntamientoAdapter
+  config: {}
+  notes: Inventario histórico publicado del PGM y modificaciones; cobertura municipal parcial y sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [San Adrián]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

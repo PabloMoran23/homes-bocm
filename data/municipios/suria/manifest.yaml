@@ -1,0 +1,24 @@
+slug: suria
+nombre: Súria
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08274'
+portal:
+  base_url: https://www.suria.cat
+  adapter: municipio.adapters.suria:SuriaAyuntamientoAdapter
+  config:
+    ine_code: '08274'
+  notes: >-
+    Cobertura parcial de dos instrumentos: documentos del POUM en elaboración
+    y versión de 2003 de las Normes Subsidiàries. Modificaciones posteriores
+    y los inventarios de la sede electrónica no incluidos. Sin geometrías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

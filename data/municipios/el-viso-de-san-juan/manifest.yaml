@@ -1,0 +1,25 @@
+slug: el-viso-de-san-juan
+nombre: El Viso de San Juan
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45199'
+portal:
+  base_url: https://elvisodesanjuan.org/areas-municipales/urbanismo-servicios/
+  adapter: municipio.adapters.el_viso_de_san_juan:ElVisoDeSanJuanAyuntamientoAdapter
+  config:
+    trust_env: false
+  notes: >-
+    Inventario municipal del POM, agrupado con sus documentos. Cobertura parcial;
+    sin fechas de acuerdo o publicación acreditadas ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - El Viso de San Juan
+licencias:
+  enabled: false
+  notes: Los formularios de Obras y Urbanismo no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: almenara
+nombre: Almenara
+provincia: Castellón
+comunidad_autonoma: comunidad-valenciana
+codigo_ine: '12011'
+portal:
+  base_url: https://almenara.sedelectronica.es
+  adapter: municipio.adapters.almenara:AlmenaraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente efectiva: directorio oficial de textos consolidados de la Generalitat
+    para INE 12011 Almenara. Un conjunto informativo, sin atribuir nueva aprobación
+    ni vigencia jurídica. Cobertura parcial; sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Almenara]
+  notes: Documentación municipal alojada por la Generalitat, no inventario completo.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

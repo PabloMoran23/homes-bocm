@@ -1,0 +1,23 @@
+slug: villanueva-de-la-torre
+nombre: Villanueva de la Torre
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19319'
+portal:
+  base_url: https://villanuevadelatorre.sedelectronica.es
+  adapter: municipio.adapters.villanueva_de_la_torre:VillanuevaDeLaTorreAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de la carpeta POM, con paginación completa y documentos
+    agrupados por instrumento, incluidas las subcarpetas de modificaciones. Cobertura parcial; sin fechas ni geometría
+    verificadas. No acredita vigencia jurídica ni ejecución de obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

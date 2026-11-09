@@ -1,0 +1,22 @@
+slug: guarena
+nombre: Guareña
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06060'
+portal:
+  base_url: https://aytoguarena.es/temas/plan-general-municipal/
+  adapter: municipio.adapters.guarena:GuarenaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal actual del PGM. Un instrumento con documentos agrupados;
+    cobertura parcial, sin afirmar aprobación o vigencia ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios municipales de obras no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

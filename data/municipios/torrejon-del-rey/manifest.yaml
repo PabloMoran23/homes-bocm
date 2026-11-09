@@ -1,0 +1,22 @@
+slug: torrejon-del-rey
+nombre: Torrejón del Rey
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19280'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/registros/pau-gu
+  adapter: municipio.adapters.torrejon_del_rey:TorrejonDelReyAyuntamientoAdapter
+  config: {}
+  notes: Registro oficial autonómico de PAU de Torrejón del Rey; cobertura parcial, sin licencias ni estado actual de ejecución.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Torrejón del Rey
+  notes: Instrumentos municipales publicados por la JCCM; cada ficha registral conserva su procedencia autonómica.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

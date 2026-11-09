@@ -1,0 +1,21 @@
+slug: urnieta
+nombre: Urnieta
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20072'
+portal:
+  base_url: https://www.urnieta.eus
+  adapter: municipio.adapters.urnieta:UrnietaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planes de desarrollo. Cobertura parcial, documentos
+    agrupados por instrumento; no acredita concesiones de licencias ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

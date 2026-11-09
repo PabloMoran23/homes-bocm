@@ -1,0 +1,23 @@
+slug: velez-rubio
+nombre: Vélez-Rubio
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04099'
+portal:
+  base_url: https://www.velezrubio.es/Servicios/cmsdipro/index.nsf/tablon_view_entidad_rol_categoria12.xsp?cat1=Territorio&cat2=Planeamiento+Urban%C3%ADstico&p=VelezR
+  adapter: municipio.adapters.velez_rubio:VelezRubioAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Tablón municipal de planeamiento, todas las categorías desplegadas.
+    Agrupa publicaciones de un mismo proyecto porcino por ubicación y promotor.
+    Cobertura parcial documental; sin geometría ni lectura automática de acuerdos PDF.
+licencias:
+  enabled: false
+  notes: Formularios de solicitud no son licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

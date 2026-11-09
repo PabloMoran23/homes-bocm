@@ -1,0 +1,26 @@
+slug: sant-feliu-de-codines
+nombre: Sant Feliu de Codines
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08210'
+portal:
+  base_url: https://www.santfeliudecodines.cat
+  adapter: municipio.adapters.sant_feliu_de_codines:SantFeliuDeCodinesAyuntamientoAdapter
+  config:
+    ine_code: '08210'
+    user_agent: municipio-sant-feliu-de-codines/1.0
+  notes: >-
+    Historia parcial de instrumentos de planeamiento del inventario oficial CIDO
+    de la Diputació de Barcelona, con documentos DOGC/BOPB agrupados por instrumento.
+    No equivale al inventario completo de planeamiento vigente. Sin geometría;
+    publication_ready false. Excluye convenios de gestión y sentencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

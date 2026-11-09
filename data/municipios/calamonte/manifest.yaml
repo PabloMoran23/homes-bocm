@@ -1,0 +1,24 @@
+slug: calamonte
+nombre: Calamonte
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06025'
+portal:
+  base_url: https://calamonte.org/servicios/oficina-tecnica/
+  adapter: municipio.adapters.calamonte:CalamonteAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario de planeamiento de la Oficina Técnica, vía API pública WordPress.
+    PGM con aprobación parcial contrastada en DOE; NNSS históricas, Plan Parcial
+    y modificaciones. Dos enlaces municipales tienen títulos intercambiados:
+    la identidad se obtiene del contenido PDF mediante pdftotext preinstalado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios excluidos; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

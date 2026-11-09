@@ -1,0 +1,21 @@
+slug: fuente-del-maestre
+nombre: Fuente del Maestre
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06054'
+portal:
+  base_url: https://www.fuentedelmaestre.es/
+  adapter: municipio.adapters.fuente_del_maestre:FuenteDelMaestreAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial SITEX de la Junta de Extremadura filtrado por municipio interno 79; solo vigente y en trámite.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Fuente del Maestre]
+  notes: Planeamiento municipal publicado por la Junta; cobertura parcial, sin obras ni licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

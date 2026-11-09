@@ -1,0 +1,23 @@
+slug: lezo
+nombre: Lezo
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20053'
+portal:
+  base_url: https://azkena.lezo.eus
+  adapter: municipio.adapters.lezo:LezoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del PGOU, memorias, planos y modificaciones enlazadas.
+    Copia municipal accesible con certificado válido. Cobertura parcial;
+    no equivale a un registro exhaustivo de planeamiento ni obras municipales.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

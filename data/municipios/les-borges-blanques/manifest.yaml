@@ -1,0 +1,25 @@
+slug: les-borges-blanques
+nombre: Les Borges Blanques
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25058'
+portal:
+  base_url: https://www.lesborgesblanques.cat
+  adapter: municipio.adapters.les_borges_blanques:LesBorgesBlanquesAyuntamientoAdapter
+  config:
+    ine_code: '25058'
+    user_agent: municipio-les-borges-blanques/1.0
+  notes: >-
+    Inventario municipal completo de la sección 3.1 Normativa urbanística;
+    documentos de cada instrumento agrupados. Cobertura municipal parcial,
+    sin geometría verificada ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios y ordenanzas no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

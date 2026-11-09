@@ -1,0 +1,21 @@
+slug: orio
+nombre: Orio
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20061'
+portal:
+  base_url: https://orio.eus
+  adapter: municipio.adapters.orio:OrioAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de expedientes en exposición pública, incluido archivo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Orio]
+  notes: PGOU, modificaciones puntuales y planes zonales acústicos; cobertura parcial.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

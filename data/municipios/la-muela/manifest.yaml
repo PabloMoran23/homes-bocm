@@ -1,0 +1,19 @@
+slug: la-muela
+nombre: La Muela
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50182'
+portal:
+  base_url: https://lamuela.org/category/urbanismo/
+  adapter: municipio.adapters.la_muela:LaMuelaAyuntamientoAdapter
+  config: {}
+  notes: Instrumentos de planeamiento con expediente y documentos en la categoría municipal de Urbanismo; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: vimianzo
+nombre: Vimianzo
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15092'
+portal:
+  base_url: https://www.vimianzo.gal
+  adapter: municipio.adapters.vimianzo:VimianzoAyuntamientoAdapter
+  config:
+    ine_code: '15092'
+    user_agent: municipio-vimianzo/1.0
+  notes: >-
+    Cobertura parcial de modificaciones puntuales de NNSS en el inventario
+    municipal de normativa urbanística (sección 311), con documentos agrupados.
+    No es un inventario completo de obras ni de planeamiento vigente.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
