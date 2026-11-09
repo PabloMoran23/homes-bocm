@@ -1,0 +1,29 @@
+slug: lloseta
+nombre: Lloseta
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07029'
+portal:
+  base_url: https://ajlloseta.net
+  adapter: municipio.adapters.lloseta:LlosetaAyuntamientoAdapter
+  config:
+    ine_code: '07029'
+  notes: >-
+    Cobertura parcial mediante inventario oficial del Servei d'Avaluació Ambiental
+    del Govern de les Illes Balears (CAIB), filtrado por Lloseta. Documentos de
+    evaluación simplificada agrupados por expediente. La presencia en el inventario
+    no acredita vigencia, aprobación urbanística ni licencia concedida.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Lloseta]
+  notes: >-
+    Fuente efectiva autonómica CAIB, identificada en cada registro. No se cubren
+    todos los proyectos municipales ni las resoluciones ambientales posteriores.
+licencias:
+  enabled: false
+  notes: Los formularios de la sede no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

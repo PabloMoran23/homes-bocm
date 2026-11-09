@@ -1,0 +1,21 @@
+slug: dosrius
+nombre: Dosrius
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08075'
+portal:
+  base_url: https://seu-e.cat/ca/web/dosrius
+  adapter: municipio.adapters.dosrius:DosriusAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de obras e instrumentos en información pública; cobertura parcial, documentos agrupados, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Dosrius]
+licencias:
+  enabled: false
+  notes: Los formularios de licencia no son concesiones; no se extraen.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

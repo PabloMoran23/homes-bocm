@@ -1,0 +1,19 @@
+slug: tarazona-de-la-mancha
+nombre: Tarazona de la Mancha
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02073'
+portal:
+  base_url: https://tarazonadelamancha.es/normativa-municipal/
+  adapter: municipio.adapters.tarazona_de_la_mancha:TarazonaDeLaManchaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial de NNSS; no acredita vigencia, aprobación ni cobertura de obras.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

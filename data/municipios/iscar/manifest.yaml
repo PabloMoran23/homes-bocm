@@ -1,0 +1,20 @@
+slug: iscar
+nombre: Íscar
+provincia: Valladolid
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '47075'
+portal:
+  base_url: https://www.villadeiscar.es/areas/urbanismo-servicios-seguridad-ciudadana/urbanismo-2/
+  adapter: municipio.adapters.iscar:IscarAyuntamientoAdapter
+  config: {}
+  notes: Inventario actual de planeamiento PLAU de la Junta enlazado por Urbanismo municipal; documentos agrupados por instrumento, sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Cobertura parcial; instrumentos del archivo actual, sin históricos ni registro de obras o licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

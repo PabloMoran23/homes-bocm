@@ -1,0 +1,26 @@
+slug: navas
+nombre: Navàs
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08141'
+portal:
+  base_url: https://www.navas.cat
+  adapter: municipio.adapters.navas:NavasAyuntamientoAdapter
+  config:
+    ine_code: '08141'
+    user_agent: municipio-navas/1.0
+  notes: >-
+    Dos inventarios documentales municipales: POUM y plan especial de patrimonio.
+    Documentos agrupados por instrumento. Cobertura parcial, sin geometría,
+    sin registro de licencias concedidas y sin extracción del tablón paginado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Navàs]
+licencias:
+  enabled: false
+  notes: Los formularios y los anuncios de contratación no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

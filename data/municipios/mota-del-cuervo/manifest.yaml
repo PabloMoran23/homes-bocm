@@ -1,0 +1,27 @@
+slug: mota-del-cuervo
+nombre: Mota del Cuervo
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16133'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/registros/pau-cu
+  adapter: municipio.adapters.mota_del_cuervo:MotaDelCuervoAyuntamientoAdapter
+  config:
+    ine_code: '16133'
+  notes: >-
+    Fuente oficial regional JCCM: registro de PAUs de Cuenca, municipio exacto
+    Mota del Cuervo. Cobertura parcial; no inventario municipal completo.
+    La procedencia regional se conserva expresamente en cada registro.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: >-
+    Canal del adaptador de portal; los datos proceden del registro regional JCCM,
+    no del Ayuntamiento. Sin vigencia o ejecución inferidas ni geometría verificada.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

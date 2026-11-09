@@ -1,0 +1,19 @@
+slug: viator
+nombre: Viator
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04101'
+portal:
+  base_url: https://ayuntamientoviator.es/category/normativa/
+  adapter: municipio.adapters.viator:ViatorAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental histórico parcial de planeamiento; sin afirmar vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: las-pedroneras
+nombre: Las Pedroñeras
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16154'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/registros/pau-cu
+  adapter: municipio.adapters.las_pedroneras:LasPedronerasAyuntamientoAdapter
+  config: {}
+  notes: Registro oficial autonómico de PAU de Cuenca, filtrado por municipio exacto. Cobertura parcial; no inventario municipal exhaustivo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ['Las Pedroñeras', 'Pedroñeras, Las']
+  notes: El canal portal utiliza una fuente autonómica JCCM, identificada en cada registro; solo programas urbanizadores inscritos.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,23 @@
+slug: argamasilla-de-alba
+nombre: Argamasilla de Alba
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13019'
+portal:
+  base_url: https://www.argamasilladealba.es/servicios-municipales/urbanismo/urbanismo
+  adapter: municipio.adapters.argamasilla_de_alba:ArgamasillaDeAlbaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento: normativa de sectores, modificación NNSS,
+    POM y proyectos de reparcelación y urbanización A3. Documentos agrupados por
+    instrumento; cobertura parcial, sin geometría ni vigencia inferida.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

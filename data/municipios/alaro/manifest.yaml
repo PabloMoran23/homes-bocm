@@ -1,0 +1,24 @@
+slug: alaro
+nombre: Alaró
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07001'
+portal:
+  base_url: https://ajalaro.net
+  adapter: municipio.adapters.alaro:AlaroAyuntamientoAdapter
+  config:
+    ine_code: '07001'
+  notes: >-
+    Inventario municipal de instrumentos de planeamiento, con documentos agrupados.
+    Cobertura parcial; carpetas Drive referenciadas sin enumeración y sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Alaró, Alaro]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: guenes
+nombre: Güeñes
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48045'
+portal:
+  base_url: https://www.bizkaia.eus/es/planeamiento-urbanistico-buscador
+  adapter: municipio.adapters.guenes:GuenesAyuntamientoAdapter
+  config: {}
+  notes: Registro oficial provincial de instrumentos municipales; cobertura parcial de Güeñes.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Planeamiento de Güeñes publicado por Diputación Foral de Bizkaia, sin obras ni licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

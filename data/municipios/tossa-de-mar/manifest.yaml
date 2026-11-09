@@ -1,0 +1,24 @@
+slug: tossa-de-mar
+nombre: Tossa de Mar
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17202'
+portal:
+  base_url: https://www.tossademar.cat
+  adapter: municipio.adapters.tossa_de_mar:TossaDeMarAyuntamientoAdapter
+  config:
+    ine_code: '17202'
+  notes: >-
+    Inventario oficial de documentos técnicos de proyectos en tramitación.
+    Cobertura parcial de documentos de primer nivel; fases agrupadas por obra.
+    Sin fechas de aprobación, estado vigente ni geometría verificados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

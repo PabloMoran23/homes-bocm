@@ -1,0 +1,19 @@
+slug: allariz
+nombre: Allariz
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32001'
+portal:
+  base_url: https://www.allariz.gal/admin/plan-xeral-de-organizacion-municipal/
+  adapter: municipio.adapters.allariz:AllarizAyuntamientoAdapter
+  config: {}
+  notes: Dos inventarios documentales municipales; instrumentos agrupados, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

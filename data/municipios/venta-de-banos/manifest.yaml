@@ -1,0 +1,25 @@
+slug: venta-de-banos
+nombre: Venta de Baños
+provincia: Palencia
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '34023'
+portal:
+  base_url: https://ventadebanos.sedelectronica.es
+  adapter: municipio.adapters.venta_de_banos:VentaDeBanosAyuntamientoAdapter
+  config:
+    ine_code: '34023'
+  notes: >-
+    Inventario municipal de transparencia, 7.1 Planeamiento urbanístico.
+    Documentos agrupados por instrumento, incluidas versiones diligenciadas.
+    Cobertura parcial; sin extracción de fechas de los PDF ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Venta de Baños]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

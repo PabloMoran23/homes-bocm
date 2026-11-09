@@ -1,0 +1,24 @@
+slug: polanco
+nombre: Polanco
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39054'
+portal:
+  base_url: https://www.aytopolanco.org
+  adapter: municipio.adapters.polanco:PolancoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Catálogo actual del menú Planeamiento. Un registro por instrumento con todos
+    sus documentos. Se excluye la ficha URB-10 por conflicto de sector en enlaces.
+    Cobertura parcial, sin registro de licencias ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Polanco]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

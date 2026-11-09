@@ -1,0 +1,23 @@
+slug: artes
+nombre: Artés
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08010'
+portal:
+  base_url: https://www.artes.cat
+  adapter: municipio.adapters.artes:ArtesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de proyectos y estudios urbanísticos y expediente del
+    POUM de aprobación inicial. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Artés]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

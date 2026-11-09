@@ -1,0 +1,23 @@
+slug: motilla-del-palancar
+nombre: Motilla del Palancar
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16134'
+portal:
+  base_url: https://www.motilla.com
+  adapter: municipio.adapters.motilla_del_palancar:MotillaDelPalancarAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial Urbanismo - Planeamiento; documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Motilla del Palancar
+  notes: Cobertura parcial del catálogo publicado; sin inferir vigencia, fases ni fechas de aprobación.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de concesiones; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
