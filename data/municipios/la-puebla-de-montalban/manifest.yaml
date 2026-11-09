@@ -1,0 +1,26 @@
+slug: la-puebla-de-montalban
+nombre: La Puebla de Montalbán
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45136'
+portal:
+  base_url: https://www.pueblademontalban.com
+  adapter: municipio.adapters.la_puebla_de_montalban:LaPueblaDeMontalbanAyuntamientoAdapter
+  config:
+    ine_code: '45136'
+  notes: >-
+    Cobertura parcial del POM mediante publicaciones oficiales municipales y API
+    WordPress paginada. Un instrumento con referencias agrupadas; no se afirma
+    aprobación definitiva autonómica, vigencia ni cobertura de otros planes.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Puebla de Montalbán
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

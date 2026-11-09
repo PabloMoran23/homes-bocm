@@ -1,0 +1,22 @@
+slug: oroso
+nombre: Oroso
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15060'
+portal:
+  base_url: https://www.oroso.gal
+  adapter: municipio.adapters.oroso:OrosoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de Urbanismo y archivo PXOM enlazado desde el portal vigente.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Oroso]
+  notes: Cobertura parcial; PXOM original, plan parcial San Martiño II y reparcelación del Sector 10, con documentos agrupados.
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se presupone concesión de licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

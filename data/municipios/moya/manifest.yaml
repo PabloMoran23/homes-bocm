@@ -1,0 +1,24 @@
+slug: moya
+nombre: Moya
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35013'
+portal:
+  base_url: https://www.villademoya.es
+  adapter: municipio.adapters.moya:MoyaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial autonómico SITCAN/GRAFCAN de planeamiento de Moya.
+    Cobertura parcial municipal; agrupa distribuciones y PDFs por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Moya, Villa de Moya]
+  notes: La procedencia efectiva de los registros es SITCAN, Gobierno de Canarias.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de concesiones; excluidos formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

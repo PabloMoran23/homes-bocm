@@ -1,0 +1,20 @@
+slug: valencina-de-la-concepcion
+nombre: Valencina de la Concepción
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41096'
+portal:
+  base_url: https://www.valencinadelaconcepcion.es/es/pgom/documentacion/index.html
+  adapter: municipio.adapters.valencina_de_la_concepcion:ValencinaDeLaConcepcionAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental actual del PGOM; cobertura parcial de planeamiento municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Valencina de la Concepción]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

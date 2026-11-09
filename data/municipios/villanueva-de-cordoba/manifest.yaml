@@ -1,0 +1,25 @@
+slug: villanueva-de-cordoba
+nombre: Villanueva de Córdoba
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14069'
+portal:
+  base_url: https://www.villanuevadecordoba.com/w/servicios/urbanismo/
+  adapter: municipio.adapters.villanueva_de_cordoba:VillanuevaDeCordobaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal estático de planeamiento. PGOU y avance de asentamientos;
+    enlaces documentales verificados. Cobertura parcial, sin inferir vigencia,
+    fechas de aprobación, ejecución ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villanueva de Córdoba
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas. Se excluyen formularios y ordenanzas generales.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

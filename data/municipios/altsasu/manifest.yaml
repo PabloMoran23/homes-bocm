@@ -1,0 +1,22 @@
+slug: altsasu
+nombre: Altsasu / Alsasua
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31010'
+portal:
+  base_url: https://www.altsasu.net
+  adapter: municipio.adapters.altsasu:AltsasuAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal paginado; cobertura parcial de proyectos históricos publicados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ['Altsasu / Alsasua', Altsasu, Alsasua, Altsasu/Alsasua]
+  notes: Obras físicas y plan de movilidad del inventario Proyectos y acciones municipales; sin inferir ejecución ni aprobación.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de concesiones; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

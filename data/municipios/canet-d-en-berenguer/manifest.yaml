@@ -1,0 +1,22 @@
+slug: canet-d-en-berenguer
+nombre: Canet d'En Berenguer
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46082'
+portal:
+  base_url: https://canetdenberenguer.sedelectronica.es
+  adapter: municipio.adapters.canet_d_en_berenguer:CanetDEnBerenguerAyuntamientoAdapter
+  config:
+    ine_code: '46082'
+  notes: >-
+    Inventario municipal 7.1 y PMUS; documentos agrupados por instrumento.
+    Cobertura parcial, sin geometría y sin registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

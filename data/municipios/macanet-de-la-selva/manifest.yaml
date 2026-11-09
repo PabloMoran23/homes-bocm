@@ -1,0 +1,25 @@
+slug: macanet-de-la-selva
+nombre: Maçanet de la Selva
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17103'
+portal:
+  base_url: https://www.massanetdelaselva.cat
+  adapter: municipio.adapters.macanet_de_la_selva:MacanetDeLaSelvaAyuntamientoAdapter
+  config:
+    ine_code: '17103'
+    user_agent: municipio-macanet-de-la-selva/1.0
+  notes: >-
+    Inventario RPUC público enlazado por la sede municipal, paginado íntegramente.
+    Solo instrumentos encabezados por Maçanet de la Selva; excluye planes regionales.
+    Documentos agrupados por expediente. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no constituyen licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

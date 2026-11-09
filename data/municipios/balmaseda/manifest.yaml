@@ -1,0 +1,20 @@
+slug: balmaseda
+nombre: Balmaseda
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48090'
+portal:
+  base_url: https://www.balmaseda.eus
+  adapter: municipio.adapters.balmaseda:BalmasedaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal del PGOU; documentación completa enlazada de la fase 6.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Cobertura parcial; un instrumento PGOU, sin inventario general de obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

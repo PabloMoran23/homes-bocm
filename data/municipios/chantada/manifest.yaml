@@ -1,0 +1,19 @@
+slug: chantada
+nombre: Chantada
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27016'
+portal:
+  base_url: https://www.concellodechantada.org/servizos/urbanismo/plan-xeral-de-ordenacion-urbanistica/
+  adapter: municipio.adapters.chantada:ChantadaAyuntamientoAdapter
+  config: {}
+  notes: Inventario público SIOTUGA de la Xunta enlazado por el ayuntamiento; planeamiento municipal, sin cobertura de licencias ni de todas las obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

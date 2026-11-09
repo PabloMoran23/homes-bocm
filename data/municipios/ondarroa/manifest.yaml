@@ -1,0 +1,20 @@
+slug: ondarroa
+nombre: Ondarroa
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48073'
+portal:
+  base_url: https://www.ondarroa.eus
+  adapter: municipio.adapters.ondarroa:OndarroaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial del Gobierno Vasco de planes urbanísticos portuarios; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Plan especial del puerto y documentos de sus modificaciones agrupados; procedencia Gobierno Vasco.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
