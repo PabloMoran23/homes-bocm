@@ -1,0 +1,19 @@
+slug: casariche
+nombre: Casariche
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41026'
+portal:
+  base_url: https://www.casariche.es/?page_id=63413
+  adapter: municipio.adapters.casariche:CasaricheAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del PBOM; cobertura parcial del planeamiento municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

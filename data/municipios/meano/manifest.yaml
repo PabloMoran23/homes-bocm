@@ -1,0 +1,25 @@
+slug: meano
+nombre: Meaño
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36027'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.meano:MeanoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal oficial de la Xunta (SIOTUGA), INE 36027.
+    Planeamiento general, desarrollo y delimitaciones rurales, con documentos
+    agrupados por instrumento. Cobertura parcial municipal; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Meaño]
+  notes: La fuente efectiva es el registro autonómico, identificada en cada registro.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

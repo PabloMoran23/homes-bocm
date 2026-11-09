@@ -1,0 +1,27 @@
+slug: oza-cesuras
+nombre: Oza-Cesuras
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15902'
+portal:
+  base_url: https://plan-unico.dacoruna.gal/oza-cesuras/
+  adapter: municipio.adapters.oza_cesuras:OzaCesurasAyuntamientoAdapter
+  config:
+    ine_code: '15902'
+    user_agent: municipio-oza-cesuras/1.0
+  notes: >-
+    Fuente oficial provincial: inventario de obras aprobadas del Plan Único
+    de la Deputación da Coruña. Cobertura parcial de inversiones municipales;
+    no acredita ejecución ni licencias. Sin fechas exactas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Oza-Cesuras]
+  notes: La fuente efectiva es la Deputación; cada registro conserva esa procedencia.
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; no hay inventario de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

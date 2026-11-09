@@ -1,0 +1,24 @@
+slug: salines-ses
+nombre: Salines, Ses
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07059'
+portal:
+  base_url: https://ajsessalines.net
+  adapter: municipio.adapters.salines_ses:SalinesSesAyuntamientoAdapter
+  config:
+    ine_code: '07059'
+  notes: >-
+    Inventario oficial de normas subsidiarias y plan especial de es Camp Lladó.
+    Documentos agrupados por instrumento; cobertura municipal parcial.
+    Fechas de subida documentales, sin aprobación ni geometría inferida.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Solo se verificaron formularios de solicitud, no un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

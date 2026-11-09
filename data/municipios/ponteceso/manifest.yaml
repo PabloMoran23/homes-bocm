@@ -1,0 +1,22 @@
+slug: ponteceso
+nombre: Ponteceso
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15068'
+portal:
+  base_url: https://www.ponteceso.net/PXOM/pxom.html
+  adapter: municipio.adapters.ponteceso:PontecesoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del PXOM y MR-Lestimoño; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ponteceso]
+  notes: Agrupa planos y normativa por instrumento; no es un registro completo de obras.
+licencias:
+  enabled: false
+  notes: Los formularios municipales no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

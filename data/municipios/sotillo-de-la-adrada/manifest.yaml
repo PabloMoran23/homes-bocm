@@ -1,0 +1,25 @@
+slug: sotillo-de-la-adrada
+nombre: Sotillo de la Adrada
+provincia: Ávila
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '05240'
+portal:
+  base_url: https://www.sotillo.net
+  adapter: municipio.adapters.sotillo_de_la_adrada:SotilloDeLaAdradaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de Urbanismo: un registro por instrumento, con todos
+    sus documentos enlazados. Cobertura parcial respecto al archivo autonómico;
+    no acredita vigencia consolidada ni aporta geometría verificable.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sotillo de la Adrada
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

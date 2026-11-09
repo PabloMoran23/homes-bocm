@@ -1,0 +1,23 @@
+slug: mollina
+nombre: Mollina
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29072'
+portal:
+  base_url: https://www.idemap.es/pbom/
+  adapter: municipio.adapters.mollina:MollinaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Expediente público del PBOM de Mollina en IDEMAP, Diputación de Málaga.
+    Cobertura parcial de un instrumento en elaboración, con documentos de
+    participación agrupados. Sin fechas de aprobación ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

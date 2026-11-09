@@ -1,0 +1,26 @@
+slug: ferreries
+nombre: Ferreries
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07023'
+portal:
+  base_url: https://www.ajferreries.org
+  adapter: municipio.adapters.ferreries:FerreriesAyuntamientoAdapter
+  config:
+    ine_code: '07023'
+    user_agent: municipio-ferreries/1.0
+  notes: >-
+    Inventario documental municipal del PGOU, agrupado como un instrumento.
+    Cobertura parcial; versiones y rectificaciones conservadas como documentos.
+    Sin certificación de vigencia consolidada ni geometría vectorial verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ferreries]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: guitiriz
+nombre: Guitiriz
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27022'
+portal:
+  base_url: https://concellodeguitiriz.com/urbanismo/
+  adapter: municipio.adapters.guitiriz:GuitirizAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial del PXOM y planeamiento de desarrollo; enlaces documentales sin inferir vigencia ni fechas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

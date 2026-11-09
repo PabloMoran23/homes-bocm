@@ -1,0 +1,24 @@
+slug: villanueva-del-trabuco
+nombre: Villanueva del Trabuco
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29097'
+portal:
+  base_url: https://villanuevadeltrabuco.sedelectronica.es
+  adapter: municipio.adapters.villanueva_del_trabuco:VillanuevaDelTrabucoAyuntamientoAdapter
+  config:
+    ine_code: '29097'
+  notes: >-
+    Inventario municipal de planeamiento, secciones 6.1 y 6.7, recorrido completo
+    con control de recuentos recursivos. Documentos agrupados por instrumento.
+    Cobertura municipal parcial; sin afirmar vigencia, fechas o geometrías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

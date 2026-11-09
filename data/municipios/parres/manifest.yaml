@@ -1,0 +1,25 @@
+slug: parres
+nombre: Parres
+provincia: Asturias
+comunidad_autonoma: asturias
+codigo_ine: '33045'
+portal:
+  base_url: https://www.ayto-parres.es
+  adapter: municipio.adapters.parres:ParresAyuntamientoAdapter
+  config:
+    ine_code: '33045'
+    user_agent: municipio-parres/1.0
+  notes: >-
+    Inventario municipal de planeamiento, agrupado por instrumento con sus
+    documentos. Cobertura parcial; no acredita vigencia ni aprobación.
+    Sin fechas inferidas ni geometrías; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

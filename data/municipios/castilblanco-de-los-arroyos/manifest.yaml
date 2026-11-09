@@ -1,0 +1,22 @@
+slug: castilblanco-de-los-arroyos
+nombre: Castilblanco de los Arroyos
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41027'
+portal:
+  base_url: https://www.castilblancodelosarroyos.es/es/obrasyurbanismo/
+  adapter: municipio.adapters.castilblanco_de_los_arroyos:CastilblancoDeLosArroyosAyuntamientoAdapter
+  config: {}
+  notes: Inventarios documentales oficiales de PBOM, adaptación LOUA y modificación del cementerio; cobertura parcial.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Castilblanco de los Arroyos
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

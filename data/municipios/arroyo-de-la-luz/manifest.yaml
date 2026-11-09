@@ -1,0 +1,27 @@
+slug: arroyo-de-la-luz
+nombre: Arroyo de la Luz
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10021'
+portal:
+  base_url: https://arroyodelaluz.es
+  adapter: municipio.adapters.arroyo_de_la_luz:ArroyoDeLaLuzAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Instrumentos municipales del inventario oficial SITEX de la Junta de Extremadura.
+    Fuente autonómica, no registro de licencias del Ayuntamiento. Incluye estados
+    vigentes, no vigentes y en trámite según la fuente. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Arroyo de la Luz]
+  notes: >-
+    Integración mediante el contrato de adaptador municipal; procedencia real
+    sitex-juntaex en cada registro. Cobertura parcial de planeamiento, sin obras.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

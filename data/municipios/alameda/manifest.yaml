@@ -1,0 +1,23 @@
+slug: alameda
+nombre: Alameda
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29001'
+portal:
+  base_url: https://alameda.sedelectronica.es
+  adapter: municipio.adapters.alameda:AlamedaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del inventario oficial: PBOM y Plan Municipal de Vivienda
+    y Suelo, agrupando documentos y agotando Mostrar más. Sin afirmar vigencia,
+    aprobación o ejecución. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

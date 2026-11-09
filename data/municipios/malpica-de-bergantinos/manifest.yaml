@@ -1,0 +1,26 @@
+slug: malpica-de-bergantinos
+nombre: Malpica de Bergantiños
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15043'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.malpica_de_bergantinos:MalpicaDeBergantinosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario público oficial de planeamiento municipal de la Xunta (SIOTUGA),
+    consultado por INE 15043. Cobertura parcial, incluye sección histórica.
+    No acredita vigencia actual ni cubre todos los expedientes en tramitación.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Malpica de Bergantiños
+  notes: Instrumentos urbanísticos municipales; procedencia real SIOTUGA en cada registro.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas. Se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

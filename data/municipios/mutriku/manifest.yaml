@@ -1,0 +1,25 @@
+slug: mutriku
+nombre: Mutriku
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20056'
+portal:
+  base_url: https://www.mutriku.eus
+  adapter: municipio.adapters.mutriku:MutrikuAyuntamientoAdapter
+  config:
+    ine_code: '20056'
+  notes: >-
+    Inventario municipal de NNSS y modificaciones puntuales. Documentos agrupados
+    por instrumento; cobertura parcial, sin geometría ni verificación de vigencia
+    consolidada. La fecha BOG no es fecha de aprobación ni de la página municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Mutriku, Motrico]
+licencias:
+  enabled: false
+  notes: La sección municipal sólo ofrece formularios; no acredita concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

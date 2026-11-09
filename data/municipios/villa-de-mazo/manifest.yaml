@@ -1,0 +1,22 @@
+slug: villa-de-mazo
+nombre: Villa de Mazo
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38053'
+portal:
+  base_url: https://villademazo.com/el-ayuntamiento/gabinete-tecnico/
+  adapter: municipio.adapters.villa_de_mazo:VillaDeMazoAyuntamientoAdapter
+  config: {}
+  notes: Sigue el enlace municipal al expediente actual del PGO mantenido por el Gobierno de Canarias.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villa de Mazo]
+  notes: Cobertura parcial; un instrumento con sus documentos, sin afirmar aprobación definitiva ni vigencia.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

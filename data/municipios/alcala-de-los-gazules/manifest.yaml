@@ -1,0 +1,22 @@
+slug: alcala-de-los-gazules
+nombre: Alcalá de los Gazules
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11001'
+portal:
+  base_url: https://www.alcaladelosgazules.es/index.php/urbanismo/pgou
+  adapter: municipio.adapters.alcala_de_los_gazules:AlcalaDeLosGazulesAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del avance del PGOU de febrero 2020; un instrumento agrupado con sus volúmenes. Cobertura parcial, sin afirmar vigencia.
+licencias:
+  enabled: false
+  notes: Sin inventario verificado de licencias concedidas; formularios excluidos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Alcalá de los Gazules
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

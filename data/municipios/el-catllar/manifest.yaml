@@ -1,0 +1,25 @@
+slug: el-catllar
+nombre: El Catllar
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43043'
+portal:
+  base_url: https://www.elcatllar.cat
+  adapter: municipio.adapters.el_catllar:ElCatllarAyuntamientoAdapter
+  config:
+    ine_code: '43043'
+    user_agent: municipio-el-catllar/1.0
+  notes: >-
+    Inventario municipal de planeamiento en seu-e.cat con expedientes RPUC.
+    Cobertura parcial; no representa todo el planeamiento vigente ni las obras.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

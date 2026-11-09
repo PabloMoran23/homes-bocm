@@ -1,0 +1,24 @@
+slug: ortigueira
+nombre: Ortigueira
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15061'
+portal:
+  base_url: https://concellodeortigueira.gal
+  adapter: municipio.adapters.ortigueira:OrtigueiraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento general y de desarrollo, con enlaces
+    Word a inventarios documentales. Cobertura parcial; no certifica vigencia
+    actual ni integridad de los instrumentos. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ortigueira]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

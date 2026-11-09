@@ -1,0 +1,25 @@
+slug: nambroca
+nombre: Nambroca
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45107'
+portal:
+  base_url: https://nambroca.sedelectronica.es
+  adapter: municipio.adapters.nambroca:NambrocaAyuntamientoAdapter
+  config:
+    ine_code: '45107'
+    user_agent: municipio-nambroca/1.0
+  notes: >-
+    Inventario público de planeamiento: seis documentos agrupados en cuatro
+    instrumentos. Cobertura parcial, sin garantías de vigencia, geometrías ni
+    extracción del contenido de PDF. Fechas de publicación sólo por documento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

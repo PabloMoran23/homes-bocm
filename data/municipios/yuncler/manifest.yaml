@@ -1,0 +1,19 @@
+slug: yuncler
+nombre: Yuncler
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45203'
+portal:
+  base_url: https://www.aytoyuncler.com/luis-miguel/
+  adapter: municipio.adapters.yuncler:YunclerAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del POM; cobertura parcial, sin acreditar vigencia ni fechas de aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

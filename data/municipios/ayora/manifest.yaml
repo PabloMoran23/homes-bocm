@@ -1,0 +1,23 @@
+slug: ayora
+nombre: Ayora
+provincia: Valencia
+comunidad_autonoma: comunidad-valenciana
+codigo_ine: '46044'
+portal:
+  base_url: https://ayora.sedelectronica.es/transparency/88db6e49-debd-458a-8554-540c216cc18b/
+  adapter: municipio.adapters.ayora:AyoraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial 7.1 Planeamiento urbanístico. Un registro por carpeta
+    de instrumento, documentos agrupados y paginación Wicket completa.
+    Cobertura parcial; no acredita vigencia ni aprobación. Sin geometría verificada.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; no se extraen formularios.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

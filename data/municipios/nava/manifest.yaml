@@ -1,0 +1,23 @@
+slug: nava
+nombre: Nava
+provincia: Asturias
+comunidad_autonoma: principado-de-asturias
+codigo_ine: '33040'
+portal:
+  base_url: https://www.ayto-nava.es
+  adapter: municipio.adapters.nava:NavaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de documentos de planeamiento, agrupados por instrumento.
+    Cobertura parcial; sin extracción de fechas o geometrías de los PDF.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Nava]
+licencias:
+  enabled: false
+  notes: Los catálogos de trámites no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

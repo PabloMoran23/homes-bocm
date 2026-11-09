@@ -1,0 +1,24 @@
+slug: huelma
+nombre: Huelma
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23044'
+portal:
+  base_url: https://www.dipujaen.es/diputacion/dipujaen/conoce-diputacion/areas-organismos-empresas/areaF/urbanismo/planeamiento/
+  adapter: municipio.adapters.huelma:HuelmaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial provincial actualmente enlazado. Cobertura parcial de Huelma:
+    estudios de detalle y proyectos de urbanización, reparcelación y compensación.
+    Requiere el ejecutable pdftotext existente; no acredita vigencia ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Fuente documental de la Diputación de Jaén sobre planeamiento municipal.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

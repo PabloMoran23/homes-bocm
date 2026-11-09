@@ -1,0 +1,21 @@
+slug: corral-de-almaguer
+nombre: Corral de Almaguer
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45054'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/acuerdos-expedientes?title=Corral+de+Almaguer
+  adapter: municipio.adapters.corral_de_almaguer:CorralDeAlmaguerAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico JCCM de acuerdos; cobertura parcial por título municipal, solo instrumentos de planeamiento.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Corral de Almaguer]
+  notes: El canal portal consume acuerdos de JCCM, no noticias ni un registro de licencias. Source de cada registro es jccm.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

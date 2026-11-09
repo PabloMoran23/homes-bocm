@@ -1,0 +1,21 @@
+slug: agurain
+nombre: Agurain / Salvatierra
+provincia: Álava
+comunidad_autonoma: pais-vasco
+codigo_ine: '01051'
+portal:
+  base_url: https://agurain.eus
+  adapter: municipio.adapters.agurain:AgurainAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento de desarrollo y expedientes forales enlazados.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Agurain, Salvatierra, Agurain / Salvatierra]
+  notes: Cobertura parcial; no incluye PGOU, obras municipales ni gestión urbanística.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

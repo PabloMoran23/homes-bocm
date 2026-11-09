@@ -1,0 +1,19 @@
+slug: la-guardia-de-jaen
+nombre: La Guardia de Jaén
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23038'
+portal:
+  base_url: https://laguardiadejaen.com/portal-transparencia/planeamiento-de-ordenacion-urbana/
+  adapter: municipio.adapters.la_guardia_de_jaen:LaGuardiaDeJaenAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de planeamiento; vigencia sin verificar.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

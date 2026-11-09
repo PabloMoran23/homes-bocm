@@ -1,0 +1,24 @@
+slug: esporles
+nombre: Esporles
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07020'
+portal:
+  base_url: https://esporles.cat/ca/arxius-i-documents/urbanisme
+  adapter: municipio.adapters.esporles:EsporlesAyuntamientoAdapter
+  config:
+    ine_code: '07020'
+  notes: >-
+    Archivo municipal de Urbanisme: carpetas Normativa y estudio de detalle
+    del carrer de la Llum. Instrumentos y modificaciones con documentos agrupados.
+    Cobertura parcial e histórica; no certifica vigencia jurídica actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, actividades ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
