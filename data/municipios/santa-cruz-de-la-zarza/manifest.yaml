@@ -1,0 +1,23 @@
+slug: santa-cruz-de-la-zarza
+nombre: Santa Cruz de la Zarza
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45156'
+portal:
+  base_url: https://www.santacruzdelazarza.es
+  adapter: municipio.adapters.santa_cruz_de_la_zarza:SantaCruzDeLaZarzaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental parcial del POM; documentos agrupados por instrumento.
+    Las etiquetas municipales erróneas se resuelven leyendo los PDF con pdftotext.
+    Sin garantía de vigencia consolidada ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Las instrucciones y formularios no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

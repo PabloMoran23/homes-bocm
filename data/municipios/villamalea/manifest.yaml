@@ -1,0 +1,19 @@
+slug: villamalea
+nombre: Villamalea
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02079'
+portal:
+  base_url: https://villamalea.es/
+  adapter: municipio.adapters.villamalea:VillamaleaAyuntamientoAdapter
+  config: {}
+  notes: Dos inventarios municipales actuales de planeamiento; documentos agrupados por instrumento, cobertura parcial sin inferir vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

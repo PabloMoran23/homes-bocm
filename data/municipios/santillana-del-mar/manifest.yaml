@@ -1,0 +1,25 @@
+slug: santillana-del-mar
+nombre: Santillana del Mar
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39076'
+portal:
+  base_url: https://santillanadelmar.sedelectronica.es
+  adapter: municipio.adapters.santillana_del_mar:SantillanaDelMarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial: inventario dedicado de la revisión del PGOU, con todos sus
+    documentos agrupados. Sin geometría ni verificación de la fase administrativa
+    actual; publication_ready false. No incluye PGOU vigente ni modificaciones.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Santillana del Mar
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: arroyo-de-san-servan
+nombre: Arroyo de San Serván
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06012'
+portal:
+  base_url: https://arroyodesanservan.org
+  adapter: municipio.adapters.arroyo_de_san_servan:ArroyoDeSanServanAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Instrumentos municipales vigentes del registro oficial SITEX de la Junta de
+    Extremadura. Consulta POST de solo lectura, municipio interno 13 (no INE).
+    Cobertura parcial; excluye histórico derogado y planes territoriales.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Arroyo de San Serván]
+  notes: Fuente efectiva regional SITEX; no inventario completo de obras ni de anuncios DOE.
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

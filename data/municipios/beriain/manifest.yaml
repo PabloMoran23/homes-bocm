@@ -1,0 +1,23 @@
+slug: beriain
+nombre: Beriáin
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31905'
+portal:
+  base_url: https://sedeelectronica.beriain.es
+  adapter: municipio.adapters.beriain:BeriainAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Tablón vigente de la sede municipal. Estudios de detalle con identificador
+    de expediente explícito, agrupando anuncios y documentos. Cobertura parcial,
+    sin histórico ni geometría verificada; fechas de exposición, no de acuerdo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Beriáin, Beriain]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: eskoriatza
+nombre: Eskoriatza
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20034'
+portal:
+  base_url: https://eskoriatza.eus
+  adapter: municipio.adapters.eskoriatza:EskoriatzaAyuntamientoAdapter
+  config: {}
+  notes: Catálogo municipal de Normas Subsidiarias y modificaciones enlazadas; cobertura parcial del planeamiento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

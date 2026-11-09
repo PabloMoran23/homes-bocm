@@ -1,0 +1,23 @@
+slug: boqueixon
+nombre: Boqueixón
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15012'
+portal:
+  base_url: https://www.boqueixon.gal/servizos-municipais/urbanismo/
+  adapter: municipio.adapters.boqueixon:BoqueixonAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del inventario municipal: NNSS 1996 y modificación puntual 4,
+    agrupando certificado, anexo y paquetes documentales. El aviso municipal señala
+    que el PXOM está anulado. Sin geometría ni fechas exactas extraídas de PDF.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Servicios y formularios no constituyen un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

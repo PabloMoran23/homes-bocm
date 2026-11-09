@@ -1,0 +1,19 @@
+slug: jun
+nombre: Jun
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18111'
+portal:
+  base_url: https://ayuntamientojun.sedelectronica.es/
+  adapter: municipio.adapters.jun:JunAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial de carpetas de planeamiento y anuncios vigentes de aprobación de proyectos de obra pública.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

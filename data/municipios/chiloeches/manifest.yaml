@@ -1,0 +1,23 @@
+slug: chiloeches
+nombre: Chiloeches
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19105'
+portal:
+  base_url: https://chiloeches.es
+  adapter: municipio.adapters.chiloeches:ChiloechesAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del POM y modificaciones puntuales, agrupando documentos.
+    Cobertura parcial, sin fechas ni fase verificadas en el índice ni geometría vectorial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Chiloeches]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes, ordenanzas ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

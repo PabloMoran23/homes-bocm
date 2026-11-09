@@ -1,0 +1,26 @@
+slug: vilablareix
+nombre: Vilablareix
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17215'
+portal:
+  base_url: https://www.vilablareix.cat
+  adapter: municipio.adapters.vilablareix:VilablareixAyuntamientoAdapter
+  config:
+    ine_code: '17215'
+    user_agent: municipio-vilablareix/1.0
+  notes: >-
+    Colección documental municipal de planeamiento: cuatro instrumentos agrupados,
+    con versiones históricas. Cobertura parcial, sin afirmar vigencia actual.
+    No incluye el tauler paginado, RPUC completo ni geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vilablareix]
+licencias:
+  enabled: false
+  notes: Los trámites de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

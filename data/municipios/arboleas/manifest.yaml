@@ -1,0 +1,19 @@
+slug: arboleas
+nombre: Arboleas
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04017'
+portal:
+  base_url: https://www.arboleas.org/
+  adapter: municipio.adapters.arboleas:ArboleasAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de planeamiento; versiones agrupadas por instrumento, sin afirmar vigencia ni aprobación global.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: la-pobla-de-mafumet
+nombre: La Pobla de Mafumet
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43109'
+portal:
+  base_url: https://www.poblamafumet.cat
+  adapter: municipio.adapters.la_pobla_de_mafumet:LaPoblaDeMafumetAyuntamientoAdapter
+  config:
+    ine_code: '43109'
+  notes: >-
+    Inventario municipal de exposición pública, cobertura parcial de modificaciones
+    del POUM. Modificación 6 contrastada con anuncio BOPT 2025-09478 y PDF.
+    Enlace municipal a Drive roto; conservado con procedencia. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [La Pobla de Mafumet, la Pobla de Mafumet]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas. Se excluyen trámites y autorizaciones ambientales.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

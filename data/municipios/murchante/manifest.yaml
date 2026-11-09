@@ -1,0 +1,23 @@
+slug: murchante
+nombre: Murchante
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31176'
+portal:
+  base_url: https://www.murchante.es
+  adapter: municipio.adapters.murchante:MurchanteAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Tablón oficial Sedipualba, inventario vigente de todas las áreas.
+    Cobertura parcial: nuevas exposiciones públicas de modificaciones estructurantes
+    del PGM verificadas en sus edictos PDF. No es un histórico de planeamiento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de concesiones. Se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

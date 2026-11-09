@@ -1,0 +1,20 @@
+slug: arriate
+nombre: Arriate
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29020'
+portal:
+  base_url: https://arriate.sedelectronica.es
+  adapter: municipio.adapters.arriate:ArriateAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial de UE-6, PMVS y EDAR/colectores. Sin vigencia ni fechas de aprobación inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Arriate]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

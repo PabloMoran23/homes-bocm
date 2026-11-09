@@ -1,0 +1,21 @@
+slug: ugao-miraballes
+nombre: Ugao-Miraballes
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48065'
+portal:
+  base_url: https://www.ugao-miraballes.eus
+  adapter: municipio.adapters.ugao_miraballes:UgaoMiraballesAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal del PGOU de aprobación definitiva; documentos agrupados, cobertura parcial y sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ugao-Miraballes]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

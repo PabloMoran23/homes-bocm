@@ -1,0 +1,26 @@
+slug: sant-climent-de-llobregat
+nombre: Sant Climent de Llobregat
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08204'
+portal:
+  base_url: https://www.santclimentdellobregat.cat
+  adapter: municipio.adapters.sant_climent_de_llobregat:SantClimentDeLlobregatAyuntamientoAdapter
+  config:
+    ine_code: '08204'
+  notes: >-
+    Inventario municipal de planeamiento en trámite: paquetes técnicos de MPGM
+    locales, con anexos y anuncios agrupados. Cobertura parcial, sin geometría;
+    no determina vigencia jurídica ni extrae fechas del contenido de los PDF.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Climent de Llobregat
+licencias:
+  enabled: false
+  notes: No se extraen licencias concedidas ni se convierten suspensiones en concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

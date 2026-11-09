@@ -1,0 +1,25 @@
+slug: zas
+nombre: Zas
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15093'
+portal:
+  base_url: https://concellodezas.gal
+  adapter: municipio.adapters.zas:ZasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Obras físicas de Zas en el inventario oficial POS+ de la Deputación da Coruña,
+    https://plan-unico.dacoruna.gal/zas/. Cobertura parcial del municipio.
+    Se excluyen suministros. Sin fechas de acuerdo ni geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Zas]
+  notes: Fuente del adaptador publicada por la Deputación; no es un registro municipal exhaustivo.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

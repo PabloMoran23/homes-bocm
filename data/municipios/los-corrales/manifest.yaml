@@ -1,0 +1,22 @@
+slug: los-corrales
+nombre: Los Corrales
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41037'
+portal:
+  base_url: https://transparencia.loscorrales.es
+  adapter: municipio.adapters.los_corrales:LosCorralesAyuntamientoAdapter
+  config: {}
+  notes: Cuatro inventarios documentales oficiales; cobertura parcial de planeamiento y proyecto de alumbrado público.
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Los Corrales]
+  notes: Documentos agrupados por instrumento; sin inferir fechas, vigencia, ejecución ni geometría.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

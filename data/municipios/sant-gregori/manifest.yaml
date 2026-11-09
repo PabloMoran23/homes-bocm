@@ -1,0 +1,26 @@
+slug: sant-gregori
+nombre: Sant Gregori
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17163'
+portal:
+  base_url: https://www.santgregori.cat
+  adapter: municipio.adapters.sant_gregori:SantGregoriAyuntamientoAdapter
+  config:
+    ine_code: '17163'
+  notes: >-
+    Snapshot parcial de las páginas municipales de proyectos a exposición pública,
+    proyectos definitivos y POUM con su inventario documental. No incluye las
+    modificaciones del POUM ni todo el archivo histórico. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Gregori
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

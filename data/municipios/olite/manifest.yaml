@@ -1,0 +1,19 @@
+slug: olite
+nombre: Olite / Erriberri
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31191'
+portal:
+  base_url: https://www.olite.es/plan-general-municipal/
+  adapter: municipio.adapters.olite:OliteAyuntamientoAdapter
+  config: {}
+  notes: Dossier municipal del PGM; documentos agrupados, cobertura parcial y sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

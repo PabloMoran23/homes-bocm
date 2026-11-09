@@ -1,0 +1,25 @@
+slug: morana
+nombre: Moraña
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36032'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/
+  adapter: municipio.adapters.morana:MoranaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal oficial de la Xunta filtrado por INE 36032.
+    Cobertura parcial de planeamiento general, desarrollo y delimitaciones rurales;
+    documentos agrupados por instrumento. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Moraña]
+  notes: Fuente efectiva Xunta/SIOTUGA, declarada en cada registro; no inventario de obras.
+licencias:
+  enabled: false
+  notes: Las solicitudes de licencia no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

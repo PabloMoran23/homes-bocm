@@ -1,0 +1,25 @@
+slug: villanueva-del-rio-segura
+nombre: Villanueva del Río Segura
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30042'
+portal:
+  base_url: https://www.villanuevadelsegura.es
+  adapter: municipio.adapters.villanueva_del_rio_segura:VillanuevaDelRioSeguraAyuntamientoAdapter
+  config:
+    ine_code: '30042'
+  notes: >-
+    Recorre el archivo municipal completo y agrupa las publicaciones documentadas
+    del PGMO en un instrumento. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villanueva del Río Segura
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas. No se extraen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

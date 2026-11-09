@@ -1,0 +1,20 @@
+slug: a-rua
+nombre: A Rúa
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32072'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario?inv=1&idconcello=32072
+  adapter: municipio.adapters.a_rua:ARuaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico de instrumentos municipales; incluye históricos e incidencias, sin inferir vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Procedencia real Xunta de Galicia (SIOTUGA), no registro de obras ni licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

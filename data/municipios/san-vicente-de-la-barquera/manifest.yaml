@@ -1,0 +1,20 @@
+slug: san-vicente-de-la-barquera
+nombre: San Vicente de la Barquera
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39080'
+portal:
+  base_url: https://aytosanvicentedelabarquera.es
+  adapter: municipio.adapters.san_vicente_de_la_barquera:SanVicenteDeLaBarqueraAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento; documentos agrupados por instrumento. Cobertura parcial, sin geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni anuncios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

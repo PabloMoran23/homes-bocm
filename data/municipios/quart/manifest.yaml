@@ -1,0 +1,25 @@
+slug: quart
+nombre: Quart
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17142'
+portal:
+  base_url: https://www.quart.cat
+  adapter: municipio.adapters.quart:QuartAyuntamientoAdapter
+  config:
+    ine_code: '17142'
+    user_agent: municipio-quart/1.0
+  notes: >-
+    Inventario oficial de transparencia: POUM y estudio de movilidad, con
+    documentos agrupados por instrumento. Cobertura parcial, sin geometría
+    verificada ni historial completo de expedientes u obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

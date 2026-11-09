@@ -1,0 +1,24 @@
+slug: cospeito
+nombre: Cospeito
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27015'
+portal:
+  base_url: https://www.concellodecospeito.es
+  adapter: municipio.adapters.cospeito:CospeitoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Planeamiento municipal publicado por la Xunta en SIOTUGA, inventario INE 27015.
+    Cobertura parcial: cuatro clases de planeamiento, sin obras ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cospeito]
+  notes: "Editor real de los documentos e inventario: Xunta de Galicia (SIOTUGA)."
+licencias:
+  enabled: false
+  notes: La web municipal ofrece formularios; no acredita concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
