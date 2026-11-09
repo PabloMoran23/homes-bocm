@@ -1,0 +1,25 @@
+slug: malagon
+nombre: Malagón
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13052'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/planeamiento/planeamiento-municipal
+  adapter: municipio.adapters.malagon:MalagonAyuntamientoAdapter
+  config:
+    ine_code: '13052'
+  notes: >-
+    Depósito oficial autonómico enlazado por el visor de planeamiento municipal.
+    Instrumentos agrupados por carpeta con todos sus documentos. Cobertura parcial,
+    sin afirmar vigencia actual ni geometrías verificadas; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Adaptador municipal con fuente documental de la Junta de Castilla-La Mancha.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

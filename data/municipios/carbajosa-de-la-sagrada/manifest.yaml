@@ -1,0 +1,19 @@
+slug: carbajosa-de-la-sagrada
+nombre: Carbajosa de la Sagrada
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '37085'
+portal:
+  base_url: https://carbajosadelasagrada.es/urbanismo/
+  adapter: municipio.adapters.carbajosa_de_la_sagrada:CarbajosaDeLaSagradaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento y gestión urbanística; cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

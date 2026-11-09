@@ -1,0 +1,24 @@
+slug: la-almunia-de-dona-godina
+nombre: La Almunia de Doña Godina
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50025'
+portal:
+  base_url: https://laalmunia.sedelectronica.es
+  adapter: municipio.adapters.la_almunia_de_dona_godina:LaAlmuniaDeDonaGodinaAyuntamientoAdapter
+  config:
+    ine_code: '50025'
+  notes: >-
+    Inventario oficial de planes urbanísticos de la sede enlazada desde la web
+    municipal. Documentos agrupados por instrumento; cobertura parcial sin
+    fechas ni geometría verificadas. Los enlaces externos se conservan.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

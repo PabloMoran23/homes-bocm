@@ -1,0 +1,22 @@
+slug: bunyola
+nombre: Bunyola
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07010'
+portal:
+  base_url: https://bunyola.sedelectronica.es
+  adapter: municipio.adapters.bunyola:BunyolaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de normativa urbanística vigente del Nucli de Bunyola.
+    Cobertura parcial municipal; documentos agrupados por instrumento, sin fechas
+    inferidas ni geometría verificada. No constituye un registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

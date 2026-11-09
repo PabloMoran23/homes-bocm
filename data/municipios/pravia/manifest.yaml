@@ -1,0 +1,21 @@
+slug: pravia
+nombre: Pravia
+provincia: Asturias
+comunidad_autonoma: principado-de-asturias
+codigo_ine: '33051'
+portal:
+  base_url: https://www.ayto-pravia.es
+  adapter: municipio.adapters.pravia:PraviaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de planeamiento; tomos y planos agrupados por instrumento. Cobertura parcial y sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Pravia]
+licencias:
+  enabled: false
+  notes: Formularios y declaraciones responsables no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,26 @@
+slug: santa-margarida-i-els-monjos
+nombre: Santa Margarida i els Monjos
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08251'
+portal:
+  base_url: https://www.santamargaridaielsmonjos.cat
+  adapter: municipio.adapters.santa_margarida_i_els_monjos:SantaMargaridaIElsMonjosAyuntamientoAdapter
+  config:
+    ine_code: '08251'
+    user_agent: municipio-santa-margarida-i-els-monjos/1.0
+  notes: >-
+    Cobertura parcial: POUM enlazado por Normativa d'urbanisme de la sede municipal,
+    consultado en RPUC con su árbol público completo de documentos agrupados.
+    No se afirma vigencia jurídica; incluye resoluciones judiciales sin interpretar.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: toro
+nombre: Toro
+provincia: Zamora
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '49219'
+portal:
+  base_url: https://www.toroayto.es/urbanismo.php
+  adapter: municipio.adapters.toro:ToroAyuntamientoAdapter
+  config: {}
+  notes: Archivo PLAU vigente de Toro enlazado por Urbanismo municipal; instrumentos y documentos agrupados, cobertura parcial.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

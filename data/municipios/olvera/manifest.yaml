@@ -1,0 +1,20 @@
+slug: olvera
+nombre: Olvera
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11024'
+portal:
+  base_url: https://www.olvera.es/es/normativa-legal/instrumentos-urbanisticos
+  adapter: municipio.adapters.olvera:OlveraAyuntamientoAdapter
+  config: {}
+  notes: Registro público de instrumentos urbanísticos; cobertura parcial, sin inferir vigencia actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Olvera]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: baztan
+nombre: Baztan
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31050'
+portal:
+  base_url: https://baztanhobetzen.baztan.eus/
+  adapter: municipio.adapters.baztan:BaztanAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial de documentos del PEAU de los Cascos de Baztan; cobertura parcial de un instrumento, sin estado jurídico actual acreditado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

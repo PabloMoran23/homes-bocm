@@ -1,0 +1,24 @@
+slug: abadino
+nombre: Abadiño
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48001'
+portal:
+  base_url: https://www.xn--abadio-0wa.org
+  adapter: municipio.adapters.abadino:AbadinoAyuntamientoAdapter
+  config:
+    ine_code: '48001'
+  notes: >-
+    Inventario público de páginas de Urbanismo: PGOU y modificaciones NNSS,
+    con documentos agrupados por instrumento. Cobertura documental parcial;
+    las fases publicadas no certifican vigencia. Sin fechas ni geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios de solicitud y consultas excluidos; sin registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

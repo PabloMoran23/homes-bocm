@@ -1,0 +1,26 @@
+slug: guissona
+nombre: Guissona
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25110'
+portal:
+  base_url: https://seu-e.cat/ca/web/guissona
+  adapter: municipio.adapters.guissona:GuissonaAyuntamientoAdapter
+  config:
+    ine_code: '25110'
+    user_agent: municipio-guissona/1.0
+  notes: >-
+    Snapshot parcial de Planejament urbanístic y Projectes i documents tècnics
+    en exposició pública de la sede oficial. Enlaces documentales conservados;
+    sin fechas de acuerdo verificadas ni geometría. Web principal HTTP 403.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Guissona]
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

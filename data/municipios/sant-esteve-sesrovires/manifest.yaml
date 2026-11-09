@@ -1,0 +1,25 @@
+slug: sant-esteve-sesrovires
+nombre: Sant Esteve Sesrovires
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08208'
+portal:
+  base_url: https://www.sesrovires.cat
+  adapter: municipio.adapters.sant_esteve_sesrovires:SantEsteveSesroviresAyuntamientoAdapter
+  config:
+    ine_code: '08208'
+  notes: >-
+    Cobertura parcial de tres inventarios documentales municipales: gestión vigente,
+    planeamiento general en trámite y gestión en trámite. Estados según la fuente,
+    con marcas de actualización de 2016; sin verificación independiente de vigencia.
+    Documentos agrupados por instrumento. Sin fechas de acuerdo verificadas ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

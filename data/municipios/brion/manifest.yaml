@@ -1,0 +1,21 @@
+slug: brion
+nombre: Brión
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15013'
+portal:
+  base_url: https://www.concellodebrion.gal/es/urbanismo
+  adapter: municipio.adapters.brion:BrionAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal del PXOM; documentos agrupados en un instrumento, sin fechas ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Brión, Brion]
+  notes: Cobertura parcial limitada al PXOM publicado en Urbanismo; no es un inventario completo de obras o planeamiento vigente.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

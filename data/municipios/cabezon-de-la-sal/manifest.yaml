@@ -1,0 +1,25 @@
+slug: cabezon-de-la-sal
+nombre: Cabezón de la Sal
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39012'
+portal:
+  base_url: https://www.cabezondelasal.net/informacion-municipal-2/plan-general-de-ordenacion-urbana/
+  adapter: municipio.adapters.cabezon_de_la_sal:CabezonDeLaSalAyuntamientoAdapter
+  config:
+    ine_code: '39012'
+    user_agent: municipio-cabezon-de-la-sal/1.0
+  notes: >-
+    Archivo oficial AUCAN del Gobierno de Cantabria enlazado por el Ayuntamiento.
+    Rama Actual completa, instrumentos agrupados con documentos y modificaciones
+    vinculadas. No Vigente excluido; cobertura municipal parcial, sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

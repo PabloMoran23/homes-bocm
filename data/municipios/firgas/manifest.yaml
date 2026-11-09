@@ -1,0 +1,23 @@
+slug: firgas
+nombre: Firgas
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35008'
+portal:
+  base_url: https://www.villadefirgas.es/urbanismo/
+  adapter: municipio.adapters.firgas:FirgasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de NNSS, revisiones/modificaciones y planes parciales.
+    Documentos agrupados por instrumento; cobertura parcial sin vigencia jurídica
+    verificada. PGO histórico excluido por caducidad y fases contradictorias.
+licencias:
+  enabled: false
+  notes: Sin registro de concesiones verificado; formularios y licitaciones excluidos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

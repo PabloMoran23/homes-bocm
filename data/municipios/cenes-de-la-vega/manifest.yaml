@@ -1,0 +1,23 @@
+slug: cenes-de-la-vega
+nombre: Cenes de la Vega
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18047'
+portal:
+  base_url: https://cenesdelavega.sedelectronica.es/transparency
+  adapter: municipio.adapters.cenes_de_la_vega:CenesDeLaVegaAyuntamientoAdapter
+  config: {}
+  notes: Inventarios públicos de planeamiento y de información pública; documentos agrupados por instrumento, cobertura parcial.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas. Formularios excluidos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Cenes de la Vega
+  notes: Instrumentos urbanísticos documentados; no acredita vigencia, aprobación o ejecución actual.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

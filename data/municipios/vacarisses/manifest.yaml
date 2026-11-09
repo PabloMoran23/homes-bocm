@@ -1,0 +1,24 @@
+slug: vacarisses
+nombre: Vacarisses
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08291'
+portal:
+  base_url: https://www.vacarisses.cat
+  adapter: municipio.adapters.vacarisses:VacarissesAyuntamientoAdapter
+  config:
+    ine_code: '08291'
+  notes: >-
+    Inventario municipal Urbanisme y documentos enlazados, agrupados por instrumento.
+    Cobertura municipal parcial; sin registro de licencias ni geometrías verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vacarisses]
+licencias:
+  enabled: false
+  notes: Formularios y anuncios de contratación excluidos; no hay registro verificado de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,25 @@
+slug: villamayor
+nombre: Villamayor
+provincia: Salamanca
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '37354'
+portal:
+  base_url: https://www.villamayor.es
+  adapter: municipio.adapters.villamayor:VillamayorAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo oficial PLAU de la Junta de Castilla y León, enlazado por la Diputación
+    de Salamanca para Villamayor (37354). Inventario completo paginado con históricos
+    desmarcados; cobertura parcial del urbanismo municipal, sin licencias ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villamayor]
+  notes: Instrumentos de planeamiento y proyectos de gestión; procedencia efectiva JCyL en cada registro.
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud y autoliquidación no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

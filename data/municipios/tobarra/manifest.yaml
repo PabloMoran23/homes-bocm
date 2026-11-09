@@ -1,0 +1,20 @@
+slug: tobarra
+nombre: Tobarra
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02074'
+portal:
+  base_url: https://tobarra.es
+  adapter: municipio.adapters.tobarra:TobarraAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del POM, agrupado como un instrumento. Cobertura parcial y sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los impresos de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: gerena
+nombre: Gerena
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41045'
+portal:
+  base_url: https://transparencia.gerena.es/es/transparencia/indicadores-de-transparencia/indicador/53.-Se-publican-y-se-mantienen-publicados-las-modificaciones-aprobadas-del-PGOU-y-los-Planes-parciales-aprobados.-00033/
+  adapter: municipio.adapters.gerena:GerenaAyuntamientoAdapter
+  config: {}
+  notes: Inventario ITA 53 de planeamiento; todas las páginas de sus galerías documentales. Cobertura parcial municipal, sin inferir vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

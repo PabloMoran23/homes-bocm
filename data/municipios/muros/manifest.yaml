@@ -1,0 +1,24 @@
+slug: muros
+nombre: Muros
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15053'
+portal:
+  base_url: https://muros.gal
+  adapter: municipio.adapters.muros:MurosAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario SIOTUGA de la Xunta enlazado por Urbanismo municipal.
+    Planeamiento general, de desarrollo y delimitaciones rurales; cobertura parcial.
+    Documentos agrupados por instrumento. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Muros]
+licencias:
+  enabled: false
+  notes: Formularios y trámites no acreditan concesiones. Sin registro verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

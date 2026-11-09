@@ -1,0 +1,23 @@
+slug: cullar-vega
+nombre: Cúllar Vega
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18057'
+portal:
+  base_url: https://www.cullarvega.com
+  adapter: municipio.adapters.cullar_vega:CullarVegaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de Normas Subsidiarias y adaptación parcial LOUA.
+    Cobertura parcial, documentación enlazada sin contenido verificado y sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cúllar Vega, Cullar Vega]
+licencias:
+  enabled: false
+  notes: Formularios excluidos; no se ha verificado un registro de concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

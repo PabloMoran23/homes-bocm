@@ -1,0 +1,26 @@
+slug: redovan
+nombre: Redován
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03111'
+portal:
+  base_url: https://www.redovan.es
+  adapter: municipio.adapters.redovan:RedovanAyuntamientoAdapter
+  config:
+    ine_code: '03111'
+    user_agent: municipio-redovan/1.0
+  notes: >-
+    Inventario oficial de planeamiento municipal: PGOU, modificaciones y
+    proyectos de los sectores B-4 y B-7. Documentos agrupados por instrumento.
+    Cobertura parcial; sin geometría verificada ni registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Redován, Redovan]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

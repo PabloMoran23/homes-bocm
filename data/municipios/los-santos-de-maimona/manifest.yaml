@@ -1,0 +1,22 @@
+slug: los-santos-de-maimona
+nombre: Los Santos de Maimona
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06122'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.los_santos_de_maimona:LosSantosDeMaimonaAyuntamientoAdapter
+  config: {}
+  notes: Registro oficial autonómico SITEX, filtro municipal y estado Vigente. Web municipal devuelve 403. No es inventario de obras ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Los Santos de Maimona, 'Santos de Maimona, Los']
+  notes: Instrumentos vigentes municipales publicados por la Junta de Extremadura; procedencia real sitex_junta_extremadura en cada registro. Cobertura parcial.
+licencias:
+  enabled: false
+  notes: Sin registro público de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

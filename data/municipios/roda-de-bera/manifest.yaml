@@ -1,0 +1,25 @@
+slug: roda-de-bera
+nombre: Roda de Berà
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43131'
+portal:
+  base_url: https://web.rodadebera.cat
+  adapter: municipio.adapters.roda_de_bera:RodaDeBeraAyuntamientoAdapter
+  config:
+    ine_code: '43131'
+  notes: >-
+    Inventarios municipales Obra pública y Projectes d'urbanització, con toda
+    su paginación y documentos agrupados por expediente. Cobertura parcial;
+    fechas y geometría sin verificar, publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Roda de Berà, Roda de Barà]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

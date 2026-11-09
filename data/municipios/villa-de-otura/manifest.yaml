@@ -1,0 +1,22 @@
+slug: villa-de-otura
+nombre: Villa de Otura
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18149'
+portal:
+  base_url: https://ayuntamientodeotura.es/transparencia/nuevo-planeamiento-urbanistico-de-otura/
+  adapter: municipio.adapters.villa_de_otura:VillaDeOturaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de consultas previas del POU y PGOM; no acredita aprobación ni estado actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villa de Otura, Otura]
+  notes: Cobertura parcial de instrumentos de planeamiento documentados, sin geometría.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; los formularios se excluyen.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

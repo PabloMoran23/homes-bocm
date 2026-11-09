@@ -1,0 +1,25 @@
+slug: medio-cudeyo
+nombre: Medio Cudeyo
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39042'
+portal:
+  base_url: https://mediocudeyo.es/web/
+  adapter: municipio.adapters.medio_cudeyo:MedioCudeyoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo de Planeamiento Urbanístico de Cantabria (AUCAN), enlazado desde
+    transparencia municipal. Rama Actual completa; modificaciones por separado
+    y documentos agrupados. Cobertura parcial, sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Medio Cudeyo]
+  notes: Planeamiento oficial regional enlazado por el ayuntamiento; excluye No Vigente.
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

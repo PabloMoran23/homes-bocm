@@ -1,0 +1,19 @@
+slug: vega-de-san-mateo
+nombre: Vega de San Mateo
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35033'
+portal:
+  base_url: https://www.vegadesanmateo.es/urbanismo/documentos-urbanismo
+  adapter: municipio.adapters.vega_de_san_mateo:VegaDeSanMateoAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal parcial; instrumentos agrupados con sus planos y memorias, sin acreditar vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

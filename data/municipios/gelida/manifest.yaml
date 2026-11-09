@@ -1,0 +1,25 @@
+slug: gelida
+nombre: Gelida
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08091'
+portal:
+  base_url: https://www.gelida.cat
+  adapter: municipio.adapters.gelida:GelidaAyuntamientoAdapter
+  config:
+    ine_code: '08091'
+  notes: >-
+    Inventario municipal completo en paginación, extracción limitada a instrumentos
+    de planeamiento. Adjuntos agrupados por ficha; no representa todo el RPUC ni
+    acredita vigencia. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Gelida]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

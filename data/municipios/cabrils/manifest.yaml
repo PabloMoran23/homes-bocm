@@ -1,0 +1,23 @@
+slug: cabrils
+nombre: Cabrils
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08030'
+portal:
+  base_url: https://www.cabrils.cat
+  adapter: municipio.adapters.cabrils:CabrilsAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal del POUM vigente, agrupado en un instrumento.
+    Cobertura parcial; sin fechas de acuerdo verificadas ni geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cabrils]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

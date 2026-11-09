@@ -1,0 +1,24 @@
+slug: villaverde-del-rio
+nombre: Villaverde del Río
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41101'
+portal:
+  base_url: https://transparencia.villaverdedelrio.es
+  adapter: municipio.adapters.villaverde_del_rio:VillaverdeDelRioAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial del indicador 50: NNSS, adaptación parcial LOUA y avance
+    PGOU, agrupando documentos. Cobertura parcial sin afirmar vigencia actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villaverde del Río
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

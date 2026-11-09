@@ -1,0 +1,25 @@
+slug: viladecavalls
+nombre: Viladecavalls
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08300'
+portal:
+  base_url: https://www.viladecavalls.cat
+  adapter: municipio.adapters.viladecavalls:ViladecavallsAyuntamientoAdapter
+  config:
+    ine_code: '08300'
+  notes: >-
+    Inventario municipal de planeamiento vigente: PGO agrupado, proyectos de
+    urbanización, estatutos y bases de compensación y anteproyectos.
+    Cobertura parcial, sin geometría ni fechas acreditadas en el índice.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Viladecavalls]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes ni formularios como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

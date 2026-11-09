@@ -1,0 +1,27 @@
+slug: arevalo
+nombre: Arévalo
+provincia: Ávila
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '05016'
+portal:
+  base_url: https://arevalo.es
+  adapter: municipio.adapters.arevalo:ArevaloAyuntamientoAdapter
+  config:
+    ine_code: '05016'
+    user_agent: municipio-arevalo/1.0
+  notes: >-
+    Inventario documental municipal Normativa tramitación. Cobertura parcial:
+    modificaciones puntuales publicadas en pestañas, agrupando textos y planos.
+    Las fases describen los documentos municipales, no el estado actual del
+    expediente; PLAU contiene publicaciones posteriores. No extrae el archivo
+    autonómico de 44 entradas ni infiere fechas o geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Solicitudes e instancias son formularios, no licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
