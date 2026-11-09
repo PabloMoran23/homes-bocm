@@ -1,0 +1,20 @@
+slug: neda
+nombre: Neda
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15055'
+portal:
+  base_url: https://siotuga.xunta.gal/siotuga/inventario?inv=1&idconcello=15055
+  adapter: municipio.adapters.neda:NedaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial SIOTUGA de la Xunta para Neda; planeamiento municipal e histórico, cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Canal de adaptador municipal; la procedencia real de los registros es Xunta de Galicia/SIOTUGA. No inventario completo de obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

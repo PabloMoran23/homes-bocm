@@ -1,0 +1,19 @@
+slug: siguenza
+nombre: Sigüenza
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19257'
+portal:
+  base_url: https://siguenza.es/?page_id=628
+  adapter: municipio.adapters.siguenza:SiguenzaAyuntamientoAdapter
+  config: {}
+  notes: Inventario actual de planes especiales; fichas antiguas no disponibles. No acredita aprobación ni vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

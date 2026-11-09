@@ -1,0 +1,24 @@
+slug: fisterra
+nombre: Fisterra
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15037'
+portal:
+  base_url: https://concellofisterra.gal
+  adapter: municipio.adapters.fisterra:FisterraAyuntamientoAdapter
+  config:
+    ine_code: '15037'
+  notes: >-
+    Snapshot documental municipal del PXOM y PEPRICH, agrupando todos los
+    documentos enlazados. Cobertura parcial; fases según las páginas publicadas,
+    sin afirmar vigencia actual del PEPRICH ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

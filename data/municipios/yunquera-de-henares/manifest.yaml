@@ -1,0 +1,23 @@
+slug: yunquera-de-henares
+nombre: Yunquera de Henares
+provincia: Guadalajara
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '19331'
+portal:
+  base_url: https://yunqueradehenares.sedelectronica.es/transparency/175e1f74-8652-404b-9f6d-cb7ce3fa3ea6/
+  adapter: municipio.adapters.yunquera_de_henares:YunqueraDeHenaresAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de planeamiento (7.1) y expedientes en información pública
+    (7.6). Documentos agrupados por instrumento; cobertura municipal parcial,
+    sin acreditación de licencias concedidas ni estado administrativo actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Solicitudes y anuncios de información pública no acreditan concesión.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

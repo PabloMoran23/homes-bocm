@@ -1,0 +1,21 @@
+slug: autol
+nombre: Autol
+provincia: La Rioja
+comunidad_autonoma: la-rioja
+codigo_ine: '26021'
+portal:
+  base_url: https://aytoautol.larioja.org
+  adapter: municipio.adapters.autol:AutolAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental de Urbanismo, cobertura parcial; no acredita vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Autol]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de concesiones; las solicitudes no son licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

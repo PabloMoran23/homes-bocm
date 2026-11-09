@@ -1,0 +1,19 @@
+slug: villanueva-de-los-infantes
+nombre: Villanueva de los Infantes
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13093'
+portal:
+  base_url: https://infantes.org/planes-de-ordenacion-urbanistica-instrumentos-de-apoyo-y-ordenanzas-de-edificacion/
+  adapter: municipio.adapters.villanueva_de_los_infantes:VillanuevaDeLosInfantesAyuntamientoAdapter
+  config: {}
+  notes: Inventario de planeamiento, incluida revisión expresamente derogada; cobertura parcial, sin fechas de acuerdo ni geometría verificadas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,21 @@
+slug: madrigueras
+nombre: Madrigueras
+provincia: Albacete
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '02045'
+portal:
+  base_url: https://madrigueras.es/anuncios/
+  adapter: municipio.adapters.madrigueras:MadriguerasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial de obras físicas con ficha estructurada de operación FEDER
+    en el inventario municipal de anuncios. Sin fechas o geometrías verificadas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

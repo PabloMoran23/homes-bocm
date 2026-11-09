@@ -1,0 +1,25 @@
+slug: martorelles
+nombre: Martorelles
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08115'
+portal:
+  base_url: https://www.martorelles.cat
+  adapter: municipio.adapters.martorelles:MartorellesAyuntamientoAdapter
+  config:
+    ine_code: '08115'
+    user_agent: municipio-martorelles/1.0
+  notes: >-
+    Catálogo municipal paginado. Cobertura parcial de obras documentadas y
+    modificación urbanística; PDFs agrupados por instrumento, sin interpretar
+    acuerdos ni geometrías. No constituye inventario de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Martorelles]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

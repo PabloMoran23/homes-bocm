@@ -1,0 +1,21 @@
+slug: pedrera
+nombre: Pedrera
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41072'
+portal:
+  base_url: https://www.pedrera.es
+  adapter: municipio.adapters.pedrera:PedreraAyuntamientoAdapter
+  config: {}
+  notes: Inventarios completos de documentos del PGOU 2015 y avance PBOM; cobertura municipal parcial.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Pedrera]
+  notes: Dos instrumentos agrupados con todos sus documentos; no registro de obras ni licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

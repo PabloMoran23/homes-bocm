@@ -1,0 +1,21 @@
+slug: vilallonga
+nombre: Vilallonga / Villalonga
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46255'
+portal:
+  base_url: https://ayuntamientodevillalonga.sedelectronica.es
+  adapter: municipio.adapters.vilallonga:VilallongaAyuntamientoAdapter
+  config: {}
+  notes: Carpetas de instrumentos identificados en el inventario municipal de planeamiento; documentos agrupados y paginación completa.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Vilallonga, Villalonga, Vilallonga/Villalonga]
+  notes: Cobertura parcial; no equivale a censo de obras, licencias o planeamiento vigente.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

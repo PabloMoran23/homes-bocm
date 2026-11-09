@@ -1,0 +1,19 @@
+slug: epila
+nombre: Épila
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50099'
+portal:
+  base_url: https://epila.sedelectronica.es/transparency/7e75f398-8dca-4199-8066-3347c59dd4b2/
+  adapter: municipio.adapters.epila:EpilaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de planeamiento; cobertura parcial, sin acreditar vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

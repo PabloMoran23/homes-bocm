@@ -1,0 +1,19 @@
+slug: barcena-de-cicero
+nombre: Bárcena de Cicero
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39009'
+portal:
+  base_url: https://www.barcenadecicero.es/
+  adapter: municipio.adapters.barcena_de_cicero:BarcenaDeCiceroAyuntamientoAdapter
+  config: {}
+  notes: Inventario NNSS y documentación PGOU enlazada desde portada. Cobertura parcial, sin afirmar vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

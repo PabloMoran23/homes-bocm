@@ -1,0 +1,20 @@
+slug: rafal
+nombre: Rafal
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03109'
+portal:
+  base_url: https://rafal.es/?page_id=451
+  adapter: municipio.adapters.rafal:RafalAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal PGOU y modificaciones; cobertura parcial y sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

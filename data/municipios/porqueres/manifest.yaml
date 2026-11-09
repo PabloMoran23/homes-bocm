@@ -1,0 +1,23 @@
+slug: porqueres
+nombre: Porqueres
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17137'
+portal:
+  base_url: https://porqueres.cat
+  adapter: municipio.adapters.porqueres:PorqueresAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de obras y documentos en exposición pública. Cobertura
+    parcial, sin archivo histórico ni inventarios separados de planeamiento.
+    Documentos mediante CSV y enlace al validador, sin descarga automatizada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

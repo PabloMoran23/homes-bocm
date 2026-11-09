@@ -1,0 +1,22 @@
+slug: villanueva-de-gallego
+nombre: Villanueva de Gállego
+codigo_ine: '50288'
+provincia: Zaragoza
+comunidad_autonoma: aragon
+portal:
+  base_url: https://www.villanuevadegallego.org
+  adapter: municipio.adapters.villanueva_de_gallego:VillanuevaDeGallegoAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal PGOU y modificaciones; documentos agrupados por instrumento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Villanueva de Gállego, Villanueva de Gallego]
+  notes: Cobertura parcial del planeamiento, sin extracción del archivo SIUA ni geometría.
+licencias:
+  enabled: false
+  notes: Los impresos no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

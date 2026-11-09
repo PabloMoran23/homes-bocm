@@ -1,0 +1,19 @@
+slug: bellreguard
+nombre: Bellreguard
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46048'
+portal:
+  base_url: https://web.bellreguard.net/urbanisme/
+  adapter: municipio.adapters.bellreguard:BellreguardAyuntamientoAdapter
+  config: {}
+  notes: Bloque municipal de normativa y planos del Plan General; cobertura documental parcial, sin afirmar vigencia ni aprobación.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,23 @@
+slug: ribadavia
+nombre: Ribadavia
+provincia: Ourense
+comunidad_autonoma: galicia
+codigo_ine: '32069'
+portal:
+  base_url: https://ribadavia.gal
+  adapter: municipio.adapters.ribadavia:RibadaviaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal del PXOM, agrupado como un instrumento con sus documentos.
+    Aprobación contrastada en SIOTUGA para INE 32069. Cobertura parcial; sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ribadavia]
+licencias:
+  enabled: false
+  notes: Los impresos de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

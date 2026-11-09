@@ -1,0 +1,27 @@
+slug: el-poble-nou-de-benitatxell
+nombre: el Poble Nou de Benitatxell / Benitachell
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03042'
+portal:
+  base_url: https://elpoblenoudebenitatxell.com
+  adapter: municipio.adapters.el_poble_nou_de_benitatxell:ElPobleNouDeBenitatxellAdapter
+  config:
+    ine_code: '03042'
+  notes: >-
+    Inventario municipal de documentos de planeamiento: texto consolidado de las
+    Normas Subsidiarias y criterio interpretativo del PP Cumbre del Sol.
+    Cobertura parcial, sin geometrías; ver RESEARCH.md. Requiere pdftotext.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - el Poble Nou de Benitatxell
+    - Benitachell
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

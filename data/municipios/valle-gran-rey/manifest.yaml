@@ -1,0 +1,19 @@
+slug: valle-gran-rey
+nombre: Valle Gran Rey
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38049'
+portal:
+  base_url: https://transparencia.vallegranrey.es/ordenacion-del-territorio/plan-de-ordenacion/
+  adapter: municipio.adapters.valle_gran_rey:ValleGranReyAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial del nuevo PGO; documentos agrupados en un instrumento, sin afirmar aprobación ni vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

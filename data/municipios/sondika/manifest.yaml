@@ -1,0 +1,21 @@
+slug: sondika
+nombre: Sondika
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48904'
+portal:
+  base_url: https://www.sondika.eus
+  adapter: municipio.adapters.sondika:SondikaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal Proyectos y bibliotecas técnicas públicas de SharePoint.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Sondika]
+  notes: Cobertura parcial; proyectos documentados sin inferir concesiones ni fechas.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

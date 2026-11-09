@@ -1,0 +1,23 @@
+slug: valmojado
+nombre: Valmojado
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45180'
+portal:
+  base_url: https://www.valmojado.com/normas-subsidarias/
+  adapter: municipio.adapters.valmojado:ValmojadoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal de Normas Subsidiarias y planes parciales.
+    Documentos agrupados por instrumento. Cobertura parcial, sin garantía de
+    vigencia ni fechas inferidas del CMS; sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
