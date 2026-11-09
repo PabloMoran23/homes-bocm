@@ -1,3 +1,4 @@
+import { LaunchWaitlistSection } from "@/components/LaunchWaitlistSection";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import {
@@ -121,6 +122,7 @@ export default async function ProyectoPage({ params }: PageProps) {
           clasificacionByExpediente={clasificacionByExpediente}
           infoExtra={infoExtra}
         />
+        <LaunchWaitlistSection source="project" contextKey={id} />
         {directoryProject ? (
           <RelatedDirectoryProjects project={directoryProject} />
         ) : null}
@@ -156,6 +158,7 @@ export default async function ProyectoPage({ params }: PageProps) {
         clasificacionByExpediente={clasificacionByExpediente}
         infoExtra={infoExtra}
       />
+      <LaunchWaitlistSection source="project" contextKey={id} />
       {directoryProject ? (
         <RelatedDirectoryProjects project={directoryProject} />
       ) : null}

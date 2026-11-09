@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
-import { DeferredLandingMap } from "@/components/DeferredLandingMap";
 import { LandingMunicipioSearch } from "@/components/LandingMunicipioSearch";
 import { LandingDashboardSection } from "@/components/LandingDashboardSection";
 import { LandingFeaturedProjects } from "@/components/LandingFeaturedProjects";
@@ -30,7 +30,15 @@ export default function Home() {
     <main className="flex-1">
       <section className="landing-search-hero">
         <div className="landing-search-map" aria-hidden="true" inert>
-          <DeferredLandingMap />
+          <Image
+            src="/maps/landing-madrid.webp"
+            alt=""
+            fill
+            unoptimized
+            loading="eager"
+            fetchPriority="high"
+            className="landing-map-image"
+          />
         </div>
         <div className="landing-search-wash" aria-hidden="true" />
         <div className="landing-search-content">

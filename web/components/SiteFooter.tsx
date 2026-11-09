@@ -1,13 +1,8 @@
-"use client";
-
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { SiteLogo } from "@/components/SiteLogo";
 import { isPublicEdition } from "@/lib/edition";
 import { SITE_CONTACT_EMAIL, siteContactMailto } from "@/lib/site-contact";
 import { DASHBOARD } from "@/lib/ui-labels";
-
-const FULL_BLEED_PREFIXES = ["/explore", "/boletin"];
 
 const FOOTER_LINKS = [
   { href: "/explore", label: "Explorar" },
@@ -16,40 +11,11 @@ const FOOTER_LINKS = [
   { href: "/boletin", label: "Tu zona" },
 ] as const;
 
-function ContactLine({ compact }: { compact?: boolean }) {
-  return (
-    <p className={compact ? "text-center text-xs text-white/70" : "text-sm leading-relaxed text-white/70"}>
-      {compact ? (
-        <a href={siteContactMailto()} className="font-medium text-white hover:underline">
-          {SITE_CONTACT_EMAIL}
-        </a>
-      ) : (
-        <>
-          Una calle, un distrito o una ciudad.{" "}
-          <a href={siteContactMailto()} className="font-medium text-white hover:underline">
-            {SITE_CONTACT_EMAIL}
-          </a>
-        </>
-      )}
-    </p>
-  );
-}
-
 export function SiteFooter() {
-  const pathname = usePathname();
-  const compact = FULL_BLEED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const isPublic = isPublicEdition();
 
-  if (compact) {
-    return (
-      <footer className="shrink-0 bg-[var(--portal-ink)] px-4 py-2.5 text-[var(--portal-paper)]">
-        <ContactLine compact />
-      </footer>
-    );
-  }
-
   return (
-    <footer className="mt-auto bg-[var(--portal-ink)] text-[var(--portal-paper)]">
+    <footer className="mt-auto shrink-0 bg-[var(--portal-ink)] text-[var(--portal-paper)]">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[minmax(0,1.4fr)_auto_auto] md:items-start md:gap-16">
         <div>
           <Link href="/" className="inline-flex items-center gap-2.5">

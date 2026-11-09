@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useCallback, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { portalDensityCamera, PORTAL_INITIAL_MAX_ZOOM } from "@/lib/map-portal-camera";
 import { useMunicipalityBoundary } from "@/lib/use-municipality-boundary";
@@ -27,7 +27,6 @@ import {
 } from "@/lib/map-viewport";
 import type { SigmaBocmPopupLink, SectorFeatureCollection } from "@/lib/sector-geo";
 import type { UbicacionMapProperties, UbicacionSearchItem } from "@/lib/ubicacion";
-import { ubicacionPath } from "@/lib/ubicacion";
 import type { MadridSigmaDataset } from "@/lib/types";
 import type { ActuacionQueCodigo } from "@/lib/actuacion-edificio";
 import { getActuacionQueMapStyle } from "@/lib/actuacion-que-config";
@@ -167,7 +166,6 @@ function Div({ className, children }: { className?: string; children: React.Reac
 }
 
 export function ExploreMadridApp() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const municipioFromUrl = searchParams.get("municipio")?.trim() || null;
   const cmMapScope = isCmMapScope() || Boolean(municipioFromUrl);
@@ -783,10 +781,10 @@ export function ExploreMadridApp() {
     setSelectedSigmaGrupo(grupo);
   }, []);
 
-  const goUbicacion = useCallback(
-    (ndp: string) => router.push(ubicacionPath(ndp)),
-    [router],
-  );
+  const selectLicenseByNdp = useCallback((ndp: string) => {
+    const feature = ubicGeo?.features.find(feature => feature.properties.ndp === ndp);
+    if (feature) onSelectLicense(feature.properties);
+  }, [ubicGeo, onSelectLicense]);
 
   const pickSuggestion = useCallback((item: UbicacionSearchItem) => {
     trackEvent("mapa_buscar", { modo: "ubicacion", distrito: item.distrito || "", barrio: item.barrio || "" });
@@ -866,7 +864,7 @@ export function ExploreMadridApp() {
           municipalityBoundary={municipalityBoundary}
           portalApproxGeojson={cmMapScope && showSigma && approximateMarkers ? { ...approximateMarkers, features: approximateMarkers.features.filter(f => catalogIds.has(f.properties.id)) } : null}
           highlightNdp={highlightNdp}
-          onSelectNdp={goUbicacion}
+          onSelectNdp={selectLicenseByNdp}
           sigmaPopupOptions={sigmaPopupOptions}
           sigmaClassificationIndex={clasificacionIndex}
           showUbicaciones={showUbicaciones && dataReady.ubic}
@@ -1088,15 +1086,7 @@ export function ExploreMadridApp() {
             </ul>
           ) : null}
 
-          {highlightNdp ? (
-            <button
-              type="button"
-              onClick={() => goUbicacion(highlightNdp)}
-              className="w-full rounded-lg bg-[var(--portal-accent)] py-2.5 text-sm font-semibold text-white hover:bg-[var(--portal-accent-hover)]"
-            >
-              Ver ficha ubicación
-            </button>
-          ) : null}
+
 
           {showUbicaciones ? (
             <fieldset className="space-y-2 border-t border-slate-100 pt-3">

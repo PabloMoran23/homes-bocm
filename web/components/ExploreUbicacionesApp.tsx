@@ -1,11 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
-import { ubicacionPath } from "@/lib/ubicacion";
 
 const UbicacionesMap = dynamic(
   () => import("./UbicacionesMap").then((m) => ({ default: m.UbicacionesMap })),
@@ -43,7 +40,6 @@ type GeoCollection = {
 };
 
 export function ExploreUbicacionesApp() {
-  const router = useRouter();
   const [geojson, setGeojson] = useState<GeoCollection | null>(null);
   const [searchIndex, setSearchIndex] = useState<UbicacionSearchItem[]>([]);
   const [meta, setMeta] = useState<{ inmueblesConCoords?: number } | null>(null);
@@ -118,13 +114,6 @@ export function ExploreUbicacionesApp() {
     setOpenSuggest(false);
   }, []);
 
-  const goToUbicacion = useCallback(
-    (ndp: string) => {
-      router.push(ubicacionPath(ndp));
-    },
-    [router],
-  );
-
   if (err) {
     return (
       <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
@@ -162,15 +151,7 @@ export function ExploreUbicacionesApp() {
             autoComplete="off"
           />
         </label>
-        {highlightNdp ? (
-          <button
-            type="button"
-            onClick={() => goToUbicacion(highlightNdp)}
-            className="shrink-0 rounded-lg bg-[var(--portal-accent)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)]"
-          >
-            Ver ficha
-          </button>
-        ) : null}
+
       </div>
 
       {openSuggest && suggestions.length > 0 ? (
@@ -200,22 +181,14 @@ export function ExploreUbicacionesApp() {
             · {meta.inmueblesConCoords.toLocaleString("es-ES")} edificios Madrid (open data)
           </span>
         ) : null}
-        . Pasa el ratón sobre un punto para ver el resumen y abrir la{" "}
-        <span className="font-medium text-slate-800">ficha de la ubicación</span>.
+        . Pasa el ratón sobre un punto para ver el resumen de sus licencias.
       </p>
 
       <UbicacionesMap
         geojson={filteredGeo}
         highlightNdp={highlightNdp}
-        onSelectNdp={goToUbicacion}
+        onSelectNdp={setHighlightNdp}
       />
-
-      <p className="text-center text-xs text-slate-500">
-        También puedes ir directo si conoces el NDP:{" "}
-        <Link href="/ubicacion/11067033" className="text-[var(--portal-accent)] hover:underline">
-          ejemplo
-        </Link>
-      </p>
     </div>
   );
 }

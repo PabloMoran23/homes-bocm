@@ -19,6 +19,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:bot-guard": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/test-bot-guard.mjs",
+    "test:area": "node scripts/test-area-context.mjs && node scripts/test-national-area.mjs && node scripts/test-boletin-area.mjs && node scripts/test-map-navigation.mjs",
+    "test:address": "node scripts/test-address-autocomplete.mjs && node scripts/test-boletin-area.mjs",
     "test:map": "node scripts/test-portal-map-data.mjs",
     "build:province-previews": "node scripts/build-province-previews.mjs",
     "check:province-previews": "node scripts/build-province-previews.mjs --check",

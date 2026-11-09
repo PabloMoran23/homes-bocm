@@ -1,0 +1,14 @@
+.banner { display:flex; align-items:center; gap:22px; margin:28px 0; padding:25px 30px; border:1px solid #d3ad86; border-radius:12px; background:#edddc7; color:#4d3326; }
+.icon { width:48px; height:48px; flex:0 0 48px; color:#956344; }
+.icon svg { display:block; width:48px; height:48px; }
+.copy { flex:1; min-width:0; }
+.kicker { margin:0 0 7px; font-size:9px; text-transform:uppercase; letter-spacing:.13em; color:#835b40; }
+.copy h2 { margin:0; font-size:clamp(19px,2vw,24px); line-height:1.25; font-weight:500; letter-spacing:-.025em; color:#4d3326; }
+.description { margin:8px 0 0; max-width:62ch; font-size:12px; line-height:1.7; color:#705642; }
+.action { display:flex; flex-direction:column; align-items:center; gap:10px; flex-shrink:0; }
+.action a { display:inline-flex; align-items:center; justify-content:center; gap:24px; padding:12px 18px; border-radius:6px; background:#71462f; color:#fff9ef; font-size:12px; font-weight:600; }
+.action a:hover { background:#5d3825; }
+.action a:focus-visible { outline:2px solid #71462f; outline-offset:4px; }
+.action > span { font-size:9px; color:#7b6049; }
+@media(max-width:700px) { .banner { flex-wrap:wrap; gap:16px; padding:22px; } .icon { width:38px; height:38px; flex-basis:38px; } .icon svg { width:38px; height:38px; } .copy { flex-basis:calc(100% - 54px); } .action { align-items:flex-start; padding-left:54px; } }
+@media(max-width:400px) { .icon { display:none; } .action { padding-left:0; } }

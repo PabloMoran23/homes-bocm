@@ -1,7 +1,9 @@
 import { featureCollectionBounds } from "@/lib/cm-portal-geo";
 import type { MapBounds } from "@/lib/map-viewport";
 
-export const PORTAL_INITIAL_MAX_ZOOM = 18;
+export const PORTAL_INITIAL_MAX_ZOOM = 13.5;
+export const PORTAL_MIN_INITIAL_SPAN_KM = 6;
+export const PORTAL_SMALL_TOWN_MAX_ZOOM = 12.5;
 type Frame = Pick<MapBounds, "west" | "south" | "east" | "north">;
 
 /** Fit the loaded polygon footprint, with points and the municipality as fallbacks. */
@@ -31,9 +33,9 @@ export function portalDensityCamera(municipality: {
   const heightKm = Math.max(.5, ((municipality.north ?? lat + .01) - (municipality.south ?? lat - .01)) * 111.32);
   const areaKm2 = widthKm * heightKm;
   const density = Math.max(1, municipality.n) / areaKm2;
-  const targetAreaKm2 = Math.min(areaKm2, 80 / density);
-  const zoom = Math.min(15.5, Math.max(10, 14 + .5 * Math.log2(25 / Math.max(.25, targetAreaKm2))));
-  const side = Math.sqrt(Math.max(.25, targetAreaKm2));
+  const targetAreaKm2 = Math.max(PORTAL_MIN_INITIAL_SPAN_KM ** 2, Math.min(areaKm2, 80 / density));
+  const zoom = Math.min(areaKm2 <= 100 ? PORTAL_SMALL_TOWN_MAX_ZOOM : PORTAL_INITIAL_MAX_ZOOM, Math.max(10, 14 + .5 * Math.log2(25 / Math.max(PORTAL_MIN_INITIAL_SPAN_KM ** 2, targetAreaKm2))));
+  const side = Math.sqrt(Math.max(PORTAL_MIN_INITIAL_SPAN_KM ** 2, targetAreaKm2));
   const dx = side / (111.32 * Math.cos(lat * Math.PI / 180)) / 2;
   const dy = side / 111.32 / 2;
   return { west: lng - dx, east: lng + dx, south: lat - dy, north: lat + dy, zoom };

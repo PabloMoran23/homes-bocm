@@ -1,5 +1,6 @@
 "use client";
 
+import { hasBroadMapExtent } from "@/lib/map-project-scope";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import {
   MapContainer,
@@ -368,7 +369,7 @@ function FlyToNdp({
 
 export function MadridUnifiedMap({
   ubicacionesGeojson,
-  sigmaGeojson,
+  sigmaGeojson: rawSigmaGeojson,
   highlightNdp,
   onSelectNdp,
   sigmaPopupOptions,
@@ -398,8 +399,8 @@ export function MadridUnifiedMap({
   showExplorationHints = false,
   municipalityBoundary = null,
   portalHints = null,
-  portalGeojson = null,
-  portalPolygonGeojson = null,
+  portalGeojson: rawPortalGeojson = null,
+  portalPolygonGeojson: rawPortalPolygonGeojson = null,
   portalApproxGeojson = null,
   showPortal = false,
   mapScope = "madrid",
@@ -457,6 +458,9 @@ export function MadridUnifiedMap({
   /** Vuelo animado hasta el municipio elegido. */
   focusFrame?: MapFocusFrame | null;
 }) {
+  const sigmaGeojson = useMemo(() => rawSigmaGeojson ? { ...rawSigmaGeojson, features:rawSigmaGeojson.features.filter(f => !hasBroadMapExtent(f.geometry)) } : null, [rawSigmaGeojson]);
+  const portalGeojson = useMemo(() => rawPortalGeojson ? { ...rawPortalGeojson, features:rawPortalGeojson.features.filter(f => !hasBroadMapExtent(f.geometry)) } : null, [rawPortalGeojson]);
+  const portalPolygonGeojson = useMemo(() => rawPortalPolygonGeojson ? { ...rawPortalPolygonGeojson, features:rawPortalPolygonGeojson.features.filter(f => !hasBroadMapExtent(f.geometry)) } : null, [rawPortalPolygonGeojson]);
   const fitPreset = FIT_PRESETS[initialView] ?? FIT_PRESETS.city;
   const { ready: mapReady, mapKey } = useLeafletMount();
   const preferCanvasAuto = usePreferCanvas();

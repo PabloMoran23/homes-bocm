@@ -1,3 +1,4 @@
+import { LaunchWaitlistSection } from "@/components/LaunchWaitlistSection";
 import { nationalStatisticsScope } from "@/lib/statistics-scope.mjs";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -119,6 +120,7 @@ export default async function MadridEstadisticasPage() {
       ) : stats ? (
         <MadridDashboard stats={stats} />
       ) : null}
+      <LaunchWaitlistSection source="dashboard" />
     </main>
   );
 }

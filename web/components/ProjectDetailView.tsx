@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
+import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
@@ -248,7 +249,7 @@ export function ProjectDetailView({
 
   return (
     <main className={`mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 ${infoExtra ? "project-research" : "overflow-x-hidden"}`}>
-      {!hasTerritoryNavigation ? <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+      {!hasTerritoryNavigation ? <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
           ← Mapa
         </Link>
@@ -422,6 +423,8 @@ export function ProjectDetailView({
         ) : null}
       </header>
       )}
+
+      <ExploreAreaBanner />
 
       <div className={infoExtra ? "min-w-0" : "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {/* Sidebar */}

@@ -1,0 +1,4 @@
+.compact.compact { margin-top: 24px; padding: 0; }
+.compact .inner { grid-template-columns: 1fr; padding: 24px; gap: 22px; }
+.compact h2 { font-size: 27px; }
+.compact .field { flex-direction: column; }

@@ -22,15 +22,15 @@ export const EXPLORE_FAQ: readonly SeoFaqItem[] = [
 export const BOLETIN_FAQ: readonly SeoFaqItem[] = [
   {
     q: "¿Qué puedo ver cerca de mi dirección?",
-    a: "Obras con licencia recientes y planes urbanísticos en tramitación en un radio que tú eliges — desde la manzana hasta el barrio. Si alguna actuación afecta directamente a tu edificio, lo indicamos.",
+    a: "Proyectos con ubicación identificada cerca de una dirección y contexto del municipio cuando no disponemos de esa precisión. En Madrid capital también puedes consultar licencias. Cada vista indica el alcance y la cobertura de las fuentes.",
   },
   {
     q: "¿Necesito saber datos técnicos de mi edificio?",
-    a: "No. Escribe calle y número o elige una sugerencia del buscador. Si la dirección no está en nuestra base, intentamos localizarla dentro de Madrid capital.",
+    a: "No. Escribe calle y número o elige una sugerencia del buscador. Puedes buscar direcciones de España; el contenido depende de los municipios y las fuentes que tenemos disponibles.",
   },
   {
     q: "¿De dónde salen los datos?",
-    a: "De registros públicos del Ayuntamiento de Madrid: licencias de obra y expedientes de planeamiento. Homes no sustituye al consistorio; enlaza siempre a las fuentes oficiales.",
+    a: "De registros y portales municipales y boletines oficiales. La cobertura varía entre municipios. Las fichas enlazan las fuentes; no tener registros en Homes no significa que no existan proyectos u obras.",
   },
   {
     q: "¿Cómo sé si van a construir cerca de mi casa?",

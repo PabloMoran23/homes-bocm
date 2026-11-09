@@ -36,6 +36,14 @@ APIs en público: `/api/boletin-area`, `/api/geocode-address`, `/api/nti-asset`.
 
 ## Despliegue
 
+Producción se publica exclusivamente mediante la integración de GitHub con Vercel,
+desde la última versión de `main`. Todo cambio de código o datos debe estar
+commiteado, validado e integrado en GitHub antes de publicar. No se permiten
+uploads locales, despliegues por CLI ni promociones o redeploys de versiones
+anteriores. Antes del push se revisan los cambios locales pendientes y la versión
+publicada para evitar perder trabajo. Después se verifica el commit de GitHub
+asociado al despliegue y el resultado en el dominio público. Véase `AGENTS.md`.
+
 1. Repo conectado en Vercel, **Root Directory** = `web`.
 2. Variables en Vercel (Production):
    - `NEXT_PUBLIC_SUPABASE_URL` → proyecto `rjwcmbllrzqvsbgaajmp`

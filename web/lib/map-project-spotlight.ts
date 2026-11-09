@@ -1,4 +1,4 @@
-import { actuacionDesdeMapProps, ubicacionPath } from "@/lib/ubicacion";
+import { actuacionDesdeMapProps } from "@/lib/ubicacion";
 import { normalizarActuacionEdificio } from "@/lib/actuacion-edificio";
 import { LICENCIA_MAPA_CONFIG } from "@/lib/licencia-mapa-config";
 import { expedienteGrupoKeyFromVariant } from "@/lib/madrid-expediente";
@@ -299,7 +299,7 @@ export function buildLicenseMapSpotlightItem(p: import("@/lib/ubicacion").Ubicac
   const config = LICENCIA_MAPA_CONFIG[normalizarActuacionEdificio(actuacionDesdeMapProps(p)).mapaCategoria];
   const date = p.ultimaLicenciaFecha?.slice(0, 10);
   return {
-    id: `license-${p.ndp}`, href: ubicacionPath(p.ndp), tag: "Licencia", categoryLabel: config.label,
+    id: `license-${p.ndp}`, href: "", tag: "Licencia", categoryLabel: config.label,
     categoriaProyecto: null, tipoObra: null, iconKey: "edificio",
     title: p.direccion?.trim() || "Edificio en Madrid",
     locationLine: [p.distrito, p.barrio].filter(Boolean).join(" · ") || "Madrid",

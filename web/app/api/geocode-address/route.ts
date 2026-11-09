@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-
-const MADRID_BOUNDS = {
-  minLat: 40.31,
-  maxLat: 40.65,
-  minLng: -3.9,
-  maxLng: -3.5,
-};
+import { isSpainLocation } from "@/lib/address-search";
 
 type NominatimResult = {
   lat?: string;
@@ -24,15 +18,6 @@ type NominatimResult = {
   };
 };
 
-function isInMadrid(lat: number, lng: number) {
-  return (
-    lat >= MADRID_BOUNDS.minLat &&
-    lat <= MADRID_BOUNDS.maxLat &&
-    lng >= MADRID_BOUNDS.minLng &&
-    lng <= MADRID_BOUNDS.maxLng
-  );
-}
-
 function readableLabel(result: NominatimResult, fallback: string) {
   const a = result.address;
   const street = [a?.road, a?.house_number].filter(Boolean).join(" ");
@@ -44,19 +29,16 @@ function readableLabel(result: NominatimResult, fallback: string) {
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const q = url.searchParams.get("q")?.trim();
-  if (!q || q.length < 3) {
+  if (!q || q.length < 3 || q.length > 200) {
     return NextResponse.json({ error: "Escribe una dirección más concreta" }, { status: 400 });
   }
 
-  const query = /madrid/i.test(q) ? q : `${q}, Madrid`;
   const params = new URLSearchParams({
-    q: query,
+    q,
     format: "jsonv2",
     addressdetails: "1",
     limit: "1",
     countrycodes: "es",
-    bounded: "1",
-    viewbox: "-3.90,40.65,-3.50,40.31",
   });
 
   let res: Response;
@@ -81,9 +63,9 @@ export async function GET(req: Request) {
   const first = items[0];
   const lat = Number(first?.lat);
   const lng = Number(first?.lon);
-  if (!first || !Number.isFinite(lat) || !Number.isFinite(lng) || !isInMadrid(lat, lng)) {
+  if (!first || !Number.isFinite(lat) || !Number.isFinite(lng) || !isSpainLocation({ lat, lng })) {
     return NextResponse.json(
-      { error: "No hemos encontrado esa dirección dentro de Madrid capital" },
+      { error: "No hemos encontrado esa dirección. Añade el número y el municipio." },
       { status: 404 },
     );
   }
@@ -93,5 +75,6 @@ export async function GET(req: Request) {
     lng,
     label: readableLabel(first, q),
     rawLabel: first.display_name ?? q,
+    municipality: first.address?.city || first.address?.town || first.address?.village || first.address?.municipality,
   });
 }

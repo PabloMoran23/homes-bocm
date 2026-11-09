@@ -61,7 +61,7 @@ export const BOLETIN_DEFAULT_RADIUS_M = 500;
 export const BOLETIN_DEFAULT_MONTHS = 12;
 
 export function boletinPath(ndp: string) {
-  return `/boletin?ndp=${encodeURIComponent(ndp)}`;
+  return `/boletin/resultados?ndp=${encodeURIComponent(ndp)}`;
 }
 
 export function boletinStatLabel(value: number, capped?: boolean): string {

@@ -1,40 +1,25 @@
 "use client";
 
-import dynamic from "next/dynamic";
+
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  boletinResumenParrafo,
-  boletinStatLabel,
   BOLETIN_DEFAULT_MONTHS,
   BOLETIN_DEFAULT_RADIUS_M,
   MONTHS_OPTIONS,
   RADIUS_OPTIONS,
   type BoletinAreaResult,
-  type BoletinEvento,
 } from "@/lib/boletin-area";
-import { LicenciaTitulo } from "@/components/LicenciaTitulo";
+import { NationalAreaExperience } from "@/components/area/NationalAreaExperience";
+import type { NationalAreaResult } from "@/lib/national-area";
+import { AreaExperience } from "@/components/area/AreaExperience";
+import { AddressAutocomplete } from "@/components/AddressAutocomplete";
+import { isMadridLocation, isSpainLocation, type AddressLocation } from "@/lib/address-search";
 import type { UbicacionSearchItem } from "@/lib/ubicacion";
-import { ubicacionPath } from "@/lib/ubicacion";
-import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
-import { fechaRelativaEs } from "@/lib/ubicacion-resumen";
 import { trackEvent } from "@/lib/analytics";
 
-const BoletinMiniMap = dynamic(
-  () => import("./BoletinMiniMap").then((m) => ({ default: m.BoletinMiniMap })),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-[min(42vh,340px)] min-h-[220px] animate-pulse rounded-2xl bg-slate-200 lg:min-h-[420px] lg:h-[min(72vh,680px)]" />
-    ),
-  },
-);
-
-type GeocodeResult = {
-  lat: number;
-  lng: number;
-  label: string;
+type GeocodeResult = AddressLocation & {
   rawLabel?: string;
   error?: string;
 };
@@ -48,125 +33,35 @@ function formatEdicionDate(d = new Date()) {
   });
 }
 
-function EventoFila({ ev }: { ev: BoletinEvento }) {
-  const cuando = fechaRelativaEs(ev.fecha);
-  const href =
-    ev.tipo === "sigma" && ev.expedienteGrupo
-      ? sigmaFichaPath(ev.expedienteGrupo)
-      : ev.ndp
-        ? ubicacionPath(ev.ndp)
-        : null;
-
-  return (
-    <li className="group border-b border-slate-200/80 py-4 last:border-0">
-      <div className="flex gap-4">
-        <div className="w-20 shrink-0 pt-0.5 text-right">
-          <time
-            dateTime={cuando.iso ?? undefined}
-            title={cuando.title ?? undefined}
-            className="block text-xs font-semibold tabular-nums text-[var(--portal-accent)]"
-          >
-            {cuando.label}
-          </time>
-          {ev.distanciaM != null ? (
-            <span className="mt-1 block text-[10px] text-slate-400">
-              {ev.distanciaM === 0 ? "En tu parcela" : `${ev.distanciaM} m`}
-            </span>
-          ) : null}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="mb-1 flex flex-wrap items-center gap-2">
-            <span
-              className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
-                ev.tipo === "sigma"
-                  ? "bg-sky-100 text-sky-800"
-                  : "bg-amber-100 text-amber-900"
-              }`}
-            >
-              {ev.tipo === "sigma" ? "Proyecto" : "Licencia"}
-            </span>
-            {ev.contienePunto ? (
-              <span className="text-[10px] font-medium text-[var(--portal-warm)]">Te afecta directamente</span>
-            ) : null}
-          </div>
-          {ev.tipo === "licencia" ? (
-            <LicenciaTitulo
-              tipoExpediente={ev.titulo}
-              className="text-base font-semibold leading-snug text-slate-900"
-              notaClassName="mt-1 text-xs text-slate-500"
-            />
-          ) : (
-            <>
-              <h3 className="text-base font-semibold leading-snug text-slate-900">{ev.titulo}</h3>
-              {ev.detalle ? <p className="mt-1 text-sm text-slate-600">{ev.detalle}</p> : null}
-            </>
-          )}
-          {ev.tipo === "licencia" && ev.detalle ? (
-            <p className="mt-1 text-sm text-slate-600">{ev.direccion || ev.detalle}</p>
-          ) : null}
-          {href ? (
-            <Link
-              href={href}
-              className="mt-2 inline-flex text-xs font-semibold text-[var(--portal-accent)] opacity-80 transition group-hover:opacity-100 hover:underline"
-            >
-              Leer más →
-            </Link>
-          ) : null}
-        </div>
-      </div>
-    </li>
-  );
-}
-
-export function BoletinAreaApp() {
+export function BoletinAreaApp({ view = "search" }: { view?: "search" | "results" }) {
+  const resultsView = view === "results";
+  const router = useRouter();
   const searchParams = useSearchParams();
   const ndpFromUrl = searchParams.get("ndp")?.trim() || null;
   const qFromUrl = searchParams.get("q")?.trim() || null;
+  const urlRadius = RADIUS_OPTIONS.some(opt => opt.m === Number(searchParams.get("radiusM"))) ? Number(searchParams.get("radiusM")) : BOLETIN_DEFAULT_RADIUS_M;
+  const urlMonths = MONTHS_OPTIONS.some(opt => opt.months === Number(searchParams.get("months"))) ? Number(searchParams.get("months")) : BOLETIN_DEFAULT_MONTHS;
+  const queryKey = `${qFromUrl}:${urlRadius}:${urlMonths}`;
+  const ndpKey = `${ndpFromUrl}:${urlRadius}:${urlMonths}`;
   const autoLoadedNdp = useRef<string | null>(null);
   const appliedQFromUrl = useRef<string | null>(null);
-  const resultsAnchorRef = useRef<HTMLDivElement>(null);
-  const scrollResultsAfterLoad = useRef(false);
 
-  const [matches, setMatches] = useState<{ query: string; items: UbicacionSearchItem[] }>({ query: "", items: [] });
   const activeSearch = useRef<AbortController | null>(null);
-  const geocoded = useRef<{ query: string; result: GeocodeResult } | null>(null);
-  const [q, setQ] = useState("");
+  const initialLocation = { lat:Number(searchParams.get("lat")), lng:Number(searchParams.get("lng")), label:qFromUrl || "", municipality:searchParams.get("localidad") || undefined };
+  const geocoded = useRef<{ query: string; result: GeocodeResult } | null>(qFromUrl && searchParams.get("lat") && searchParams.get("lng") && isSpainLocation(initialLocation) ? {query:qFromUrl,result:initialLocation} : null);
+  const [q, setQ] = useState(qFromUrl || "");
   const [selected, setSelected] = useState<UbicacionSearchItem | null>(null);
-  const [openSuggest, setOpenSuggest] = useState(false);
-  const [radiusM, setRadiusM] = useState(BOLETIN_DEFAULT_RADIUS_M);
-  const [months, setMonths] = useState(BOLETIN_DEFAULT_MONTHS);
+  const [radiusM, setRadiusM] = useState(urlRadius);
+  const [months, setMonths] = useState(urlMonths);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [nationalData, setNationalData] = useState<NationalAreaResult | null>(null);
   const [data, setData] = useState<BoletinAreaResult | null>(null);
-
-  // Fetch only a handful of matches after typing stops; no full address catalogue.
-  const suggestions = matches.query === q.trim() ? matches.items : [];
-  useEffect(() => {
-    const query = q.trim();
-    if (!openSuggest || selected || query.length < 2) return;
-    const controller = new AbortController();
-    const timer = window.setTimeout(async () => {
-      try {
-        const res = await fetch(`/api/dominio/search-ubicaciones?q=${encodeURIComponent(query)}`, {
-          signal: controller.signal,
-        });
-        if (!res.ok) return;
-        const items = await res.json() as UbicacionSearchItem[];
-        if (!controller.signal.aborted) setMatches({ query, items });
-      } catch {
-        // Free-text search remains available if suggestions fail.
-      }
-    }, 300);
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
-    };
-  }, [q, selected, openSuggest]);
 
   useEffect(() => () => activeSearch.current?.abort(), []);
 
   const buscar = useCallback(
-    async (override?: { ndp?: string; q?: string }) => {
+    async (override?: { ndp?: string; q?: string; geo?: GeocodeResult }) => {
       const ndp = override?.ndp ?? (override?.q ? undefined : selected?.ndp);
       const freeText = (override?.q ?? q).trim();
       if (!ndp && freeText.length < 3) {
@@ -177,19 +72,20 @@ export function BoletinAreaApp() {
       const controller = new AbortController();
       activeSearch.current = controller;
       const timeout = window.setTimeout(() => controller.abort("timeout"), 20_000);
-      setOpenSuggest(false);
       setLoading(true);
       setError(null);
       setData(null);
+      setNationalData(null);
       try {
         const params = new URLSearchParams({
-          radiusM: String(radiusM),
-          months: String(months),
+          radiusM: String(resultsView ? urlRadius : radiusM),
+          months: String(resultsView ? urlMonths : months),
         });
         if (ndp) {
           params.set("ndp", ndp);
+          if (!resultsView) { router.push(`/boletin/resultados?${params}`); return; }
         } else {
-          let geo = geocoded.current?.query === freeText ? geocoded.current.result : null;
+          let geo = override?.geo ?? (geocoded.current?.query === freeText ? geocoded.current.result : null);
           if (!geo) {
             const geoRes = await fetch(`/api/geocode-address?q=${encodeURIComponent(freeText)}`, {
               signal: controller.signal,
@@ -201,12 +97,30 @@ export function BoletinAreaApp() {
           }
           if (controller.signal.aborted) return;
           geocoded.current = { query: geo.label, result: geo };
+          if (!isSpainLocation(geo)) throw new Error("Elige una dirección en España");
+          if (!resultsView) {
+            params.set("q", geo.label); params.set("lat", String(geo.lat)); params.set("lng", String(geo.lng));
+            if (geo.municipality) params.set("localidad", geo.municipality);
+            router.push(`/boletin/resultados?${params}`); return;
+          }
+          const isMadrid = isMadridLocation(geo) && (!geo.municipality || geo.municipality.toLocaleLowerCase("es") === "madrid");
+          if (!isMadrid) {
+            if (!geo.municipality) throw new Error("Añade el municipio a la dirección para consultar su información");
+            params.set("lat", String(geo.lat)); params.set("lng", String(geo.lng));
+            params.set("municipality", geo.municipality); params.set("label", geo.label);
+            const response = await fetch(`/api/boletin-area/national?${params}`, { signal: controller.signal });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.error || "No se pudo consultar el municipio");
+            if (controller.signal.aborted) return;
+            setQ(geo.label); setSelected(null); setNationalData(result);
+            trackEvent("boletin_buscar", { modo:"municipio", radius_m:radiusM, months, resultados:result.total });
+            return;
+          }
           params.set("lat", String(geo.lat));
           params.set("lng", String(geo.lng));
           params.set("label", geo.label);
           setQ(geo.label);
           setSelected(null);
-          setOpenSuggest(false);
         }
         const res = await fetch(`/api/boletin-area?${params}`, { signal: controller.signal });
         const json = (await res.json()) as BoletinAreaResult & { error?: string };
@@ -228,7 +142,6 @@ export function BoletinAreaApp() {
           barrio: json.center.barrio || "",
           resultados: json.licencias.length + json.expedientesSigma.length,
         });
-        scrollResultsAfterLoad.current = true;
       } catch (e) {
         if (!controller.signal.aborted) {
           setError(e instanceof Error ? e.message : "Error al consultar");
@@ -240,146 +153,100 @@ export function BoletinAreaApp() {
         if (activeSearch.current === controller) setLoading(false);
       }
     },
-    [selected, q, radiusM, months],
+    [selected, q, radiusM, months, resultsView, router, urlRadius, urlMonths],
   );
 
   useEffect(() => {
-    if (!data || !scrollResultsAfterLoad.current) return;
-    scrollResultsAfterLoad.current = false;
-    const t = window.setTimeout(() => {
-      if (!window.matchMedia("(max-width: 1023px)").matches) return;
-      resultsAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 120);
-    return () => window.clearTimeout(t);
-  }, [data]);
-
-  useEffect(() => {
-    if (!qFromUrl || appliedQFromUrl.current === qFromUrl || ndpFromUrl) return;
-    appliedQFromUrl.current = qFromUrl;
+    if (!resultsView || !qFromUrl || appliedQFromUrl.current === queryKey || ndpFromUrl) return;
+    appliedQFromUrl.current = queryKey;
     queueMicrotask(() => {
+      setRadiusM(urlRadius); setMonths(urlMonths);
       setQ(qFromUrl);
       setSelected(null);
-      setOpenSuggest(false);
-      void buscar({ q: qFromUrl });
+      const lat = searchParams.get("lat");
+      const lng = searchParams.get("lng");
+      const location = { lat: Number(lat), lng: Number(lng), label: qFromUrl, municipality: searchParams.get("localidad") || undefined };
+      void buscar({ q: qFromUrl, geo: lat && lng && isSpainLocation(location) ? location : undefined });
     });
-  }, [qFromUrl, ndpFromUrl, buscar]);
+  }, [qFromUrl, ndpFromUrl, searchParams, buscar, resultsView, queryKey, urlRadius, urlMonths]);
 
   useEffect(() => {
-    if (!ndpFromUrl || autoLoadedNdp.current === ndpFromUrl) return;
-    autoLoadedNdp.current = ndpFromUrl;
+    if (!resultsView || !ndpFromUrl || autoLoadedNdp.current === ndpKey) return;
+    autoLoadedNdp.current = ndpKey;
     queueMicrotask(() => {
       setSelected(null);
+      setRadiusM(urlRadius); setMonths(urlMonths);
       setQ(ndpFromUrl);
-      setOpenSuggest(false);
       void buscar({ ndp: ndpFromUrl });
     });
-  }, [ndpFromUrl, buscar]);
+  }, [ndpFromUrl, buscar, resultsView, ndpKey, urlRadius, urlMonths]);
 
-  const pickSuggestion = useCallback((item: UbicacionSearchItem) => {
-    activeSearch.current?.abort();
-    setLoading(false);
-    setSelected(item);
-    setQ(item.label);
-    setOpenSuggest(false);
-    setData(null);
-    setError(null);
-  }, []);
-
-  const radioLabel = RADIUS_OPTIONS.find((o) => o.m === (data?.params.radiusM ?? radiusM))?.label;
   const canSearch = !loading && (selected != null || q.trim().length >= 3);
   const filtersStale = Boolean(
-    data && (data.params.radiusM !== radiusM || data.params.months !== months),
+    (data && (data.params.radiusM !== radiusM || data.params.months !== months)) || (nationalData && (nationalData.radiusM !== radiusM || nationalData.months !== months)),
   );
   const heavyQuery = radiusM >= 800 && months >= 36;
+  const backParams = new URLSearchParams(searchParams.toString()); backParams.set("edit", "1");
+  if (!backParams.get("q") && data?.center.direccion) backParams.set("q",data.center.direccion);
+  const searchHref = `/boletin?${backParams}`;
+  const applyFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("edit"); params.set("radiusM", String(radiusM)); params.set("months", String(months));
+    router.push(`/boletin/resultados?${params}`);
+  };
+
 
   return (
-    <div className="min-h-[calc(100dvh-3.5rem-var(--site-footer-compact))] bg-[#f8f6f1]">
+    <div className="min-h-[calc(100dvh-3.5rem)] bg-[#f8f6f1]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         {/* Cabecera boletín */}
-        <header className="border-b border-slate-300/60 pb-6">
+        {!resultsView && <header className="border-b border-slate-300/60 pb-6">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--portal-warm)]">
-              Boletín de tu área
+              Tu zona · Explora una dirección
             </p>
             <p className="text-xs text-slate-500 capitalize">{formatEdicionDate()}</p>
           </div>
           <h1 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Qué obras y planes hay cerca de tu casa
+            Entiende lo que pasa en tu zona
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-            Licencias de obra y planes urbanísticos en tu barrio. Elige dirección y radio; el mapa
-            muestra el ámbito que estamos leyendo.
+            Proyectos, cambios recientes y contexto urbanístico alrededor de una dirección.
+            Descubre qué se plantea y qué ha cambiado cerca de ti o en tu municipio, según la información disponible.
           </p>
-        </header>
+        </header>}
 
+        {resultsView && <nav aria-label="Ruta de navegación" className="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-500"><Link href="/" className="hover:underline">Inicio</Link><span aria-hidden="true">/</span><Link href={searchHref} className="font-medium text-[var(--portal-accent)] hover:underline">Tu zona</Link><span aria-hidden="true">/</span><span aria-current="page" className="line-clamp-1 max-w-xl">{qFromUrl || data?.center.direccion || "Resultado de la consulta"}</span><Link href={searchHref} className="ml-auto font-medium text-[var(--portal-accent)] hover:underline">← Volver a buscar</Link></nav>}
         {/* Búsqueda */}
-        <section className="mt-8 rounded-xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-            <label className="relative block space-y-1">
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Tu dirección
-              </span>
-              <input
-                type="search"
+        <section aria-label={resultsView ? "Filtros de la consulta" : "Buscar una zona"} className={resultsView ? "mb-6 rounded-xl border border-slate-200/80 bg-white/80 px-4 py-3" : "mt-8 rounded-xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-sm sm:p-5"}>
+          {!resultsView && <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div className="space-y-1">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tu dirección</p>
+              <AddressAutocomplete
                 value={q}
-                onChange={(e) => {
+                onChange={value => {
                   activeSearch.current?.abort();
                   setLoading(false);
                   setData(null);
+                  setNationalData(null);
                   setError(null);
-                  setQ(e.target.value);
+                  setQ(value);
                   setSelected(null);
-                  setOpenSuggest(true);
+                  geocoded.current = null;
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && canSearch) {
-                    e.preventDefault();
-                    void buscar();
-                  }
-                  if (e.key === "Escape") setOpenSuggest(false);
+                onSelect={location => {
+                  activeSearch.current?.abort();
+                  setLoading(false);
+                  setData(null);
+                  setNationalData(null);
+                  setError(null);
+                  setQ(location.label);
+                  setSelected(null);
+                  geocoded.current = { query: location.label, result: location };
                 }}
-                onFocus={() => setOpenSuggest(true)}
-                placeholder="Calle, número o barrio…"
-                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:border-[var(--portal-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--portal-accent-soft)]"
-                autoComplete="off"
+                onSubmit={() => { if (canSearch) void buscar(); }}
               />
-              {openSuggest && suggestions.length > 0 ? (
-                <ul className="absolute z-30 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg">
-                  {suggestions.map((item) => (
-                    <li key={item.ndp}>
-                      <button
-                        type="button"
-                        className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => pickSuggestion(item)}
-                      >
-                        <span className="font-medium text-slate-900">{item.label}</span>
-                        <span className="mt-0.5 block text-xs text-slate-500">
-                          {[item.distrito, item.barrio].filter(Boolean).join(" · ")}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : openSuggest && q.trim().length >= 3 ? (
-                <div className="absolute z-30 mt-1 w-full rounded-lg border border-slate-200 bg-white p-2 text-sm shadow-lg">
-                  <button
-                    type="button"
-                    className="w-full rounded-md px-3 py-2 text-left hover:bg-slate-50"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => {
-                      setOpenSuggest(false);
-                      void buscar();
-                    }}
-                  >
-                    <span className="font-medium text-slate-900">Buscar “{q.trim()}” en Madrid</span>
-                    <span className="mt-0.5 block text-xs text-slate-500">
-                      Si no está en nuestra base, intentaremos localizarla por coordenadas.
-                    </span>
-                  </button>
-                </div>
-              ) : null}
-            </label>
+            </div>
 
             <button
               type="button"
@@ -389,12 +256,12 @@ export function BoletinAreaApp() {
             >
               {loading ? "Buscando…" : selected ? "Buscar" : "Buscar dirección"}
             </button>
-          </div>
+          </div>}
 
-          <div className="mt-4 flex flex-wrap gap-6 border-t border-slate-100 pt-4">
+          <div className={resultsView ? "flex flex-wrap gap-x-8 gap-y-3" : "mt-4 flex flex-wrap gap-6 border-t border-slate-100 pt-4"}>
             <fieldset className="space-y-1.5">
               <legend className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Radio del boletín
+                Radio de consulta
               </legend>
               <div className="flex flex-wrap gap-1.5">
                 {RADIUS_OPTIONS.map((opt) => (
@@ -445,15 +312,15 @@ export function BoletinAreaApp() {
           {filtersStale ? (
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[var(--portal-accent)]/20 bg-[var(--portal-accent-soft)]/80 px-3 py-2.5">
               <p className="text-sm text-[var(--portal-ink)]">
-                Has cambiado el radio o el periodo. Pulsa «Actualizar» para regenerar el boletín.
+                Has cambiado el radio o el periodo. Pulsa «Actualizar» para actualizar la lectura del entorno.
               </p>
               <button
                 type="button"
-                onClick={() => void buscar()}
+                onClick={applyFilters}
                 disabled={loading}
                 className="shrink-0 rounded-lg bg-[var(--portal-accent)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--portal-accent-hover)] disabled:opacity-50"
               >
-                {loading ? "Actualizando…" : "Actualizar boletín"}
+                {loading ? "Actualizando…" : "Actualizar entorno"}
               </button>
             </div>
           ) : null}
@@ -465,112 +332,17 @@ export function BoletinAreaApp() {
           ) : null}
         </section>
 
-        {/* Resultado: en móvil mapa bajo búsqueda, detalle debajo; en lg editorial | mapa */}
-        {data ? (
-          <div
-            ref={resultsAnchorRef}
-            className="mt-6 flex scroll-mt-20 flex-col gap-6 lg:mt-8 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(340px,46%)] lg:items-start lg:gap-8 xl:gap-10"
-          >
-            {/* Mapa: primero en móvil, columna derecha sticky en lg */}
-            <aside className="order-1 w-full min-w-0 lg:order-2 lg:sticky lg:top-20 lg:self-start">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
-                Mapa del ámbito · {radioLabel}
-              </p>
-              <BoletinMiniMap
-                key={`map-${data.center.ndp}-${data.params.radiusM}`}
-                variant="panel"
-                lat={data.center.lat}
-                lng={data.center.lng}
-                radiusM={data.params.radiusM}
-                licencias={data.licencias}
-                expedientesSigma={data.expedientesSigma}
-              />
-            </aside>
-
-            <article className="order-2 min-w-0 rounded-2xl border border-slate-200/80 bg-white px-5 py-6 shadow-sm sm:px-8 sm:py-8 lg:order-1">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-400">
-                Edición local · radio {radioLabel}
-              </p>
-              <h2 className="mt-2 font-serif text-2xl font-semibold leading-tight text-slate-900 sm:text-3xl">
-                {data.center.direccion || selected?.label || "Tu zona"}
-              </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                {[data.center.distrito, data.center.barrio].filter(Boolean).join(" · ")}
-                <span className="mx-2 text-slate-300">·</span>
-                Últimos {data.params.months} meses
-              </p>
-
-              <p className="mt-5 border-l-4 border-[var(--portal-accent)] pl-4 text-lg leading-relaxed text-slate-700">
-                {boletinResumenParrafo(data)}
-              </p>
-
-              <dl className="mt-6 grid grid-cols-3 gap-3 border-y border-slate-100 py-4">
-                <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                    Licencias
-                  </dt>
-                  <dd className="mt-0.5 font-serif text-2xl font-semibold text-slate-900">
-                    {boletinStatLabel(data.stats.licencias, data.stats.licenciasCapped)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                    Planeamiento
-                  </dt>
-                  <dd className="mt-0.5 font-serif text-2xl font-semibold text-slate-900">
-                    {boletinStatLabel(data.stats.expedientesSigma, data.stats.expedientesSigmaCapped)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                    Novedades
-                  </dt>
-                  <dd className="mt-0.5 font-serif text-2xl font-semibold text-slate-900">
-                    {data.stats.eventos}
-                  </dd>
-                </div>
-              </dl>
-
-              {data.center.ndp ? (
-                <Link
-                  href={ubicacionPath(data.center.ndp)}
-                  className="mt-2 inline-flex text-sm font-semibold text-[var(--portal-accent)] hover:underline"
-                >
-                  Ficha del edificio →
-                </Link>
-              ) : null}
-
-              <section className="mt-8">
-                <h3 className="border-b border-slate-900 pb-2 font-serif text-lg font-semibold text-slate-900">
-                  Cronología
-                </h3>
-                {data.timeline.length === 0 ? (
-                  <p className="mt-4 text-sm text-slate-600">
-                    No hay actividad reciente con estos filtros. Prueba ampliar el radio o el periodo.
-                  </p>
-                ) : (
-                  <ol className="mt-2 divide-y divide-slate-100">
-                    {data.timeline.map((ev, i) => (
-                      <EventoFila key={`${ev.tipo}-${ev.titulo}-${i}`} ev={ev} />
-                    ))}
-                  </ol>
-                )}
-              </section>
-
-              <footer className="mt-8 border-t border-slate-100 pt-4 text-[11px] leading-relaxed text-slate-400">
-                Datos: licencias urbanísticas del Ayuntamiento de Madrid y proyectos de planeamiento. Las
-                fechas de planeamiento corresponden al último trámite conocido en el registro municipal. No
-                indican inicio ni fin de obra salvo que se indique lo contrario.
-              </footer>
-            </article>
+        {resultsView && (nationalData ? (
+          <div className="scroll-mt-20"><NationalAreaExperience key={`${nationalData.center.lat}:${nationalData.center.lng}:${nationalData.radiusM}:${nationalData.months}`} data={nationalData} /></div>
+        ) : data ? (
+          <div className="scroll-mt-20">
+            <AreaExperience key={`${data.center.lat}:${data.center.lng}:${data.params.radiusM}:${data.params.months}`} data={data} />
           </div>
         ) : (
           <div className="mt-12 rounded-2xl border border-dashed border-slate-300 bg-white/50 px-6 py-16 text-center">
-            <p className="font-serif text-lg text-slate-600">
-              {loading ? "Consultando las licencias y los proyectos cercanos…" : "Introduce tu dirección y pulsa «Buscar dirección» para ver el resumen de tu zona."}
-            </p>
+            <p className="font-serif text-lg text-slate-600">{loading ? "Consultando la información de esta zona…" : error ? "No se ha podido completar la consulta." : "Preparando los resultados…"}</p>{error && <button type="button" className="area-text-link mt-4" onClick={() => { void buscar({ ndp: ndpFromUrl || undefined, q: qFromUrl || undefined }); }}>Reintentar consulta</button>}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );

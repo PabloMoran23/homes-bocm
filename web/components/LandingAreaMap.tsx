@@ -53,7 +53,7 @@ export function LandingAreaMap() {
     <div className="absolute inset-0" aria-hidden="true"><div ref={container} className="h-full w-full" /></div>
     {!ready && <p className="absolute left-5 top-24 text-sm text-slate-600" role="status">{failed ? "Mapa no disponible. Puedes abrir la consulta." : "Cargando cartografía…"}</p>}
     <div className="landing-area-toolbar"><span>Vista de consulta · Madrid</span><div role="group" aria-label="Radio de consulta">{[300, 500, 1000].map(value => <button type="button" key={value} aria-pressed={radius === value} onClick={() => setRadius(value)}>{value === 1000 ? "1 km" : `${value} m`}</button>)}</div></div>
-    <Link className="landing-area-location" href="/boletin?q=Calle%20Mayor%2012%2C%20Madrid"><span><small>Dirección de ejemplo</small><strong>Calle Mayor, 12</strong><span>Consultar actividad alrededor</span></span><b aria-hidden>↗</b></Link>
+    <Link className="landing-area-location" href="/boletin/resultados?q=Calle%20Mayor%2012%2C%20Madrid"><span><small>Dirección de ejemplo</small><strong>Calle Mayor, 12</strong><span>Consultar actividad alrededor</span></span><b aria-hidden>↗</b></Link>
     <span className="landing-area-attribution">© OpenStreetMap · © OpenMapTiles</span>
   </div>;
 }

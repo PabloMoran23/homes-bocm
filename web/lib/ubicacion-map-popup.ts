@@ -1,9 +1,8 @@
-import { actuacionDesdeMapProps, ubicacionPath, type UbicacionMapProperties } from "@/lib/ubicacion";
+import { actuacionDesdeMapProps, type UbicacionMapProperties } from "@/lib/ubicacion";
 import { normalizarActuacionEdificio } from "@/lib/actuacion-edificio";
 import { licenciaTituloDesdeTipo } from "@/lib/licencia-tipos";
 import {
   escapeMapPopupHtml,
-  mapPopupLinkHtml,
   mapPopupMetaLine,
 } from "@/lib/map-popup-html";
 
@@ -60,7 +59,6 @@ export function ubicacionMapPopupHtml(p: UbicacionMapProperties): string {
   bits.push(
     `<div style="margin-top:6px;font-size:11px;color:#047857">Obra o actuación autorizada (datos abiertos Ayto.)</div>`,
   );
-  bits.push(mapPopupLinkHtml(ubicacionPath(p.ndp), "Más información"));
 
   return bits.join("");
 }

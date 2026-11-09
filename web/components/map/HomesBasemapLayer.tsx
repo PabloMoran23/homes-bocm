@@ -46,6 +46,26 @@ export const HomesBasemapLayer = createTileLayerComponent(function createHomesBa
   });
   layer.getAttribution = () => HOMES_MAP_ATTRIBUTION;
 
+  // The Leaflet adapter schedules an untracked resize frame. Route navigation can
+  // remove the layer before that frame runs, leaving its internal map null.
+  const transitionLayer = layer as unknown as { _map?: L.Map; _transitionEnd: () => void; _resizeContainer: () => void; _zoomEnd: () => void };
+  let resizeFrame: number | null = null;
+  transitionLayer._transitionEnd = () => {
+    if (resizeFrame != null) L.Util.cancelAnimFrame(resizeFrame);
+    resizeFrame = L.Util.requestAnimFrame(() => {
+      resizeFrame = null;
+      const map = transitionLayer._map, gl = layer.getMaplibreMap();
+      if (!map || !gl) return;
+      const zoom = map.getZoom(), center = map.getCenter();
+      const offset = map.latLngToContainerPoint(map.getBounds().getNorthWest());
+      transitionLayer._resizeContainer();
+      L.DomUtil.setTransform(gl.getCanvas(), offset, 1);
+      gl.once("moveend", () => { if (transitionLayer._map && layer.getMaplibreMap() === gl) transitionLayer._zoomEnd(); });
+      gl.jumpTo({ center:[center.lng,center.lat], zoom:zoom - 1 });
+    });
+  };
+
+
   let cancelResize: (() => void) | undefined;
   layer.once("add", () => {
     const gl = layer.getMaplibreMap();
@@ -57,7 +77,11 @@ export const HomesBasemapLayer = createTileLayerComponent(function createHomesBa
     attachMasterplanStipple(gl);
     cancelResize = scheduleGlResize(gl);
   });
-  layer.once("remove", () => cancelResize?.());
+  layer.once("remove", () => {
+    cancelResize?.();
+    if (resizeFrame != null) L.Util.cancelAnimFrame(resizeFrame);
+    resizeFrame = null;
+  });
 
   return createElementObject(layer, context);
 });

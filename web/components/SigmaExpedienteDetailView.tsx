@@ -6,6 +6,7 @@ import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
 import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { SigmaMetricsPanel } from "@/components/detail/SigmaMetricsCards";
+import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
@@ -184,7 +185,7 @@ export function SigmaExpedienteDetailView({
 
   return (
     <main className={`mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 ${infoExtra ? "project-research" : "overflow-x-hidden"}`}>
-      {!hasTerritoryNavigation ? <nav className="mb-5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+      {!hasTerritoryNavigation ? <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-slate-500">
         <DetailBreadcrumbLink href="/explore">Mapa</DetailBreadcrumbLink>
         <span className="text-slate-300">/</span>
         <span className="truncate text-slate-700">{breadcrumbTitle}</span>
@@ -232,6 +233,8 @@ export function SigmaExpedienteDetailView({
           />
         </div>
       ) : null}
+
+      <ExploreAreaBanner />
 
       <div className={infoExtra ? "mt-6 min-w-0" : "mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {infoExtra ? null : (

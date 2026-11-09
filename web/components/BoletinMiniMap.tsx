@@ -1,8 +1,12 @@
 "use client";
 
+import { hasBroadMapExtent } from "@/lib/map-project-scope";
 import { useEffect, useMemo } from "react";
-import { Circle, MapContainer, Marker, Popup, ZoomControl, useMap } from "react-leaflet";
+import { Circle, GeoJSON, MapContainer, Marker, Popup, ZoomControl, useMap } from "react-leaflet";
 import L from "leaflet";
+import Link from "next/link";
+import type { Feature } from "geojson";
+import type { AreaProject } from "@/lib/area-context";
 import "leaflet/dist/leaflet.css";
 import { LicenciaMapLegend } from "@/components/map/LicenciaMapLegend";
 import type { BoletinEvento } from "@/lib/boletin-area";
@@ -90,17 +94,20 @@ function FitCircleView({
   lat,
   lng,
   radiusM,
+  overview,
 }: {
   lat: number;
   lng: number;
   radiusM: number;
+  overview: boolean;
 }) {
   const map = useMap();
   const visual = useMapVisualContext();
 
   useEffect(() => {
     const fit = () => {
-      const { boundsScale, maxZoom, padding } = boletinFitForRadius(radiusM);
+      const frameRadius = overview ? Math.max(1500, radiusM) : radiusM;
+      const { boundsScale, maxZoom, padding } = boletinFitForRadius(frameRadius);
       const scale = boundsScaleForContainer(
         boundsScale,
         visual.containerWidth,
@@ -111,8 +118,8 @@ function FitCircleView({
         visual.containerWidth,
         visual.containerHeight,
       );
-      const dlat = (radiusM / 111_320) * scale;
-      const dlng = (radiusM / (111_320 * Math.cos((lat * Math.PI) / 180))) * scale;
+      const dlat = (frameRadius / 111_320) * scale;
+      const dlng = (frameRadius / (111_320 * Math.cos((lat * Math.PI) / 180))) * scale;
       const bounds = L.latLngBounds(
         [lat - dlat, lng - dlng],
         [lat + dlat, lng + dlng],
@@ -127,7 +134,7 @@ function FitCircleView({
     fit();
     const t = window.setTimeout(fit, 120);
     return () => window.clearTimeout(t);
-  }, [map, lat, lng, radiusM, visual.containerWidth, visual.containerHeight]);
+  }, [map, lat, lng, radiusM, overview, visual.containerWidth, visual.containerHeight]);
 
   return null;
 }
@@ -214,6 +221,11 @@ export function BoletinMiniMap({
   expedientesSigma = [],
   variant = "panel",
   className = "",
+  projects = [],
+  selectedProject,
+  onProjectSelect,
+  showLicenseLegend = true,
+  overview = false,
 }: {
   lat: number;
   lng: number;
@@ -222,7 +234,13 @@ export function BoletinMiniMap({
   expedientesSigma?: BoletinEvento[];
   variant?: "compact" | "panel";
   className?: string;
+  projects?: AreaProject[];
+  selectedProject?: string | null;
+  onProjectSelect?: (group: string) => void;
+  showLicenseLegend?: boolean;
+  overview?: boolean;
 }) {
+  const visibleProjects = projects.filter(project => project.scope !== "general" && !hasBroadMapExtent(project.geometry));
   const isPanel = variant === "panel";
   const markerSize = isPanel ? "md" : "sm";
   const shellClass = isPanel
@@ -246,31 +264,36 @@ export function BoletinMiniMap({
         >
           <HomesBasemapLayer />
           <MapSizeFix />
-          <FitCircleView lat={lat} lng={lng} radiusM={radiusM} />
+          <FitCircleView lat={lat} lng={lng} radiusM={radiusM} overview={overview} />
           <BoletinSearchCircle lat={lat} lng={lng} radiusM={radiusM} />
           <MapMarkers
             centerLat={lat}
             centerLng={lng}
             licencias={licencias}
-            expedientesSigma={expedientesSigma}
+            expedientesSigma={projects.length ? [] : expedientesSigma}
             markerSize={markerSize}
           />
+          {visibleProjects.map(project => <GeoJSON key={project.group}
+            data={{ type: "Feature", geometry: project.geometry, properties: { group: project.group } } as Feature}
+            style={{ color: selectedProject === project.group ? "#a76435" : "#214f50", weight: selectedProject === project.group ? 3 : 1.5, fillColor: selectedProject === project.group ? "#d6a17c" : "#4f8177", fillOpacity: selectedProject === project.group ? .28 : .08 }}
+            eventHandlers={{ click: () => onProjectSelect?.(project.group) }}>
+            <Popup className="homes-map-popup" maxWidth={300}><strong>{project.title}</strong><p className="mt-1 text-xs">{project.phase}</p><p className="mt-1 text-xs">{project.containsPoint ? "Tu dirección está dentro del ámbito" : `A ${project.distanceM} m del ámbito`}</p><Link href={project.href} className="mt-2 inline-block text-xs underline">Ver ficha completa ↗</Link></Popup>
+          </GeoJSON>)}
           {isPanel ? <ZoomControl position="topright" /> : null}
         </MapContainer>
       </div>
 
       {isPanel ? (
         <div className="mt-2 rounded-xl border border-slate-200/80 bg-white/95 px-3 py-2.5 text-[10px] text-slate-600 shadow-sm">
-          <p className="mb-2 font-semibold uppercase tracking-wide text-slate-500">Leyenda</p>
-          <LicenciaMapLegend layout="grid" />
+          {showLicenseLegend && <details><summary className="cursor-pointer font-semibold text-slate-600">Tipos de licencia en el mapa</summary><div className="mt-3"><LicenciaMapLegend layout="grid" /></div></details>}
           <p className="mt-2 border-t border-slate-100 pt-2 text-slate-500">
             <span className="mr-1.5 inline-block h-2 w-2 rounded-full bg-[var(--portal-accent)] ring-1 ring-white" />
             Tu dirección ·{" "}
             <span className="inline-flex items-center gap-0.5">
             <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[var(--portal-accent)] text-[8px] font-bold text-white">
-                Σ
+                ▱
               </span>
-              Planeamiento
+              Ámbitos de proyectos
             </span>
           </p>
         </div>
