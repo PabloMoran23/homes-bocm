@@ -1,0 +1,21 @@
+slug: almogia
+nombre: Almogía
+provincia: Málaga
+comunidad_autonoma: andalucia
+codigo_ine: '29011'
+portal:
+  base_url: https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf
+  adapter: municipio.adapters.almogia:AlmogiaAyuntamientoAdapter
+  config: {}
+  notes: Inventario autonómico oficial de planeamiento general aprobado de Almogía; cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Almogía]
+  notes: Instrumentos municipales depositados en SITU@ de la Junta de Andalucía, no licencias ni inventario completo de obras.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

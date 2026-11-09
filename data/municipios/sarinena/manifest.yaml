@@ -1,0 +1,25 @@
+slug: sarinena
+nombre: Sariñena
+provincia: Huesca
+comunidad_autonoma: aragon
+codigo_ine: '22213'
+portal:
+  base_url: https://idearagon.aragon.es/archivoSIUa/?CMUNIINE=22213
+  adapter: municipio.adapters.sarinena:SarinenaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo oficial autonómico SIUa de planeamiento de Sariñena, agrupado por
+    expediente. Cobertura histórica parcial, sin acreditar vigencia actual;
+    conserva resoluciones, fechas diferenciadas y referencias documentales.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Fuente documental regional Gobierno de Aragón; no inventario completo de obras.
+licencias:
+  enabled: false
+  notes: Solicitudes excluidas; no registro verificado de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

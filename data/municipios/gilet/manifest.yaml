@@ -1,0 +1,27 @@
+slug: gilet
+nombre: Gilet
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46134'
+portal:
+  base_url: https://www.gilet.es
+  adapter: municipio.adapters.gilet:GiletAyuntamientoAdapter
+  config:
+    ine_code: '46134'
+  notes: >-
+    Inventario oficial de planeamiento de la Generalitat Valenciana para Gilet.
+    Recorrido completo del árbol publicado; cobertura municipal parcial.
+    Documentos agrupados por identificador registral. Sin fechas inferidas,
+    geometría ni afirmación de vigencia jurídica.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Gilet]
+  notes: Fuente documental autonómica; no constituye un registro de obras ejecutadas.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

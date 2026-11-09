@@ -1,0 +1,24 @@
+slug: san-bartolome-de-la-torre
+nombre: San Bartolomé de la Torre
+provincia: Huelva
+comunidad_autonoma: andalucia
+codigo_ine: '21063'
+portal:
+  base_url: https://www.sanbartolomedelatorre.es/es/gobierno-abierto/portal-transparencia/resultados-de-transparencia/Plan-General-de-Ordenacion-Urbana-PGOU./
+  adapter: municipio.adapters.san_bartolome_de_la_torre:SanBartolomeDeLaTorreAyuntamientoAdapter
+  config:
+    tls_verify: false
+  notes: >-
+    Dos galerías documentales municipales: paquete PGOU y convenios de urbanización.
+    Cadena TLS no validable en el entorno de extracción; tls_verify=false explícito
+    solo para este portal público. Cobertura parcial, sin acreditar vigencia actual.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Documentos agrupados por instrumento; sin inferir fechas, fases ni geometría.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

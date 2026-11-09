@@ -1,0 +1,21 @@
+slug: cascante
+nombre: Cascante
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31068'
+portal:
+  base_url: https://cascante.sedelectronica.es
+  adapter: municipio.adapters.cascante:CascanteAyuntamientoAdapter
+  config: {}
+  notes: Tablón público vigente; documentos agrupados por expediente municipal.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cascante]
+  notes: Cobertura parcial de instrumentos urbanísticos anunciados en el tablón vigente, sin histórico ni licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

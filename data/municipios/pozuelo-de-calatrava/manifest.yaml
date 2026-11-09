@@ -1,0 +1,23 @@
+slug: pozuelo-de-calatrava
+nombre: Pozuelo de Calatrava
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13066'
+portal:
+  base_url: https://www.pozuelodecalatrava.es/actualidad.php?d=20260101&h=20261231&p=1
+  adapter: municipio.adapters.pozuelo_de_calatrava:PozueloDeCalatravaAyuntamientoAdapter
+  config: {}
+  notes: Selección revisada de obras físicas del archivo oficial de noticias de 2026; paginación completa dentro de ese año. Sin inventario exhaustivo de expedientes.
+licencias:
+  enabled: false
+  notes: Formularios y noticia individual de licencia excluidos; no hay registro de concesiones verificado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Pozuelo de Calatrava
+  notes: Ejecución o inauguración documentada; noticias del mismo proyecto agrupadas. Sin fechas de aprobación ni geometría inferidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

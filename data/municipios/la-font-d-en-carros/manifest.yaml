@@ -1,0 +1,25 @@
+slug: la-font-d-en-carros
+nombre: la Font d'en Carròs
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46127'
+portal:
+  base_url: https://transparencia.lafontdencarros.es/urbanisme/
+  adapter: municipio.adapters.la_font_d_en_carros:LaFontDEnCarrosAyuntamientoAdapter
+  config:
+    ine_code: '46127'
+  notes: >-
+    Inventario municipal de planeamiento, agrupado por instrumento, con enlaces
+    documentales y fechas de tres avisos PDF. Cobertura parcial; no se afirma
+    vigencia definitiva, ni geometría, ni registro de licencias. Requiere el
+    ejecutable pdftotext preinstalado para los avisos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

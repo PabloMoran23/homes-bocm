@@ -1,0 +1,19 @@
+slug: santa-cruz-del-retamar
+nombre: Santa Cruz del Retamar
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45157'
+portal:
+  base_url: https://santacruzdelretamar.es/Urbanismo/Urbanismo.html
+  adapter: municipio.adapters.santa_cruz_del_retamar:SantaCruzDelRetamarAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del POM; documentos agrupados en un instrumento, sin afirmar vigencia actual ni cobertura histórica completa.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

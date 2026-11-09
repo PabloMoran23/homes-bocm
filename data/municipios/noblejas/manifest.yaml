@@ -1,0 +1,23 @@
+slug: noblejas
+nombre: Noblejas
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45115'
+portal:
+  base_url: https://noblejas.es
+  adapter: municipio.adapters.noblejas:NoblejasAyuntamientoAdapter
+  config:
+    ine_code: '45115'
+  notes: >-
+    Inventario municipal actual de NNSS, modificaciones y reparcelación UA-66.
+    Cobertura parcial, sin geometría verificada ni registro de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los impresos y los anuncios de información pública no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

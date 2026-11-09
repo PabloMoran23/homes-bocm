@@ -1,0 +1,24 @@
+slug: cabana-de-bergantinos
+nombre: Cabana de Bergantiños
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15014'
+portal:
+  base_url: https://sede.cabana.gal
+  adapter: municipio.adapters.cabana_de_bergantinos:CabanaDeBergantinosAyuntamientoAdapter
+  config:
+    ine_code: '15014'
+  notes: >-
+    Inventario municipal de información pública: proyectos de expropiación para
+    obras físicas con PDF técnico. Cobertura parcial; no registro de licencias.
+    Sin fechas de acuerdo verificadas ni geometría extraída; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Los formularios urbanísticos no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

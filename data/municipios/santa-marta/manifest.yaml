@@ -1,0 +1,24 @@
+slug: santa-marta
+nombre: Santa Marta
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06121'
+portal:
+  base_url: https://santamarta.es
+  adapter: municipio.adapters.santa_marta:SantaMartaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico SITEX, municipio interno 166; web municipal sin registro verificable de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Santa Marta
+    - Santa Marta de los Barros
+  notes: Fuente real Junta de Extremadura SITEX; instrumentos vigentes o en trámite. No representa todas las obras municipales.
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; no son concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

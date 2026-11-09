@@ -1,0 +1,22 @@
+slug: orkoien
+nombre: Orkoien
+provincia: Navarra
+comunidad_autonoma: navarra
+codigo_ine: '31906'
+portal:
+  base_url: https://www.orkoien.com
+  adapter: municipio.adapters.orkoien:OrkoienAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal PRTR: obras físicas de alumbrado con documento enlazado.
+    Cobertura parcial; no es un registro de licencias ni de todo el planeamiento.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

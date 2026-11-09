@@ -1,0 +1,25 @@
+slug: el-pont-de-vilomara-i-rocafort
+nombre: El Pont de Vilomara i Rocafort
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08182'
+portal:
+  base_url: https://www.elpont.cat
+  adapter: municipio.adapters.el_pont_de_vilomara_i_rocafort:ElPontDeVilomaraIRocafortAyuntamientoAdapter
+  config:
+    ine_code: '08182'
+  notes: >-
+    Inventario RPUC enlazado por la transparencia municipal. Solo expedientes
+    cuya cabecera identifica este municipio; documentos agrupados por expediente.
+    Cobertura parcial, sin geometrías verificadas ni licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - El Pont de Vilomara i Rocafort
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

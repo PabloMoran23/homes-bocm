@@ -1,0 +1,25 @@
+slug: las-ventas-de-retamosa
+nombre: Las Ventas de Retamosa
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45183'
+portal:
+  base_url: https://lasventasderetamosa.es
+  adapter: municipio.adapters.las_ventas_de_retamosa:LasVentasDeRetamosaAyuntamientoAdapter
+  config:
+    ine_code: '45183'
+  notes: >-
+    Inventario documental municipal de Urbanismo: NNSS y reparcelación del polígono 5.
+    Cobertura parcial; sin garantía de vigencia consolidada, fechas ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Las Ventas de Retamosa
+licencias:
+  enabled: false
+  notes: Los modelos de solicitud no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

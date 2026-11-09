@@ -1,0 +1,23 @@
+slug: ibarra
+nombre: Ibarra
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20042'
+portal:
+  base_url: https://www.ibarra.eus
+  adapter: municipio.adapters.ibarra:IbarraAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de documentos de planeamiento, agrupados por instrumento.
+    Cobertura parcial; sin acreditar vigencia, fechas de aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ibarra]
+licencias:
+  enabled: false
+  notes: Los trámites y formularios no constituyen licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

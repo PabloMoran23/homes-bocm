@@ -1,0 +1,27 @@
+slug: adamuz
+nombre: Adamuz
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14001'
+portal:
+  base_url: https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf
+  adapter: municipio.adapters.adamuz:AdamuzAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente autonómica oficial SITUA, consulta de planeamiento general aprobado
+    para Adamuz (Córdoba), INE 14001. Cobertura parcial; web municipal HTTP 403.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Adamuz]
+  notes: >-
+    Instrumentos municipales alojados en SITUA de la Junta de Andalucía.
+    source ayuntamiento selecciona el pipeline del adaptador; los registros
+    identifican explícitamente a la Junta como fuente documental.
+licencias:
+  enabled: false
+  notes: No se ha verificado registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

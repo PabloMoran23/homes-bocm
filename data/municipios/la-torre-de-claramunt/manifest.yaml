@@ -1,0 +1,24 @@
+slug: la-torre-de-claramunt
+nombre: La Torre de Claramunt
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08286'
+portal:
+  base_url: https://www.latorredeclaramunt.cat
+  adapter: municipio.adapters.la_torre_de_claramunt:LaTorreDeClaramuntAyuntamientoAdapter
+  config: {}
+  notes: >-
+    NNSS y obras con memoria/proyecto técnico en el inventario catalán de
+    exposición pública. Cobertura parcial; sin archivo completo RPUC ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Torre de Claramunt
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se afirma la concesión de licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

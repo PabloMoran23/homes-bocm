@@ -1,0 +1,22 @@
+slug: dalias
+nombre: Dalías
+provincia: Almería
+comunidad_autonoma: andalucia
+codigo_ine: '04038'
+portal:
+  base_url: https://www.dalias.es/Servicios/cmsdipro/index.nsf/tablon_view_entidad_categoria1.xsp?p=Dalias&cat=Territorio
+  adapter: municipio.adapters.dalias:DaliasAyuntamientoAdapter
+  config: {}
+  notes: Inventario público Territorio; fichas y adjuntos agrupados por instrumento. Cobertura parcial histórica, sin inferir aprobación o vigencia.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Dalías]
+  notes: Planeamiento y proyecto de actuación documentados; sin coordenadas inferidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

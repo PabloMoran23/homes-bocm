@@ -1,0 +1,25 @@
+slug: cervo
+nombre: Cervo
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27013'
+portal:
+  base_url: https://www.concellodecervo.com
+  adapter: municipio.adapters.cervo:CervoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial SIOTUGA de la Xunta filtrado por INE 27013.
+    Planeamiento municipal aprobado, clases 14, 13 y 18; cobertura parcial.
+    Documentos agrupados por ID del instrumento. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Cervo]
+  notes: Fechas de aprobación, BOP, DOG y normativa separadas; no acredita obras ejecutadas.
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
