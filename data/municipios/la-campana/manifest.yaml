@@ -1,0 +1,23 @@
+slug: la-campana
+nombre: La Campana
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41022'
+portal:
+  base_url: https://www.lacampana.es/inicio/obras-servicios
+  adapter: municipio.adapters.la_campana:LaCampanaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo municipal paginado de Obras y Servicios. Solo actuaciones físicas con
+    anuncio explícito de comienzo y emplazamiento; cobertura histórica parcial,
+    sin afirmar aprobación, terminación ni vigencia actual.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,19 @@
+slug: outeiro-de-rei
+nombre: Outeiro de Rei
+provincia: Lugo
+comunidad_autonoma: galicia
+codigo_ine: '27039'
+portal:
+  base_url: https://outeiroderei.gal/urbanismo/
+  adapter: municipio.adapters.outeiro_de_rei:OuteiroDeReiAyuntamientoAdapter
+  config: {}
+  notes: Paquetes documentales municipales de planeamiento; cobertura parcial sin inferir vigencia.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

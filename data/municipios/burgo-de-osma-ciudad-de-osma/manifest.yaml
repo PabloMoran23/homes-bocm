@@ -1,0 +1,26 @@
+slug: burgo-de-osma-ciudad-de-osma
+nombre: Burgo de Osma-Ciudad de Osma
+provincia: Soria
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '42043'
+portal:
+  base_url: https://www.burgodeosma.com/
+  adapter: municipio.adapters.burgo_de_osma_ciudad_de_osma:BurgoDeOsmaCiudadDeOsmaAyuntamientoAdapter
+  config:
+    ine_code: '42043'
+  notes: >-
+    Cobertura parcial del inventario municipal PRTR: alumbrado y fotovoltaica.
+    Documentación agrupada por proyecto; sin fechas de aprobación o geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Burgo de Osma-Ciudad de Osma
+    - El Burgo de Osma-Ciudad de Osma
+licencias:
+  enabled: false
+  notes: Los formularios no son licencias concedidas. No se extraen licencias.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

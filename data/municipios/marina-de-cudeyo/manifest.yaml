@@ -1,0 +1,26 @@
+slug: marina-de-cudeyo
+nombre: Marina de Cudeyo
+provincia: Cantabria
+comunidad_autonoma: cantabria
+codigo_ine: '39040'
+portal:
+  base_url: https://aplicacionesweb.cantabria.es/aucan
+  adapter: municipio.adapters.marina_de_cudeyo:MarinaDeCudeyoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Archivo oficial autonómico AUCAN enlazado por el Ayuntamiento. Inventario
+    completo de su árbol municipal, actual y no vigente; cobertura parcial del
+    planeamiento municipal, sin obras ni avance municipal ausentes de AUCAN.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Marina de Cudeyo
+  notes: Fuente material Gobierno de Cantabria, conservada en cada registro.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

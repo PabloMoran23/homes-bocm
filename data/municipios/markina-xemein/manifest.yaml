@@ -1,0 +1,25 @@
+slug: markina-xemein
+nombre: Markina-Xemein
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48060'
+portal:
+  base_url: https://www.markina-xemein.eus
+  adapter: municipio.adapters.markina_xemein:MarkinaXemeinAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental municipal de Urbanismo: PGOU, modificación Etxetic
+    e instrumentos de Arretxinaga. Se recorren y validan los listados paginados.
+    Cobertura parcial, sin fechas de acuerdo verificadas ni geometrías.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Markina-Xemein
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,20 @@
+slug: nueva-carteya
+nombre: Nueva Carteya
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14046'
+portal:
+  base_url: https://aytonuevacarteya.es/
+  adapter: municipio.adapters.nueva_carteya:NuevaCarteyaAyuntamientoAdapter
+  config: {}
+  notes: Archivo municipal completo de noticias; selección conservadora de inauguraciones realizadas de equipamientos físicos. Cobertura parcial de obras, sin inventario de expedientes ni planeamiento verificado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Nueva Carteya]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

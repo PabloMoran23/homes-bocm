@@ -1,0 +1,20 @@
+slug: montefrio
+nombre: Montefrío
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18135'
+portal:
+  base_url: https://ayto-montefrio.es/paginas/pgou.htm
+  adapter: municipio.adapters.montefrio:MontefrioAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal histórico del PGOU; cobertura parcial, sin afirmar vigencia actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Montefrío, Montefrio]
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

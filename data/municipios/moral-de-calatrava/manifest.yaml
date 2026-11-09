@@ -1,0 +1,26 @@
+slug: moral-de-calatrava
+nombre: Moral de Calatrava
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13058'
+portal:
+  base_url: https://moraldecalatrava.sedelectronica.es
+  adapter: municipio.adapters.moral_de_calatrava:MoralDeCalatravaAyuntamientoAdapter
+  config:
+    ine_code: '13058'
+  notes: >-
+    Inventario municipal de planeamiento: Normas Subsidiarias, MP 1/2021 y Plan
+    Parcial del Sector 8 Industrial. Documentos agrupados por instrumento.
+    Cobertura parcial, sin geometría. Requiere pdftotext ya instalado.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Moral de Calatrava
+licencias:
+  enabled: false
+  notes: No se extraen licencias; formularios y anuncios no acreditan concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

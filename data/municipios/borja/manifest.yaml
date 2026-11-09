@@ -1,0 +1,25 @@
+slug: borja
+nombre: Borja
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50055'
+portal:
+  base_url: https://www.cumpletransparencia.es/borja
+  adapter: municipio.adapters.borja:BorjaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental de planeamiento del portal municipal de transparencia.
+    Cobertura parcial: Plan Integral del Casco Histórico, un documento de intenciones;
+    el PGOU remite al archivo autonómico y no se extrae. Sin fechas de acuerdo
+    verificadas ni geometría. No se infiere aprobación del nombre de un fichero.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Borja]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

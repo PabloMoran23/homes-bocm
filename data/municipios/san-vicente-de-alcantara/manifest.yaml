@@ -1,0 +1,21 @@
+slug: san-vicente-de-alcantara
+nombre: San Vicente de Alcántara
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06123'
+portal:
+  base_url: https://sanvicentedealcantara.es
+  adapter: municipio.adapters.san_vicente_de_alcantara:SanVicenteDeAlcantaraAdapter
+  config: {}
+  notes: Inventario municipal del PGM; documentos agrupados en un instrumento, cobertura parcial.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - San Vicente de Alcántara
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

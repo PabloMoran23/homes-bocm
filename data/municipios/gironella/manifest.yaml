@@ -1,0 +1,25 @@
+slug: gironella
+nombre: Gironella
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08092'
+portal:
+  base_url: https://gironella.cat
+  adapter: municipio.adapters.gironella:GironellaAyuntamientoAdapter
+  config:
+    ine_code: '08092'
+    user_agent: municipio-gironella/1.0
+  notes: >-
+    Inventario municipal de instrumentos urbanísticos con documentos agrupados.
+    Cobertura parcial; sin fechas, fase ni geometría verificadas. No certifica
+    vigencia jurídica. publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

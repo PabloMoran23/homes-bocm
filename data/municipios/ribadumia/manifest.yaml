@@ -1,0 +1,24 @@
+slug: ribadumia
+nombre: Ribadumia
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36046'
+portal:
+  base_url: https://www.ribadumia.org
+  adapter: municipio.adapters.ribadumia:RibadumiaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de información pública, recorrido completo por WebForms.
+    Cobertura parcial: modificaciones del PXOM y planes de accesibilidad de Barrantes
+    con documentos. Sin inferir vigencia jurídica, aprobación o geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ribadumia]
+licencias:
+  enabled: false
+  notes: Se excluyen solicitudes y formularios; no se extraen concesiones.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

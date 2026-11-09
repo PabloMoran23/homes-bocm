@@ -1,0 +1,22 @@
+slug: carranque
+nombre: Carranque
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45038'
+portal:
+  base_url: https://www.carranque.es/portal/urbanismo/
+  adapter: municipio.adapters.carranque:CarranqueAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de Normas Subsidiarias agrupado en un instrumento con
+    documentos y cartografía. Cobertura parcial, sin afirmar vigencia consolidada,
+    fechas de acuerdo o geometría. publication_ready false.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

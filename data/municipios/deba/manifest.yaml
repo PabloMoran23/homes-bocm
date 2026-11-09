@@ -1,0 +1,24 @@
+slug: deba
+nombre: Deba
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20029'
+portal:
+  base_url: https://www.deba.eus
+  adapter: municipio.adapters.deba:DebaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento de desarrollo y gestión urbanística
+    de Deba, Itziar y Lastur. Cobertura parcial; documentos agrupados por
+    instrumento. Sin garantía de vigencia consolidada ni geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Deba]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

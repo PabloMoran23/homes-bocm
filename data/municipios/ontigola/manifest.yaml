@@ -1,0 +1,21 @@
+slug: ontigola
+nombre: Ontígola
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45123'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/acuerdos-expedientes?title=Ont%C3%ADgola
+  adapter: municipio.adapters.ontigola:OntigolaAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico de acuerdos con Ontígola en el título; cobertura parcial documental, sin inferir licencias, ejecución ni vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Ontígola, Ontigola]
+  notes: El canal portal usa documentos JCCM, identificados como source=jccm en cada registro. Acuerdos agrupados por instrumento, no concesiones municipales.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

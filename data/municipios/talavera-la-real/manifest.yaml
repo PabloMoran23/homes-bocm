@@ -1,0 +1,23 @@
+slug: talavera-la-real
+nombre: Talavera la Real
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06128'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.talavera_la_real:TalaveraLaRealAyuntamientoAdapter
+  config: {}
+  notes: Inventario oficial autonómico SITEX, municipio interno 176; instrumentos vigentes, no vigentes y en trámite. Cobertura parcial de la actividad municipal.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Talavera la Real
+  notes: Canal de proyectos municipales; procedencia real Junta de Extremadura indicada en cada registro. No acredita obras ejecutadas ni concesiones de licencia.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

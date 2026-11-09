@@ -1,0 +1,21 @@
+slug: valencia-de-alcantara
+nombre: Valencia de Alcántara
+provincia: Cáceres
+comunidad_autonoma: extremadura
+codigo_ine: '10203'
+portal:
+  base_url: https://sitex.juntaex.es/SITEX/planeamiento
+  adapter: municipio.adapters.valencia_de_alcantara:ValenciaDeAlcantaraAyuntamientoAdapter
+  config: {}
+  notes: Inventario autonómico oficial SITEX, municipio interno 491. Solo figuras municipales marcadas Vigente, con documentos agrupados por identificador SITEX.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Valencia de Alcántara]
+  notes: Fuente efectiva Junta de Extremadura; cobertura parcial de planeamiento vigente, no inventario de obras ni licencias.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
