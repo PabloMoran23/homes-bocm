@@ -1,0 +1,19 @@
+slug: san-miguel-de-salinas
+nombre: San Miguel de Salinas
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '03120'
+portal:
+  base_url: https://sanmigueldesalinas.sedelectronica.es/transparency/8d019610-1215-41b6-9d8c-a415d1cbc368/
+  adapter: municipio.adapters.san_miguel_de_salinas:SanMiguelDeSalinasAyuntamientoAdapter
+  config: {}
+  notes: Sección 1.1 del inventario oficial de planeamiento, con documentos agrupados por instrumento. Cobertura parcial; sin afirmar vigencia, aprobación ni ejecución.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

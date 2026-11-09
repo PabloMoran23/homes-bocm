@@ -1,0 +1,25 @@
+slug: castello
+nombre: Castelló
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46257'
+portal:
+  base_url: https://castello.sedelectronica.es
+  adapter: municipio.adapters.castello:CastelloAyuntamientoAdapter
+  config:
+    ine_code: '46257'
+  notes: >-
+    Inventario público de normativa urbanística: Pla d'Ordenació Detallada completo.
+    Cobertura municipal parcial; sin fechas de acuerdo/publicación verificadas ni
+    geometría extraída. Documentos agrupados por instrumento. publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Castelló, Villanueva de Castellón, Castelló de la Ribera]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

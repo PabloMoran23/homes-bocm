@@ -1,0 +1,25 @@
+slug: sils
+nombre: Sils
+provincia: Girona
+comunidad_autonoma: catalunya
+codigo_ine: '17193'
+portal:
+  base_url: https://sils.cat
+  adapter: municipio.adapters.sils:SilsAyuntamientoAdapter
+  config:
+    ine_code: '17193'
+    user_agent: municipio-sils/1.0
+  notes: >-
+    Snapshot completo de la página municipal POUM, agrupando documentos por
+    instrumento. Cobertura municipal parcial, sin comprobar la vigencia de cada
+    trámite ni extraer el contenido de carpetas externas. Sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

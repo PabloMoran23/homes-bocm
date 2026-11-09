@@ -1,0 +1,24 @@
+slug: muskiz
+nombre: Muskiz
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48071'
+portal:
+  base_url: https://www.muskiz.org
+  adapter: municipio.adapters.muskiz:MuskizAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de Urbanismo: NNSS, modificación IES, revisión PGOU
+    y plan especial canino. Documentos agrupados por instrumento. Cobertura
+    parcial; fechas de publicación de documentos separadas de acuerdos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Muskiz]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

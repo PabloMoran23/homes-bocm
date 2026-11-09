@@ -1,0 +1,26 @@
+slug: teia
+nombre: Teià
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08281'
+portal:
+  base_url: https://teia.cat
+  adapter: municipio.adapters.teia:TeiaAyuntamientoAdapter
+  config:
+    ine_code: '08281'
+    user_agent: municipio-teia/1.0
+  notes: >-
+    Inventario oficial Projectes urbanístics; enlaces documentales conservados.
+    Cobertura parcial municipal, sin acreditar aprobación o vigencia. SharePoint
+    puede devolver vínculos caducados; contenido de adjuntos no verificado por el
+    adaptador. Sin geometría; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; se excluyen trámites.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

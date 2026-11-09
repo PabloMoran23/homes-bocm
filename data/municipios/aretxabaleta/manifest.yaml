@@ -1,0 +1,22 @@
+slug: aretxabaleta
+nombre: Aretxabaleta
+provincia: Gipuzkoa
+comunidad_autonoma: pais-vasco
+codigo_ine: '20013'
+portal:
+  base_url: https://www.aretxabaleta.eus
+  adapter: municipio.adapters.aretxabaleta:AretxabaletaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de normas en proceso de creación; instrumentos urbanísticos y plan de movilidad.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Aretxabaleta]
+  notes: Cobertura parcial; un registro por instrumento con documentos y actuaciones fechadas.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

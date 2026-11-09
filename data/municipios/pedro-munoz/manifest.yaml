@@ -1,0 +1,19 @@
+slug: pedro-munoz
+nombre: Pedro Muñoz
+provincia: Ciudad Real
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '13061'
+portal:
+  base_url: https://www.pedro-munoz.es/
+  adapter: municipio.adapters.pedro_munoz:PedroMunozAyuntamientoAdapter
+  config: {}
+  notes: Inventario parcial de normativa urbanística municipal; documentos del POM y convenios de modificación, sin afirmar aprobación definitiva ni vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

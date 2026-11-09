@@ -1,0 +1,22 @@
+slug: soutomaior
+nombre: Soutomaior
+provincia: Pontevedra
+comunidad_autonoma: galicia
+codigo_ine: '36053'
+portal:
+  base_url: https://soutomaior.gal
+  adapter: municipio.adapters.soutomaior:SoutomaiorAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Urbanismo municipal delega la consulta en SIOTUGA de la Xunta de Galicia.
+    Inventario urbanístico general, de desarrollo, histórico y núcleos rurales.
+    Cobertura parcial; no incluye ordenación territorial ni obras ni licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

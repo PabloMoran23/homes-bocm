@@ -1,0 +1,24 @@
+slug: azuaga
+nombre: Azuaga
+provincia: Badajoz
+comunidad_autonoma: extremadura
+codigo_ine: '06014'
+portal:
+  base_url: https://azuaga.es
+  adapter: municipio.adapters.azuaga:AzuagaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal Normativa y Solicitudes. Un instrumento: Normas
+    Subsidiarias, con PDF de normativa y ZIP de planos. Cobertura parcial;
+    vigencia legal y fechas de aprobación no acreditadas por esta página.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Azuaga]
+licencias:
+  enabled: false
+  notes: Los formularios de solicitud no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

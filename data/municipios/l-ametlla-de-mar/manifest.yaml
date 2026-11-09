@@ -1,0 +1,24 @@
+slug: l-ametlla-de-mar
+nombre: L'Ametlla de Mar
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43013'
+portal:
+  base_url: https://www.ametllamar.cat
+  adapter: municipio.adapters.l_ametlla_de_mar:LAmetllaDeMarAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento derivado, recorrido completo de sus
+    subcarpetas. Documentos agrupados por instrumento/carpeta con versiones y
+    modificaciones asociadas. No certifica vigencia, aprobación ni geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: ["L'Ametlla de Mar", "Ametlla de Mar"]
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

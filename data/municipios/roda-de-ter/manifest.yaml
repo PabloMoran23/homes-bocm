@@ -1,0 +1,25 @@
+slug: roda-de-ter
+nombre: Roda de Ter
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08183'
+portal:
+  base_url: https://www.rodadeter.cat
+  adapter: municipio.adapters.roda_de_ter:RodaDeTerAyuntamientoAdapter
+  config:
+    ine_code: '08183'
+    user_agent: municipio-roda-de-ter/1.0
+  notes: >-
+    Inventario municipal de modificaciones del POUM. Documentos agrupados por
+    número de modificación con referencias RPUC. Cobertura parcial; el estado
+    del documento municipal no garantiza el último estado jurídico. Sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

@@ -1,0 +1,24 @@
+slug: sant-lluis
+nombre: Sant Lluís
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07052'
+portal:
+  base_url: https://www.ajsantlluis.org
+  adapter: municipio.adapters.sant_lluis:SantLluisAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Catálogo municipal de normativa urbanística, tres pestañas recorridas.
+    NNSS agrupadas con sus dos ámbitos documentales y planes especiales.
+    Cobertura parcial; sin fechas inferidas ni geometría vectorial verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Sant Lluís, Sant Lluis]
+licencias:
+  enabled: false
+  notes: Formularios de solicitud excluidos; sin registro de concesiones verificado.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

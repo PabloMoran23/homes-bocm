@@ -1,0 +1,23 @@
+slug: lekeitio
+nombre: Lekeitio
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48057'
+portal:
+  base_url: https://www.lekeitio.com
+  adapter: municipio.adapters.lekeitio:LekeitioAyuntamientoAdapter
+  config:
+    ine_code: '48057'
+  notes: >-
+    Inventario oficial Proyectos Municipales, contrastado con su biblioteca pública.
+    Cobertura parcial; no incluye el inventario de planeamiento ni todas las obras.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

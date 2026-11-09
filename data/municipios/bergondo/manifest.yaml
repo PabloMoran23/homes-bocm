@@ -1,0 +1,19 @@
+slug: bergondo
+nombre: Bergondo
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15008'
+portal:
+  base_url: https://www.bergondo.gal/areas-e-servizos/urbanismo/
+  adapter: municipio.adapters.bergondo:BergondoAyuntamientoAdapter
+  config: {}
+  notes: Cuatro inventarios documentales de urbanismo; cobertura parcial, fases según la página municipal y enlaces documentales sin garantía de disponibilidad.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

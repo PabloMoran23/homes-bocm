@@ -1,0 +1,20 @@
+slug: la-aldea-de-san-nicolas
+nombre: La Aldea de San Nicolás
+provincia: Las Palmas
+comunidad_autonoma: canarias
+codigo_ine: '35020'
+portal:
+  base_url: https://datos.canarias.es/catalogos/general/dataset/planeamiento-urbanistico-de-la-aldea-de-san-nicolas
+  adapter: municipio.adapters.la_aldea_de_san_nicolas:LaAldeaDeSanNicolasAyuntamientoAdapter
+  config: {}
+  notes: Catálogo oficial autonómico del planeamiento municipal y documentos IDECanarias; cobertura documental parcial, sin afirmar vigencia ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: Instrumentos municipales publicados por Gobierno de Canarias/GRAFCAN; no inventario de obras ni concesiones.
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

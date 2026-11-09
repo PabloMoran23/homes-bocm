@@ -1,0 +1,26 @@
+slug: sant-joan-de-labritja
+nombre: Sant Joan de Labritja
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+codigo_ine: '07050'
+portal:
+  base_url: https://www.santjoandelabritja.com
+  adapter: municipio.adapters.sant_joan_de_labritja:SantJoanDeLabritjaAyuntamientoAdapter
+  config:
+    ine_code: '07050'
+  notes: >-
+    Inventario municipal NNSS: agrupa memoria, planos y anexos con las NNSS;
+    modificaciones en registros separados. Fechas y expedientes extraídos de los
+    BOIB enlazados. Requiere pdftotext del sistema. Cobertura parcial sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Sant Joan de Labritja
+licencias:
+  enabled: false
+  notes: Sin registro público verificado de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

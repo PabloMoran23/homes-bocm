@@ -1,0 +1,20 @@
+slug: blanca
+nombre: Blanca
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30011'
+portal:
+  base_url: https://sede.blanca.regiondemurcia.es
+  adapter: municipio.adapters.blanca:BlancaAyuntamientoAdapter
+  config: {}
+  notes: Inventario público de carpetas de planeamiento; cobertura parcial, documentos agrupados por instrumento. Sin geometría ni fechas inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: Formularios y trámites no acreditan licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

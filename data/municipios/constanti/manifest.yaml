@@ -1,0 +1,24 @@
+slug: constanti
+nombre: Constantí
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43047'
+portal:
+  base_url: https://constanti.eadministracio.cat
+  adapter: municipio.adapters.constanti:ConstantiAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de proyectos de urbanización aprobados definitivamente.
+    Cobertura parcial del urbanismo municipal; documentos agrupados por proyecto.
+    Fechas de publicación de anuncios conservadas por documento, sin fecha de
+    acuerdo inferida ni geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado un inventario público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

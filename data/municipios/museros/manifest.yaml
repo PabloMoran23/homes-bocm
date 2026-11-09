@@ -1,0 +1,25 @@
+slug: museros
+nombre: Museros
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+codigo_ine: '46177'
+portal:
+  base_url: https://museros.org
+  adapter: municipio.adapters.museros:MuserosAyuntamientoAdapter
+  config:
+    ine_code: '46177'
+  notes: >-
+    Inventario municipal actual de normas subsidiarias: documentos agrupados por
+    instrumento, sin inferir vigencia, aprobación ni fechas desde nombres de PDF.
+    Cobertura parcial del municipio; sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Museros]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
