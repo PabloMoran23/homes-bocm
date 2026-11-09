@@ -1,0 +1,25 @@
+slug: almacelles
+nombre: Almacelles
+provincia: Lleida
+comunidad_autonoma: catalunya
+codigo_ine: '25019'
+portal:
+  base_url: https://www.almacelles.cat
+  adapter: municipio.adapters.almacelles:AlmacellesAyuntamientoAdapter
+  config:
+    ine_code: '25019'
+  notes: >-
+    Cobertura parcial del inventario municipal: carpeta anual de proyectos 2024,
+    última anualidad de proyectos verificada. Tres obras con documentos enlazados.
+    Sin fechas de aprobación ni geometría verificadas. No implica ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Almacelles]
+licencias:
+  enabled: false
+  notes: No se extraen formularios ni bases de autorizaciones como licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

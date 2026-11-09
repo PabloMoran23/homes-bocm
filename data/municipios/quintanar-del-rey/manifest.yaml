@@ -1,0 +1,22 @@
+slug: quintanar-del-rey
+nombre: Quintanar del Rey
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16175'
+portal:
+  base_url: https://urbanismo.castillalamancha.es/acuerdos-expedientes?title=Quintanar+del+Rey
+  adapter: municipio.adapters.quintanar_del_rey:QuintanarDelReyAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial autonómico de acuerdos urbanísticos. Cobertura parcial de
+    modificaciones numeradas del POM; documentos agrupados por instrumento.
+    La web municipal está en mantenimiento. No equivale a registro de licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

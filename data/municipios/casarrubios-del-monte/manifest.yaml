@@ -1,0 +1,21 @@
+slug: casarrubios-del-monte
+nombre: Casarrubios del Monte
+provincia: Toledo
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '45041'
+portal:
+  base_url: https://casarrubiosdelmonte.es
+  adapter: municipio.adapters.casarrubios_del_monte:CasarrubiosDelMonteAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de instrumentos identificados; cobertura parcial sin fechas ni geometría verificadas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Casarrubios del Monte
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

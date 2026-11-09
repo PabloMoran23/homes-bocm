@@ -1,0 +1,26 @@
+slug: begues
+nombre: Begues
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08020'
+portal:
+  base_url: https://www.begues.cat
+  adapter: municipio.adapters.begues:BeguesAyuntamientoAdapter
+  config:
+    ine_code: '08020'
+  notes: >-
+    Inventario municipal Projectes urbanístics, todas sus páginas. Cobertura parcial:
+    únicamente modificaciones numeradas del planeamiento general de Begues,
+    agrupadas por número con documentos y publicaciones históricas. No acredita
+    vigencia jurídica actual. Sin geometría; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Begues]
+licencias:
+  enabled: false
+  notes: No se extraen solicitudes ni se ha verificado un registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

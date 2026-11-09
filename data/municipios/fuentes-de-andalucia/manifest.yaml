@@ -1,0 +1,22 @@
+slug: fuentes-de-andalucia
+nombre: Fuentes de Andalucía
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41042'
+portal:
+  base_url: https://nuevoplanfuentesdeandalucia.es/
+  adapter: municipio.adapters.fuentes_de_andalucia:FuentesDeAndaluciaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Portal del nuevo PBOM enlazado por el Ayuntamiento. Un instrumento con sus
+    documentos agrupados; cobertura parcial, sin aprobación ni geometría verificadas.
+licencias:
+  enabled: false
+  notes: Sin inventario público verificado de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

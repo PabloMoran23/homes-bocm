@@ -1,0 +1,19 @@
+slug: pontedeume
+nombre: Pontedeume
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15069'
+portal:
+  base_url: https://sede.pontedeume.gal/sxc/es/informacion/tablon/index.html
+  adapter: municipio.adapters.pontedeume:PontedeumeAyuntamientoAdapter
+  config: {}
+  notes: Instrumentos urbanísticos con expediente y documentos en el tablón municipal; cobertura parcial del histórico.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

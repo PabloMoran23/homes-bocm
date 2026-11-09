@@ -1,0 +1,19 @@
+slug: carral
+nombre: Carral
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15021'
+portal:
+  base_url: https://carral.es/pxom-carral/
+  adapter: municipio.adapters.carral:CarralAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del PXOM de aprobación inicial; cobertura parcial y sin afirmar vigencia actual.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

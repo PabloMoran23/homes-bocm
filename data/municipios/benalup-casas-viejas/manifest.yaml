@@ -1,0 +1,21 @@
+slug: benalup-casas-viejas
+nombre: Benalup-Casas Viejas
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11901'
+portal:
+  base_url: https://www.benalupcasasviejas.es/es/
+  adapter: municipio.adapters.benalup_casas_viejas:BenalupCasasViejasAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal actual del documento PGOU y avance PBOM; documentos agrupados por instrumento, cobertura parcial sin licencias ni geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Benalup-Casas Viejas
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

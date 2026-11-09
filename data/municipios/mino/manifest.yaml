@@ -1,0 +1,25 @@
+slug: mino
+nombre: Miño
+provincia: A Coruña
+comunidad_autonoma: galicia
+codigo_ine: '15048'
+portal:
+  base_url: https://www.concellodemino.gal
+  adapter: municipio.adapters.mino:MinoAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario oficial de obras municipales del Plan Único POS+ publicado por
+    la Deputación Provincial da Coruña. Cobertura parcial, sin fechas de actos
+    ni geometría. No constituye registro de licencias ni inventario de todo el urbanismo.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Miño]
+  notes: Fuente efectiva provincial identificada como diputacion en cada registro.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de concesiones; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

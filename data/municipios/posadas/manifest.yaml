@@ -1,0 +1,23 @@
+slug: posadas
+nombre: Posadas
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14053'
+portal:
+  base_url: https://posadas.es
+  adapter: municipio.adapters.posadas:PosadasAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario municipal de planeamiento, cobertura parcial. Anuncios BOP leídos
+    con pdftotext; documentos de un instrumento agrupados. Sin geometría verificada.
+licencias:
+  enabled: false
+  notes: Sin registro verificado de licencias concedidas; formularios excluidos.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Posadas]
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

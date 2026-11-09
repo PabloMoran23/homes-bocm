@@ -1,0 +1,25 @@
+slug: durcal
+nombre: Dúrcal
+provincia: Granada
+comunidad_autonoma: andalucia
+codigo_ine: '18071'
+portal:
+  base_url: https://adurcal.sedelectronica.es
+  adapter: municipio.adapters.durcal:DurcalAyuntamientoAdapter
+  config:
+    ine_code: '18071'
+  notes: >-
+    Inventario documental oficial: adaptación NNSS a LOUA, modificación puntual
+    nº 1 del PGOU, delimitación casco urbano, Plan Parcial San Blas y viabilidad
+    piscina cubierta. Cobertura parcial; no acredita vigencia, aprobación ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Dúrcal, Durcal]
+licencias:
+  enabled: false
+  notes: Formularios excluidos; no se ha verificado registro de licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

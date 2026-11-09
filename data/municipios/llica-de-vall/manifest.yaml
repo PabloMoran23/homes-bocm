@@ -1,0 +1,25 @@
+slug: llica-de-vall
+nombre: Lliçà de Vall
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08108'
+portal:
+  base_url: https://www.llissadevall.cat
+  adapter: municipio.adapters.llica_de_vall:LlicaDeVallAyuntamientoAdapter
+  config:
+    ine_code: '08108'
+    user_agent: municipio-llica-de-vall/1.0
+  notes: >-
+    Inventario oficial Urbanisme con toda su paginación y documentos agrupados
+    por instrumento. Cobertura parcial municipal; sin geometría extraída.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Lliçà de Vall]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas; se excluyen trámites.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

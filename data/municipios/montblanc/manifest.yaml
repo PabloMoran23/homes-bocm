@@ -1,0 +1,24 @@
+slug: montblanc
+nombre: Montblanc
+provincia: Tarragona
+comunidad_autonoma: catalunya
+codigo_ine: '43086'
+portal:
+  base_url: https://www.montblanc.cat
+  adapter: municipio.adapters.montblanc:MontblancAyuntamientoAdapter
+  config:
+    ine_code: '43086'
+  notes: >-
+    Planeamiento municipal general y derivado del RPUC, enlazado por la sede
+    municipal. Documentos agrupados por expediente. Cobertura parcial, sin geometría.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Montblanc]
+licencias:
+  enabled: false
+  notes: No hay registro de licencias concedidas verificado; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

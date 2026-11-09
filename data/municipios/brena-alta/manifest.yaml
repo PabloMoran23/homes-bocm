@@ -1,0 +1,27 @@
+slug: brena-alta
+nombre: Breña Alta
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+codigo_ine: '38008'
+portal:
+  base_url: https://transparencia.brenaalta.es/ordenacion-del-territorio/plan-de-ordenacion/
+  adapter: municipio.adapters.brena_alta:BrenaAltaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    El portal municipal enlaza el PGO y formularios. Este adaptador extrae el
+    inventario oficial de planeamiento de Breña Alta del Gobierno de Canarias
+    (datos.canarias.es / IDECanarias), con procedencia regional explícita.
+    Cobertura parcial, un registro por instrumento y todos sus enlaces documentales.
+licencias:
+  enabled: false
+  notes: Formularios excluidos; no se ha verificado un registro de concesiones.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: >-
+    Ruta de adaptador municipal; la fuente efectiva es el Gobierno de Canarias,
+    declarada en cada registro. No se extraen noticias ni anuncios de licitación.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

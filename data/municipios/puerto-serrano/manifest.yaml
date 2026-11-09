@@ -1,0 +1,19 @@
+slug: puerto-serrano
+nombre: Puerto Serrano
+provincia: Cádiz
+comunidad_autonoma: andalucia
+codigo_ine: '11029'
+portal:
+  base_url: https://gobiernoabierto.dipucadiz.es/catalogo-de-informacion-publica?entidadId=2001
+  adapter: municipio.adapters.puerto_serrano:PuertoSerranoAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de urbanismo alojado en el portal oficial de Diputación; cobertura parcial.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

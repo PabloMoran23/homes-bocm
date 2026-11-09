@@ -1,0 +1,26 @@
+slug: sallent
+nombre: Sallent
+provincia: Barcelona
+comunidad_autonoma: catalunya
+codigo_ine: '08191'
+portal:
+  base_url: https://www.sallent.cat
+  adapter: municipio.adapters.sallent:SallentAyuntamientoAdapter
+  config:
+    ine_code: '08191'
+    user_agent: municipio-sallent/1.0
+  notes: >-
+    Inventario municipal Actuacions de Urbanisme: instrumentos de planeamiento
+    y proyectos de obras con documentos agrupados por página de detalle.
+    Cobertura parcial; estado según la página, sin verificar vigencia jurídica.
+    Sin geometría verificada; publication_ready false.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+  notes: No se ha verificado inventario de licencias concedidas; se excluyen formularios.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

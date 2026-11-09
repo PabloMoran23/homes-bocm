@@ -1,0 +1,24 @@
+slug: villanueva-del-ariscal
+nombre: Villanueva del Ariscal
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41098'
+portal:
+  base_url: https://transparencia.villanuevadelariscal.es/es/transparencia/indicadores-de-transparencia/indicador/Obras-mas-importantes-de-infraestructura-que-estan-en-curso-00023/
+  adapter: municipio.adapters.villanueva_del_ariscal:VillanuevaDelAriscalAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Cobertura parcial del inventario documental de obras públicas (indicador 61),
+    con paginación completa. Documentos históricos, sin afirmar ejecución actual.
+    Agrupación por intervención y programa, conservando documentos de reinversión.
+    Archivo colectivo Supera III excluido con enlace y motivo. Sin geometría.
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro público de licencias concedidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

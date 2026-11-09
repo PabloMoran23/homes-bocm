@@ -1,0 +1,26 @@
+slug: moratalla
+nombre: Moratalla
+provincia: Murcia
+comunidad_autonoma: region-de-murcia
+codigo_ine: '30028'
+portal:
+  base_url: https://www.chsegura.es/es/cuenca/infraestructuras/embalses/listado-de-embalses/
+  adapter: municipio.adapters.moratalla:MoratallaAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Fuente oficial estatal CH Segura, no inventario del Ayuntamiento. Cobertura
+    parcial de obras hidráulicas existentes situadas en Moratalla según las fichas;
+    no representa obras municipales recientes ni una relación de licencias.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  notes: >-
+    ayuntamiento es la ruta del adaptador local del pipeline; la procedencia real
+    de los registros es la Confederación Hidrográfica del Segura. Una obra por ficha,
+    con sus planos y ortofotos agrupados. Sin fechas de aprobación ni geometría.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

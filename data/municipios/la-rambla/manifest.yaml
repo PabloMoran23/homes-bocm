@@ -1,0 +1,21 @@
+slug: la-rambla
+nombre: La Rambla
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14057'
+portal:
+  base_url: https://larambla.es/ayuntamiento/documentos/
+  adapter: municipio.adapters.la_rambla:LaRamblaAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental parcial de instrumentos urbanísticos; documentos agrupados, sin inferir vigencia, fechas o geometría.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - La Rambla
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

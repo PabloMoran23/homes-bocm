@@ -1,0 +1,21 @@
+slug: san-clemente
+nombre: San Clemente
+provincia: Cuenca
+comunidad_autonoma: castilla-la-mancha
+codigo_ine: '16190'
+portal:
+  base_url: https://www.sanclemente.es/plan-de-ordenacion-municipal/
+  adapter: municipio.adapters.san_clemente:SanClementeAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental del POM agrupado por modificación puntual; cobertura parcial sin fechas ni geometrías inferidas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - San Clemente
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

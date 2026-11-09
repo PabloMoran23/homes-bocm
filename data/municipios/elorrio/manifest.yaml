@@ -1,0 +1,24 @@
+slug: elorrio
+nombre: Elorrio
+provincia: Bizkaia
+comunidad_autonoma: pais-vasco
+codigo_ine: '48032'
+portal:
+  base_url: https://www.elorrio.eus
+  adapter: municipio.adapters.elorrio:ElorrioAyuntamientoAdapter
+  config: {}
+  notes: >-
+    Inventario documental de la revisión del PGOU en hapo-elorrio.eus,
+    enlazado por el Ayuntamiento. Un instrumento con documentos agrupados.
+    Cobertura municipal parcial; sin geometría verificada.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Elorrio]
+licencias:
+  enabled: false
+  notes: No se ha verificado un registro de licencias concedidas; formularios excluidos.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

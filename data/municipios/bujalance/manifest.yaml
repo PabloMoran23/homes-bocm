@@ -1,0 +1,19 @@
+slug: bujalance
+nombre: Bujalance
+provincia: Córdoba
+comunidad_autonoma: andalucia
+codigo_ine: '14012'
+portal:
+  base_url: https://bujalance.es/ayuntamiento/ayuntamiento-documentos/
+  adapter: municipio.adapters.bujalance:BujalanceAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal del PGOU Bujalance y Morente; cobertura parcial, sin afirmar vigencia ni ejecución.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

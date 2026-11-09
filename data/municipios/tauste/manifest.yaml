@@ -1,0 +1,24 @@
+slug: tauste
+nombre: Tauste
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50252'
+portal:
+  base_url: https://www.tauste.es/urbanismo
+  adapter: municipio.adapters.tauste:TausteAyuntamientoAdapter
+  config:
+    ine_code: '50252'
+  notes: >-
+    Cobertura parcial del inventario del PGOU enlazado por el Ayuntamiento.
+    Un texto refundido con documentos agrupados. Sin garantía de consolidación
+    jurídica actual, fechas completas ni geometría. No incluye el portal dinámico
+    de transparencia ni el histórico de obras o licencias.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+licencias:
+  enabled: false
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

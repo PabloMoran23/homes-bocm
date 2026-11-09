@@ -1,0 +1,19 @@
+slug: cazorla
+nombre: Cazorla
+provincia: Jaén
+comunidad_autonoma: andalucia
+codigo_ine: '23028'
+portal:
+  base_url: https://cazorla.es/proyectos-que-favorecen-una-economia-baja-en-carbono-idae/
+  adapter: municipio.adapters.cazorla:CazorlaAyuntamientoAdapter
+  config: {}
+  notes: Inventario municipal de proyectos IDAE; cobertura parcial, sin fechas ni geometría verificadas.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

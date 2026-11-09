@@ -1,0 +1,27 @@
+slug: villablino
+nombre: Villablino
+provincia: León
+comunidad_autonoma: castilla-y-leon
+codigo_ine: '24202'
+portal:
+  base_url: https://www.aytovillablino.com
+  adapter: municipio.adapters.villablino:VillablinoAyuntamientoAdapter
+  config:
+    ine_code: '24202'
+  notes: >-
+    Archivo PLAU oficial de la Junta enlazado por Urbanismo municipal.
+    Inventario vigente con históricos desmarcados. Documentos agrupados por
+    instrumento; sentencia de anulación parcial vinculada al PGOU.
+    Sin geometría verificada ni cobertura integral de obras públicas.
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases:
+    - Villablino
+licencias:
+  enabled: false
+  notes: Los formularios y procedimientos de autorización no son licencias concedidas.
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

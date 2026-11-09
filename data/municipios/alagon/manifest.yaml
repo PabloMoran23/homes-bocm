@@ -1,0 +1,19 @@
+slug: alagon
+nombre: Alagón
+provincia: Zaragoza
+comunidad_autonoma: aragon
+codigo_ine: '50008'
+portal:
+  base_url: https://alagon.es/areas/urbanismo/
+  adapter: municipio.adapters.alagon:AlagonAyuntamientoAdapter
+  config: {}
+  notes: Inventario público de planeamiento de la sede municipal; documentos agrupados por instrumento. Cobertura parcial, sin geometría verificada.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false

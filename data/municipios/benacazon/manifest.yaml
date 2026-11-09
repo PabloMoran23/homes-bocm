@@ -1,0 +1,20 @@
+slug: benacazon
+nombre: Benacazón
+provincia: Sevilla
+comunidad_autonoma: andalucia
+codigo_ine: '41015'
+portal:
+  base_url: https://transparencia.benacazon.es
+  adapter: municipio.adapters.benacazon:BenacazonAyuntamientoAdapter
+  config: {}
+  notes: Inventario documental municipal de NNSS y PGOU; cobertura parcial, sin afirmar vigencia.
+licencias:
+  enabled: false
+proyectos:
+  enabled: true
+  source: ayuntamiento
+  municipio_aliases: [Benacazón, Benacazon]
+schedule:
+  enabled: false
+geocode:
+  jitter_missing: false
