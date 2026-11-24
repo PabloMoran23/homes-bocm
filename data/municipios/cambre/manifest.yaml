@@ -1,0 +1,30 @@
+slug: cambre
+nombre: "Cambre"
+provincia: "A Coruña"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://cambre.es"
+  adapter: municipio.adapters.cambre:CambreAyuntamientoAdapter
+  config:
+    web_base: "https://cambre.es"
+    sede_base: "https://sede.cambre.es"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-cambre/1.0"
+    max_siotuga_desarrollo: 80
+    centroid: [43.2976, -8.3474]
+  notes: |
+    Web WordPress/Divi (cambre.es): planeamento urbanístico con PDFs en /wp-content/uploads/urbanismotramitacion/.
+    Sede SXC Diputación A Coruña (sede.cambre.es): tablón POST + catálogo trámites urbanismo.
+    Inventario planeamiento SIOTUGA Xunta (INE 15017). Visor Urbanismo en Red (puerto 8090).
+    Sin listado público de licencias concedidas (solo trámites informativos).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
