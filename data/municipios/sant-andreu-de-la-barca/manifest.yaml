@@ -1,0 +1,23 @@
+slug: sant-andreu-de-la-barca
+nombre: "Sant Andreu de la Barca"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://sabarca.cat"
+  adapter: municipio.adapters.sant_andreu_de_la_barca:SantAndreuDeLaBarcaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-andreu-de-la-barca/1.0"
+    centroid: [41.4465, 1.9759]
+  notes: |
+    Web corporativa sabarca.cat (Laravel/Livewire) + seu-e AOC transparència/tràmits.
+    Planejament: RPUC/MUC GenCat (INE 08196), CIDO DIBA, geoportal AMB.
+    e-TAULER idens 819600000. No hay listado público scrapeable de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
