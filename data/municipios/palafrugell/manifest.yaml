@@ -1,0 +1,31 @@
+slug: palafrugell
+nombre: "Palafrugell"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://palafrugell.cat"
+  adapter: municipio.adapters.palafrugell:PalafrugellAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-palafrugell/1.0"
+    web_base: "https://palafrugell.cat"
+    expedients_root: "https://palafrugell.cat/serveis-ciutadania/urbanisme/expedients-urbanistics-en-tramitacio"
+    suggest_base: "https://mapes.palafrugell.cat/cercagis_suggest/simple/all"
+    fetch_geometry: true
+    geometry_min_score: 0.25
+    centroid: [41.917, 3.164]
+  notes: |
+    Joomla/ZOO: llistat «Expedients urbanístics en tramitació» amb enllaç a fitxes mapes.palafrugell.cat.
+    Geoportal NexusGIS (MapServer + GeoServer WMS) i API cercagis_suggest (bbox EPSG:25831 → geometria WGS84).
+    Licències: catàleg seu.palafrugell.cat + e-TAULER (1711750006); sense llistat públic de concessions.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
