@@ -1,0 +1,30 @@
+slug: bormujos
+nombre: "Bormujos"
+provincia: Sevilla
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://sede.bormujos.es"
+  adapter: municipio.adapters.bormujos:BormujosAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-bormujos/1.0"
+    web_base: "https://www.bormujos.es"
+    sede_base: "https://sede.bormujos.es"
+    sede_electronica: "https://bormujos.sedelectronica.es"
+    transparencia_base: "https://transparencia.bormujos.es"
+    tablon_url: "https://sede.bormujos.es/tablon-1.0/do/entradaPublica?ine=41017"
+    licytal_url: "https://sedeelectronicadipusevilla.es/LicytalSede/jsp/index.faces?cif=P4101700E"
+    situa_search_url: "https://ws132.juntadeandalucia.es/situadifusion/pages/search.jsf?cid=41017"
+    centroid: [37.3735, -6.0723]
+  notes: |
+    Portal SagaSuite (Diputación Sevilla) + sede GSede OpenCMS + tablón INPRO (INE 41017).
+    Tablón embebido en bormujos.es/actualidad/etablon; sede electrónica board en bormujos.sedelectronica.es.
+    Transparencia SagaSuite requiere login (401); SITUA Junta para planeamiento.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
