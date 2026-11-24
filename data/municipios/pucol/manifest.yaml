@@ -1,0 +1,32 @@
+slug: pucol
+nombre: "Puçol"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.pucol.es"
+  adapter: municipio.adapters.pucol:PucolAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-pucol/1.0"
+    cod_ine_mun: "46205"
+    sede_base: "https://pucol.sede.dival.es"
+    centroid: [39.616, -0.301]
+    geometry:
+      kind: icv_wfs
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "ms:InventarioSuSuz"
+  notes: |
+    Drupal 10 Digital Value (www.pucol.es): instancias urb_* PDFs + departamentos.
+    Sede Dival (Sedipualba): tablón RSS; catálogo área 1156 Urbanismo y Medio Ambiente.
+    Registro planeamiento GVA (46205 PUZOL) + ICV WFS InventarioSuSuz.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
