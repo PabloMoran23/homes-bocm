@@ -1,0 +1,41 @@
+slug: premia-de-mar
+nombre: "Premià de Mar"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://premiademar.cat"
+  adapter: municipio.adapters.premia_de_mar:PremiaDeMarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-premia-de-mar/1.0"
+    fetch_timeout_s: 60
+    cod_ine_mun: "08172"
+    centroid: [41.4920, 2.3653]
+  notes: |
+    Web corporativa Ample24 (premiademar.cat): urbanisme-espai-public, organismes i document.php.
+    Govern obert seu-e.cat (AOC): planejament, normativa, tauler d'edictes.
+    OVAC/epremia.net (tràmits). Mapa interactiu TecnoGeoWS (citymap) en transparència.
+    MUC/RPUC Generalitat (08172). Capa AMB Expedients sense features per aquest INE.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.325, 41.465]
+            - [2.405, 41.465]
+            - [2.405, 41.515]
+            - [2.325, 41.515]
+            - [2.325, 41.465]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Maresme (08172 Premià de Mar)"
