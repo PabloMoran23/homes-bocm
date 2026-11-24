@@ -1,0 +1,55 @@
+slug: villarrobledo
+nombre: "Villarrobledo"
+provincia: Albacete
+comunidad_autonoma: castilla-mancha
+
+portal:
+  base_url: "https://villarrobledo.sedipualba.es"
+  adapter: municipio.adapters.villarrobledo:VillarrobledoAyuntamientoAdapter
+  config:
+    sede_base: "https://villarrobledo.sedipualba.es"
+    web_base: "https://www.villarrobledo.com"
+    tablon_rss: "https://villarrobledo.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
+    tablon_url: "https://villarrobledo.sedipualba.es/tablondeanuncios/default.aspx"
+    catalogo_url: "https://villarrobledo.sedipualba.es/catalogoservicios.aspx?area=302&ambito="
+    urbanismo_area: "https://www.villarrobledo.com/area.php?id=17"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-villarrobledo/1.0"
+    centroid: [39.2699, -2.6012]
+    geometry:
+      arcgis_layer_url: "https://geoservicios.castillalamancha.es/arcgis/rest/services/Vector/Planeamiento_Municipal/MapServer/0"
+      cod_ine: "02081"
+  notes: |
+    Web municipal PHP (villarrobledo.com) + sede Sedipualba (Dip. Albacete).
+    PGOU: PDFs en área Urbanismo + polígono CLM COD_INE 02081.
+    Tablón RSS/HTML; trámites licencia vía fichas web → carpetaciudadana Sedipualba.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-2.95, 38.98],
+              [-2.28, 38.98],
+              [-2.28, 39.38],
+              [-2.95, 39.38],
+              [-2.95, 38.98],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Villarrobledo (Albacete) + PGOU CLM COD_INE=02081"
+
+geocode:
+  jitter_missing: false
