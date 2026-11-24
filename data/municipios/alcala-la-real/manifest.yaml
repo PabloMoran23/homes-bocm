@@ -1,0 +1,28 @@
+slug: alcala-la-real
+nombre: "Alcalá la Real"
+provincia: Jaén
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://alcalalareal.sedelectronica.es"
+  adapter: municipio.adapters.alcala_la_real:AlcalaLaRealAyuntamientoAdapter
+  config:
+    sede_base: "https://alcalalareal.sedelectronica.es"
+    web_base: "https://alcalalareal.es"
+    board_url: "https://alcalalareal.sedelectronica.es/board"
+    urbanismo_url: "https://alcalalareal.es/urbanismo-y-patrimonio-municipal/"
+    transparency_url: "https://transparencia.alcalalareal.es/obras-publicas-y-urbanismo/"
+    request_delay_s: 0.35
+    insecure_ssl: true
+    user_agent: "poc-bocm-alcala-la-real/1.0"
+    centroid: [37.461, -3.9234]
+  notes: |
+    WordPress municipal + sede espublico gestiona (tablón). Instrumentos en página Urbanismo.
+    SITUA Junta de Andalucía (INE 23003). Sin visor GIS municipal enlazado a expedientes.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
