@@ -1,0 +1,43 @@
+slug: sant-feliu-de-guixols
+nombre: "Sant Feliu de Guíxols"
+provincia: Girona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.guixols.cat"
+  adapter: municipio.adapters.sant_feliu_de_guixols:SantFeliuDeGuixolsAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-feliu-de-guixols/1.0"
+    web_base: "https://www.guixols.cat"
+    seu_base: "https://ciutadania.guixols.cat"
+    max_expedient_pages: 25
+    centroid: [41.7833, 3.0339]
+  notes: |
+    Web corporativa Joomla (guixols.cat) + seu ciutadania.guixols.cat (API POST agafar_expedients)
+    + ciutada.guixols.cat OAC (PDFs) + e-TAULER idens 1716090004 + transparència seu-e.cat.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
+
+geometry:
+  validation:
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [2.975, 41.755]
+            - [3.065, 41.755]
+            - [3.065, 41.805]
+            - [2.975, 41.805]
+            - [2.975, 41.755]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox aproximado Costa Brava (término INE 17160)"
