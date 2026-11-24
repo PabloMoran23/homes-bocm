@@ -1,0 +1,28 @@
+slug: marin
+nombre: "Marín"
+provincia: Pontevedra
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://www.concellodemarin.es"
+  adapter: municipio.adapters.marin:MarinAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-marin/1.0"
+    web_base: "https://www.concellodemarin.es"
+    sede_base: "https://sede.concellodemarin.es"
+    max_wp_pages: 4
+    max_siotuga_desarrollo: 80
+    centroid: [42.3842, -8.7010]
+  notes: |
+    WordPress corporativo (categoría Urbanismo vía REST API) + edictos + PXOM.
+    Sede electrónica ASP.NET (trámites con Cl@ve; sin tablón scrapeable desde el agente).
+    Inventario SIOTUGA INE 36037 (clases 14 PG, 13 desarrollo).
+
+licencias:
+  enabled: true
+  notes: Impresos oficiais URBANISMO + sede informativa (sin registro público de concesiones).
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
