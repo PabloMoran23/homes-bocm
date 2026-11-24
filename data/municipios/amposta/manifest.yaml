@@ -1,0 +1,32 @@
+slug: amposta
+nombre: "Amposta"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.amposta.cat"
+  adapter: municipio.adapters.amposta:AmpostaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-amposta/1.0"
+    sede_insecure_ssl: true
+    web_base: "https://www.amposta.cat"
+    sede_base: "https://seu.amposta.cat"
+    geoportal_url: "https://geoportal.amposta.cat/geoportal/"
+    muc_visor: "https://dtes.gencat.cat/muc-visor/AppJava/home.do?municipi=43009&set-locale=ca"
+    centroid: [40.7098, 0.5816]
+  notes: |
+    Web municipal clàssica (planejament_v1.asp): taules POUM / desenvolupament / modificacions.
+    SEU STA (seu.amposta.cat): tablón PTS2_TABLON + catàleg CATSERV.
+    Geoportal urbanístic Nexus enMapa (geoportal.amposta.cat) — consulta per finca, sense API REST pública.
+    MUC Generalitat (INE 43009) com a referència cartogràfica.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
