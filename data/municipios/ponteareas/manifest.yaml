@@ -1,0 +1,40 @@
+slug: ponteareas
+nombre: "Ponteareas"
+provincia: "Pontevedra"
+comunidad_autonoma: galicia
+
+portal:
+  base_url: "https://ponteareas.sedelectronica.gal"
+  adapter: municipio.adapters.ponteareas:PonteareasAyuntamientoAdapter
+  config:
+    sede_base: "https://ponteareas.sedelectronica.gal"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-ponteareas/1.0"
+    centroid: [42.175, -8.502]
+  notes: |
+    Sede espublico gestiona (tablón + catálogo trámites). Web portal.ponteareas.gal con fallo SSL.
+    PGOM aprobado 2021 (SIOTUGA INE 36042) + MP01 2025. Sin listado público de licencias concedidas.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    municipal_boundary:
+      crs: EPSG:4326
+      axis_order: xy
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [-8.68, 42.02]
+            - [-8.32, 42.02]
+            - [-8.32, 42.32]
+            - [-8.68, 42.32]
+            - [-8.68, 42.02]
+
+geocode:
+  jitter_missing: false
