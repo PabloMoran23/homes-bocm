@@ -1,0 +1,27 @@
+slug: el-masnou
+nombre: "El Masnou"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.elmasnou.cat"
+  adapter: municipio.adapters.el_masnou:ElMasnouAyuntamientoAdapter
+  config:
+    web_base: "https://www.elmasnou.cat"
+    media_base: "https://elmasnou.webmunicipal.diba.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-el-masnou/1.0"
+    tauler_url: "https://tauler.seu.cat/inici.do?idens=811890004"
+    ine_mun: "08125"
+    centroid: [41.4798, 2.3158]
+  notes: |
+    CMS Diputació Barcelona (webmunicipal.diba.cat): informació urbanística, exposició pública (PDFs),
+    planejament general/derivat. Seu-e.cat (Liferay) tràmits. e-TAULER idens=811890004.
+    Geoportal enllaça visor MUC (08125); sense join expedient→geometria.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
