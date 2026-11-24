@@ -1,0 +1,34 @@
+# Objetivo: licencias + proyectos desde el portal del ayuntamiento (Cataluña, seu electrònica AOC).
+
+slug: esparreguera
+nombre: "Esparreguera"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.esparreguera.cat"
+  adapter: municipio.adapters.esparreguera:EsparregueraAyuntamientoAdapter
+  config:
+    seu_base: "https://seu.esparreguera.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-esparreguera/1.0"
+    max_pages: 12
+    page_size: 10
+    registre_pages: 8
+    categories: [7]
+    cercador_ids: [35, 36, 37, 8, 32, 33, 34]
+    centroid: [41.53806, 1.86917]
+  notes: |
+    Seu electrònica (Semic/AOC): registre de publicacions (/registrePublic/ultims),
+    urbanisme — llista per categoria i cercadors (urbanismeCategoriaPublic),
+    tauler d'anuncis (enllaç Consorci AOC). Referències MUC/RPUC Generalitat (INE 08076).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
