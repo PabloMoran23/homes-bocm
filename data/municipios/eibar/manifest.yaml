@@ -1,0 +1,27 @@
+slug: eibar
+nombre: "Eibar"
+provincia: Gipuzkoa
+comunidad_autonoma: euskadi
+
+portal:
+  base_url: "https://www.eibar.eus"
+  adapter: municipio.adapters.eibar:EibarAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-eibar/1.0"
+    centroid: [43.1847, -2.4719]
+    due_api: "https://w390w.gipuzkoa.net/WAS/CORP/DUERegistroPlaneamientoWEB/api/record/?municipality=eibar"
+  notes: |
+    Planeamiento: API JSON Registro DUE Diputación Gipuzkoa + índices B5M (GHE-*).
+    Licencias: trámites informativos Plone (/tramites/tramites-servicios/urbanismo/*);
+    sede UZT (ayto=30) sin catálogo de obra en home; tablón provincial De=03015.
+    Web municipal Plone; PGOU histórico en /pgou/aurkibidea.htm.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+
