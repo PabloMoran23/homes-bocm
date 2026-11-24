@@ -1,0 +1,28 @@
+slug: tias
+nombre: "Tías"
+provincia: Las Palmas
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://www.ayuntamientodetias.es"
+  adapter: municipio.adapters.tias:TiasAyuntamientoAdapter
+  config:
+    wp_base: "https://www.ayuntamientodetias.es"
+    sede_base: "https://sede.ayuntamientodetias.es"
+    sitcan_package: planeamiento-urbanistico-de-tias
+    catalogo_url: "https://sede.ayuntamientodetias.es/sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO&lang=ES"
+    insecure_ssl: true
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tias/1.0"
+    centroid: [28.961, -13.645]
+  notes: |
+    WordPress ayuntamientodetias.es (Avia) + sede STA T-Systems (catálogo CATSERV, tablón AJAX)
+    + visor PGO legacy pgo.ayuntamientodetias.es + SITCAN planeamiento-urbanistico-de-tias
+    + GEOBDP Grafcan (docs 698, 1432). INE 35028. Sin boletín BOCM en cola.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
