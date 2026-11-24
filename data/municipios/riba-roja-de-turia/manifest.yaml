@@ -1,0 +1,33 @@
+slug: riba-roja-de-turia
+nombre: "Riba-roja de Túria"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.ribarroja.es"
+  adapter: municipio.adapters.riba_roja_de_turia:RibaRojaDeTuriaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-riba-roja-de-turia/1.0"
+    cod_ine_mun: "46214"
+    max_tablon_detail_fetches: 35
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: "Planeamiento.Zonificacion"
+  notes: |
+    Drupal 11 portalesmunicipales (Dival) + oficina virtual propia + ICV WFS.
+    Tablón: portales7-weblink en /es/ayuntamiento/tablon_de_anuncios.
+    Licencias: trámites URB en oficinavirtual.ribarroja.es (sin histórico público).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
