@@ -1,0 +1,47 @@
+slug: sant-antoni-de-portmany
+nombre: "Sant Antoni de Portmany"
+provincia: Illes Balears
+comunidad_autonoma: illes-balears
+
+portal:
+  base_url: "https://www.santantoni.net"
+  adapter: municipio.adapters.sant_antoni_de_portmany:SantAntoniDePortmanyAyuntamientoAdapter
+  config:
+    sede_base: "https://santantoni.sedelectronica.es"
+    board_url: "https://santantoni.sedelectronica.es/board"
+    web_base: "https://www.santantoni.net"
+    pgou_avance_url: "https://www.santantoni.net/es_ES/ciudadania/urbanismo-y-actividades/nou-pla-general-de-sant-antoni-de-portmany"
+    muib_url: "https://muib.caib.es/mapurbibfront/visor_index.jsp"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-sant-antoni-de-portmany/1.0"
+    centroid: [38.9807, 1.3036]
+  notes: |
+    Liferay santantoni.net + sede espublico gestiona (/board, /doc/* verificación PGOU).
+    Avance PGOU expediente 915/2025 con ~60 documentos en sede. MUIB para cartografía insular.
+    geometry_status: unavailable (PDF/planos sin WFS; IDEIB/MUIB no automatizable).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    axis_order: xy
+    coordinates_crs: EPSG:4326
+    coordinates_axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - - [1.245, 38.945]
+            - [1.385, 38.945]
+            - [1.385, 39.015]
+            - [1.245, 39.015]
+            - [1.245, 38.945]
+
+geocode:
+  jitter_missing: true
