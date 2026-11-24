@@ -1,0 +1,25 @@
+# Torrox (Málaga) — portal propio + sede electrónica inestable
+slug: torrox
+nombre: "Torrox"
+provincia: Málaga
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "http://www.torrox.es"
+  adapter: municipio.adapters.torrox:TorroxAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-torrox/1.0"
+    web_base: "http://www.torrox.es"
+    centroid_lat: 36.7705233
+    centroid_lng: -3.9530852
+  notes: |
+    CMS propio (MooTools): secciones SAC / Urbanismo con PDFs del PGOU, adaptación LOUA, normativa y plan playas.
+    La sede electrónica torrox.sedelectronica.es redirige en bucle y el certificado TLS está caducado (inaccesible con verify).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
