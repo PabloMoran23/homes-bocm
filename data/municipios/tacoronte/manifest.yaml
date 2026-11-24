@@ -1,0 +1,28 @@
+slug: tacoronte
+nombre: "Tacoronte"
+provincia: Santa Cruz de Tenerife
+comunidad_autonoma: canarias
+
+portal:
+  base_url: "https://www.tacoronte.es"
+  adapter: municipio.adapters.tacoronte:TacoronteAyuntamientoAdapter
+  config:
+    web_base: "https://www.tacoronte.es"
+    sede_base: "https://tacoronte.sedelectronica.es"
+    board_url: "https://tacoronte.sedelectronica.es/board"
+    dossier_url: "https://tacoronte.sedelectronica.es/dossier"
+    sitcan_package: planeamiento-urbanistico-de-tacoronte
+    geobdp_municipio: "https://geobdp.grafcan.es/core/municipios/38043/"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-tacoronte/1.0"
+    centroid: [28.4769, -16.4159]
+  notes: |
+    WordPress Divi (tacoronte.es) + sede espublico gestiona (/board, /dossier, /expedientes).
+    SITCAN CKAN planeamiento-urbanistico-de-tacoronte + GEOBDP Grafcan INE 38043 (polígonos UTM28N).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
