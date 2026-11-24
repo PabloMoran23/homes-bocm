@@ -1,0 +1,26 @@
+slug: olesa-de-montserrat
+nombre: "Olesa de Montserrat"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.olesademontserrat.cat"
+  adapter: municipio.adapters.olesa_de_montserrat:OlesaDeMontserratAyuntamientoAdapter
+  config:
+    web_base: "https://www.olesademontserrat.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-olesa-de-montserrat/1.0"
+    insecure_ssl: true
+    ine_mun: "08154"
+    centroid: [41.5437, 1.8942]
+  notes: |
+    Drupal 10 (urbanisme, POUM/PE PDFs) + seu-e Liferay (normativa, tauler edictes).
+    Geoportal Enmapa/Mapia (certificado propio; capas WMS vía API autenticada).
+    Licencias: catálogo trámites ORPIME/geoportal, sin listado de concesiones.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
