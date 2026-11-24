@@ -1,0 +1,33 @@
+slug: martorell
+nombre: "Martorell"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://seu-e.cat/ca/web/martorell"
+  adapter: municipio.adapters.martorell:MartorellAyuntamientoAdapter
+  config:
+    web_base: "https://www.martorell.cat"
+    seu_e_base: "https://seu-e.cat/ca/web/martorell"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-martorell/1.0"
+    fetch_timeout_s: 60
+    cod_ine_mun: "08113"
+    centroid: [41.4740, 1.9302]
+    geometry:
+      wfs_url: "https://sig.gencat.cat/ows/PLANEJAMENT/wfs"
+      type_name: "PLANEJAMENT:MUC_PDERIVAT_SECTOR"
+      cod_ine_mun: "08113"
+  notes: |
+    Web corporativa iDisc (martorell.cat) + seu-e AOC (transparència, tauler edictes, catàleg tràmits).
+    Sectors planejament derivat via WFS MUC Generalitat (CODI_INE 08113). Visor MUC / RPUC enllaçats.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: true
