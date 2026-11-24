@@ -1,0 +1,34 @@
+slug: almassora
+nombre: "Almassora"
+provincia: Castellón
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.almassora.es"
+  adapter: municipio.adapters.almassora:AlmassoraAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almassora/1.0"
+    api_base: "https://api.digitalvalue.es/almassora/collections"
+    sede_base: "https://sede.almassora.es"
+    tablon_url: "https://www.almassora.es/es/articulos/tablon-de-anuncios"
+    urbanismo_url: "https://www.almassora.es/es/articulos/urbanismo"
+    cod_ine_mun: "12008"
+    centroid_lat: 39.944
+    centroid_lon: -0.063
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name_su: "ms:InventarioSuSuz"
+      type_name_zon: "Planeamiento.Zonificacion"
+  notes: |
+    Web ZityBuilder / DigitalValue (api.digitalvalue.es/almassora).
+    Sede en sede.almassora.es (misma plataforma; no espublico gestiona operativo).
+    Tablón: /es/articulos/tablon-de-anuncios. Urbanismo: /es/articulos/urbanismo.
+    Geometría sectores: ICV WFS InventarioSuSuz + Zonificacion (INE 12008).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
