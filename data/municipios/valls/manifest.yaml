@@ -1,0 +1,30 @@
+slug: valls
+nombre: "Valls"
+provincia: Tarragona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.valls.cat"
+  adapter: municipio.adapters.valls:VallsAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-valls/1.0"
+    fetch_timeout_s: 60
+    cod_ine_mun: "43161"
+    idens: "4316130008"
+    wfs_url: "https://geo.valls.cat/geoserver/wfs"
+    geoportal_poum: "https://geo.valls.cat/vallsgp/"
+    centroid: [41.286, 1.254]
+  notes: |
+    Web Joomla valls.cat + seu Drupal seu.valls.cat (tràmits) + seu-e transparència (urbanisme).
+    e-TAULER idens 4316130008. GeoValls GeoServer WMS/WFS (sect_plan_a, qual_urb_a).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geocode:
+  jitter_missing: false
