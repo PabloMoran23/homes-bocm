@@ -1,0 +1,26 @@
+slug: santa-perpetua-de-mogoda
+nombre: "Santa Perpètua de Mogoda"
+provincia: Barcelona
+comunidad_autonoma: catalunya
+
+portal:
+  base_url: "https://www.staperpetua.cat"
+  adapter: municipio.adapters.santa_perpetua_de_mogoda:SantaPerpetuaDeMogodaAyuntamientoAdapter
+  config:
+    web_base: "https://www.staperpetua.cat"
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-santa-perpetua-de-mogoda/1.0"
+    fetch_timeout_s: 90
+    ine_mun: "08260"
+    centroid: [41.5374, 2.1834]
+  notes: |
+    CMS municipal (article-item): planejament en tràmit, exposició pública, projectes urbanístics.
+    Sede STA seu.staperpetua.cat (tabló/catàleg; timeout intermitent des de cloud).
+    PIU Nexus Geographics (piu.staperpetua.cat) + referències MUC/RPUC Gencat (08260).
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
