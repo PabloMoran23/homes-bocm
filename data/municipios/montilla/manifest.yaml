@@ -1,0 +1,53 @@
+slug: montilla
+nombre: "Montilla"
+provincia: Córdoba
+comunidad_autonoma: andalucia
+
+portal:
+  base_url: "https://urbanismo.montilla.es"
+  adapter: municipio.adapters.montilla:MontillaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-montilla/1.0"
+    rss_url: "https://urbanismo.montilla.es/feed/"
+    visor_base: "https://visorurbanistico.montilla.es"
+    wfs_base: "https://visorurbanistico.montilla.es/geoserver/wfs"
+    wfs_type_instrumentos: "urbancity_montilla_instrumentos:instrumentos"
+    licencia_pages:
+      - "https://urbanismo.montilla.es/informacion-sobre-tramites-urbanisticos/"
+      - "https://urbanismo.montilla.es/licencia-de-edificacion-obras-e-instalaciones/"
+      - "https://urbanismo.montilla.es/declaracion-responsable-de-edificacion-obras-e-instalaciones/"
+      - "https://urbanismo.montilla.es/declaracion-responsable-de-ocupacion-o-utilizacion/"
+      - "https://urbanismo.montilla.es/declaracion-responsable-de-modificacion-de-uso/"
+      - "https://urbanismo.montilla.es/tramite-de-comunicacion-previa/"
+  notes: |
+    WordPress multi-sitio (área Urbanismo): noticias RSS + trámites PDF/modelos.
+    Visor UrbanCity (Angular) → GeoServer WFS público (instrumentos de planeamiento con geometría).
+    Tablón de edictos en sede EPRINSA (SPA); ingest no incluido aquí.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
+    municipal_boundary:
+      geometry:
+        type: Polygon
+        coordinates:
+          - [
+              [-4.78, 37.48],
+              [-4.49, 37.48],
+              [-4.49, 37.67],
+              [-4.78, 37.67],
+              [-4.78, 37.48],
+            ]
+      crs: EPSG:4326
+      axis_order: xy
+      source: "bbox amplio alrededor OSM Nominatim Montilla (+margen) — límite PGOU puede exceder el término OSM"
