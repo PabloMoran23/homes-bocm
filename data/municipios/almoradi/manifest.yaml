@@ -1,0 +1,49 @@
+slug: almoradi
+nombre: "Almoradí"
+provincia: Alicante
+comunidad_autonoma: comunitat-valenciana
+
+portal:
+  base_url: "https://www.almoradi.es"
+  adapter: municipio.adapters.almoradi:AlmoradiAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: "poc-bocm-almoradi/1.0"
+    centroid: [38.1089, -0.7910]
+    wfs_max_startindex: 16000
+    web_base: "https://www.almoradi.es"
+    sede_base: "https://almoradi.sedelectronica.es"
+    board_url: "https://almoradi.sedelectronica.es/board/"
+    geometry:
+      wfs_url: "https://terramapas.icv.gva.es/0702_Planeamiento"
+      type_name: InventarioSuSuz
+      cod_ine_mun: "03009"
+      bbox:
+        min_lat: 38.02
+        max_lat: 38.20
+        min_lon: -0.88
+        max_lon: -0.65
+  notes: |
+    WordPress (Hostinger/LiteSpeed) + sede espublico gestiona (tablón /board).
+    Planeamiento: sección Urbanismo con PGE y normas subsidiarias (PDFs).
+    Geometría: ICV terramapas WFS InventarioSuSuz filtrado por INE 03009.
+
+licencias:
+  enabled: true
+
+proyectos:
+  enabled: true
+  source: ayuntamiento
+
+geometry:
+  validation:
+    source_crs: "EPSG:4326"
+    axis_order: "xy"
+    coordinates_crs: "EPSG:4326"
+    coordinates_axis_order: "xy"
+    municipal_boundary:
+      type: Polygon
+      coordinates:
+        - [[-0.88, 38.02], [-0.65, 38.02], [-0.65, 38.20], [-0.88, 38.20], [-0.88, 38.02]]
+      crs: "EPSG:4326"
+      axis_order: "xy"
