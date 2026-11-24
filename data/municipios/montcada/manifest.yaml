@@ -1,0 +1,33 @@
+slug: montcada
+nombre: "Montcada / Moncada"
+provincia: Valencia
+comunidad_autonoma: comunitat-valenciana
+portal:
+  base_url: https://www.moncada.es
+  adapter: municipio.adapters.moncada:MoncadaAyuntamientoAdapter
+  config:
+    request_delay_s: 0.35
+    user_agent: poc-bocm-montcada/1.0
+    cod_ine_mun: "46171"
+    fetch_web_seeds: true
+    sede_base: https://moncada.sedipualba.es
+    geometry:
+      kind: icv_wfs
+      wfs_url: https://terramapas.icv.gva.es/0702_Planeamiento
+      type_name: ms:InventarioSuSuz
+  notes: |
+    Sede Sedipualba (tablón RSS, catálogo área Urbanisme 1139) + portal Drupal
+    (urbanismo, planeamiento vigente, PGOU en transparencia) + capas de planeamiento
+    SU/SUZ vía WFS ICV (InventarioSuSuz, cod_ine_mun 46171).
+licencias:
+  enabled: true
+proyectos:
+  enabled: true
+  source: ayuntamiento
+geocode:
+  jitter_missing: false
+geometry:
+  validation:
+    source_crs: EPSG:4326
+    coordinates_crs: EPSG:4326
+    axis_order: xy
