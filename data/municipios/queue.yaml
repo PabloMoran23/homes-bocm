@@ -4480,11 +4480,11 @@ municipios:
 - slug: zarautz
   nombre: Zarautz
   bocm_count: 0
-  status: pending
+  status: done
   attempts: 0
-  last_run: null
+  last_run: '2026-11-05T14:09:43.479133+00:00'
   last_error: null
-  pr_url: null
+  pr_url: https://github.com/PabloMoran23/homes-bocm/pull/1144
   notes: Sin boletín asociado
   comunidad_autonoma: euskadi
   provincia: Gipuzkoa
@@ -92745,7 +92745,7 @@ municipios:
   provincia: Villavieja de Lozoya
   boletin_counts:
     bocm: 1
-updated_at: '2026-11-05T12:08:55.432467+00:00'
+updated_at: '2026-11-05T14:09:43.490246+00:00'
 population_source:
   ine_table: '29005'
   periodo: '2025'
