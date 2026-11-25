@@ -8,6 +8,8 @@ el histórico requieren edificio, fecha y tipo coincidentes y candidatos únicos
 los originales se conservan en `_source_variants`.
 
 El workflow de Madrid publica SIGMA y ambos CSV con `python -m db.refresh_madrid`.
+Confirma los proyectos en lotes pequeños y registra la fecha de ingesta completa
+al terminar los lotes y la reconciliación de licencias.
 El lote recurrente se limita a las dos fuentes actuales según la procedencia
 registrada. Conserva las licencias históricas y los originales históricos vinculados
 a filas actuales. Si coinciden las claves, los hashes oficiales y las versiones

@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import sys
+from collections import Counter
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
@@ -1508,6 +1509,59 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
         print(f"  aviso supabase: {exc}", flush=True)
 
 
+def _publish_madrid(manifest, projects, children, documents, licenses, *, projects_only: bool) -> dict[str, Any]:
+    from contextlib import closing
+    from db.madrid_license_snapshot import sync_snapshot
+
+    counts: Counter[str] = Counter()
+    scraper = "madrid-projects" if projects_only else "municipio"
+    children_by_id = {row["id"]: row for row in children}
+    batch_size = 100
+    report = {}
+    with closing(connect()) as conn:
+        save_municipio_from_manifest(manifest, conn=conn)
+        run_id = start_ingest_run(scraper, manifest.slug, conn=conn)
+        conn.commit()
+        try:
+            for offset in range(0, len(projects), batch_size):
+                batch = projects[offset:offset + batch_size]
+                batch_children = [children_by_id[row["id"]] for row in batch if row["id"] in children_by_id]
+                written = save_proyectos(batch, conn=conn)
+                batch_counts = save_proyecto_hijas(batch_children, conn=conn)
+                conn.commit()
+                counts.update(proyecto=written, **batch_counts)
+                print(f"Madrid: {offset + len(batch)}/{len(projects)} proyectos procesados", flush=True)
+
+            written = save_documentos(documents, conn=conn)
+            conn.commit()
+            counts["documento"] = written
+            if not projects_only:
+                report = sync_snapshot(conn, licenses, apply=True, current_only=True)
+                if report["status"] not in {"applied", "unchanged"}:
+                    raise RuntimeError("Madrid: no se completó la reconciliación de licencias")
+                counts["licencia"] = report["rows"] if report["status"] == "applied" else 0
+                touch_last_ingest_at(manifest.slug, conn=conn)
+            finish_ingest_run(run_id, status="ok", rows_upserted=dict(counts), conn=conn)
+            conn.commit()
+        except Exception as exc:
+            # Already committed batches survive. Keep the previous freshness stamp.
+            try:
+                if conn.closed:
+                    with closing(connect()) as recovery, recovery:
+                        finish_ingest_run(run_id, status="error", rows_upserted=dict(counts),
+                                          error=str(exc), conn=recovery)
+                else:
+                    conn.rollback()
+                    finish_ingest_run(run_id, status="error", rows_upserted=dict(counts),
+                                      error=str(exc), conn=conn)
+                    conn.commit()
+            except Exception as reporting_error:
+                print(f"Madrid: no se pudo registrar el fallo de ingesta: {reporting_error}", flush=True)
+            raise
+    return {"upserted": dict(counts), "status": "ok",
+            **({"madrid_licenses": report} if report else {})}
+
+
 def sync_municipio_output(
     slug: str, *, dry_run: bool = False, conn=None, manifest=None,
     madrid_licenses: Literal["full", "current", "skip"] = "full",
@@ -1519,6 +1573,8 @@ def sync_municipio_output(
     madrid_refresh = madrid_licenses != "full"
     if madrid_refresh and manifest.slug != "madrid":
         raise ValueError("El modo de refresco de Madrid solo se aplica a Madrid capital")
+    if madrid_refresh and conn is not None:
+        raise ValueError("El refresco de Madrid gestiona y confirma sus propios lotes")
     out_dir = manifest.output_dir
     proyectos_raw = _read_jsonl(out_dir / "proyectos.jsonl")
     licencias_raw = [] if madrid_licenses == "skip" else _read_jsonl(out_dir / "licencias.jsonl")
@@ -1610,20 +1666,21 @@ def sync_municipio_output(
         stats["reason"] = "sin SUPABASE_DB_URL"
         return stats
 
-    scraper = "madrid-projects" if madrid_licenses == "skip" else "municipio"
-    with IngestSession(scraper, municipio_slug=manifest.slug, conn=conn) as ses:
+    if madrid_refresh:
+        return {**stats, **_publish_madrid(manifest, proy_rows, hijas_rows, doc_rows, licencias_raw,
+                                          projects_only=madrid_licenses == "skip")}
+
+    with IngestSession("municipio", municipio_slug=manifest.slug, conn=conn) as ses:
         ses.save_municipio_from_manifest(manifest)
         ses.save_proyectos(proy_rows)
         if hijas_rows:
             for key, n in save_proyecto_hijas(hijas_rows, conn=ses.conn).items():
                 ses._bump(key, n)
-        if madrid_refresh:
-            print(f"Madrid: proyectos y fuentes vinculadas escritos {ses.counts}", flush=True)
         if madrid_snapshot:
             from db.madrid_license_snapshot import sync_snapshot
-            report = sync_snapshot(ses.conn, licencias_raw, apply=True, current_only=madrid_licenses == "current")
+            report = sync_snapshot(ses.conn, licencias_raw, apply=True)
             stats["madrid_licenses"] = report
-            ses._bump("licencia", 0 if madrid_refresh and report["status"] == "unchanged" else report["rows"])
+            ses._bump("licencia", report["rows"])
         else:
             inm_ids = save_inmuebles(lic_rows, conn=ses.conn)
             if inm_ids:
@@ -1634,8 +1691,7 @@ def sync_municipio_output(
                         row["inmueble_id"] = inm_ids[ndp]
             ses.save_licencias(lic_rows)
         ses.save_documentos(doc_rows)
-        if madrid_licenses != "skip":
-            touch_last_ingest_at(manifest.slug, conn=ses.conn)
+        touch_last_ingest_at(manifest.slug, conn=ses.conn)
         stats["upserted"] = dict(ses.counts)
     stats["status"] = "ok"
     return stats

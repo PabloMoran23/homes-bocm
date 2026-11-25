@@ -12,8 +12,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "db"))
 sys.path.insert(0, str(ROOT))
 from entity_reprocess import activate_policy, ensure_schema, enqueue_stale, reprocess_queue, require_policy_active
-from ingest import portal_proyecto_row, save_proyectos, save_licencias
+from ingest import _publish_madrid, portal_proyecto_row, save_proyectos, save_licencias
 from municipio.entity_policy import POLICY_VERSION
+from municipio.manifest import load_manifest
 
 URL = os.getenv("H01_TEST_DB_URL")
 
@@ -140,6 +141,42 @@ class ReprocessIntegrationTest(unittest.TestCase):
             WHERE id=ANY(%s) AND raw_features_json#>>'{_entity_policy,active,version}'=%s""",
             (["sigma-a", "sigma-b"], POLICY_VERSION)), 2)
         self.assertEqual(self.scalar("SELECT array_agg(entity_id) FROM homes.entity_reprocess_queue"), ["unrelated"])
+
+    def test_madrid_retry_keeps_committed_batches_and_only_marks_a_complete_refresh(self):
+        manifest = load_manifest("madrid")
+
+        def delete_committed_fixture():
+            with psycopg2.connect(**self.params) as conn, conn.cursor() as cur:
+                cur.execute("DELETE FROM homes.proyecto WHERE id LIKE 'batch-%'")
+                cur.execute("DELETE FROM homes.ingest_run WHERE municipio_slug='madrid'")
+                cur.execute("UPDATE homes.municipio SET last_ingest_at=NULL WHERE slug='madrid'")
+
+        self.addCleanup(delete_committed_fixture)
+        projects = [
+            portal_proyecto_row({"id": f"batch-{i}", "titulo": "Plan parcial", "fuente": "sigma"},
+                                slug="madrid", nombre="Madrid")
+            for i in range(101)
+        ]
+        real_save = save_proyectos
+
+        def fail_last(batch, *, conn):
+            if len(batch) == 1:
+                raise RuntimeError("second batch failed")
+            return real_save(batch, conn=conn)
+
+        with patch("ingest.connect", side_effect=lambda: psycopg2.connect(**self.params)):
+            with patch("ingest.save_proyectos", side_effect=fail_last):
+                with self.assertRaisesRegex(RuntimeError, "second batch failed"):
+                    _publish_madrid(manifest, projects, [], [], [], projects_only=False)
+            self.assertEqual(self.scalar("SELECT count(*) FROM homes.proyecto WHERE id LIKE 'batch-%%'"), 100)
+            self.assertIsNone(self.scalar("SELECT last_ingest_at FROM homes.municipio WHERE slug='madrid'"))
+            self.assertEqual(self.scalar("SELECT array_agg(status ORDER BY id) FROM homes.ingest_run"), ["error"])
+            with patch("db.madrid_license_snapshot.sync_snapshot", return_value={"status": "unchanged", "rows": 2}):
+                result = _publish_madrid(manifest, projects, [], [], [], projects_only=False)
+
+        self.assertEqual(result["upserted"]["proyecto"], 1)
+        self.assertIsNotNone(self.scalar("SELECT last_ingest_at FROM homes.municipio WHERE slug='madrid'"))
+        self.assertEqual(self.scalar("SELECT array_agg(status ORDER BY id) FROM homes.ingest_run"), ["error", "ok"])
 
     def test_rule_upgrade_preserves_active_snapshot_until_atomic_switch(self):
         self.add()
