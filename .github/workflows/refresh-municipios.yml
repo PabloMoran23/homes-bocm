@@ -1,27 +1,42 @@
-name: Elche public endpoint diagnostics
-run-name: Elche public endpoint diagnostics
+name: Elche read-only recovery test
+run-name: Elche read-only recovery test
 on:
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  endpoint:
+  endpoints:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 10
     steps:
-      - name: Read public Elche endpoints
+      - uses: actions/checkout@v4
+        with:
+          ref: bfe67e1f1902ba357dbe158893e520fd11427803
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-municipio.txt
+      - name: Stage public sources without publishing
         run: |
-          set -u
-          getent ahostsv4 sede.elche.es | head -1
-          getent ahostsv4 sede.visitelche.com | head -1
-          tablon='sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=PTS2_TABLON&KEY=all&lang=ES'
-          catalog='sta/CarpetaPublic/doEvent?APP_CODE=STA&PAGE_CODE=CATALOGO&lang=ES'
-          printf '%s\n' "https://sede.elche.es/$tablon" "https://sede.visitelche.com/$tablon" \
-            "https://sede.elche.es/$catalog" "https://sede.visitelche.com/$catalog" \
-            'https://www.elche.es/urbanismo/tablon-anuncios/' 'https://elche.es/urbanismo/tablon-anuncios/' \
-            'https://terramapas.icv.gva.es/0702_Planeamiento?service=WFS&request=GetCapabilities' \
-          | while IFS= read -r endpoint; do
-            curl -LsS --connect-timeout 7 --max-time 12 -o /dev/null \
-              -w '%{http_code} %{remote_ip} %{time_connect} %{time_starttransfer} %{url_effective}\n' \
-              "$endpoint" || printf 'curl failed for %s\n' "$endpoint"
-          done
+          python - <<'PY'
+          import json
+          from collections import Counter
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from municipio.manifest import load_manifest
+          from municipio.orchestrator import run
+          manifest = load_manifest('elche-elx')
+          with TemporaryDirectory() as folder:
+              manifest._output_dir = Path(folder)
+              for step, fn in [('proyectos_update', 'proyectos.jsonl'), ('licencias_update', 'licencias.jsonl')]:
+                  result = run(manifest, step, staging=True)['steps'][step]
+                  if result.get('error'):
+                      raise RuntimeError(result['error'])
+                  rows = [json.loads(line) for line in (manifest.output_dir / fn).read_text().splitlines()]
+                  print(step, json.dumps({'rows': len(rows), 'origins': dict(Counter(row.get('origen') for row in rows)),
+                                         'status': result.get('status'), 'reason': result.get('reason'),
+                                         'unavailable': result.get('unavailable_sources')}, ensure_ascii=False), flush=True)
+                  if step == 'proyectos_update' and not rows:
+                      raise ValueError('Planning output was empty')
+          PY
