@@ -199,10 +199,10 @@ class ReprocessIntegrationTest(unittest.TestCase):
         ]
         real_save = save_proyectos
 
-        def fail_last(batch, *, conn):
+        def fail_last(batch, *, conn, semantic_history_prepared):
             if len(batch) == 1:
                 raise RuntimeError("second batch failed")
-            return real_save(batch, conn=conn)
+            return real_save(batch, conn=conn, semantic_history_prepared=semantic_history_prepared)
 
         with patch("ingest.connect", side_effect=lambda: psycopg2.connect(**self.params)):
             with patch("ingest.save_proyectos", side_effect=fail_last):
@@ -217,6 +217,43 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertEqual(result["upserted"]["proyecto"], 1)
         self.assertIsNotNone(self.scalar("SELECT last_ingest_at FROM homes.municipio WHERE slug='madrid'"))
         self.assertEqual(self.scalar("SELECT array_agg(status ORDER BY id) FROM homes.ingest_run"), ["error", "ok"])
+
+    def test_madrid_retries_only_the_failed_transaction_and_prepares_history_once(self):
+        manifest = load_manifest("madrid")
+
+        def delete_fixture():
+            with psycopg2.connect(**self.params) as conn, conn.cursor() as cur:
+                cur.execute("DELETE FROM homes.proyecto WHERE id LIKE 'retry-%'")
+                cur.execute("DELETE FROM homes.ingest_run WHERE municipio_slug='madrid'")
+
+        self.addCleanup(delete_fixture)
+        projects = [
+            portal_proyecto_row({"id": f"retry-{i}", "titulo": "Plan parcial", "fuente": "sigma"},
+                                slug="madrid", nombre="Madrid")
+            for i in range(101)
+        ]
+        lengths = []
+
+        def temporarily_interrupted(batch, *, conn, semantic_history_prepared):
+            self.assertTrue(semantic_history_prepared)
+            lengths.append(len(batch))
+            count = save_proyectos(batch, conn=conn, semantic_history_prepared=semantic_history_prepared)
+            if len(lengths) == 2:
+                raise psycopg2.errors.QueryCanceled("transient timeout")
+            return count
+
+        from ingest import _ensure_semantic_history
+        with (patch("ingest.connect", side_effect=lambda: psycopg2.connect(**self.params)),
+              patch("ingest.save_proyectos", side_effect=temporarily_interrupted),
+              patch("ingest._ensure_semantic_history", wraps=_ensure_semantic_history) as prepare,
+              patch("ingest.time.sleep")):
+            result = _publish_madrid(manifest, projects, [], [], [], projects_only=True)
+        self.assertEqual(lengths, [100, 1, 1])
+        prepare.assert_called_once()
+        self.assertEqual(result["upserted"]["proyecto"], 101)
+        self.assertEqual(self.scalar("""SELECT count(*) FROM homes.proyectos_historico
+            WHERE proyecto_id LIKE 'retry-%%'"""), 101)
+        self.assertEqual(self.scalar("SELECT array_agg(status ORDER BY id) FROM homes.ingest_run"), ["ok"])
 
     def test_rule_upgrade_preserves_active_snapshot_until_atomic_switch(self):
         self.add()

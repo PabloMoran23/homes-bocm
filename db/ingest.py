@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import sys
+import time
 from collections import Counter
 from contextlib import contextmanager
 from datetime import UTC, datetime
@@ -727,14 +728,21 @@ def _semantic_history_ready(cur) -> bool:
     cur.execute("""SELECT EXISTS (
         SELECT 1 FROM pg_class c JOIN pg_constraint p ON p.conrelid=c.oid
         JOIN pg_attribute a ON a.attrelid=c.oid AND p.conkey=ARRAY[a.attnum]
-        WHERE c.oid=to_regclass('homes.proyectos_historico') AND c.relrowsecurity
+        WHERE c.oid=(SELECT to_regclass('homes.proyectos_historico')) AND c.relrowsecurity
           AND p.contype='p' AND a.attname='id' AND a.attidentity='a'
-          AND to_regclass('homes.proyectos_historico_proyecto_created_idx') IS NOT NULL
+          AND (SELECT to_regclass('homes.proyectos_historico_proyecto_created_idx')) IS NOT NULL
     )""")
     return cur.fetchone()[0]
 
 
-def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
+def _ensure_semantic_history(cur) -> None:
+    if not _semantic_history_ready(cur):
+        cur.execute("SELECT pg_advisory_xact_lock(85720261014)")
+        if not _semantic_history_ready(cur):
+            cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
+
+
+def save_semantic_versions(cur, rows: list[dict[str, Any]], *, schema_ready: bool = False) -> None:
     """Append one history row per project being written. Caller already dropped unchanged rows."""
     versions = []
     for row in rows:
@@ -747,10 +755,8 @@ def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
     if versions:
         # Only bootstrap a new or legacy schema. The ALTER statements otherwise
         # take table locks on every municipality's ingest transaction.
-        if not _semantic_history_ready(cur):
-            cur.execute("SELECT pg_advisory_xact_lock(85720261014)")
-            if not _semantic_history_ready(cur):
-                cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
+        if not schema_ready:
+            _ensure_semantic_history(cur)
         execute_values(cur, f"""INSERT INTO {SCHEMA}.proyectos_historico
                          (proyecto_id, source_hash, contract_version, template_version, source_record, derivation)
                          VALUES %s""", versions, page_size=100)
@@ -776,7 +782,7 @@ def _classify_saved(conn, table: str, ids: list[str]) -> None:
 
 
 
-def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
+def save_proyectos(rows: list[dict[str, Any]], *, conn=None, semantic_history_prepared: bool = False) -> int:
     ready = [r for r in rows if r and r.get("id")]
     if not ready:
         return 0
@@ -893,7 +899,7 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
         tuples = [tuple(r.get(c) for c in cols) for r in ready]
         ensure_schema(c)
         execute_values(cur, sql, tuples, page_size=100)
-        save_semantic_versions(cur, ready)
+        save_semantic_versions(cur, ready, schema_ready=semantic_history_prepared)
         ids = [str(r["id"]) for r in ready]
         if all(row.get("municipio_slug") == "madrid" and row.get("fuente") == "sigma" for row in ready):
             classify_written_projects(c, ids)
@@ -1546,7 +1552,7 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
 
 
 def _publish_madrid(manifest, projects, children, documents, licenses, *, projects_only: bool) -> dict[str, Any]:
-    from contextlib import closing
+    from contextlib import ExitStack, closing
     from db.madrid_license_snapshot import sync_snapshot
 
     counts: Counter[str] = Counter()
@@ -1554,23 +1560,56 @@ def _publish_madrid(manifest, projects, children, documents, licenses, *, projec
     children_by_id = {row["id"]: row for row in children}
     batch_size = 100
     report = {}
-    with closing(connect()) as conn:
+    with ExitStack() as connections:
+        conn = connections.enter_context(closing(connect()))
+
+        def transaction(label, action):
+            nonlocal conn
+            for attempt in range(1, 4):
+                try:
+                    if conn.closed:
+                        conn = connections.enter_context(closing(connect()))
+                    result = action(conn)
+                    conn.commit()
+                    return result
+                except (psycopg2.InterfaceError, psycopg2.OperationalError) as exc:
+                    code = exc.pgcode or ""
+                    if not conn.closed:
+                        try:
+                            conn.rollback()
+                        except (psycopg2.InterfaceError, psycopg2.OperationalError):
+                            conn.close()
+                    transient = not code or code.startswith("08") or code in {"40001", "40P01", "55P03", "57014", "57P01"}
+                    if attempt == 3 or not transient:
+                        raise
+                    print(f"Madrid: {label} interrumpido ({code or type(exc).__name__}), reintento {attempt + 1}/3",
+                          flush=True)
+                    time.sleep(2 ** attempt)
+
+        def prepare_history(c):
+            with c.cursor() as cur:
+                _ensure_semantic_history(cur)
+
         save_municipio_from_manifest(manifest, conn=conn)
         run_id = start_ingest_run(scraper, manifest.slug, conn=conn)
         conn.commit()
         try:
+            transaction("preparación del histórico", prepare_history)
             for offset in range(0, len(projects), batch_size):
                 batch = projects[offset:offset + batch_size]
                 batch_children = [children_by_id[row["id"]] for row in batch if row["id"] in children_by_id]
-                written = save_proyectos(batch, conn=conn)
-                batch_counts = save_proyecto_hijas(batch_children, conn=conn)
-                conn.commit()
+
+                def save_batch(c):
+                    return (
+                        save_proyectos(batch, conn=c, semantic_history_prepared=True),
+                        save_proyecto_hijas(batch_children, conn=c),
+                    )
+
+                written, batch_counts = transaction(f"lote de proyectos {offset // batch_size + 1}", save_batch)
                 counts.update(proyecto=written, **batch_counts)
                 print(f"Madrid: {offset + len(batch)}/{len(projects)} proyectos procesados", flush=True)
 
-            written = save_documentos(documents, conn=conn)
-            conn.commit()
-            counts["documento"] = written
+            counts["documento"] = transaction("documentos", lambda c: save_documentos(documents, conn=c))
             if not projects_only:
                 report = sync_snapshot(conn, licenses, apply=True, current_only=True)
                 if report["status"] not in {"applied", "unchanged"}:
