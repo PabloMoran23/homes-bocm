@@ -16,7 +16,7 @@ jobs:
           for host in www.ceuta.es ceuta.es sede.ceuta.es; do getent ahostsv4 "$host" | head -1; done
           printf '%s\n' 'https://www.ceuta.es/ceuta/trpgouce' 'https://ceuta.es/ceuta/trpgouce' \
             'https://www.ceuta.es/ceuta/bocce' 'https://ceuta.es/ceuta/bocce' \
-            'https://www.ceuta.es/ceuta/pgou' \
+            'https://ide.ceuta.es/geoserver/wfs/?service=WFS&version=2.0.0&request=GetFeature&typeNames=pgou_2023%3Apgou_2023_areas_transformacion_urbanistica&outputFormat=application%2Fjson&count=1' \
             'https://sede.ceuta.es/controlador/controlador?cmd=publicacion&modulo=principal' \
             'https://boe.es/diario_boe/txt.php?id=BOE-A-2023-16918' \
             'https://arquitectosdeceuta.com/normativas/urbanismo/' \
