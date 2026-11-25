@@ -93,26 +93,34 @@ def _metadata(row: dict, table: str, version: str, reason: str) -> dict:
     return {**metadata, "active": active}
 
 
-def classify_written_projects(conn, ids: list[str]) -> None:
-    """Publish classifications in batches while the caller owns the project write locks."""
+def classify_written(conn, table: str, ids: list[str]) -> None:
+    """Publish classifications while the caller owns the entity write locks."""
+    raw_col, id_col = TABLES[table]
+    entity_ids = [int(key) for key in ids] if table == "licencia" else ids
+    id_type = "bigint" if table == "licencia" else "text"
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute("SELECT version FROM homes.entity_policy_config WHERE singleton")
         version = cur.fetchone()["version"]
-        for offset in range(0, len(ids), 500):
-            cur.execute("""SELECT p.*, q.reason AS queue_reason FROM homes.proyecto p
-                JOIN homes.entity_reprocess_queue q ON q.entity_table='proyecto' AND q.entity_id=p.id
-                WHERE p.id=ANY(%s) FOR UPDATE OF q""", (ids[offset:offset + 500],))
-            updates = [
-                (row["id"], Json(_metadata(row, "proyecto", version, row["queue_reason"])))
-                for row in cur
-            ]
-            if updates:
-                execute_values(cur, """UPDATE homes.proyecto p SET raw_features_json =
-                    jsonb_set(coalesce(p.raw_features_json, '{}'::jsonb), '{_entity_policy}', v.metadata)
-                    FROM (VALUES %s) AS v(id, metadata) WHERE p.id=v.id""",
-                    updates, template="(%s,%s::jsonb)", page_size=500)
-                cur.execute("""DELETE FROM homes.entity_reprocess_queue
-                    WHERE entity_table='proyecto' AND entity_id=ANY(%s)""", ([key for key, _ in updates],))
+        cur.execute(f"""SELECT entity.*, q.reason AS queue_reason FROM homes.{table} entity
+            JOIN homes.entity_reprocess_queue q ON q.entity_table=%s AND q.entity_id=entity.{id_col}::text
+            WHERE q.entity_id=ANY(%s) AND entity.{id_col}=ANY(%s::{id_type}[])
+            FOR UPDATE OF q""", (table, ids, entity_ids))
+        updates = [
+            (row[id_col], Json(_metadata(row, table, version, row["queue_reason"])))
+            for row in cur
+        ]
+        if updates:
+            execute_values(cur, f"""UPDATE homes.{table} entity SET {raw_col} =
+                jsonb_set(coalesce(entity.{raw_col}, '{{}}'::jsonb), '{{_entity_policy}}', v.metadata)
+                FROM (VALUES %s) AS v(id, metadata) WHERE entity.{id_col}=v.id""",
+                updates, template=f"(%s::{id_type},%s::jsonb)", page_size=500)
+            cur.execute("""DELETE FROM homes.entity_reprocess_queue
+                WHERE entity_table=%s AND entity_id=ANY(%s)""", (table, [str(key) for key, _ in updates]))
+
+
+def classify_written_projects(conn, ids: list[str]) -> None:
+    for offset in range(0, len(ids), 500):
+        classify_written(conn, "proyecto", ids[offset:offset + 500])
 
 
 def reprocess_queue(conn, *, table: str | None = None, ids: list[str] | None = None, batch_size: int = 500) -> dict:

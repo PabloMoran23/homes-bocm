@@ -38,8 +38,14 @@ SKIP_SLUGS = {"madrid"}
 def _run_worker(slug: str, step: str, result_path: str) -> None:
     # A separate process group also bounds subprocesses launched by adapters.
     os.setsid()
+    phase_path = Path(result_path).with_suffix(".phase")
+
+    def record_phase(name: str) -> None:
+        phase_path.write_text(name, encoding="utf-8")
+        print(f"  {slug}: {name}", flush=True)
+
     try:
-        payload = {"result": run(load_manifest(slug), step)}
+        payload = {"result": run(load_manifest(slug), step, on_step=record_phase)}
     except Exception as exc:
         payload = {"error": f"{type(exc).__name__}: {exc}"}
     Path(result_path).write_text(json.dumps(payload, default=str), encoding="utf-8")
@@ -74,7 +80,9 @@ def _run_bounded(slug: str, step: str, timeout_seconds: float) -> dict[str, Any]
             child.join(timeout_seconds)
             if child.is_alive():
                 _stop_worker(child)
-                raise TimeoutError(f"municipio_timeout: {slug} exceeded {timeout_seconds:g} seconds ({step})")
+                phase_path = result_path.with_suffix(".phase")
+                phase = phase_path.read_text(encoding="utf-8") if phase_path.is_file() else ""
+                raise TimeoutError(f"municipio_timeout: {slug} exceeded {timeout_seconds:g} seconds ({phase or step})")
             if child.exitcode != 0 or not result_path.is_file():
                 raise RuntimeError(f"municipio_worker_exit: {slug}: {child.exitcode}")
             payload = json.loads(result_path.read_text(encoding="utf-8"))
