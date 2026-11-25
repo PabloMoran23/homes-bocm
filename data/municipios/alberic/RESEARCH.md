@@ -54,6 +54,7 @@
 ## Limitaciones generales
 
 - Catálogo sede sin trámites urbanísticos específicos en línea (solo instancia general).
+- Ante fallos del RSS, se prueba el tablón HTML oficial. El 25 de noviembre de 2026 ambas representaciones devolvieron los mismos 17 anuncios desde una conexión local. Cuando ambas fallan, el refresco conserva los edictos anteriores y registra la cobertura parcial mientras actualiza las fuentes urbanísticas disponibles.
 - Tablón RSS con pocos anuncios y mayoría administrativos/no urbanísticos.
 - PDFs web sin metadatos estructurados (título inferido del nombre de fichero).
 

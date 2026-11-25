@@ -13,7 +13,9 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
-from municipio.http import fetch_text, read_response
+from bs4 import BeautifulSoup
+
+from municipio.http import PortalReadError, fetch_text, read_response
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -209,15 +211,15 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
         self.user_agent = str(self.config.get("user_agent", "poc-bocm-alberic/1.0"))
         self._gva_cache: list[dict[str, Any]] | None = None
 
-    def _fetch(self, url: str, *, timeout: int = 90) -> str:
+    def _fetch(self, url: str, *, timeout: int = 90, attempts: int = 3) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
-        return fetch_text(req, encoding="utf-8", timeout=timeout)
+        return fetch_text(req, encoding="utf-8", timeout=timeout, attempts=attempts)
 
-    def _fetch_bytes(self, url: str, *, timeout: int = 120) -> bytes:
+    def _fetch_bytes(self, url: str, *, timeout: int = 120, attempts: int = 3) -> bytes:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
-        raw, _ = read_response(req, timeout=timeout)
+        raw, _ = read_response(req, timeout=timeout, attempts=attempts)
         return raw
 
     def _fetch_json(self, url: str) -> Any:
@@ -254,17 +256,12 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
         return f"https://cdn.digitalvalue.es/alberic/assets2/{fid}"
 
     def _collect_tablon_rss(self) -> list[dict[str, Any]]:
-        try:
-            raw = self._fetch(self.tablon_rss, timeout=60)
-        except urllib.error.URLError:
-            return []
-        try:
-            root = ET.fromstring(raw)
-        except ET.ParseError:
-            return []
-
+        root = ET.fromstring(self._fetch_bytes(self.tablon_rss, timeout=12, attempts=2))
+        channel = root.find("channel")
+        if channel is None:
+            raise ValueError(f"Missing RSS channel at {self.tablon_rss}")
         rows: list[dict[str, Any]] = []
-        for item in root.findall(".//item"):
+        for item in channel.findall("item"):
             title_el = item.find("title")
             link_el = item.find("link")
             date_el = item.find("pubDate")
@@ -291,6 +288,39 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
                 }
             )
         return rows
+
+    def _collect_tablon_html(self) -> list[dict[str, Any]]:
+        markup = self._fetch(self.tablon_url, timeout=12, attempts=1)
+        board = BeautifulSoup(markup, "html.parser").select_one('div[id$="_pnlAnuncios"] table.gridview')
+        if board is None:
+            raise ValueError(f"Missing announcement table at {self.tablon_url}")
+        rows: list[dict[str, Any]] = []
+        for line in board.select("tbody tr.clickable"):
+            cells = line.find_all("td", recursive=False)
+            link = line.select_one('a[href*="anuncio.aspx?id="]')
+            if len(cells) != 3 or link is None:
+                raise ValueError(f"Unexpected announcement row at {self.tablon_url}")
+            titulo = cells[2].get_text(" ", strip=True)
+            rows.append({
+                "titulo": titulo[:500], "url": urllib.parse.urljoin(self.tablon_url, link["href"]),
+                "fecha": _parse_fecha_dmy(cells[1].get_text(" ", strip=True)),
+                "blob": titulo, "origen": "tablon_html",
+            })
+        if not rows:
+            raise ValueError(f"No announcements in the HTML table at {self.tablon_url}")
+        return rows
+
+    def _collect_tablon(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        unavailable = []
+        for url, collect in ((self.tablon_rss, self._collect_tablon_rss), (self.tablon_url, self._collect_tablon_html)):
+            try:
+                return collect(), {"status": "ok", "tablon_source": url}
+            except (urllib.error.URLError, TimeoutError, PortalReadError, ET.ParseError, ValueError) as exc:
+                unavailable.append({"url": url, "error": str(exc)})
+        return [], {
+            "status": "partial", "reason": "alberic_sedipualba_edicts_unavailable",
+            "unavailable_sources": unavailable,
+        }
 
     def _enrich_anuncio_docs(self, row: dict[str, Any]) -> dict[str, Any]:
         url = row.get("url") or ""
@@ -771,7 +801,8 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
             if rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for item in self._collect_tablon_rss():
+        board, coverage = self._collect_tablon()
+        for item in board:
             rec = self._tablon_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
@@ -779,7 +810,7 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **coverage,
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon"),
             "info": sum(1 for r in rows if r.get("origen") in ("sede_tablon", "sede_tramite", "web_tramite", "transparencia")),
         }
@@ -789,7 +820,8 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
         before = len(existing)
         for rec in self._collect_licencia_info_pages():
             existing[rec["id"]] = rec
-        for item in self._collect_tablon_rss():
+        board, coverage = self._collect_tablon()
+        for item in board:
             rec = self._tablon_to_licencia(item)
             if rec:
                 existing[rec["id"]] = rec
@@ -802,15 +834,16 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": len(rows),
                     "added": max(0, added),
+                    **coverage,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": len(rows), "added": max(0, added), "status": "ok"}
+        return {"rows": len(rows), "added": max(0, added), **coverage}
 
-    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_proyectos(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
 
@@ -825,34 +858,46 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
             add(rec)
         for rec in self._collect_transparency_proyectos():
             add(rec)
-        for item in self._collect_tablon_rss():
-            enriched = self._enrich_anuncio_docs(item)
-            add(self._tablon_to_proyecto(enriched))
+        board, coverage = self._collect_tablon()
+        for item in board:
+            if self._tablon_is_urban(item):
+                enriched = self._enrich_anuncio_docs(item)
+                add(self._tablon_to_proyecto(enriched))
+        if coverage["status"] == "partial" and not rows:
+            raise ValueError("Alberic announcement sources are unavailable and no planning records were recovered")
+        return rows, coverage
 
+    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_proyectos()
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **coverage,
             "web_pdf": sum(1 for r in rows if r.get("origen") == "web_pdf"),
             "gva_wfs": sum(1 for r in rows if r.get("origen") == "gva_wfs"),
             "transparencia": sum(1 for r in rows if r.get("origen") == "transparencia"),
-            "tablon": sum(1 for r in rows if r.get("origen") == "tablon_rss"),
+            "tablon": sum(1 for r in rows if r.get("origen") in ("tablon_rss", "tablon_html")),
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        self.backfill_proyectos(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
+        existing = self._load_jsonl(out_jsonl)
+        rows, coverage = self._collect_proyectos()
+        if coverage["status"] == "partial":
+            by_id = {row["id"]: row for row in existing + rows}
+            rows = list(by_id.values())
+        self._write_jsonl(out_jsonl, rows)
+        added = max(0, len(rows) - len(existing))
         state_path.write_text(
             json.dumps(
                 {
                     "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
+                    "count": len(rows),
+                    "added": added,
+                    **coverage,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        return {"rows": len(rows), "added": added, **coverage}
