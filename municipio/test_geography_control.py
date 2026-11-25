@@ -10,9 +10,10 @@ from unittest.mock import patch
 
 from pyproj import Transformer
 
-from municipio.geography_control import geography_normalizer, normalize_geometry, normalize_record
+from municipio.geography_control import _official_territory, geography_normalizer, normalize_geometry, normalize_record
 from municipio.geography_replay import replay_file
 from municipio.geocode import _geocode_records
+from municipio.validate import validate_manifest
 
 BOUNDARY = {"type": "Polygon", "coordinates": [[[-4, 40], [-3, 40], [-3, 41], [-4, 41], [-4, 40]]]}
 CFG = {"municipal_boundary": BOUNDARY}
@@ -20,6 +21,29 @@ POLY = {"type": "Polygon", "coordinates": [[[-3.9, 40.1], [-3.8, 40.1], [-3.8, 4
 
 
 class GeographyTest(unittest.TestCase):
+    def test_validate_checks_geometry_against_the_cached_official_boundary(self):
+        self.addCleanup(_official_territory.cache_clear)
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            manifest = SimpleNamespace(
+                slug="validation", nombre="Validation test", path=directory / "manifest.yaml",
+                output_dir=directory, licencias=SimpleNamespace(enabled=True),
+                proyectos=SimpleNamespace(enabled=True),
+            )
+            manifest.path.write_text("geometry:\n  validation:\n    source_crs: EPSG:4326\n")
+            outside = {"type": "Point", "coordinates": [-2.8, 40.2]}
+            for file in ("proyectos.jsonl", "licencias.jsonl"):
+                rows = [{"id": "inside", "geom_geojson": POLY}, {"id": "outside", "geom_geojson": outside}]
+                (directory / file).write_text("".join(json.dumps(row) + "\n" for row in rows))
+            official = {"geometry": BOUNDARY, "crs": "EPSG:4326", "axis_order": "xy"}
+            with patch("municipio.geography_control.official_boundary", return_value=official) as lookup:
+                report = validate_manifest(manifest)
+                lookup.assert_called_once_with(manifest.nombre)
+            for dataset in report["datasets"].values():
+                self.assertEqual(dataset["geography_errors"], [{
+                    "line": 2, "id": "outside", "errors": {"geometry": "outside_municipality_scope"},
+                }])
+
     def test_declared_projected_crs_and_replay(self):
         x, y = Transformer.from_crs(4326, 25830, always_xy=True).transform(-3.8, 40.2)
         source = {"id": "a", "geom_geojson": {"type": "Point", "coordinates": [x, y]}, "geometry_crs": "EPSG:25830"}

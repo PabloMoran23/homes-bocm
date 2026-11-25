@@ -122,7 +122,9 @@ def validate_manifest(manifest: MunicipioManifest) -> dict[str, Any]:
                 if not line.strip():
                     continue
                 rec = json.loads(line)
-                checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+                checked = normalize_record(
+                    rec, cfg=cfg, municipality=manifest.nombre, fetch_boundary=True,
+                )
                 errors = checked["geography_validation"]["errors"]
                 if errors:
                     geography_errors.append({"line": line_no, "id": rec.get("id"), "errors": errors})
