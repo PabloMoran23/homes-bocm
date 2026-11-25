@@ -14,6 +14,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.idecyl import fetch_text_with_idecyl_chain
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -185,8 +186,7 @@ class MelgarDeFernamentalAyuntamientoAdapter(AyuntamientoAdapter):
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-melgar-de-fernamental/1.0")},
         )
         opener = self._opener if sede else urllib.request.build_opener()
-        with opener.open(req, timeout=90 if sede else 60) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text_with_idecyl_chain(req, opener=opener.open, timeout=90 if sede else 60)
 
     def _fetch_json(self, url: str) -> Any:
         time.sleep(self.delay_s)
@@ -194,8 +194,7 @@ class MelgarDeFernamentalAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-melgar-de-fernamental/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        return json.loads(fetch_text_with_idecyl_chain(req, timeout=90))
 
     def _parse_board_table(self, html: str, origen: str) -> list[dict[str, Any]]:
         tbody_m = re.search(r"<tbody[^>]*>(.*?)</tbody>", html, re.S | re.I)

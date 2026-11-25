@@ -1,12 +1,16 @@
-"""Network-free regression tests for municipal portal timeouts."""
+"""Network-free regression tests for municipal portal responses."""
 
+import gzip
 from email.message import Message
+from http.client import IncompleteRead, RemoteDisconnected
 from unittest import TestCase
 from unittest.mock import MagicMock, call, patch
 from urllib.error import HTTPError, URLError
+from urllib.request import Request
 
 from municipio.adapters.leon import LeonAyuntamientoAdapter
 from municipio.adapters.oviedo import OviedoAyuntamientoAdapter
+from municipio.http import PortalReadError, read_response
 
 
 URL = "https://example.org/urbanismo"
@@ -73,3 +77,39 @@ class PortalTimeoutTest(TestCase):
         self.urlopen.return_value = response("León".encode("iso-8859-1"), "iso-8859-1")
         self.assertEqual(self.adapters[0]._fetch(URL), "León")
         self.assertEqual(self.adapters[1]._fetch(URL, encoding="iso-8859-1"), "León")
+
+    def test_retries_disconnected_and_truncated_responses_using_custom_opener(self) -> None:
+        truncated = response()
+        truncated.read.side_effect = IncompleteRead(b"partial")
+        complete = response(b"complete")
+        opener = MagicMock(side_effect=[RemoteDisconnected(), truncated, complete])
+        request = Request(URL)
+
+        self.assertEqual(
+            read_response(request, opener=opener, timeout=15),
+            (b"complete", complete.headers),
+        )
+        opener.assert_has_calls([call(request, timeout=15)] * 3)
+        truncated.__exit__.assert_called_once()
+
+    def test_exhausted_transfer_failure_includes_endpoint_and_preserves_cause(self) -> None:
+        for error in (IncompleteRead(b"partial"), RemoteDisconnected()):
+            with self.subTest(error=type(error).__name__):
+                opener = MagicMock(side_effect=error)
+                with self.assertRaisesRegex(
+                    PortalReadError, f"{URL}: {type(error).__name__} after 2 attempts"
+                ) as raised:
+                    read_response(Request(URL), opener=opener, attempts=2)
+                self.assertIs(raised.exception.__cause__, error)
+                self.assertEqual(opener.call_count, 2)
+
+    def test_decompresses_advertised_gzip_and_retries_incomplete_stream(self) -> None:
+        body = gzip.compress(b"complete")
+        truncated = response(body[:-4])
+        complete = response(body)
+        for reply in (truncated, complete):
+            reply.headers["Content-Encoding"] = "gzip"
+        opener = MagicMock(side_effect=[truncated, complete])
+
+        self.assertEqual(read_response(Request(URL), opener=opener)[0], b"complete")
+        self.assertEqual(opener.call_count, 2)

@@ -13,6 +13,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.http import fetch_text, read_response
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -211,14 +212,13 @@ class AlbericAyuntamientoAdapter(AyuntamientoAdapter):
     def _fetch(self, url: str, *, timeout: int = 90) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text(req, encoding="utf-8", timeout=timeout)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 120) -> bytes:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self.user_agent})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read()
+        raw, _ = read_response(req, timeout=timeout)
+        return raw
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))

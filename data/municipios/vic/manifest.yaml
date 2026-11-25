@@ -15,6 +15,8 @@ portal:
     centroid: [41.9301, 2.2542]
   notes: |
     Web Plone (vic.cat): taules de planejament vigent (RSS) i en tràmit (HTML).
+    Si Plone no está disponible, se consultan el registro RPUC y los anuncios de Urbanisme del tablón.
+    Este respaldo da cobertura parcial y conserva el motivo en el resultado del refresco.
     Sede espublico gestiona: tauler d'anuncis (/board) i catàleg de tràmits (/dossier.0).
     PIU (informaciourbanistica.vic.cat) i Enmapa (guia.vic.cat) sense API enlazable a expedients.
 

@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.http import fetch_text
 
 WEB_BASE = "https://www.vic.cat"
 SEDE_BASE = "https://seuelectronica.vic.cat"
@@ -27,11 +28,16 @@ PLANEJAMENT_VIGENT_RSS = (
     "planejament-i-gestio-urbanistica-vigent-1/"
     "planejament-i-gestio-urbanistica-vigent/rss.xml"
 )
+PLANEJAMENT_VIGENT_HTML = (
+    f"{WEB_BASE}/serveis/territori/urbanisme/prova/planejament-i-gestio-urbanistica-vigent-1"
+)
 PLANEJAMENT_EN_TRAMIT = (
     f"{WEB_BASE}/serveis/territori/urbanisme/prova/"
     "planejament-i-gestio-urbanistica-en-tramit"
 )
 RPUC_MUNICI = "https://dtes.gencat.cat/rpucportal/AppJava/cercaExpedient.do?reqCode=cerca&municipiSel=08298"
+RPUC_INVENTORY = "https://planejamenturbanisme.territori.gencat.cat/RPUC-portal/rest/consulta/basica"
+RPUC_DETAIL = "https://dtes.gencat.cat/rpucportal/#/consulta/detallExpedient/"
 PIU_URL = "http://informaciourbanistica.vic.cat/vicgp/?center=437933.0,4641643.0&scale=50000&thematic=tematic1"
 
 LICENCIA_TRAMITE_PATTERNS: tuple[str, ...] = (
@@ -153,16 +159,12 @@ class VicAyuntamientoAdapter(AyuntamientoAdapter):
     def _fetch(self, url: str, *, timeout: int = 90) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self._ua()})
-        with self._opener.open(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        return fetch_text(req, opener=self._opener.open, timeout=timeout)
 
     def _fetch_plain(self, url: str, *, timeout: int = 90) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self._ua()})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        return fetch_text(req, timeout=timeout)
 
     def _parse_planejament_tables(self, html: str, source_url: str) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
@@ -200,20 +202,76 @@ class VicAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _collect_planejament(self) -> list[dict[str, Any]]:
+    def _collect_rpuc_inventory(self) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        page_size = 20
+        total = None
+        for page in range(1, 51):
+            query = urllib.parse.urlencode({
+                "municipi": "08298", "idioma": "ca", "firstRecord": page, "rpp": page_size,
+            })
+            payload = json.loads(self._fetch_plain(f"{RPUC_INVENTORY}?{query}"))
+            if not isinstance(payload, dict):
+                raise ValueError("RPUC returned an invalid inventory response")
+            count, batch = payload.get("totals"), payload.get("llistat")
+            if payload.get("infoFiltre") != MUNICIPIO or type(count) is not int or count < 1:
+                raise ValueError("RPUC response did not confirm Vic and a nonempty inventory")
+            if total is None:
+                total = count
+            if count != total or not isinstance(batch, list) or not 0 < len(batch) <= page_size:
+                raise ValueError("RPUC inventory changed or returned an invalid page")
+            for item in batch:
+                code = str(item.get("codi") or "")
+                if not code.isdecimal() or code in seen:
+                    raise ValueError("RPUC returned an invalid or repeated planning identifier")
+                seen.add(code)
+                # A municipal filter also returns regional instruments led by other municipalities.
+                if item.get("municipi") != MUNICIPIO:
+                    continue
+                title, instrument = item.get("tema"), item.get("instrumentca")
+                if not title or not instrument:
+                    raise ValueError(f"RPUC record {code} is missing its planning title or instrument")
+                rows.append({
+                    "titulo": _strip_html(title), "tipo": _strip_html(instrument),
+                    "expediente": item.get("nomComplet"), "url": f"{RPUC_DETAIL}{code}",
+                    "origen": "registro_rpuc", "rpuc_id": code, "key": f"rpuc:{code}",
+                })
+            if len(seen) == total and rows:
+                return rows
+            if len(seen) >= total or len(batch) < page_size:
+                raise ValueError("RPUC pages did not contain the advertised Vic inventory")
+        raise ValueError("RPUC exceeded the Vic inventory pagination limit")
+
+    def _read_plone_table(self, *urls: str) -> tuple[list[dict[str, Any]], str | None]:
+        reason = None
+        for url in urls:
+            try:
+                markup = self._fetch_plain(url)
+            except urllib.error.HTTPError as exc:
+                if exc.code not in (403, 404, 410):
+                    raise
+                reason = f"{url} (HTTP {exc.code})"
+                continue
+            cdata = re.findall(r"<!\[CDATA\[(.*?)\]\]>", markup, re.S)
+            rows = self._parse_planejament_tables("\n".join(cdata) if cdata else markup, url)
+            if rows:
+                return rows, None
+            reason = f"{url} (tabla sin filas reconocidas)"
+        return [], reason
+
+    def _collect_planejament(self) -> tuple[list[dict[str, Any]], list[str]]:
         by_key: dict[str, dict[str, Any]] = {}
-        sources = (
-            (self._fetch_plain(PLANEJAMENT_VIGENT_RSS), PLANEJAMENT_VIGENT_RSS, True),
-            (self._fetch_plain(PLANEJAMENT_EN_TRAMIT), PLANEJAMENT_EN_TRAMIT, False),
-        )
-        for raw, src_url, is_rss in sources:
-            html = raw
-            if is_rss:
-                cdata = re.findall(r"<!\[CDATA\[(.*?)\]\]>", raw, re.S)
-                html = "\n".join(cdata) if cdata else raw
-            for row in self._parse_planejament_tables(html, src_url):
-                by_key[row["key"]] = row
-        ref = {
+        current, current_error = self._read_plone_table(PLANEJAMENT_VIGENT_RSS, PLANEJAMENT_VIGENT_HTML)
+        pending, pending_error = self._read_plone_table(PLANEJAMENT_EN_TRAMIT)
+        # The municipality links both the approved regional register and its own current announcements.
+        if current_error:
+            current = self._collect_rpuc_inventory()
+        if pending_error:
+            pending = [row for row in self._collect_board(required=True) if row.get("categoria") == "Urbanisme"]
+        for row in current + pending:
+            by_key[row.get("key") or row["url"]] = row
+        by_key[RPUC_MUNICI] = {
             "titulo": "Registre de planejament urbanístic de Catalunya (RPUC) — Vic (08298)",
             "fecha": None,
             "expediente": None,
@@ -221,13 +279,14 @@ class VicAyuntamientoAdapter(AyuntamientoAdapter):
             "origen": "referencia_rpuc",
             "key": RPUC_MUNICI,
         }
-        by_key[ref["key"]] = ref
-        return list(by_key.values())
+        return list(by_key.values()), [error for error in (current_error, pending_error) if error]
 
-    def _collect_board(self) -> list[dict[str, Any]]:
+    def _collect_board(self, *, required: bool = False) -> list[dict[str, Any]]:
         try:
             html = self._fetch(self.board_url)
         except urllib.error.URLError:
+            if required:
+                raise
             return []
         rows: list[dict[str, Any]] = []
         for m in RE_BOARD_ROW.finditer(html):
@@ -303,23 +362,25 @@ class VicAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _row_to_proyecto(self, row: dict[str, Any]) -> dict[str, Any] | None:
         blob = f"{row.get('titulo', '')} {row.get('expediente', '')}"
+        origin = row.get("origen")
         if RE_EXCLUDE.search(blob) and not RE_PROYECTO.search(blob):
             return None
-        if row.get("origen") != "referencia_rpuc" and not RE_PROYECTO.search(blob):
+        if origin not in {"referencia_rpuc", "registro_rpuc"} and not RE_PROYECTO.search(blob):
             return None
         url = str(row.get("url") or self.web_base)
         exp = row.get("expediente")
-        rec_id = _stable_id("proy", f"{exp or ''}|{row.get('titulo', '')}|{url}")
+        key = f"rpuc:{row['rpuc_id']}" if origin == "registro_rpuc" else f"{exp or ''}|{row.get('titulo', '')}|{url}"
+        rec_id = _stable_id("proy", key)
         return {
             "id": rec_id,
             "municipio": MUNICIPIO,
             "titulo": row.get("titulo"),
             "fecha": row.get("fecha"),
-            "tipo": _proyecto_tipo(blob),
+            "tipo": row.get("tipo") or _proyecto_tipo(blob),
             "url": url,
             "source": "ayuntamiento",
             "expediente": exp,
-            "origen": row.get("origen"),
+            "origen": origin,
         }
 
     def _row_to_licencia(self, row: dict[str, Any]) -> dict[str, Any] | None:
@@ -349,12 +410,16 @@ class VicAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
-        for raw in self._collect_planejament():
+        items, unavailable = self._collect_planejament()
+        for raw in items:
             rec = self._row_to_proyecto(raw)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
         self._write_jsonl(out_jsonl, rows)
+        if unavailable:
+            return {"rows": len(rows), "status": "partial", "source": "planejament_fuentes_oficiales",
+                    "reason": f"Cobertura según RPUC y tablón cuando Plone no responde: {', '.join(unavailable)}"}
         return {"rows": len(rows), "status": "ok", "source": "plone_planejament"}
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:

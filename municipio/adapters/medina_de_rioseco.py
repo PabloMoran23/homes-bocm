@@ -14,6 +14,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.idecyl import fetch_text_with_idecyl_chain
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -233,8 +234,7 @@ class MedinaDeRiosecoAyuntamientoAdapter(AyuntamientoAdapter):
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-medina-de-rioseco/1.0")},
         )
         opener = self._opener if sede else urllib.request.build_opener()
-        with opener.open(req, timeout=90 if sede else 60) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text_with_idecyl_chain(req, opener=opener.open, timeout=90 if sede else 60)
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))
@@ -572,8 +572,13 @@ class MedinaDeRiosecoAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _paginate_wp(self, endpoint: str, max_pages: int = 5) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
-        for page_num in range(1, max_pages + 1):
-            url = f"{WP_API}/{endpoint}?per_page=100&page={page_num}&status=publish"
+        page_size = 25
+        for page_num in range(1, max_pages * 4 + 1):
+            query = urllib.parse.urlencode({
+                "per_page": page_size, "page": page_num, "status": "publish",
+                "_fields": "title,content,link,date,modified",
+            })
+            url = f"{WP_API}/{endpoint}?{query}"
             try:
                 batch = self._fetch_json(url)
             except (urllib.error.URLError, json.JSONDecodeError):
@@ -581,7 +586,7 @@ class MedinaDeRiosecoAyuntamientoAdapter(AyuntamientoAdapter):
             if not isinstance(batch, list) or not batch:
                 break
             items.extend(batch)
-            if len(batch) < 100:
+            if len(batch) < page_size:
                 break
         return items
 

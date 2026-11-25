@@ -7,7 +7,6 @@ import json
 import re
 import ssl
 import time
-import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
@@ -17,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import record_geometry
+from municipio.http import fetch_text
 
 WEB_BASE = "https://www.santantoni.net"
 SEDE_BASE = "https://santantoni.sedelectronica.es"
@@ -164,7 +164,7 @@ class SantAntoniDePortmanyAyuntamientoAdapter(AyuntamientoAdapter):
         self.pgou_avance_url = str(self.config.get("pgou_avance_url") or PGOU_AVANCE_URL)
         self.muib_url = str(self.config.get("muib_url") or MUIB_URL)
         self._ssl_ctx = ssl.create_default_context()
-        if self.config.get("insecure_ssl", True):
+        if self.config.get("insecure_ssl", False):
             self._ssl_ctx.check_hostname = False
             self._ssl_ctx.verify_mode = ssl.CERT_NONE
         self._jar = http.cookiejar.CookieJar()
@@ -177,17 +177,13 @@ class SantAntoniDePortmanyAyuntamientoAdapter(AyuntamientoAdapter):
     def _fetch(self, url: str, *, timeout: int = 60) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(url, headers={"User-Agent": self._ua})
-        with self._opener.open(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text(req, opener=self._opener.open, timeout=timeout, encoding="utf-8")
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{self.web_base}/", href)
 
     def _collect_board(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(self.board_url)
-        except urllib.error.URLError:
-            return []
+        html = self._fetch(self.board_url)
 
         rows: list[dict[str, Any]] = []
         for m in RE_BOARD_ROW.finditer(html):
@@ -286,10 +282,7 @@ class SantAntoniDePortmanyAyuntamientoAdapter(AyuntamientoAdapter):
         }
 
     def _collect_pgou_sede_docs(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(self.pgou_avance_url)
-        except urllib.error.URLError:
-            return []
+        html = self._fetch(self.pgou_avance_url)
 
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
