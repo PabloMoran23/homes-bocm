@@ -1,8 +1,8 @@
 -- Las RPC instaladas conservan firma, permisos, orden y filtros actuales.
 -- Se cambia solo la relación leída, no tablas de evidencia ni SQL de escritura.
 -- La frontera de palabra evita tocar proyecto_documento/investigacion/etc.
-CREATE OR REPLACE FUNCTION homes.activate_entity_policy(prepared boolean) RETURNS boolean
-LANGUAGE plpgsql STRICT AS $policy_rpc$
+CREATE OR REPLACE FUNCTION homes.activate_entity_policy_prepared() RETURNS boolean
+LANGUAGE plpgsql AS $policy_rpc$
 DECLARE item record; definition text; target text; producer text; producer_info record;
   refresh_portal boolean := false; refresh_cards boolean := false; refresh_bocm boolean := false;
   allowed text[] := ARRAY[
@@ -20,26 +20,16 @@ DECLARE item record; definition text; target text; producer text; producer_info 
   ];
 BEGIN
   SELECT target_version INTO target FROM homes.entity_policy_config WHERE singleton FOR UPDATE;
-  IF prepared THEN
-    -- The bounded worker holds both table locks while it checks and promotes
-    -- each ID range. The final cut completes that same transaction.
-    IF (SELECT count(DISTINCT relation) FROM pg_locks
-        WHERE locktype='relation' AND pid=pg_backend_pid() AND granted
-          AND mode='ShareRowExclusiveLock'
-          AND relation IN ('homes.proyecto'::regclass, 'homes.licencia'::regclass)) <> 2 THEN
-      RAISE EXCEPTION 'entity_policy_not_ready: prepared activation requires both table locks';
-    END IF;
-    IF EXISTS (SELECT 1 FROM homes.entity_reprocess_queue) THEN
-      RAISE EXCEPTION 'entity_policy_not_ready: cola pendiente; lecturas anteriores conservadas';
-    END IF;
-  ELSE
-    -- Corte único atómico: bloquea escritores, permite consultas del legado.
-    LOCK TABLE homes.proyecto, homes.licencia IN SHARE MODE;
-    IF EXISTS(SELECT 1 FROM homes.entity_reprocess_queue)
-       OR EXISTS(SELECT 1 FROM homes.proyecto WHERE raw_features_json->'_entity_policy'->>'version' IS DISTINCT FROM target)
-       OR EXISTS(SELECT 1 FROM homes.licencia WHERE raw_json->'_entity_policy'->>'version' IS DISTINCT FROM target) THEN
-      RAISE EXCEPTION 'entity_policy_not_ready: histórico o cola pendientes; lecturas anteriores conservadas';
-    END IF;
+  -- The bounded worker holds both table locks while it checks and promotes
+  -- each ID range. The final cut completes that same transaction.
+  IF (SELECT count(DISTINCT relation) FROM pg_locks
+      WHERE locktype='relation' AND pid=pg_backend_pid() AND granted
+        AND mode='ShareRowExclusiveLock'
+        AND relation IN ('homes.proyecto'::regclass, 'homes.licencia'::regclass)) <> 2 THEN
+    RAISE EXCEPTION 'entity_policy_not_ready: prepared activation requires both table locks';
+  END IF;
+  IF EXISTS (SELECT 1 FROM homes.entity_reprocess_queue) THEN
+    RAISE EXCEPTION 'entity_policy_not_ready: cola pendiente; lecturas anteriores conservadas';
   END IF;
   FOR item IN
     SELECT p.oid, p.proname, p.provolatile, l.lanname, p.proname || '(' || oidvectortypes(p.proargtypes) || ')' AS signature FROM pg_proc p
@@ -93,15 +83,6 @@ BEGIN
     END IF;
     EXECUTE definition;
   END LOOP;
-  IF NOT prepared THEN
-    -- Solo se publica el candidato listo cuando TODAS las filas están preparadas.
-    UPDATE homes.proyecto SET raw_features_json=jsonb_set(raw_features_json,
-      '{_entity_policy,active}', (raw_features_json->'_entity_policy')-'active')
-      WHERE raw_features_json->'_entity_policy'->'active'->>'version' IS DISTINCT FROM target;
-    UPDATE homes.licencia SET raw_json=jsonb_set(raw_json,
-      '{_entity_policy,active}', (raw_json->'_entity_policy')-'active')
-      WHERE raw_json->'_entity_policy'->'active'->>'version' IS DISTINCT FROM target;
-  END IF;
   UPDATE homes.entity_policy_config SET version=target,active=true WHERE singleton;
   -- These calls see the activated policy in this transaction. A failure rolls
   -- back the activation and every payload together.
@@ -111,12 +92,6 @@ BEGIN
   PERFORM pg_notify('pgrst','reload schema');
   RETURN true;
 END $policy_rpc$;
--- Sin EXECUTE implícito: preparación y activación pertenecen al worker autorizado.
-REVOKE ALL ON FUNCTION homes.activate_entity_policy(boolean) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION homes.activate_entity_policy(boolean) TO service_role;
-
--- Keep the checked SQL entry point for existing operational callers.
-CREATE OR REPLACE FUNCTION homes.activate_entity_policy() RETURNS boolean
-LANGUAGE sql AS $$ SELECT homes.activate_entity_policy(false) $$;
-REVOKE ALL ON FUNCTION homes.activate_entity_policy() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION homes.activate_entity_policy() TO service_role;
+-- The maintenance workflow uses the PostgreSQL schema owner. Public API roles
+-- keep the existing checked no-argument entry point and cannot use this one.
+REVOKE ALL ON FUNCTION homes.activate_entity_policy_prepared() FROM PUBLIC, anon, authenticated, service_role;

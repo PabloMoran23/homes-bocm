@@ -30,10 +30,10 @@ def ensure_replay_schema(conn) -> None:
             cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
             if cur.fetchone()[0] is None:
                 cur.execute((ROOT / "supabase/migrations/20261125190000_entity_policy_rollout_repair.sql").read_text())
-        cur.execute("SELECT to_regprocedure('homes.activate_entity_policy(boolean)')")
+        cur.execute("SELECT to_regprocedure('homes.activate_entity_policy_prepared()')")
         if cur.fetchone()[0] is None:
             cur.execute("SELECT pg_advisory_xact_lock(85020261014)")
-            cur.execute("SELECT to_regprocedure('homes.activate_entity_policy(boolean)')")
+            cur.execute("SELECT to_regprocedure('homes.activate_entity_policy_prepared()')")
             if cur.fetchone()[0] is None:
                 cur.execute((ROOT / "supabase/migrations/20261125200000_entity_policy_bounded_activation.sql").read_text())
 
@@ -86,6 +86,7 @@ def activate_policy_bounded(conn) -> None:
             raise RuntimeError("entity_policy_not_ready: cola pendiente")
         for table, (raw_col, _) in TABLES.items():
             after = None
+            scanned = promoted = batches = 0
             while True:
                 where, args = _keyset(after)
                 cur.execute(f"""WITH batch AS MATERIALIZED (
@@ -99,14 +100,20 @@ def activate_policy_bounded(conn) -> None:
                       AND b.policy->'active'->>'version' IS DISTINCT FROM %s
                     RETURNING t.id
                 )
-                SELECT max(id), count(*) FILTER (WHERE policy->>'version' IS DISTINCT FROM %s)
+                SELECT max(id), count(*), (SELECT count(*) FROM promoted),
+                    count(*) FILTER (WHERE policy->>'version' IS DISTINCT FROM %s)
                 FROM batch""", (POLICY_KEY, *args, SCAN_BATCH_SIZE, target, target, target))
-                after, stale = cur.fetchone()
+                after, rows, updated, stale = cur.fetchone()
+                scanned += rows
+                promoted += updated
+                batches += bool(rows)
                 if stale:
                     raise RuntimeError(f"entity_policy_not_ready: {table} contiene candidatos sin preparar")
+                if after is None or batches % 10 == 0:
+                    print(f"entity_policy: verificación {table}: {scanned} filas, {promoted} promovidas, {batches} lotes", flush=True)
                 if after is None:
                     break
-        cur.execute("SELECT homes.activate_entity_policy(true)")
+        cur.execute("SELECT homes.activate_entity_policy_prepared()")
 
 
 def _raw_record(value) -> dict:
@@ -152,6 +159,7 @@ def enqueue_stale_bounded(conn) -> None:
         conn.commit()
         for table, (raw_col, _) in TABLES.items():
             after = None
+            scanned = enqueued = batches = 0
             while True:
                 where, args = _keyset(after)
                 cur.execute(f"""WITH batch AS MATERIALIZED (
@@ -164,12 +172,17 @@ def enqueue_stale_bounded(conn) -> None:
                     ON CONFLICT (entity_table, entity_id) DO NOTHING
                     RETURNING entity_id
                 )
-                SELECT max(id) FROM batch""", (POLICY_KEY, *args, SCAN_BATCH_SIZE, table, POLICY_VERSION))
-                after = cur.fetchone()[0]
+                SELECT max(id), count(*), (SELECT count(*) FROM enqueued)
+                FROM batch""", (POLICY_KEY, *args, SCAN_BATCH_SIZE, table, POLICY_VERSION))
+                after, rows, added = cur.fetchone()
                 conn.commit()
+                scanned += rows
+                enqueued += added
+                batches += bool(rows)
+                if after is None or batches % 10 == 0:
+                    print(f"entity_policy: revisión {table}: {scanned} filas, {enqueued} encoladas, {batches} lotes", flush=True)
                 if after is None:
                     break
-            print(f"entity_policy: revisión de candidatos de {table} completada", flush=True)
 
 
 def _metadata(row: dict, table: str, version: str, reason: str) -> dict:

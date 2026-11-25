@@ -147,6 +147,9 @@ class ReprocessIntegrationTest(unittest.TestCase):
                 CREATE FUNCTION homes.web_summary() RETURNS jsonb LANGUAGE sql STABLE AS $$
                     SELECT payload FROM homes.portal_snapshot WHERE name='web_summary' $$""")
         ensure_replay_schema(self.conn)
+        self.assertTrue(self.scalar("SELECT has_function_privilege('service_role', 'homes.activate_entity_policy()', 'EXECUTE')"))
+        self.assertFalse(self.scalar("""SELECT has_function_privilege('service_role',
+            'homes.activate_entity_policy_prepared()', 'EXECUTE')"""))
         with self.conn.cursor() as cur:
             # The legacy bootstrap normally discovers this proof already; force
             # bounded discovery to find it independently in a later ID range.
@@ -188,6 +191,12 @@ class ReprocessIntegrationTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "candidatos sin preparar"):
             activate_policy_bounded(self.conn)
         self.assertFalse(self.scalar("SELECT active FROM homes.entity_policy_config"))
+
+    def test_prepared_activation_requires_source_locks(self):
+        with self.conn.cursor() as cur:
+            cur.execute((ROOT / "supabase/migrations/20261125200000_entity_policy_bounded_activation.sql").read_text())
+        with self.assertRaisesRegex(psycopg2.Error, "requires both table locks"):
+            self.scalar("SELECT homes.activate_entity_policy_prepared()")
 
     def test_madrid_sigma_batch_activates_the_written_projects_only(self):
         self.add("unrelated")
