@@ -17,7 +17,7 @@ from urllib.parse import unquote, urljoin
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.icv import enable_icv_compression
-from municipio.http import fetch_text, read_response
+from municipio.http import PortalReadError, fetch_text, read_response
 
 WEB_BASE = "https://www.benidorm.org"
 CONTENT_BASE = "https://contenidos.benidorm.org"
@@ -170,14 +170,14 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
         self.ine_mun = str(geom_cfg.get("cod_ine_mun") or INE_MUN)
         self._wfs_cache: list[dict[str, Any]] | None = None
 
-    def _fetch(self, url: str, *, timeout: int = 60) -> str:
+    def _fetch(self, url: str, *, timeout: int = 60, attempts: int = 3) -> str:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benidorm/1.0")},
         )
         enable_icv_compression(req)
-        return fetch_text(req, timeout=timeout)
+        return fetch_text(req, timeout=timeout, attempts=attempts)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 90) -> bytes:
         time.sleep(self.delay_s)
@@ -240,6 +240,7 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
     def _crawl_proyectos(self) -> list[dict[str, Any]]:
         visited: set[str] = set()
         queue: list[str] = list(self.seed_pages)
+        primary_pages = {url.rstrip("/") for url in self.seed_pages}
         rows: list[dict[str, Any]] = []
         seen_ids: set[str] = set()
 
@@ -251,6 +252,8 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
             try:
                 html = self._fetch(url)
             except urllib.error.URLError:
+                if url in primary_pages:
+                    raise
                 continue
 
             title = self._page_title(html, url.rsplit("/", 1)[-1].replace("-", " ").title())
@@ -387,8 +390,10 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
             try:
                 raw = self._fetch_bytes(url)
                 root = ET.fromstring(raw)
-            except (urllib.error.URLError, ET.ParseError):
-                break
+            except ET.ParseError as exc:
+                raise ValueError(f"Invalid Benidorm WFS response from {url}") from exc
+            if root.tag != "{http://www.opengis.net/wfs/2.0}FeatureCollection":
+                raise ValueError(f"Expected a WFS FeatureCollection from {url}, got {root.tag}")
             members = [el for el in root if el.tag.endswith("member")]
             if not members:
                 break
@@ -436,11 +441,13 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
                 if best.get(key) is not None:
                     rec[key] = best[key]
 
-    def _collect_tablon(self) -> list[dict[str, Any]]:
+    def _collect_tablon(self) -> tuple[list[dict[str, Any]], str | None]:
         try:
-            html = self._fetch(self.sede_tablon, timeout=15)
-        except urllib.error.URLError:
-            return []
+            html = self._fetch(self.sede_tablon, timeout=15, attempts=2)
+        except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
+            if self.sede_tablon != SEDE_TABLON:
+                raise
+            return [], f"{type(exc).__name__}: {exc}"
         rows: list[dict[str, Any]] = []
         for m in RE_TABLON_ROW.finditer(html):
             row_html = m.group(0)
@@ -465,15 +472,21 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
                     "kind": kind,
                 }
             )
-        return rows
+        return rows, None
+
+    def _tablon_coverage(self, error: str | None) -> dict[str, Any]:
+        if error is None:
+            return {"status": "ok"}
+        return {
+            "status": "partial",
+            "reason": "benidorm_sede_tablon_unavailable",
+            "unavailable_sources": [{"url": self.sede_tablon, "error": error}],
+        }
 
     def _collect_licencias_info(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         for page_url in self.licencia_pages:
-            try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
-                continue
+            html = self._fetch(page_url)
             title = self._page_title(html, "Solicitud permiso de obras")
             rows.append(
                 {
@@ -510,22 +523,6 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
                         "origen": "contenidos_pdf",
                     }
                 )
-        if not rows:
-            rows.append(
-                {
-                    "id": _stable_id("lic", self.sede_tablon),
-                    "fecha_concesion": None,
-                    "tipo": "tablón licencias (sede)",
-                    "distrito": None,
-                    "lat": None,
-                    "lon": None,
-                    "titulo": "Tablón de anuncios — sede.benidorm.org",
-                    "url": self.sede_tablon,
-                    "source": "ayuntamiento",
-                    "nota": "Sede inaccesible desde CI; enlace de referencia",
-                    "origen": "sede_tablon_ref",
-                }
-            )
         return rows
 
     def _tablon_to_licencia(self, row: dict[str, Any]) -> dict[str, Any]:
@@ -572,29 +569,35 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_licencia_rows(self) -> tuple[list[dict[str, Any]], int, str | None]:
         rows = self._collect_licencias_info()
-        tablon = self._collect_tablon()
+        tablon, error = self._collect_tablon()
         for row in tablon:
             if row.get("kind") == "lic":
                 rows.append(self._tablon_to_licencia(row))
+        return rows, len(tablon), error
+
+    def _retain_previous(self, out_jsonl: Path, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        current = {row["id"]: row for row in rows}
+        for row in self._load_jsonl(out_jsonl):
+            current.setdefault(row["id"], row)
+        return list(current.values())
+
+    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, tablon_rows, error = self._collect_licencia_rows()
+        if error is not None:
+            rows = self._retain_previous(out_jsonl, rows)
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "tablon": len(tablon)}
+        return {"rows": len(rows), "tablon": tablon_rows, **self._tablon_coverage(error)}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
         existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
-        added = 0
-        for rec in self._collect_licencias_info():
-            if rec["id"] not in existing:
-                added += 1
-            existing[rec["id"]] = rec
-        for row in self._collect_tablon():
-            if row.get("kind") == "lic":
-                rec = self._tablon_to_licencia(row)
-                if rec["id"] not in existing:
-                    added += 1
-                existing[rec["id"]] = rec
+        before = len(existing)
+        fresh, _, error = self._collect_licencia_rows()
+        existing.update((rec["id"], rec) for rec in fresh)
         rows = list(existing.values())
+        added = len(rows) - before
+        coverage = self._tablon_coverage(error)
         self._write_jsonl(out_jsonl, rows)
         state_path.write_text(
             json.dumps(
@@ -602,13 +605,14 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": len(rows),
                     "added": added,
+                    "source_coverage": coverage,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": len(rows), "added": added, "status": "ok"}
+        return {"rows": len(rows), "added": added, **coverage}
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
@@ -624,32 +628,38 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
             add(rec)
         for rec in self._collect_wfs_proyectos():
             add(rec)
-        for row in self._collect_tablon():
+        tablon, error = self._collect_tablon()
+        for row in tablon:
             if row.get("kind") == "proy":
                 add(self._tablon_to_proyecto(row))
 
+        if error is not None:
+            rows = self._retain_previous(out_jsonl, rows)
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **self._tablon_coverage(error),
             "drupal": sum(1 for r in rows if r.get("origen", "").startswith("drupal")),
             "wfs": sum(1 for r in rows if r.get("origen") == "icv_wfs"),
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
         before = len(self._load_jsonl(out_jsonl))
-        self.backfill_proyectos(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
+        stats = self.backfill_proyectos(out_jsonl)
+        after = stats["rows"]
         state_path.write_text(
             json.dumps(
                 {
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": after,
                     "added": max(0, after - before),
+                    "source_coverage": {
+                        key: stats[key] for key in ("status", "reason", "unavailable_sources") if key in stats
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        return {**stats, "added": max(0, after - before)}

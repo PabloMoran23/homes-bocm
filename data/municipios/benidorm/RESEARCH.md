@@ -30,9 +30,10 @@ Municipio: **Benidorm** (`benidorm`) — Alicante, Comunitat Valenciana. INE `03
 
 ## Licencias
 
-- **Sede tablón** (`sede.benidorm.org/eAdmin/Tablon.do`): referenciado en transparencia; **timeout desde CI** (sin respuesta en 15–30s).
+- **Sede tablón** (`sede.benidorm.org/eAdmin/Tablon.do`): referenciado en transparencia. La prueba en GitHub Actions del 25/11/2026 agotó 70 segundos para el tablón y 45 segundos para sus enlaces oficiales alternativos. La misma consulta devolvió el tablón desde la red local.
 - **Trámites informativos:** `/es/ayuntamiento/concejalias/urbanismo/administracion-urbanistica/solicitud-permiso-obras` — formularios URBM (obra mayor/menor, demolición, actividad, etc.) en PDF.
 - No hay dataset público de licencias concedidas con coordenadas.
+- Cuando la sede agota sus reintentos, el refresco actualiza la web municipal y el ICV, conserva los registros previos y marca la cobertura `partial` con el error y la URL del tablón. Los formularios disponibles en la web describen trámites; la cobertura de los edictos y concesiones sigue dependiendo de la sede.
 
 ## Geometría / visor
 
