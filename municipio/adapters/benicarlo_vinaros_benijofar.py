@@ -21,11 +21,12 @@ from typing import Any
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.icv import enable_icv_compression
-from municipio.http import fetch_text
+from municipio.http import PortalReadError, fetch_text, read_response
 
 ICV_WFS = "https://terramapas.icv.gva.es/0702_Planeamiento"
 ICV_LAYER_SU = "InventarioSuSuz"
 ICV_LAYER_ZON = "Planeamiento.Zonificacion"
+BENICARLO_RSS = "https://benicarlo.sedipualba.es/tablondeanuncios/tablon_rss.aspx"
 
 RE_LICENCIA = re.compile(
     r"(?i)(solicitud de licencia|licencia(?:s)?(?: de)?(?: obra| urban| municipal| de actividad)?|"
@@ -88,10 +89,10 @@ TOWNS: list[TownConfig] = [
         web_base="https://www.benicarlo.org",
         sede_kind="sedipualba",
         sede_base="https://benicarlo.sedipualba.es",
-        tablon_rss="https://benicarlo.sedipualba.es/tablondeanuncios/tablon_rss.aspx",
+        tablon_rss=BENICARLO_RSS,
         seed_pages=[
-            "https://benicarlo.sedipualba.es/tablondeanuncios/default.aspx",
-            "https://benicarlo.sedipualba.es/catalogoservicios.aspx",
+            "https://www.benicarlo.org/urb/purb-inf-pub.php",
+            "https://www.benicarlo.org/urb/purb-iu-ip.php",
         ],
         centroid=(40.4208, 0.4275),
     ),
@@ -104,8 +105,8 @@ TOWNS: list[TownConfig] = [
         sede_base="https://vinaros.sedelectronica.es",
         board_url="https://vinaros.sedelectronica.es/board",
         seed_pages=[
-            "https://urbanisme.vinaros.es/es/contenido/planeamiento-urbanistico-municipal",
-            "https://www.vinaros.es/es/contenido/gobierno-y-transparencia",
+            "https://urbanisme.vinaros.es/es/planeamiento-urbanistico-municipal",
+            "https://www.vinaros.es/es/gobierno-y-transparencia",
         ],
         centroid=(40.4703, 0.4756),
     ),
@@ -233,17 +234,17 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_by_ine: dict[str, list[dict[str, Any]]] = {}
         self._wfs_index: dict[str, dict[str, dict[str, Any]]] = {}
 
-    def _fetch(self, url: str, *, timeout: int = 60) -> str:
+    def _request(self, url: str) -> urllib.request.Request:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benicarlo-vinaros-benijofar/1.0")},
         )
         enable_icv_compression(req)
-        return fetch_text(req, timeout=timeout, opener=self._opener.open)
+        return req
 
-    def _abs_url(self, href: str, base: str) -> str:
-        return unescape(urllib.parse.urljoin(f"{base.rstrip('/')}/", href))
+    def _fetch(self, url: str, *, timeout: int = 60) -> str:
+        return fetch_text(self._request(url), timeout=timeout, opener=self._opener.open)
 
     def _write_jsonl(self, path: Path, rows: list[dict[str, Any]]) -> None:
         rows = reviewed_records(path, rows)
@@ -261,18 +262,27 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def _collect_tablon_rss(self, town: TownConfig) -> list[dict[str, Any]]:
+    def _collect_tablon_rss(self, town: TownConfig) -> tuple[list[dict[str, Any]], str | None]:
         if not town.tablon_rss:
-            return []
+            return [], None
+        benicarlo_feed = town.tablon_rss == BENICARLO_RSS
         try:
-            raw = self._fetch(town.tablon_rss)
-        except urllib.error.URLError:
-            return []
+            raw, _ = read_response(
+                self._request(town.tablon_rss), opener=self._opener.open,
+                timeout=15 if benicarlo_feed else 60, attempts=2 if benicarlo_feed else 3,
+            )
+        except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
+            if not benicarlo_feed:
+                raise
+            return [], f"{type(exc).__name__}: {exc}"
         rows: list[dict[str, Any]] = []
         try:
+            # The Benicarló feed's XML encoding differs from its HTTP charset.
             root = ET.fromstring(raw)
-        except ET.ParseError:
-            return []
+        except ET.ParseError as exc:
+            raise ValueError(f"Invalid RSS response from {town.tablon_rss}") from exc
+        if root.find("channel") is None:
+            raise ValueError(f"Missing RSS channel in {town.tablon_rss}")
         for item in root.findall(".//item"):
             title = _strip_html(item.findtext("title") or "")
             link = (item.findtext("link") or "").strip()
@@ -288,15 +298,22 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                     "origen": "tablon_rss",
                 }
             )
-        return rows
+        return rows, None
+
+    @staticmethod
+    def _coverage(rss_error: str | None) -> dict[str, Any]:
+        if rss_error is None:
+            return {"status": "ok"}
+        return {
+            "status": "partial",
+            "reason": "benicarlo_sedipualba_edicts_unavailable",
+            "unavailable_sources": [{"url": BENICARLO_RSS, "error": rss_error}],
+        }
 
     def _collect_espublico_board(self, town: TownConfig) -> list[dict[str, Any]]:
         if not town.board_url:
             return []
-        try:
-            html = self._fetch(town.board_url)
-        except urllib.error.URLError:
-            return []
+        html = self._fetch(town.board_url)
 
         rows: list[dict[str, Any]] = []
         for m in RE_BOARD_ROW.finditer(html):
@@ -348,15 +365,12 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
         for page_url in town.seed_pages:
-            try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
-                continue
+            html = self._fetch(page_url)
             h1_m = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.I | re.S)
             page_title = _strip_html(h1_m.group(1)) if h1_m else page_url
             for m in RE_PDF_HREF.finditer(html):
                 href = m.group(1)
-                doc_url = self._abs_url(href, town.web_base if href.startswith("/") else page_url)
+                doc_url = urllib.parse.urljoin(page_url, unescape(href))
                 if doc_url in seen:
                     continue
                 seen.add(doc_url)
@@ -369,6 +383,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                         "url": doc_url,
                         "blob": f"{titulo} {page_url}",
                         "origen": "web_seed",
+                        "source_page": page_url,
                     }
                 )
             for m in re.finditer(r'<article[^>]*>.*?</article>', html, re.I | re.S):
@@ -389,6 +404,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                         "url": url,
                         "blob": titulo,
                         "origen": "web_tablon",
+                        "source_page": page_url,
                     }
                 )
         return rows
@@ -460,8 +476,10 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 try:
                     raw = self._fetch(url, timeout=90)
                     root = ET.fromstring(raw)
-                except (urllib.error.URLError, ET.ParseError):
-                    break
+                except ET.ParseError as exc:
+                    raise ValueError(f"Invalid ICV WFS response from {url}") from exc
+                if root.tag != f"{{{_GML_NS['wfs']}}}FeatureCollection":
+                    raise ValueError(f"Expected a WFS FeatureCollection from {url}, got {root.tag}")
                 members = root.findall(".//wfs:member", _GML_NS)
                 if not members:
                     break
@@ -715,18 +733,23 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
             "source": "ayuntamiento",
             "origen": row.get("origen") or "web_seed",
         }
+        if row.get("source_page"):
+            rec["source_page"] = row["source_page"]
         self._attach_geometry(town, rec)
         return rec
 
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
+        rss_error = None
         for town in self.towns:
             for rec in self._collect_licencia_info_pages(town):
                 if rec["id"] not in seen:
                     seen.add(rec["id"])
                     rows.append(rec)
-            for item in self._collect_tablon_rss(town):
+            items, error = self._collect_tablon_rss(town)
+            rss_error = rss_error or error
+            for item in items:
                 rec = self._rss_to_licencia(town, item)
                 if rec and rec["id"] not in seen:
                     seen.add(rec["id"])
@@ -736,10 +759,12 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 if rec and rec["id"] not in seen:
                     seen.add(rec["id"])
                     rows.append(rec)
+        if rss_error is not None:
+            rows.extend(row for row in self._load_jsonl(out_jsonl) if row["id"] not in seen)
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **self._coverage(rss_error),
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon"),
             "info": sum(1 for r in rows if r.get("origen") in ("sede_tablon", "sede_tramite")),
         }
@@ -759,17 +784,21 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": len(merged),
                     "added": max(0, len(merged) - before),
+                    "source_coverage": {
+                        key: stats[key] for key in ("status", "reason", "unavailable_sources") if key in stats
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": len(merged), "added": max(0, len(merged) - before), "status": "ok", **stats}
+        return {**stats, "rows": len(merged), "added": max(0, len(merged) - before)}
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
+        rss_error = None
 
         def add(rec: dict[str, Any] | None) -> None:
             if rec and rec["id"] not in seen:
@@ -781,15 +810,20 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                 add(self._wfs_to_proyecto(town, item))
             for item in self._collect_seed_docs(town):
                 add(self._seed_to_proyecto(town, item))
-            for item in self._collect_tablon_rss(town):
+            items, error = self._collect_tablon_rss(town)
+            rss_error = rss_error or error
+            for item in items:
                 add(self._rss_to_proyecto(town, item))
             for item in self._collect_espublico_board(town):
                 add(self._board_to_proyecto(town, item))
 
+        if rss_error is not None:
+            for previous in self._load_jsonl(out_jsonl):
+                add(previous)
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **self._coverage(rss_error),
             "icv_wfs": sum(1 for r in rows if r.get("origen") == "icv_wfs"),
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon"),
             "web": sum(1 for r in rows if str(r.get("origen", "")).startswith("web")),
@@ -806,10 +840,13 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": after,
                     "added": max(0, after - before),
+                    "source_coverage": {
+                        key: stats[key] for key in ("status", "reason", "unavailable_sources") if key in stats
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok", **stats}
+        return {**stats, "rows": after, "added": max(0, after - before)}

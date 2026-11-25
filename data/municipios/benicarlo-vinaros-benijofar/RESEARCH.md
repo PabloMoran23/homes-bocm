@@ -18,8 +18,9 @@
 |--------|-----|--------|
 | Web corporativa | https://www.benicarlo.org | **Operativa** — PHP propietario (no Drupal) |
 | Sede electrónica | https://benicarlo.sedipualba.es | **Operativa** — sedipualba/Diputación Albacete |
-| Tablón de anuncios | https://benicarlo.sedipualba.es/tablondeanuncios/default.aspx | **Operativa** — filtro «Urbanisme» (id=427) |
-| RSS tablón | https://benicarlo.sedipualba.es/tablondeanuncios/tablon_rss.aspx | **Operativa** |
+| Tablón de anuncios | https://benicarlo.sedipualba.es/tablondeanuncios/default.aspx | Filtro «Urbanisme» (id=427). Accesible desde la red local en la comprobación del 25/11/2026 |
+| RSS tablón | https://benicarlo.sedipualba.es/tablondeanuncios/tablon_rss.aspx | Accesible desde la red local. La comprobación en GitHub Actions agotó el tiempo de espera |
+| Información pública municipal | https://www.benicarlo.org/urb/purb-inf-pub.php · https://www.benicarlo.org/urb/purb-iu-ip.php | Documentación oficial de planeamiento y urbanismo |
 | Sede espublico | https://benicarlo.sedelectronica.es/board | **Indeterminada** — página de selección de sede (no usar) |
 
 ### Vinaròs
@@ -30,7 +31,7 @@
 | Sede electrónica | https://vinaros.sedelectronica.es | **Operativa** — espublico gestiona |
 | Tablón de anuncios | https://vinaros.sedelectronica.es/board | **Operativa** — categoría «Actuacions Urbanístiques» |
 | Urbanismo (visor) | https://urbanisme.vinaros.es | **Operativa** — Drupal 8 subdominio |
-| Planeamiento municipal | https://urbanisme.vinaros.es/es/contenido/planeamiento-urbanistico-municipal | ZIP planeamiento (sep 2026) |
+| Planeamiento municipal | https://urbanisme.vinaros.es/es/planeamiento-urbanistico-municipal | ZIP de planeamiento |
 
 ### Benijófar
 
@@ -46,6 +47,8 @@
 - **Benicarló:** tablón sedipualba con tabla HTML + RSS (`anuncio.aspx?id=`). Categoría Urbanisme en filtro. Sin visor urbanístico municipal público enlazado.
 - **Vinaròs:** tablón espublico (tabla Wicket, `preview-document/{uuid}`) + subdominio `urbanisme.vinaros.es` con documentación PGOU en ZIP.
 - **Benijófar:** tablón espublico + noticias WP categoría «Tablón». Expedientes de planeamiento en categoría «Planeamiento General».
+
+Cuando falla el RSS de Sedipualb@, el refresco conserva los edictos de Benicarló ya recogidos y actualiza las fuentes de urbanismo y planeamiento accesibles, además de los tablones de Vinaròs y Benijófar. El resultado queda marcado como `partial` con la fuente que falta. Las páginas de urbanismo de Benicarló cubren una parte de los edictos.
 
 ## Licencias de obra
 
