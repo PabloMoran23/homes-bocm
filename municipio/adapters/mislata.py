@@ -16,6 +16,8 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import read_response
 
 BASE = "https://www.mislata.es"
 SEDE = "https://mislata.sedipualba.es"
@@ -176,26 +178,17 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_by_key: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-mislata/1.0")},
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=timeout) as resp:
-                    raw = resp.read()
-                for enc in ("utf-8", "latin-1"):
-                    try:
-                        return raw.decode(enc)
-                    except UnicodeDecodeError:
-                        continue
-                return raw.decode("utf-8", errors="replace")
-            except (urllib.error.URLError, ConnectionResetError, TimeoutError) as exc:
-                last_err = exc
-                time.sleep(0.5 * (attempt + 1))
-        raise urllib.error.URLError(last_err or "fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-mislata/1.0")},
+        )
+        enable_icv_compression(req)
+        raw, _ = read_response(req, timeout=timeout, attempts=retries)
+        try:
+            return raw.decode("utf-8")
+        except UnicodeDecodeError:
+            return raw.decode("latin-1")
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{BASE}/", href)

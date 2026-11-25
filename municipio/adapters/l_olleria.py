@@ -14,6 +14,8 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text
 
 WEB_BASE = "https://www.lolleria.org"
 SEDE_BASE = "https://lolleria.sedelectronica.es"
@@ -127,8 +129,8 @@ class LOlleriaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-olleria/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        enable_icv_compression(req)
+        return fetch_text(req, timeout=timeout, encoding="utf-8")
 
     def _fetch_json(self, url: str, *, timeout: int = 120) -> Any:
         time.sleep(self.delay_s)
@@ -136,8 +138,8 @@ class LOlleriaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-olleria/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        enable_icv_compression(req)
+        return json.loads(fetch_text(req, timeout=timeout, encoding="utf-8"))
 
     def _abs_web(self, href: str) -> str:
         href = unescape(href)

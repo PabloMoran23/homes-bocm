@@ -16,6 +16,8 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text
 
 WEB_BASE = "https://www.gatadegorgos.org"
 SEDE_BASE = "https://gatadegorgos.sedelectronica.es"
@@ -200,25 +202,16 @@ class GataDeGorgosAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
         ua = self.config.get("user_agent", "poc-bocm-gata-de-gorgos/1.0")
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={
-                    "User-Agent": ua,
-                    "Accept-Language": "ca,es;q=0.9",
-                },
-            )
-            try:
-                with self._opener.open(req, timeout=timeout) as resp:
-                    charset = resp.headers.get_content_charset() or "utf-8"
-                    return resp.read().decode(charset, errors="replace")
-            except (urllib.error.URLError, TimeoutError, OSError) as exc:
-                last_err = exc
-                if attempt + 1 < retries:
-                    time.sleep(1.5 * (attempt + 1))
-        raise last_err or urllib.error.URLError("fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": ua,
+                "Accept-Language": "ca,es;q=0.9",
+            },
+        )
+        enable_icv_compression(req)
+        return fetch_text(req, timeout=timeout, opener=self._opener.open, attempts=retries)
 
     def _fetch_json(self, url: str, *, timeout: int = 120) -> Any:
         time.sleep(self.delay_s)
@@ -226,8 +219,8 @@ class GataDeGorgosAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-gata-de-gorgos/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        enable_icv_compression(req)
+        return json.loads(fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8"))
 
     def _abs_web(self, href: str) -> str:
         return unescape(urllib.parse.urljoin(f"{self.web_base}/", href))

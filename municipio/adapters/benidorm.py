@@ -16,6 +16,8 @@ from urllib.parse import unquote, urljoin
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.benidorm.org"
 CONTENT_BASE = "https://contenidos.benidorm.org"
@@ -174,9 +176,8 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benidorm/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        enable_icv_compression(req)
+        return fetch_text(req, timeout=timeout)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 90) -> bytes:
         time.sleep(self.delay_s)
@@ -184,8 +185,9 @@ class BenidormAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benidorm/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read()
+        enable_icv_compression(req)
+        raw, _ = read_response(req, timeout=timeout)
+        return raw
 
     def _abs_url(self, href: str, page_url: str = "") -> str:
         href = unescape(href.strip())

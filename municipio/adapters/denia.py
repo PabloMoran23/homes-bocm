@@ -16,6 +16,8 @@ from urllib.parse import urljoin, unquote
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.denia.es"
 SEDE_BASE = "https://sede.denia.es"
@@ -169,9 +171,8 @@ class DeniaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-denia/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        enable_icv_compression(req)
+        return fetch_text(req, timeout=60)
 
     def _fetch_bytes(self, url: str) -> bytes:
         time.sleep(self.delay_s)
@@ -179,8 +180,9 @@ class DeniaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-denia/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            return resp.read()
+        enable_icv_compression(req)
+        raw, _ = read_response(req, timeout=90)
+        return raw
 
     @staticmethod
     def _extract_sta_dataset(html: str, dataset_name: str) -> list[dict[str, Any]]:

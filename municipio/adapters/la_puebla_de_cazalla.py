@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.http import fetch_text
 
 SEDE_BASE = "https://lapuebladecazalla.sedelectronica.es"
 WEB_BASE = "http://www.pueblacazalla.org/ayto"
@@ -187,9 +188,7 @@ class LaPueblaDeCazallaAyuntamientoAdapter(AyuntamientoAdapter):
                 ),
             },
         )
-        with self._opener.open(req, timeout=90) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        return fetch_text(req, timeout=90, opener=self._opener.open)
 
     def _collect_board(self) -> list[dict[str, Any]]:
         try:

@@ -16,6 +16,8 @@ from urllib.parse import unquote, urljoin
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.elche.es"
 SEDE_BASE = "https://sede.elche.es"
@@ -223,37 +225,23 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_by_token: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-elche-elx/1.0")},
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=timeout) as resp:
-                    charset = resp.headers.get_content_charset() or "utf-8"
-                    return resp.read().decode(charset, errors="replace")
-            except (urllib.error.URLError, ConnectionResetError, TimeoutError) as exc:
-                last_err = exc
-                time.sleep(0.5 * (attempt + 1))
-        raise urllib.error.URLError(last_err or "fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-elche-elx/1.0")},
+        )
+        enable_icv_compression(req)
+        return fetch_text(req, timeout=timeout, attempts=retries)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 90, retries: int = 2) -> bytes:
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-elche-elx/1.0")},
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=timeout) as resp:
-                    return resp.read()
-            except (urllib.error.URLError, ConnectionResetError, TimeoutError) as exc:
-                last_err = exc
-                time.sleep(0.5 * (attempt + 1))
-        raise urllib.error.URLError(last_err or "fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-elche-elx/1.0")},
+        )
+        enable_icv_compression(req)
+        raw, _ = read_response(req, timeout=timeout, attempts=retries)
+        return raw
 
     @staticmethod
     def _extract_sta_dataset(html: str, dataset_name: str) -> list[dict[str, Any]]:
