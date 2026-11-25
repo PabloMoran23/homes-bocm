@@ -10,7 +10,7 @@ from unittest.mock import patch
 
 from pyproj import Transformer
 
-from municipio.geography_control import normalize_geometry, normalize_record
+from municipio.geography_control import geography_normalizer, normalize_geometry, normalize_record
 from municipio.geography_replay import replay_file
 from municipio.geocode import _geocode_records
 
@@ -116,6 +116,17 @@ class GeographyTest(unittest.TestCase):
         self.assertAlmostEqual(records[0]["lat"], 40.15)
         self.assertLess(abs(records[1]["lat"] - 40.7), 0.002)
         self.assertLess(abs(records[1]["lng"] + 3.2), 0.002)
+
+    def test_geocode_reuses_configured_territory_without_changing_record_overrides(self):
+        point = {"lat": 40.2, "lng": -3.8, "coordinates_crs": "EPSG:4326"}
+        other = {"type": "Polygon", "coordinates": [[[-3, 40], [-2, 40], [-2, 41], [-3, 41], [-3, 40]]]}
+        record_override = {**point, "municipal_boundaries": {"Test": other}}
+        expected = [normalize_record(row, cfg=CFG, municipality="Test") for row in (point, point, record_override)]
+        with patch("municipio.geography_control.normalize_geometry", wraps=normalize_geometry) as checked:
+            normalize = geography_normalizer(cfg=CFG, municipality="Test")
+            self.assertEqual([normalize(row) for row in (point, point)], expected[:2])
+            self.assertEqual(checked.call_count, 3)  # One boundary, two points.
+            self.assertEqual(normalize(record_override), expected[2])
 
     def test_replay_dry_run_idempotency_and_changed_source_recovery(self):
         with tempfile.TemporaryDirectory() as tmp:

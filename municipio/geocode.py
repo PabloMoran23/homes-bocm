@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from municipio.geometry import geometry_bbox, geometry_centroid, has_area_geometry, record_geometry
-from municipio.geography_control import manifest_geography_config, normalize_record, official_boundary, valid_coordinates
+from municipio.geography_control import geography_normalizer, manifest_geography_config, official_boundary, valid_coordinates
 from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, MunicipioManifest
 
 COORDS_CACHE_PATH = POC_ROOT / "output" / "municipios_coords_cache.json"
@@ -102,6 +102,7 @@ def _geocode_records(
         boundary = official_boundary(manifest.nombre.split("/")[0].strip())
     if boundary:
         cfg = {**cfg, "municipal_boundary": boundary}
+    normalize = geography_normalizer(cfg=cfg, municipality=manifest.nombre)
     stats = {
         "quarantined": 0,
         "explicit": 0,
@@ -112,7 +113,7 @@ def _geocode_records(
     }
 
     for rec in records:
-        checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+        checked = normalize(rec)
         rec.clear()
         rec.update(checked)
         if rec["geography_validation"]["errors"]:
@@ -147,7 +148,7 @@ def _geocode_records(
         rec["lng"] = round(lng, 7)
         rec["coord_source"] = "municipio_centroid_jitter"
         rec["coordinates_crs"] = "EPSG:4326"
-        checked = normalize_record(rec, cfg=cfg, municipality=manifest.nombre)
+        checked = normalize(rec)
         rec.clear()
         rec.update(checked)
         if rec["geography_validation"]["errors"]:
