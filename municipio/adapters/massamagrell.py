@@ -16,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text
 
 SEDE_BASE = "https://massamagrell.sedelectronica.es"
@@ -175,6 +176,7 @@ class MassamagrellAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-massamagrell/1.0")},
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8")
 
     def _fetch_json(self, url: str, *, timeout: int = 90) -> Any:
@@ -183,6 +185,7 @@ class MassamagrellAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-massamagrell/1.0")},
         )
+        enable_icv_compression(req)
         return json.loads(fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8"))
 
     def _collect_board(self) -> list[dict[str, Any]]:

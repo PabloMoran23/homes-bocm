@@ -16,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text
 
 BASE = "https://www.ontinyent.es"
@@ -186,6 +187,7 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ontinyent/1.0")},
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, attempts=retries, encoding="utf-8")
 
     def _abs_web(self, href: str) -> str:

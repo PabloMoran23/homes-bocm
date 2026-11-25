@@ -17,6 +17,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.lavallduixo.es"
@@ -216,6 +217,7 @@ class LaVallDuixoAyuntamientoAdapter(AyuntamientoAdapter):
         )
         ctx = self._ssl_ctx if use_sede_ssl or "sede.lavallduixo.es" in url else None
         opener = functools.partial(urllib.request.urlopen, context=ctx)
+        enable_icv_compression(req)
         return fetch_text(req, timeout=90, opener=opener)
 
     def _fetch_bytes(self, url: str) -> bytes:
@@ -224,6 +226,7 @@ class LaVallDuixoAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-vall-duixo/1.0")},
         )
+        enable_icv_compression(req)
         raw, _ = read_response(req, timeout=120)
         return raw
 

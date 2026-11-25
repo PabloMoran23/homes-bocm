@@ -4,9 +4,10 @@ from email.message import Message
 from http.client import IncompleteRead
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
-from urllib.request import OpenerDirector
+from urllib.request import OpenerDirector, Request
 
 from municipio.adapters import load_portal_adapter
+from municipio.gis.icv import enable_icv_compression
 from municipio.manifest import load_manifest
 
 
@@ -29,7 +30,7 @@ AFFECTED_MUNICIPALITIES = (
     "onda",
     "ontinyent",
 )
-URL = "https://example.org/planeamiento"
+URL = "https://terramapas.icv.gva.es/0702_Planeamiento"
 
 
 class InterruptedAdapterReadTests(TestCase):
@@ -65,5 +66,13 @@ class InterruptedAdapterReadTests(TestCase):
 
                         self.assertEqual(getattr(adapter, method)(URL), expected)
                         self.assertEqual(open_request.call_count, 2)
-                        self.assertEqual(open_request.call_args.args[0].full_url, URL)
+                        request = open_request.call_args.args[0]
+                        self.assertEqual(request.full_url, URL)
+                        accept_encoding = None if slug == "la-puebla-de-cazalla" else "gzip"
+                        self.assertEqual(request.get_header("Accept-encoding"), accept_encoding)
                         truncated.__exit__.assert_called_once()
+
+    def test_leaves_other_public_portals_unchanged(self) -> None:
+        request = Request("https://example.org/planeamiento")
+        enable_icv_compression(request)
+        self.assertIsNone(request.get_header("Accept-encoding"))

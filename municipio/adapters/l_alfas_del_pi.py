@@ -15,6 +15,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text
 
 BASE = "https://www.lalfas.es"
@@ -197,6 +198,7 @@ class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-alfas-del-pi/1.0")},
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, encoding="utf-8")
 
     def _fetch_json(self, url: str) -> Any:

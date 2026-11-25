@@ -20,6 +20,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text
 
 ICV_WFS = "https://terramapas.icv.gva.es/0702_Planeamiento"
@@ -238,6 +239,7 @@ class BenicarloVinarosBenijofarAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-benicarlo-vinaros-benijofar/1.0")},
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, opener=self._opener.open)
 
     def _abs_url(self, href: str, base: str) -> str:

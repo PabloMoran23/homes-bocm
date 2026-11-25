@@ -16,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text
 
 WEB_BASE = "https://www.gatadegorgos.org"
@@ -209,6 +210,7 @@ class GataDeGorgosAyuntamientoAdapter(AyuntamientoAdapter):
                 "Accept-Language": "ca,es;q=0.9",
             },
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, opener=self._opener.open, attempts=retries)
 
     def _fetch_json(self, url: str, *, timeout: int = 120) -> Any:
@@ -217,6 +219,7 @@ class GataDeGorgosAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-gata-de-gorgos/1.0")},
         )
+        enable_icv_compression(req)
         return json.loads(fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8"))
 
     def _abs_web(self, href: str) -> str:

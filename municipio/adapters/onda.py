@@ -15,6 +15,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
 from municipio.http import fetch_text, read_response
 
 BASE = "https://www.onda.es"
@@ -168,6 +169,7 @@ class OndaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-onda/1.0")},
         )
+        enable_icv_compression(req)
         return fetch_text(req, timeout=timeout, encoding="utf-8")
 
     def _fetch_json(self, url: str) -> Any:
@@ -179,6 +181,7 @@ class OndaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-onda/1.0")},
         )
+        enable_icv_compression(req)
         raw, _ = read_response(req, timeout=timeout)
         return raw
 
