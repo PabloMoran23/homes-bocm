@@ -11,6 +11,7 @@ import json
 import math
 import urllib.parse
 import urllib.request
+from collections.abc import Callable
 from functools import lru_cache
 from typing import Any
 
@@ -134,7 +135,39 @@ def manifest_geography_config(manifest) -> dict:
     return dict(data.get("geometry", {}).get("validation", {}))
 
 
-def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipality: str = "", fetch_boundary: bool = False) -> dict:
+def _scope_territory(boundaries: dict, scope: list[str]) -> tuple[Any, str]:
+    targets = []
+    for name in scope:
+        boundary = boundaries.get(name)
+        if boundary:
+            try:
+                targets.append(shape(normalize_geometry(
+                    boundary.get("geometry", boundary), boundary.get("crs", "EPSG:4326"),
+                    boundary.get("axis_order", "xy"),
+                )))
+            except Exception:
+                pass
+    territory = unary_union(targets) if len(targets) == len(scope) and targets else None
+    return territory, _hash(boundaries)
+
+
+def geography_normalizer(*, cfg: dict, municipality: str) -> Callable[[dict], dict]:
+    """Reuse the same configured boundary and hashes for one batch."""
+    boundaries = cfg.get("municipal_boundaries") or {}
+    boundary = cfg.get("municipal_boundary")
+    if boundary:
+        boundaries = {**boundaries, municipality: boundary}
+    territory, boundary_hash = _scope_territory(boundaries, [municipality])
+    prepared = territory, boundary_hash, _hash(cfg)
+
+    def normalize(rec: dict) -> dict:
+        return normalize_record(rec, cfg=cfg, municipality=municipality, _prepared=prepared)
+
+    return normalize
+
+
+def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipality: str = "",
+                     fetch_boundary: bool = False, _prepared: tuple[Any, str, str] | None = None) -> dict:
     """Returns a copy, never mutates source records or publishes unchecked fields."""
     cfg = cfg or {}
     out = copy.deepcopy(rec)
@@ -168,25 +201,21 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     scope = rec.get("municipality_scope") or [municipality]
     if not isinstance(scope, list) or not scope or any(not isinstance(name, str) or not name for name in scope):
         scope = [municipality]
-    territory = None
-    if fetch_boundary and can_transform and not boundary and not boundaries and scope == [municipality]:
+    prepared_scope = (
+        _prepared is not None and scope == [municipality]
+        and (cfg.get("municipal_boundaries") or not rec.get("municipal_boundaries"))
+        and (cfg.get("municipal_boundary") or not rec.get("municipal_boundary"))
+    )
+    if prepared_scope:
+        territory, boundary_hash, _ = _prepared
+    elif fetch_boundary and can_transform and not boundary and not boundaries and scope == [municipality]:
         territory, boundary_hash = _official_territory(municipality)
     else:
         if not boundary and fetch_boundary and can_transform:
             boundary = official_boundary(municipality)
         if boundary:
             boundaries = {**boundaries, municipality: boundary}
-        targets = []
-        for name in scope:
-            b = boundaries.get(name)
-            if b:
-                try:
-                    targets.append(shape(normalize_geometry(b.get("geometry", b), b.get("crs", "EPSG:4326"), b.get("axis_order", "xy"))))
-                except Exception:
-                    pass
-        if len(targets) == len(scope) and targets:
-            territory = unary_union(targets)
-        boundary_hash = _hash(boundaries)
+        territory, boundary_hash = _scope_territory(boundaries, scope)
     errors = {}
     if geom is None and any(original.get(k) is not None for k in ("geom_geojson", "geometry", "geom")):
         errors["geometry"] = "invalid_or_unsupported_geometry_structure"
@@ -205,9 +234,9 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     if geom:
         try:
             normalized = normalize_geometry(geom, crs, order)
-            municipal_check(shape(normalized))
-            out["geom_geojson"] = normalized
             geo = shape(normalized)
+            municipal_check(geo)
+            out["geom_geojson"] = normalized
             point = geo.centroid
             method = "centroid"
             if not geo.covers(point):
@@ -216,7 +245,7 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
             out["geometry_location_method"] = method
             out.update(lat=point.y, lng=point.x, lon=point.x, centroid_lat=point.y, centroid_lng=point.x,
                        coord_source="portal_geometry_" + method)
-            x0, y0, x1, y1 = shape(normalized).bounds
+            x0, y0, x1, y1 = geo.bounds
             out.update(bbox_min_lng=x0, bbox_min_lat=y0, bbox_max_lng=x1, bbox_max_lat=y1)
         except Exception as exc:
             errors["geometry"] = str(exc)
@@ -238,7 +267,8 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     out["has_geometry"] = bool(out.get("geom_geojson"))
     validation = {"rule_version": RULE_VERSION, "source_crs": str(crs) if crs else None, "target_crs": "EPSG:4326",
                   "coordinate_source_crs": coordinate_crs,
-                  "axis_order": order, "config_hash": _hash(cfg), "input_hash": _hash(original), "errors": errors,
+                  "axis_order": order, "config_hash": _prepared[2] if _prepared is not None else _hash(cfg),
+                  "input_hash": _hash(original), "errors": errors,
                   "status": "quarantined" if errors else "valid" if out.get("lat") is not None else "unlocated",
                   "municipality_scope": scope, "boundary_hash": boundary_hash}
     validation["output_hash"] = _hash({k: out[k] for k in FIELDS if k in out})
