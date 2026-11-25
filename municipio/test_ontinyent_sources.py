@@ -3,6 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import patch
+from urllib.error import URLError
 
 from municipio.adapters.ontinyent import CATALOGO_TRAMITES, TABLON_HTML, TABLON_RSS, OntinyentAyuntamientoAdapter
 
@@ -44,8 +45,13 @@ class OntinyentSourcesTest(TestCase):
                     self.assertIn('"id": "history"', output.read_text())
                     self.assertEqual(json.loads(state.read_text())["status"], "partial")
 
-    def test_catalogue_timeout_remains_a_failure_when_the_board_is_reachable(self):
-        with patch.object(self.adapter, "_collect_tablon_rss", return_value=[]), \
-                patch.object(self.adapter, "_collect_tramites", side_effect=TimeoutError("catalogue unavailable")):
-            with self.assertRaises(TimeoutError):
-                self.adapter._collect_licencias()
+    def test_catalogue_failure_reports_partial_and_retains_board_notices(self):
+        notice = {"titulo": "Llicència d'obres", "url": TABLON_HTML + "anuncio.aspx?id=123", "origen": "tablon_rss"}
+        with patch.object(self.adapter, "_collect_tablon_rss", return_value=[notice]), \
+                patch.object(self.adapter, "_collect_tramites", side_effect=URLError("catalogue unavailable")), \
+                patch.object(self.adapter, "_attach_geometry"):
+            rows, coverage = self.adapter._collect_licencias()
+        self.assertEqual(coverage["status"], "partial")
+        self.assertEqual(coverage["reason"], "ontinyent_sedipualba_catalogue_unavailable")
+        self.assertEqual(coverage["unavailable_sources"][0]["url"], CATALOGO_TRAMITES)
+        self.assertEqual([row["url"] for row in rows], [notice["url"]])

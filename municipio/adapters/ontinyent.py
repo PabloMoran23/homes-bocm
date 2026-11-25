@@ -229,8 +229,7 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _collect_tramites(self, *, board_unavailable: bool = False) -> list[dict[str, Any]]:
-        html = self._fetch(CATALOGO_TRAMITES, timeout=12 if board_unavailable else 60,
-                           retries=1 if board_unavailable else 3)
+        html = self._fetch(CATALOGO_TRAMITES, timeout=12, retries=1 if board_unavailable else 2)
         rows: list[dict[str, Any]] = []
         for href, title in RE_TRAMITE.findall(html):
             rows.append(
@@ -543,11 +542,12 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
         try:
             tramites = self._collect_tramites(board_unavailable=board_unavailable)
         except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
-            if board_unavailable:
-                coverage["unavailable_sources"].append({"url": CATALOGO_TRAMITES, "error": str(exc)})
-                coverage["reason"] = "ontinyent_sedipualba_edicts_and_catalogue_unavailable"
-            elif not isinstance(exc, urllib.error.URLError):
-                raise
+            coverage["status"] = "partial"
+            coverage["reason"] = (
+                "ontinyent_sedipualba_edicts_and_catalogue_unavailable" if board_unavailable
+                else "ontinyent_sedipualba_catalogue_unavailable"
+            )
+            coverage.setdefault("unavailable_sources", []).append({"url": CATALOGO_TRAMITES, "error": str(exc)})
             tramites = []
         for item in tramites:
             rec = self._tramite_to_licencia(item)
