@@ -1,27 +1,27 @@
-name: Ceuta public endpoint diagnostics
-run-name: Ceuta public endpoint diagnostics
+name: Ceuta ministry sector source diagnostic
+run-name: Ceuta ministry sector source diagnostic
 on:
   push:
     branches: [diagnostic/ceuta-public-endpoints-20261125]
-  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   endpoint:
-    runs-on: ubuntu-24.04-arm
-    timeout-minutes: 4
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
-      - name: Read public Ceuta sources
+      - name: Query the national SIU source for Ceuta
         run: |
-          for host in www.ceuta.es ceuta.es sede.ceuta.es; do getent ahostsv4 "$host" | head -1; done
-          printf '%s\n' 'https://www.ceuta.es/ceuta/trpgouce' 'https://ceuta.es/ceuta/trpgouce' \
-            'https://www.ceuta.es/ceuta/bocce' 'https://ceuta.es/ceuta/bocce' \
-            'https://ide.ceuta.es/geoserver/wfs/?service=WFS&version=2.0.0&request=GetFeature&typeNames=pgou_2023%3Apgou_2023_areas_transformacion_urbanistica&outputFormat=application%2Fjson&count=1' \
-            'https://sede.ceuta.es/controlador/controlador?cmd=publicacion&modulo=principal' \
-            'https://boe.es/diario_boe/txt.php?id=BOE-A-2023-16918' \
-            'https://arquitectosdeceuta.com/normativas/urbanismo/' \
-          | while IFS= read -r endpoint; do
-            curl -LsS -A 'poc-bocm-ceuta/1.0' --connect-timeout 7 --max-time 12 -o /dev/null \
-              -w '%{http_code} %{remote_ip} %{time_connect} %{time_starttransfer} %{url_effective}\n' \
-              "$endpoint" || printf 'curl failed for %s\n' "$endpoint"
-          done
+          curl -fsSL --connect-timeout 9 --max-time 15 --get \
+            'https://mapas.fomento.gob.es/arcgis/rest/services/SIU/%C3%81mbitos_o_Sectores/MapServer/0/query' \
+            --data-urlencode "where=GIS_SIU.SIU.SECTORES_WM.ProvINE='51001' AND GIS_SIU.SIU.SECTORES_WM.FechaBaja='99999999'" \
+            --data 'f=geojson&outFields=*&returnGeometry=true&outSR=4326&resultRecordCount=100' \
+            -o "$RUNNER_TEMP/ceuta-sectors.json"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          d = json.loads((Path(os.environ['RUNNER_TEMP'])/'ceuta-sectors.json').read_text())
+          rows = d.get('features') or []
+          print('SIU authority yielded', len(rows), 'Ceuta sector geometries')
+          assert d['type'] == 'FeatureCollection' and rows and all(row['geometry'] for row in rows)
+          PY
