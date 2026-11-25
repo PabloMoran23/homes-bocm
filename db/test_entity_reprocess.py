@@ -135,6 +135,8 @@ class ReprocessIntegrationTest(unittest.TestCase):
                 VALUES ('legacy-null','Formulario urbanístico',NULL),
                        ('legacy-json-null','Formulario urbanístico','null'),
                        ('legacy-scalar','Formulario urbanístico','"texto original"')""")
+            cur.execute("""INSERT INTO homes.licencia(id,licencia_key,raw_json)
+                VALUES (9223372036854775806,'legacy-license','null')""")
             cur.execute("""CREATE TABLE homes.portal_snapshot(name text PRIMARY KEY, payload jsonb);
                 INSERT INTO homes.portal_snapshot VALUES ('web_summary','{"projects":4}');
                 CREATE FUNCTION homes.compute_web_summary() RETURNS jsonb LANGUAGE sql AS $$
@@ -145,12 +147,15 @@ class ReprocessIntegrationTest(unittest.TestCase):
                 CREATE FUNCTION homes.web_summary() RETURNS jsonb LANGUAGE sql STABLE AS $$
                     SELECT payload FROM homes.portal_snapshot WHERE name='web_summary' $$""")
         ensure_replay_schema(self.conn)
-        self.assertEqual(replay_batch(self.conn)["processed"], 4)
+        with patch("entity_reprocess.reprocess_queue", side_effect=AssertionError("unexpected row fallback")):
+            self.assertEqual(replay_batch(self.conn)["processed"], 5)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
         self.assertEqual(self.scalar("""SELECT raw_features_json->>'_legacy_entity_raw'
             FROM homes.proyecto WHERE id='legacy-scalar'"""), "texto original")
         self.assertEqual(self.scalar("""SELECT count(*) FROM homes.proyecto
             WHERE raw_features_json->'_entity_policy'->>'version'=%s""", (POLICY_VERSION,)), 4)
+        self.assertEqual(self.scalar("""SELECT raw_json->'_entity_policy'->>'version'
+            FROM homes.licencia WHERE id=9223372036854775806"""), POLICY_VERSION)
         self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 4})
 
         activate_policy(self.conn)

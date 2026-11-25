@@ -195,14 +195,15 @@ def _add_stats(total: dict, batch: dict) -> None:
 
 def _replay_table(cur, table: str, ids: list[str], version: str) -> tuple[dict, list[str]]:
     raw_col, _ = TABLES[table]
+    entity_ids = [int(key) for key in ids] if table == "licencia" else ids
     # Materialize the entity locks before taking queue locks, in the order used
     # by normal ingestion. Missing or temporarily locked rows use the regular worker.
     cur.execute(f"""WITH locked_entities AS MATERIALIZED (
         SELECT * FROM homes.{table} WHERE id=ANY(%s) ORDER BY id FOR UPDATE SKIP LOCKED
       )
       SELECT e.*, q.reason AS queue_reason FROM locked_entities e
-      JOIN homes.entity_reprocess_queue q ON q.entity_table=%s AND q.entity_id=e.id
-      FOR UPDATE OF q SKIP LOCKED""", (ids, table))
+      JOIN homes.entity_reprocess_queue q ON q.entity_table=%s AND q.entity_id=e.id::text
+      FOR UPDATE OF q SKIP LOCKED""", (entity_ids, table))
     metadata = {
         row["id"]: _metadata(row, table, version, row["queue_reason"])
         for row in cur.fetchall()
@@ -214,10 +215,11 @@ def _replay_table(cur, table: str, ids: list[str], version: str) -> tuple[dict, 
             [(key, Json(value)) for key, value in metadata.items()],
             template="(%s,%s::jsonb)", page_size=REPLAY_BATCH_SIZE)
         cur.execute("""DELETE FROM homes.entity_reprocess_queue
-            WHERE entity_table=%s AND entity_id=ANY(%s)""", (table, list(metadata)))
+            WHERE entity_table=%s AND entity_id=ANY(%s)""", (table, [str(key) for key in metadata]))
     stats = {"processed": len(metadata), "failed": 0,
              "unknown": sum(value["entity_type"] == "pendiente" for value in metadata.values())}
-    return stats, [key for key in ids if key not in metadata]
+    classified = {str(key) for key in metadata}
+    return stats, [key for key in ids if key not in classified]
 
 
 def replay_batch(conn) -> dict:
