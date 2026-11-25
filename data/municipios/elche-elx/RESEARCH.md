@@ -24,7 +24,7 @@ Municipio: Elche/Elx (`elche-elx`), provincia Alicante, Comunitat Valenciana. Bo
 
 - **Web WordPress (citygov):** secciones de urbanismo con PDFs en `/wp-content/uploads/` (edictos IP, certificados de aprobación, modificaciones puntuales, planes parciales). Listados estáticos en HTML (~50+ PDFs urbanísticos).
 - **Tablón web:** página `urbanismo/tablon-anuncios/` con PDFs de edictos, certificados pleno, resoluciones (~21 documentos).
-- **Sede STA tablón:** `PTS2_TABLON` con `KEY=all` embebe `var dataset_PTS2_TABLON = [...]` (mismo patrón TAO que Dénia). Puede tener timeout en CI (>60s); el adapter reintenta y usa web como fallback.
+- **Sede STA tablón:** `PTS2_TABLON` con `KEY=all` embebe `var dataset_PTS2_TABLON = [...]` (mismo patrón TAO que Dénia). El refresco indica `partial` y señala las fuentes municipales indisponibles cuando el tablón, el catálogo o las páginas de Urbanismo fallan. Conserva los expedientes anteriores y aprovecha la información accesible.
 - **No hay** visor municipal ArcGIS/gvsig propio enlazable por expediente. El buscador de urbanismo es página informativa sin API.
 
 ## Licencias
@@ -48,7 +48,7 @@ Municipio: Elche/Elx (`elche-elx`), provincia Alicante, Comunitat Valenciana. Bo
 
 ## Limitaciones
 
-- Sede STA puede timeout en entornos CI (BitNinja/WAF); web WordPress es fuente principal.
+- El 25 de noviembre de 2026, GitHub Actions agotó el tiempo de conexión a `sede.elche.es` y a su alias `sede.visitelche.com`. Ambos resuelven a la misma IP y devuelven el mismo tablón desde la red local. La web municipal devolvió HTTP 502 desde ambos entornos. El WFS del ICV siguió disponible para el planeamiento. [Diagnóstico en GitHub Actions](https://github.com/PabloMoran23/homes-bocm/actions/runs/45647911332)
 - Tablón mezcla subvenciones/personal; filtro regex urbanismo.
 - Sin listado público de licencias concedidas con dirección/coords.
 - PDFs sin georreferencia directa.
