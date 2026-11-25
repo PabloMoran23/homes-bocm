@@ -16,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text
 
 BASE = "https://www.ontinyent.es"
 SEDE = "https://ontinyent.sedipualba.es"
@@ -180,20 +181,12 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_by_key: dict[str, dict[str, Any]] | None = None
 
     def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ontinyent/1.0")},
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=timeout) as resp:
-                    return resp.read().decode("utf-8", errors="replace")
-            except (urllib.error.URLError, ConnectionResetError, TimeoutError) as exc:
-                last_err = exc
-                time.sleep(0.5 * (attempt + 1))
-        raise urllib.error.URLError(last_err or "fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ontinyent/1.0")},
+        )
+        return fetch_text(req, timeout=timeout, attempts=retries, encoding="utf-8")
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{BASE}/", href)

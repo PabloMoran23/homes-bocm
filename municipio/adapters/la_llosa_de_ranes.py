@@ -15,6 +15,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.lallosaderanes.es"
 SEDE_BASE = "https://lallosaderanes.sedelectronica.es"
@@ -197,9 +198,7 @@ class LaLlosaDeRanesAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-llosa-de-ranes/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        return fetch_text(req, timeout=timeout)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 120) -> bytes:
         time.sleep(self.delay_s)
@@ -207,8 +206,8 @@ class LaLlosaDeRanesAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-llosa-de-ranes/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read()
+        raw, _ = read_response(req, timeout=timeout)
+        return raw
 
     def _abs_web(self, href: str) -> str:
         return unescape(urllib.parse.urljoin(f"{self.web_base}/", href))

@@ -16,6 +16,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text
 
 SEDE_BASE = "https://massamagrell.sedelectronica.es"
 BOARD_URL = f"{SEDE_BASE}/board"
@@ -174,8 +175,7 @@ class MassamagrellAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-massamagrell/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8")
 
     def _fetch_json(self, url: str, *, timeout: int = 90) -> Any:
         time.sleep(self.delay_s)
@@ -183,8 +183,7 @@ class MassamagrellAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-massamagrell/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        return json.loads(fetch_text(req, timeout=timeout, opener=self._opener.open, encoding="utf-8"))
 
     def _collect_board(self) -> list[dict[str, Any]]:
         try:

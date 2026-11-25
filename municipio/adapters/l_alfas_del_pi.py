@@ -15,6 +15,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text
 
 BASE = "https://www.lalfas.es"
 SEDE_URL = "https://ciudadano.lalfas.es/PortalCiudadania/"
@@ -196,8 +197,7 @@ class LAlfasDelPiAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-alfas-del-pi/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text(req, timeout=timeout, encoding="utf-8")
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))

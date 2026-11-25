@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import re
@@ -16,6 +17,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://www.lavallduixo.es"
 SEDE_BASE = "https://sede.lavallduixo.es"
@@ -213,9 +215,8 @@ class LaVallDuixoAyuntamientoAdapter(AyuntamientoAdapter):
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-vall-duixo/1.0")},
         )
         ctx = self._ssl_ctx if use_sede_ssl or "sede.lavallduixo.es" in url else None
-        with urllib.request.urlopen(req, timeout=90, context=ctx) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        opener = functools.partial(urllib.request.urlopen, context=ctx)
+        return fetch_text(req, timeout=90, opener=opener)
 
     def _fetch_bytes(self, url: str) -> bytes:
         time.sleep(self.delay_s)
@@ -223,8 +224,8 @@ class LaVallDuixoAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-vall-duixo/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            return resp.read()
+        raw, _ = read_response(req, timeout=120)
+        return raw
 
     @staticmethod
     def _extract_sta_dataset(html: str, dataset_name: str) -> list[dict[str, Any]]:

@@ -17,6 +17,7 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://lalcora.es"
 SEDE_BASE = "https://lalcora.sedelectronica.es"
@@ -208,9 +209,7 @@ class LAlcoraAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-alcora/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        return fetch_text(req, timeout=timeout, opener=self._opener.open)
 
     def _fetch_bytes(self, url: str, *, timeout: int = 90) -> bytes:
         time.sleep(self.delay_s)
@@ -218,8 +217,8 @@ class LAlcoraAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-l-alcora/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            return resp.read()
+        raw, _ = read_response(req, timeout=timeout, opener=self._opener.open)
+        return raw
 
     def _collect_board(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
