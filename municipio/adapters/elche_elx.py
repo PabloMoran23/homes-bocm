@@ -17,7 +17,7 @@ from urllib.parse import unquote, urljoin
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.icv import enable_icv_compression
-from municipio.http import fetch_text, read_response
+from municipio.http import PortalReadError, fetch_text, read_response
 
 WEB_BASE = "https://www.elche.es"
 SEDE_BASE = "https://sede.elche.es"
@@ -244,18 +244,34 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
         return raw
 
     @staticmethod
-    def _extract_sta_dataset(html: str, dataset_name: str) -> list[dict[str, Any]]:
+    def _extract_sta_dataset(html: str, dataset_name: str) -> list[dict[str, Any]] | None:
         needle = f"var dataset_{dataset_name} = "
         start = html.find(needle)
         if start < 0:
-            return []
-        start += len(needle)
-        end = html.find("];", start) + 1
+            return None
+        data, _ = json.JSONDecoder().raw_decode(html[start + len(needle):].lstrip())
+        if not isinstance(data, list) or any(not isinstance(item, dict) for item in data):
+            raise ValueError(f"Invalid STA dataset {dataset_name}")
+        return data
+
+    def _municipal_page(
+        self, url: str, source: str, unavailable: list[dict[str, str]],
+    ) -> str | None:
         try:
-            data = json.loads(html[start:end])
-        except json.JSONDecodeError:
-            return []
-        return data if isinstance(data, list) else []
+            return self._fetch(url, timeout=15, retries=2)
+        except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
+            unavailable.append({"source": source, "url": url, "error": str(exc)})
+            return None
+
+    @staticmethod
+    def _coverage(unavailable: list[dict[str, str]]) -> dict[str, Any]:
+        if not unavailable:
+            return {"status": "ok"}
+        sources = dict.fromkeys(item["source"] for item in unavailable)
+        return {
+            "status": "partial", "reason": f"elche_sources_unavailable: {', '.join(sources)}",
+            "unavailable_sources": unavailable,
+        }
 
     def _tablon_detail_url(self, dboid: str) -> str:
         return (
@@ -269,13 +285,16 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
             f"APP_CODE=STA&DETALLE={dboid}&PAGE_CODE=CATALOGO&lang=ES"
         )
 
-    def _tablon_rows(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(TABLON_URL, timeout=90, retries=2)
-        except urllib.error.URLError:
+    def _tablon_rows(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
+        url = self.sede_base + TABLON_URL.removeprefix(SEDE_BASE)
+        html = self._municipal_page(url, "tablon_sta", unavailable)
+        if html is None:
             return []
+        dataset = self._extract_sta_dataset(html, "PTS2_TABLON")
+        if dataset is None:
+            raise ValueError(f"Missing STA board dataset at {url}")
         rows: list[dict[str, Any]] = []
-        for item in self._extract_sta_dataset(html, "PTS2_TABLON"):
+        for item in dataset:
             dboid = str(item.get("dboid") or "")
             titulo = _clean_title(str(item.get("descriptionProc") or item.get("externString") or ""))
             if not titulo or not dboid:
@@ -295,14 +314,17 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _catalog_rows(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(CATALOGO_URL, timeout=90, retries=2)
-        except urllib.error.URLError:
+    def _catalog_rows(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
+        url = self.sede_base + CATALOGO_URL.removeprefix(SEDE_BASE)
+        html = self._municipal_page(url, "catalogo_sta", unavailable)
+        if html is None:
             return []
+        datasets = [self._extract_sta_dataset(html, name) for name in ("CATSERV", "CATALOGO")]
+        if all(dataset is None for dataset in datasets):
+            raise ValueError(f"Missing STA catalogue dataset at {url}")
         rows: list[dict[str, Any]] = []
-        for dataset_name in ("CATSERV", "CATALOGO"):
-            for item in self._extract_sta_dataset(html, dataset_name):
+        for dataset in datasets:
+            for item in dataset or ():
                 dboid = str(item.get("dboid") or "")
                 name = _clean_title(str(item.get("name") or ""))
                 if not name or not dboid:
@@ -317,13 +339,12 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
                 )
         return rows
 
-    def _collect_web_docs(self) -> list[dict[str, Any]]:
+    def _collect_web_docs(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
         for page_url in self.seed_pages:
-            try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
+            html = self._municipal_page(page_url, "web_urbanismo", unavailable)
+            if html is None:
                 continue
             for href in RE_WP_PDF.findall(html):
                 pdf = href.strip()
@@ -429,11 +450,9 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
                 f"&typename={self.wfs_type}&outputFormat=GML3&srsName=EPSG:4326"
                 f"&count={step}&STARTINDEX={start}"
             )
-            try:
-                raw = self._fetch_bytes(url)
-                root = ET.fromstring(raw)
-            except (urllib.error.URLError, ET.ParseError):
-                break
+            root = ET.fromstring(self._fetch_bytes(url))
+            if not root.tag.endswith("}FeatureCollection"):
+                raise ValueError(f"Invalid ICV WFS collection at {url}")
             members = [el for el in root if el.tag.endswith("member")]
             if not members:
                 break
@@ -612,20 +631,20 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _collect_licencias(self) -> list[dict[str, Any]]:
+    def _collect_licencias(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
-        for row in self._tablon_rows():
+        for row in self._tablon_rows(unavailable):
             rec = self._tablon_to_licencia(row)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for row in self._catalog_rows():
+        for row in self._catalog_rows(unavailable):
             rec = self._tramite_to_licencia(row)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for row in self._collect_web_docs():
+        for row in self._collect_web_docs(unavailable):
             rec = self._pdf_to_licencia(row)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
@@ -636,7 +655,7 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
                 rows.append(rec)
         return rows
 
-    def _collect_proyectos(self) -> list[dict[str, Any]]:
+    def _collect_proyectos(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
 
@@ -645,58 +664,57 @@ class ElcheElxAyuntamientoAdapter(AyuntamientoAdapter):
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for row in self._tablon_rows():
+        for row in self._tablon_rows(unavailable):
             add(self._row_to_proyecto(row))
-        for row in self._collect_web_docs():
+        for row in self._collect_web_docs(unavailable):
             add(self._row_to_proyecto(row))
         for rec in self._collect_wfs_proyectos():
             add(rec)
+        if unavailable and not rows:
+            raise ValueError("Elche municipal sources are unavailable and no planning records were recovered")
         return rows
 
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
-        rows = self._collect_licencias()
+        unavailable: list[dict[str, str]] = []
+        rows = self._collect_licencias(unavailable)
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "source": "web_sede_tablon"}
+        return {"rows": len(rows), "source": "web_sede_tablon", **self._coverage(unavailable)}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
-        added = 0
-        for rec in self._collect_licencias():
-            if rec["id"] not in existing:
-                existing[rec["id"]] = rec
-                added += 1
-        rows = list(existing.values())
-        self._write_jsonl(out_jsonl, rows)
-        state_path.write_text(
-            json.dumps(
-                {"last_run": datetime.now(timezone.utc).isoformat(), "count": len(rows), "added": added},
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
-        return {"rows": len(rows), "added": added, "status": "ok"}
+        unavailable: list[dict[str, str]] = []
+        rows = self._collect_licencias(unavailable)
+        return self._update_rows(out_jsonl, state_path, rows, unavailable)
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
-        rows = self._collect_proyectos()
+        unavailable: list[dict[str, str]] = []
+        rows = self._collect_proyectos(unavailable)
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "source": "web_tablon_icv_wfs"}
+        return {"rows": len(rows), "source": "web_tablon_icv_wfs", **self._coverage(unavailable)}
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
+        unavailable: list[dict[str, str]] = []
+        rows = self._collect_proyectos(unavailable)
+        return self._update_rows(out_jsonl, state_path, rows, unavailable)
+
+    def _update_rows(
+        self, out_jsonl: Path, state_path: Path, records: list[dict[str, Any]],
+        unavailable: list[dict[str, str]],
+    ) -> dict[str, Any]:
         existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
         added = 0
-        for rec in self._collect_proyectos():
+        for rec in records:
             if rec["id"] not in existing:
                 existing[rec["id"]] = rec
                 added += 1
         rows = list(existing.values())
         self._write_jsonl(out_jsonl, rows)
+        coverage = self._coverage(unavailable)
         state_path.write_text(
             json.dumps(
-                {"last_run": datetime.now(timezone.utc).isoformat(), "count": len(rows), "added": added},
+                {"last_run": datetime.now(timezone.utc).isoformat(), "count": len(rows), "added": added, **coverage},
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": len(rows), "added": added, "status": "ok"}
+        return {"rows": len(rows), "added": added, **coverage}
