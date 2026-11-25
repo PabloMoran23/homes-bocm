@@ -177,6 +177,7 @@ class ReprocessIntegrationTest(unittest.TestCase):
 
         with patch("entity_reprocess.SCAN_BATCH_SIZE", 2):
             activate_policy_bounded(self.conn)
+        self.assertEqual(self.scalar("SHOW statement_timeout"), "25min")
         self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 1})
         with self.conn.cursor() as cur:
             require_policy_active(cur)
