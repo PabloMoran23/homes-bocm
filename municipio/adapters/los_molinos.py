@@ -221,6 +221,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
             or "LOS MOLINOS"
         )
         self._wfs_cache: dict[str, dict[str, Any]] | None = None
+        self._wfs_catalogue: list[dict[str, Any]] | None = None
 
     def _fetch(self, url: str, data: bytes | None = None) -> str:
         time.sleep(self.delay_s)
@@ -414,7 +415,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _wfs_query(self, cql: str, count: int = 20) -> list[dict[str, Any]]:
+    def _wfs_query(self, cql: str, count: int = 20) -> tuple[list[dict[str, Any]], bool]:
         params = urllib.parse.urlencode(
             {
                 "service": "WFS",
@@ -431,16 +432,20 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         try:
             data = self._fetch_json(url)
         except (urllib.error.URLError, json.JSONDecodeError):
-            return []
+            return [], False
         if not isinstance(data, dict):
-            return []
-        return [f for f in (data.get("features") or []) if isinstance(f, dict)]
+            return [], False
+        features = [f for f in (data.get("features") or []) if isinstance(f, dict)]
+        matched = data.get("numberMatched")
+        return features, isinstance(matched, int) and len(features) == matched
 
     def _load_wfs_ambitos(self) -> dict[str, dict[str, Any]]:
         if self._wfs_cache is not None:
             return self._wfs_cache
         muni = self.wfs_municipio.replace("'", "''")
-        feats = self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120)
+        feats, complete = self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120)
+        if complete:
+            self._wfs_catalogue = feats
         cache: dict[str, dict[str, Any]] = {}
         for f in feats:
             props = f.get("properties") or {}
@@ -472,10 +477,19 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         muni = self.wfs_municipio.replace("'", "''")
         if parts:
             pattern = "%" + "%".join(p.replace("'", "''") for p in parts[:6]) + "%"
-            feats = self._wfs_query(
-                f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '{pattern}'",
-                count=10,
-            )
+            if self._wfs_catalogue is not None and "\\" not in pattern:
+                expression = "".join(
+                    ".*" if char == "%" else "." if char == "_" else re.escape(char)
+                    for char in pattern.replace("''", "'")
+                )
+                matches = re.compile(expression, re.IGNORECASE | re.DOTALL)
+                feats = [f for f in self._wfs_catalogue
+                         if matches.fullmatch(str((f.get("properties") or {}).get("DS_NOMB_AMB") or ""))][:10]
+            else:
+                feats, _ = self._wfs_query(
+                    f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '{pattern}'",
+                    count=10,
+                )
             title_low = title.lower()
             for f in feats:
                 name = str((f.get("properties") or {}).get("DS_NOMB_AMB") or "")
@@ -509,6 +523,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         )
         return {
             "geom_geojson": merged,
+            "geometry_crs": "EPSG:4326",
             "geometry_source": "portal_wfs",
             "geometry_source_url": f"{self.wfs_url}?service=WFS&request=GetFeature&CQL_FILTER={urllib.parse.quote(cql)}",
             "coord_source": "portal_geometry_centroid",
