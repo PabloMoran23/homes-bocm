@@ -318,6 +318,10 @@ def run_due(
             print(f"  FAIL {slug}: {exc}", flush=True)
             continue
         errors = _step_errors(result)
+        sync = result.get("steps", {}).get("sync_supabase")
+        if force and not errors and sync is not None and sync.get("status") != "ok":
+            sync["error"] = sync.get("reason") or "Supabase no confirmó la ingesta"
+            errors.append("sync_supabase")
         ok = not errors
         row = {
             "slug": slug,

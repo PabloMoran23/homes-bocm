@@ -18,6 +18,17 @@ NOW = datetime(2026, 8, 19, 12, 0, tzinfo=UTC)
 
 
 class DuePlanTest(TestCase):
+    def test_forced_recovery_requires_a_successful_ingest(self) -> None:
+        plan = due_plan(slugs=["oviedo"], timestamps={}, dead_letters={"oviedo"}, now=NOW, force=True)
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded",
+            return_value={"steps": {"sync_supabase": {"status": "skipped", "reason": "sin datos"}}},
+        ), patch("ingest.release_dead_letter") as release:
+            result = run_due(force=True)
+        self.assertEqual((result["ok"], result["failed"]), (0, 1))
+        self.assertEqual(result["results"][0]["steps"]["sync_supabase"]["error"], "sin datos")
+        release.assert_not_called()
+
     def test_failed_refresh_remains_partial_and_next_municipio_runs(self) -> None:
         plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, dead_letters=set(), now=NOW)
         error = "https://example.org/urbanismo: timeout after 3 attempts"

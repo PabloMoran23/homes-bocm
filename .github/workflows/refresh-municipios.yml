@@ -22,6 +22,10 @@ on:
         description: "Slugs separados por coma (vacío = due-queue automático)"
         type: string
         default: ""
+      recovery_batches:
+        description: 'Lotes de recuperación explícitos en JSON, p. ej. ["ceuta,cadiz","oviedo"]'
+        type: string
+        default: ""
       force:
         description: "Ignorar last_ingest_at (solo con slugs)"
         type: boolean
@@ -38,6 +42,11 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    strategy:
+      max-parallel: 3
+      fail-fast: false
+      matrix:
+        slugs: ${{ fromJSON(github.event.inputs.recovery_batches || '[""]') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -52,6 +61,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          if ! command -v pdftotext >/dev/null; then
+            sudo apt-get update
+            sudo apt-get install -y poppler-utils
+          fi
           python -m pip install --upgrade pip
           pip install -r requirements-municipio.txt
           pip install -r db/requirements-supabase.txt
@@ -65,13 +78,42 @@ jobs:
           INTERVAL_DAYS: ${{ github.event.inputs.interval_days || '15' }}
           LIMIT: ${{ github.event.inputs.limit || '20' }}
           TIMEOUT_MINUTES: ${{ github.event.inputs.timeout_minutes || '30' }}
-          SLUGS: ${{ github.event.inputs.slugs || '' }}
+          SLUGS: ${{ matrix.slugs || github.event.inputs.slugs || '' }}
+          MANUAL_SLUGS: ${{ github.event.inputs.slugs || '' }}
+          RECOVERY_BATCHES: ${{ github.event.inputs.recovery_batches || '' }}
           FORCE: ${{ github.event.inputs.force || 'false' }}
         run: |
           set -euo pipefail
           if [ -z "${SUPABASE_DB_URL:-}" ]; then
             echo "SUPABASE_DB_URL is required." >&2
             exit 1
+          fi
+          if [ -n "${RECOVERY_BATCHES}" ]; then
+            python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          batches = json.loads(os.environ["RECOVERY_BATCHES"])
+          if os.environ["FORCE"] != "true" or os.environ["MANUAL_SLUGS"].strip():
+              raise SystemExit("recovery_batches requiere force=true y slugs vacío")
+          if not isinstance(batches, list) or not 1 <= len(batches) <= 10:
+              raise SystemExit("recovery_batches requiere entre 1 y 10 lotes explícitos")
+          seen = set()
+          for batch in batches:
+              if not isinstance(batch, str):
+                  raise SystemExit("Cada lote debe ser una cadena de slugs separados por comas")
+              slugs = [slug.strip() for slug in batch.split(",")]
+              if len(slugs) > min(6, int(os.environ["LIMIT"])):
+                  raise SystemExit("Cada lote admite hasta 6 municipios y debe respetar limit")
+              for slug in slugs:
+                  if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) or slug == "madrid":
+                      raise SystemExit(f"Slug municipal inválido: {slug!r}")
+                  if slug in seen or not (Path("data/municipios") / slug / "manifest.yaml").is_file():
+                      raise SystemExit(f"Municipio repetido o sin manifest: {slug}")
+                  seen.add(slug)
+          PY
           fi
           CMD_DUE=(python3 -m municipio schedule due --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}")
           CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update --timeout-minutes "${TIMEOUT_MINUTES}")
