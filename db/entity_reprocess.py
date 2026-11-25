@@ -113,6 +113,11 @@ def activate_policy_bounded(conn) -> None:
                     print(f"entity_policy: verificación {table}: {scanned} filas, {promoted} promovidas, {batches} lotes", flush=True)
                 if after is None:
                     break
+        # This final statement computes all public snapshots atomically. The
+        # hosted two-minute default still bounds the per-range validation above.
+        # Extend the budget only for the final statement in this transaction.
+        print("entity_policy: actualización atómica de snapshots (hasta 25 minutos)", flush=True)
+        cur.execute("SET LOCAL statement_timeout = '25min'")
         cur.execute("SELECT homes.activate_entity_policy_prepared()")
 
 
