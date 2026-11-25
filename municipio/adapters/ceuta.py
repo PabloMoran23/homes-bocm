@@ -5,16 +5,18 @@ from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import json
 import re
+import subprocess
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from html import unescape
 from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.http import read_response
 
 WEB_BASE = "https://www.ceuta.es/ceuta"
 SEDE_BASE = "https://sede.ceuta.es"
@@ -34,10 +36,8 @@ DEFAULT_PGOU_PAGES: list[str] = [
     ),
 ]
 
-DEFAULT_BOCCE_CATEGORIES: list[str] = [
-    f"{WEB_BASE}/component/jdownloads/viewcategory/1978-julio?Itemid=0",
-    f"{WEB_BASE}/component/jdownloads/viewcategory/1971-marzo?Itemid=0",
-]
+BOCCE_MONTHS = ("enero", "febrero", "marzo", "abril", "mayo", "junio",
+                "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre")
 
 DEFAULT_TRAMITES: list[tuple[str, str]] = [
     ("OMAY", "licencia"),
@@ -83,7 +83,14 @@ RE_INSTRUMENT_CODE = re.compile(
     re.I,
 )
 RE_BOCCE_ITEM = re.compile(
-    r"(?m)(\d+)\.-\s*([^\n]{15,400}?)(?:\n|Pág\.|$)",
+    r"(?m)^[ \t]*(?:(?:ORDINARIO|E?EXTRAORDINARIO)[ \t]+)?(\d+)\s*\.\s*[-\u00ad\u2010-\u2014][ \t]*"
+)
+RE_BOCCE_PAGE = re.compile(r"\bP[áa]g\.?\s*\d+", re.I)
+RE_BOCCE_CATEGORY = re.compile(r'href=["\']([^"\']*/viewcategory/\d+-([a-z0-9]+)(?:\?[^"\']*)?)["\']', re.I)
+RE_BOCCE_PLANNING = re.compile(
+    r"(?i)planeamiento|plan (?:parcial|especial|general)|PGOU|urban[ií]stic|"
+    r"reparcel|ordenaci[oó]n urbana|suelo (?:urbano|urbanizable)|estudio de detalle|"
+    r"proyecto de (?:urbanizaci[oó]n|edificaci[oó]n)"
 )
 RE_BOCCE_FILE = re.compile(
     r'href=["\']([^"\']*component/jdownloads/finish/[^"\']*bocce[^"\']*)["\']',
@@ -162,9 +169,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
         self.web_base = str(self.config.get("web_base") or WEB_BASE).rstrip("/")
         self.sede_base = str(self.config.get("sede_base") or SEDE_BASE).rstrip("/")
         self.pgou_pages = [str(u) for u in (self.config.get("pgou_pages") or DEFAULT_PGOU_PAGES)]
-        self.bocce_categories = [
-            str(u) for u in (self.config.get("bocce_categories") or DEFAULT_BOCCE_CATEGORIES)
-        ]
+        self.bocce_categories = [str(u) for u in self.config.get("bocce_categories", [])]
         raw_tram = self.config.get("tramites") or DEFAULT_TRAMITES
         self.tramites: list[tuple[str, str]] = [
             (str(a), str(b)) for a, b in raw_tram
@@ -181,7 +186,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
         key = hashlib.sha256(url.encode("utf-8")).hexdigest()[:20]
         return self._cache_dir / f"{key}.html"
 
-    def _fetch(self, url: str, timeout: int = 120) -> str:
+    def _fetch(self, url: str, timeout: int = 22) -> str:
         cached = self._cache_path(url)
         if cached and cached.is_file():
             return cached.read_text(encoding="utf-8", errors="replace")
@@ -191,13 +196,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ceuta/1.0")},
         )
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as resp:
-                raw = resp.read()
-        except urllib.error.URLError:
-            if cached and cached.is_file():
-                return cached.read_text(encoding="utf-8", errors="replace")
-            raise
+        raw, _ = read_response(req, timeout=timeout, attempts=2)
 
         for enc in ("utf-8", "latin-1", "iso-8859-1"):
             try:
@@ -209,6 +208,41 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
             cached.parent.mkdir(parents=True, exist_ok=True)
             cached.write_text(text, encoding="utf-8")
         return text
+
+    def _recent_bocce_categories(self) -> list[str]:
+        archive = f"{self.web_base}/bocce"
+        years = {slug: self._abs_url(href, archive) for href, slug in RE_BOCCE_CATEGORY.findall(self._fetch(archive))}
+        now = datetime.now(timezone.utc)
+        dates = [now, now.replace(day=1) - timedelta(days=1)]
+        months = {}
+        categories = []
+        for date in dates:
+            if date.year not in months:
+                year_url = years.get(str(date.year))
+                if not year_url:
+                    continue
+                months[date.year] = {slug: self._abs_url(href, year_url)
+                                     for href, slug in RE_BOCCE_CATEGORY.findall(self._fetch(year_url))}
+            month = months[date.year].get(BOCCE_MONTHS[date.month - 1])
+            if month:
+                categories.append(month)
+        if not categories:
+            raise RuntimeError(f"BOCCE: no recent month categories found at {archive}")
+        return categories
+
+    def _bocce_summary(self, url: str) -> str:
+        req = urllib.request.Request(
+            url, headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ceuta/1.0")},
+        )
+        raw, _ = read_response(req, timeout=22, attempts=2)
+        if raw.startswith(b"%PDF-"):
+            return subprocess.run(
+                ["pdftotext", "-layout", "-f", "1", "-l", "4", "-", "-"],
+                input=raw, capture_output=True, check=True, timeout=25,
+            ).stdout.decode("utf-8")
+        html = raw.decode("utf-8", errors="replace")
+        text = re.sub(r"</(?:p|li|div|tr)>|<br\s*/?>", "\n", html, flags=re.I)
+        return unescape(re.sub(r"<[^>]+>", "", text))
 
     def _abs_url(self, href: str, page_url: str) -> str:
         return unescape(urllib.parse.urljoin(page_url, href))
@@ -287,34 +321,34 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
         issue_urls: list[str] = []
         seen_issues: set[str] = set()
 
-        for cat_url in self.bocce_categories:
-            try:
-                html = self._fetch(cat_url)
-            except urllib.error.URLError:
-                continue
-            for href in RE_BOCCE_FILE.findall(html):
+        for cat_url in self.bocce_categories or self._recent_bocce_categories():
+            for href in RE_BOCCE_FILE.findall(self._fetch(cat_url)):
                 full = self._abs_url(href, cat_url)
-                if full not in seen_issues:
-                    seen_issues.add(full)
-                    issue_urls.append(full)
-            for href in RE_JDOWNLOAD.findall(html):
-                full = self._abs_url(href, cat_url)
-                if "bocce" in full.lower() and full not in seen_issues:
-                    seen_issues.add(full)
+                key = urllib.parse.urlsplit(full).path
+                if key not in seen_issues:
+                    seen_issues.add(key)
                     issue_urls.append(full)
 
+        issue_urls.sort(key=lambda url: _fecha_from_text(url) or "", reverse=True)
+        if not issue_urls:
+            raise RuntimeError("BOCCE: no issues found in recent categories")
         for issue_url in issue_urls[: self.bocce_max_issues]:
-            try:
-                html = self._fetch(issue_url, timeout=180)
-            except urllib.error.URLError:
-                continue
-            plain = _clean_title(html)
+            plain = self._bocce_summary(issue_url)
             fecha = _fecha_from_text(issue_url) or _fecha_from_text(plain)
-            for num, body in RE_BOCCE_ITEM.findall(plain):
-                blob = f"{num}.- {body}"
+            starts = list(RE_BOCCE_ITEM.finditer(plain))
+            seen_articles = set()
+            for index, match in enumerate(starts):
+                num = match.group(1)
+                stop = starts[index + 1].start() if index + 1 < len(starts) else len(plain)
+                body = plain[match.end():stop].split("\f", 1)[0]
+                page = RE_BOCCE_PAGE.search(body)
+                if not page or num in seen_articles:
+                    continue
+                seen_articles.add(num)
+                blob = f"{num}.- {_clean_title(body[:page.start()])}"
                 if RE_EXCLUDE.search(blob):
                     continue
-                if not RE_PROYECTO.search(blob) and not RE_LICENCIA.search(blob):
+                if not RE_BOCCE_PLANNING.search(blob) and not RE_LICENCIA.search(blob):
                     continue
                 items.append(
                     {
@@ -430,7 +464,8 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 add(
                     {
                         "id": _stable_id("lic", item["url"] + blob[:80]),
-                        "fecha_concesion": item.get("fecha"),
+                        "fecha_concesion": None,
+                        "fecha_publicacion": item.get("fecha"),
                         "tipo": "licencia",
                         "distrito": None,
                         "lat": None,
