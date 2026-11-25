@@ -23,6 +23,7 @@
 - **API Digital Value:** `api.digitalvalue.es/mislata/collections/articulos` devuelve 0 artículos — no usable.
 - **Tablón:** sedipualba ASP.NET con RSS funcional. Últimos 20 ítems son personal/subvenciones; sin edictos urbanísticos recientes.
 - **Licencias:** no hay registro público de concesiones. Trámites URB.* y OBS.* en catálogo sedipualba (licencia edificación, obra mayor, DR, demolición, primera ocupación, etc.).
+- En la comprobación del 25/11/2026, el RSS, el tablón HTML y el catálogo de Sedipualb@ agotaron el tiempo de espera en GitHub Actions. La web municipal y el ICV respondieron. El refresco conserva los datos previos, publica la cobertura parcial y continúa con el planeamiento oficial y los trámites informativos de la oficina virtual municipal. El tablón de la web municipal contiene una selección de avisos.
 
 ## Licencias de obra
 
