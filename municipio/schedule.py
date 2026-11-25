@@ -23,6 +23,7 @@ from typing import Any
 
 from municipio.manifest import MUNICIPIOS_DIR, POC_ROOT, list_manifest_slugs, load_manifest, load_yaml
 from municipio.orchestrator import run
+from municipio.sync_supabase import retry_database_write
 
 DB_DIR = POC_ROOT / "db"
 if str(DB_DIR) not in sys.path:
@@ -305,9 +306,12 @@ def run_due(
             }
             try:
                 from ingest import park_dead_letter
-                park_dead_letter(
-                    slug, step="schedule_timeout" if isinstance(exc, TimeoutError) else step,
-                    error=str(exc),
+                retry_database_write(
+                    lambda: park_dead_letter(
+                        slug, step="schedule_timeout" if isinstance(exc, TimeoutError) else step,
+                        error=str(exc),
+                    ),
+                    slug=slug, operation="escritura de la cola de fallos",
                 )
                 row["retry"] = "dead_letter"
             except Exception as park_exc:
@@ -334,12 +338,18 @@ def run_due(
         }
         out["results"].append(row)
         if ok:
-            out["ok"] += 1
             try:
                 from ingest import release_dead_letter
-                release_dead_letter(slug)
+                retry_database_write(
+                    lambda: release_dead_letter(slug),
+                    slug=slug, operation="salida de la cola de fallos",
+                )
             except Exception as exc:
-                print(f"aviso schedule: no se pudo quitar {slug} de la dead letter ({exc})", flush=True)
+                row.update(ok=False, dead_letter_error=str(exc))
+                out["failed"] += 1
+                print(f"  DLQ FAIL {slug}: {exc}", flush=True)
+                continue
+            out["ok"] += 1
             print(f"  OK {slug}", flush=True)
         else:
             out["failed"] += 1
