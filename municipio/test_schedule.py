@@ -18,6 +18,16 @@ NOW = datetime(2026, 8, 19, 12, 0, tzinfo=UTC)
 
 
 class DuePlanTest(TestCase):
+    def test_reports_failed_queue_release_after_ingest(self) -> None:
+        plan = due_plan(slugs=["oviedo"], timestamps={}, dead_letters={"oviedo"}, now=NOW, force=True)
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded",
+            return_value={"steps": {"sync_supabase": {"status": "ok"}}},
+        ), patch("ingest.release_dead_letter", side_effect=RuntimeError("not released")):
+            result = run_due(force=True)
+        self.assertEqual((result["ok"], result["failed"]), (0, 1))
+        self.assertEqual(result["results"][0]["dead_letter_error"], "not released")
+
     def test_forced_recovery_requires_a_successful_ingest(self) -> None:
         plan = due_plan(slugs=["oviedo"], timestamps={}, dead_letters={"oviedo"}, now=NOW, force=True)
         with patch("municipio.schedule.due_plan", return_value=plan), patch(

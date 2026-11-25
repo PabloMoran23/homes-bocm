@@ -8,6 +8,19 @@ from municipio.sync_supabase import sync_manifest
 
 
 class SyncManifestTest(TestCase):
+    def test_retries_a_read_only_backend_for_the_next_transaction(self):
+        manifest = SimpleNamespace(slug="valladolid")
+        with (
+            patch.dict("os.environ", {"SUPABASE_DB_URL": "test"}),
+            patch(
+                "municipio.sync_supabase.sync_municipio_output",
+                side_effect=[psycopg2.errors.ReadOnlySqlTransaction("read-only"), {"status": "ok"}],
+            ) as sync,
+            patch("municipio.sync_supabase.time.sleep"),
+        ):
+            self.assertEqual(sync_manifest(manifest), {"status": "ok"})
+        self.assertEqual(sync.call_count, 2)
+
     def test_retries_a_lost_connection_against_the_same_output(self):
         manifest = SimpleNamespace(slug="pajara")
         with (
