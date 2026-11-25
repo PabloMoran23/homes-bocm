@@ -11,7 +11,10 @@ from psycopg2.extras import Json
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "db"))
 sys.path.insert(0, str(ROOT))
-from entity_reprocess import activate_policy, ensure_schema, enqueue_stale, reprocess_queue, require_policy_active
+from entity_reprocess import (
+    activate_policy, ensure_replay_schema, ensure_schema, enqueue_stale, replay_batch,
+    reprocess_queue, require_policy_active,
+)
 from ingest import _publish_madrid, portal_proyecto_row, save_proyectos, save_licencias
 from municipio.entity_policy import POLICY_VERSION
 from municipio.manifest import load_manifest
@@ -124,6 +127,38 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertTrue(self.scalar("SELECT active FROM homes.entity_policy_config"))
         self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+
+    def test_rollout_replays_legacy_nulls_and_updates_snapshot_producer(self):
+        self.legacy_without_policy()
+        with self.conn.cursor() as cur:
+            cur.execute("""INSERT INTO homes.proyecto(id,denominacion,raw_features_json)
+                VALUES ('legacy-null','Formulario urbanístico',NULL),
+                       ('legacy-json-null','Formulario urbanístico','null'),
+                       ('legacy-scalar','Formulario urbanístico','"texto original"')""")
+            cur.execute("""CREATE TABLE homes.portal_snapshot(name text PRIMARY KEY, payload jsonb);
+                INSERT INTO homes.portal_snapshot VALUES ('web_summary','{"projects":4}');
+                CREATE FUNCTION homes.compute_web_summary() RETURNS jsonb LANGUAGE sql AS $$
+                    SELECT jsonb_build_object('projects', count(*)) FROM homes.proyecto $$;
+                CREATE FUNCTION homes.refresh_map_card_snapshots() RETURNS void LANGUAGE sql AS $$
+                    UPDATE homes.portal_snapshot SET payload=homes.compute_web_summary()
+                    WHERE name='web_summary' $$;
+                CREATE FUNCTION homes.web_summary() RETURNS jsonb LANGUAGE sql STABLE AS $$
+                    SELECT payload FROM homes.portal_snapshot WHERE name='web_summary' $$""")
+        ensure_replay_schema(self.conn)
+        self.assertEqual(replay_batch(self.conn)["processed"], 4)
+        self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+        self.assertEqual(self.scalar("""SELECT raw_features_json->>'_legacy_entity_raw'
+            FROM homes.proyecto WHERE id='legacy-scalar'"""), "texto original")
+        self.assertEqual(self.scalar("""SELECT count(*) FROM homes.proyecto
+            WHERE raw_features_json->'_entity_policy'->>'version'=%s""", (POLICY_VERSION,)), 4)
+        self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 4})
+
+        activate_policy(self.conn)
+        self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 1})
+        with self.conn.cursor() as cur:
+            require_policy_active(cur)
+        self.assertIn("FROM homes.portal_snapshot", self.scalar(
+            "SELECT pg_get_functiondef('homes.web_summary()'::regprocedure)"))
 
     def test_madrid_sigma_batch_activates_the_written_projects_only(self):
         self.add("unrelated")

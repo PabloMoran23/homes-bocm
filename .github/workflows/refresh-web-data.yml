@@ -151,17 +151,11 @@ jobs:
           fi
           python3 -m db.refresh_madrid "${args[@]}"
 
-      - name: Check active classification policy
-        timeout-minutes: 2
+      - name: Activate classification policy when needed
+        timeout-minutes: 30
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: |
-          python3 - <<'PY'
-          from db.ingest import connect
-          from db.entity_reprocess import require_policy_active
-          with connect() as conn, conn.cursor() as cur:
-              require_policy_active(cur)
-          PY
+        run: python3 -m db.entity_reprocess --ensure-active
 
       - name: Prepare blind entity review sample
         env:

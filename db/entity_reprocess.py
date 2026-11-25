@@ -5,6 +5,7 @@ Ejecutar tras migraciones/sync y antes de publicar. No accede a modelos.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -16,6 +17,19 @@ from municipio.entity_policy import POLICY_KEY, POLICY_VERSION, annotate, origin
 from psycopg2.extras import Json, RealDictCursor, execute_values
 
 TABLES = {"proyecto": ("raw_features_json", "id"), "licencia": ("raw_json", "id")}
+REPLAY_BATCH_SIZE = 500
+
+
+def ensure_replay_schema(conn) -> None:
+    ensure_schema(conn)
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
+        if cur.fetchone()[0] is not None:
+            return
+        cur.execute("SELECT pg_advisory_xact_lock(85020261014)")
+        cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
+        if cur.fetchone()[0] is None:
+            cur.execute((ROOT / "supabase/migrations/20261125190000_entity_policy_rollout_repair.sql").read_text())
 
 
 def ensure_schema(conn) -> None:
@@ -51,9 +65,16 @@ def activate_policy(conn) -> None:
         cur.execute("SELECT homes.activate_entity_policy()")
 
 
+def _raw_record(value) -> dict:
+    if isinstance(value, dict):
+        return value
+    return {"_legacy_entity_raw": value} if value is not None else {}
+
+
 def source_record(row: dict, table: str) -> dict:
     raw_col, _ = TABLES[table]
-    raw = original(row.get(raw_col) or {})
+    stored = _raw_record(row.get(raw_col))
+    raw = original(stored)
     # Las columnas son evidencia auxiliar; el JSON original tiene prioridad.
     fields = ("denominacion", "enlace", "visor_url", "bocm_pdf_url", "expediente_grupo",
               "exp_numero_original", "object_id", "sigma_layer_kind", "fuente", "id_origen",
@@ -63,7 +84,7 @@ def source_record(row: dict, table: str) -> dict:
         if field not in raw and row.get(field) is not None:
             raw[field] = row[field]
     # Fecha concesión es un derivado antiguo: un mero `fecha` no prueba concesión.
-    if table == "licencia" and "fecha" in raw and "fecha_concesion" not in (row.get(raw_col) or {}):
+    if table == "licencia" and "fecha" in raw and "fecha_concesion" not in stored:
         raw.pop("fecha_concesion", None)
     return raw
 
@@ -83,11 +104,11 @@ def _metadata(row: dict, table: str, version: str, reason: str) -> dict:
     raw_col, _ = TABLES[table]
     derived = annotate(source_record(row, table), kind=table)
     metadata = {k: v for k, v in derived[POLICY_KEY].items() if k != "active"}
-    previous = (row.get(raw_col) or {}).get(POLICY_KEY) or {}
+    previous = _raw_record(row.get(raw_col)).get(POLICY_KEY)
     active = None
     if metadata["version"] == version:
         active = dict(metadata)
-    elif reason == "policy_change" and isinstance(previous.get("active"), dict):
+    elif reason == "policy_change" and isinstance(previous, dict) and isinstance(previous.get("active"), dict):
         # A prepared policy version keeps the active classification until rollout.
         active = previous["active"]
     return {**metadata, "active": active}
@@ -151,7 +172,7 @@ def reprocess_queue(conn, *, table: str | None = None, ids: list[str] | None = N
                 if row:
                     metadata = _metadata(row, entity_table, config["version"], item["reason"])
                     # No reemplazar el original por la proyección con columnas auxiliares.
-                    stored = {**(row.get(raw_col) or {}), POLICY_KEY: metadata}
+                    stored = {**_raw_record(row.get(raw_col)), POLICY_KEY: metadata}
                     cur.execute(f"UPDATE homes.{entity_table} SET {raw_col}=%s WHERE id=%s", (Json(stored), entity_id))
                     stats["unknown"] += metadata["entity_type"] == "pendiente"
                 cur.execute("DELETE FROM homes.entity_reprocess_queue WHERE entity_table=%s AND entity_id=%s", (entity_table, entity_id))
@@ -167,19 +188,90 @@ def reprocess_queue(conn, *, table: str | None = None, ids: list[str] | None = N
     return stats
 
 
+def _add_stats(total: dict, batch: dict) -> None:
+    for key in total:
+        total[key] += batch[key]
+
+
+def _replay_table(cur, table: str, ids: list[str], version: str) -> tuple[dict, list[str]]:
+    raw_col, _ = TABLES[table]
+    # Materialize the entity locks before taking queue locks, in the order used
+    # by normal ingestion. Missing or temporarily locked rows use the regular worker.
+    cur.execute(f"""WITH locked_entities AS MATERIALIZED (
+        SELECT * FROM homes.{table} WHERE id=ANY(%s) ORDER BY id FOR UPDATE SKIP LOCKED
+      )
+      SELECT e.*, q.reason AS queue_reason FROM locked_entities e
+      JOIN homes.entity_reprocess_queue q ON q.entity_table=%s AND q.entity_id=e.id
+      FOR UPDATE OF q SKIP LOCKED""", (ids, table))
+    metadata = {
+        row["id"]: _metadata(row, table, version, row["queue_reason"])
+        for row in cur.fetchall()
+    }
+    if metadata:
+        execute_values(cur, f"""UPDATE homes.{table} t SET {raw_col} =
+            jsonb_set(homes.entity_classification_raw(t.{raw_col}), '{{_entity_policy}}', v.metadata)
+            FROM (VALUES %s) v(id, metadata) WHERE t.id=v.id""",
+            [(key, Json(value)) for key, value in metadata.items()],
+            template="(%s,%s::jsonb)", page_size=REPLAY_BATCH_SIZE)
+        cur.execute("""DELETE FROM homes.entity_reprocess_queue
+            WHERE entity_table=%s AND entity_id=ANY(%s)""", (table, list(metadata)))
+    stats = {"processed": len(metadata), "failed": 0,
+             "unknown": sum(value["entity_type"] == "pendiente" for value in metadata.values())}
+    return stats, [key for key in ids if key not in metadata]
+
+
+def replay_batch(conn) -> dict:
+    """Replay the global queue in bounded transactions and isolate individual failures."""
+    total = {"processed": 0, "failed": 0, "unknown": 0}
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("""SELECT entity_table, entity_id FROM homes.entity_reprocess_queue
+            ORDER BY queued_at, entity_table, entity_id LIMIT %s""", (REPLAY_BATCH_SIZE,))
+        pending = cur.fetchall()
+        cur.execute("SELECT version FROM homes.entity_policy_config WHERE singleton")
+        version = cur.fetchone()["version"]
+        for table in TABLES:
+            ids = [row["entity_id"] for row in pending if row["entity_table"] == table]
+            if not ids:
+                continue
+            cur.execute("SAVEPOINT replay_table")
+            try:
+                stats, remaining = _replay_table(cur, table, ids, version)
+                _add_stats(total, stats)
+            except Exception:
+                cur.execute("ROLLBACK TO SAVEPOINT replay_table")
+                remaining = ids
+            finally:
+                cur.execute("RELEASE SAVEPOINT replay_table")
+            if remaining:
+                _add_stats(total, reprocess_queue(conn, table=table, ids=remaining))
+    return total
+
+
 def main() -> int:
-    from ingest import connect
+    from db.ingest import connect
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--ensure-active", action="store_true",
+                        help="Skip historical replay when the current policy is already active.")
+    args = parser.parse_args()
     total = {"processed": 0, "failed": 0, "unknown": 0}
     with connect() as conn:
-        ensure_schema(conn)
+        if args.ensure_active:
+            with conn.cursor() as cur:
+                try:
+                    require_policy_active(cur)
+                except RuntimeError:
+                    pass
+                else:
+                    print(json.dumps({"control_active": True, "active_version": POLICY_VERSION}), flush=True)
+                    return 0
+        ensure_replay_schema(conn)
         enqueue_stale(conn)
         conn.commit()
         while True:
-            batch = reprocess_queue(conn)
+            batch = replay_batch(conn)
             conn.commit()
-            for key in total:
-                total[key] += batch[key]
-            if batch["failed"] or batch["processed"] < 500:
+            _add_stats(total, batch)
+            if batch["failed"] or not batch["processed"]:
                 break
         with conn.cursor() as cur:
             cur.execute("SELECT entity_table, count(*), count(*) FILTER (WHERE attempts>0) FROM homes.entity_reprocess_queue GROUP BY entity_table")
