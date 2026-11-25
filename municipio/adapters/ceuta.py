@@ -16,12 +16,17 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
-from municipio.http import read_response
+from municipio.geometry import geometry_centroid
+from municipio.http import PortalReadError, read_response
 
 WEB_BASE = "https://www.ceuta.es/ceuta"
 SEDE_BASE = "https://sede.ceuta.es"
 MUNICIPIO = "Ceuta"
 ID_PREFIX = "ceuta"
+PGOU_TOMO3_URL = f"{WEB_BASE}/la-institucion/normativa/152-paginas/paginas/pgou/paginas/4863-tomo-3-2023"
+SIU_SECTORES = "https://mapas.fomento.gob.es/arcgis/rest/services/SIU/%C3%81mbitos_o_Sectores/MapServer/0/query"
+SIU_PREFIX = "GIS_SIU.SIU.SECTORES_WM."
+PORTAL_FAILURES = (urllib.error.URLError, TimeoutError, PortalReadError)
 
 TRAMITE_URL = (
     f"{SEDE_BASE}/controlador/controlador?cmd=tramite&modulo=tramites&tramite={{code}}"
@@ -30,10 +35,7 @@ TRAMITE_URL = (
 DEFAULT_PGOU_PAGES: list[str] = [
     f"{WEB_BASE}/trpgouce",
     f"{WEB_BASE}/por-servicios/sede-electronica/152-paginas/paginas/pgou/paginas",
-    (
-        f"{WEB_BASE}/la-institucion/normativa/152-paginas/paginas/pgou/paginas/"
-        "4863-tomo-3-2023"
-    ),
+    PGOU_TOMO3_URL,
 ]
 
 BOCCE_MONTHS = ("enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -261,7 +263,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                     return t[:200]
         return fallback
 
-    def _collect_pgou_documents(self) -> list[dict[str, Any]]:
+    def _collect_pgou_documents(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
         seen: set[str] = set()
 
@@ -282,8 +284,9 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
 
         for page_url in self.pgou_pages:
             try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
+                html = self._fetch(page_url, timeout=12)
+            except PORTAL_FAILURES as exc:
+                unavailable.append({"source": "pgou", "url": page_url, "error": str(exc)})
                 continue
             page_title = self._page_heading(html, "PGOU Ceuta")
             fecha_page = _fecha_from_text(html) or None
@@ -315,6 +318,41 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
 
         return items
+
+    def _collect_siu_sectors(self) -> list[dict[str, Any]]:
+        params = urllib.parse.urlencode({
+            "where": f"{SIU_PREFIX}ProvINE='51001' AND {SIU_PREFIX}FechaBaja='99999999'",
+            "f": "geojson", "outFields": "*", "returnGeometry": "true", "outSR": 4326,
+            "resultRecordCount": 100,
+        })
+        url = f"{SIU_SECTORES}?{params}"
+        data = json.loads(self._fetch(url, timeout=15))
+        features = data.get("features")
+        if data.get("type") != "FeatureCollection" or not isinstance(features, list) or not 0 < len(features) < 100:
+            raise ValueError("SIU returned no usable complete Ceuta sector collection")
+        rows: list[dict[str, Any]] = []
+        seen: set[str] = set()
+        for feature in features:
+            props, geom = feature["properties"], feature["geometry"]
+            code = str(props.get(f"{SIU_PREFIX}IdSector") or "").removeprefix("51001")
+            if (props.get(f"{SIU_PREFIX}ProvINE") != "51001" or code in seen
+                    or not RE_INSTRUMENT_CODE.fullmatch(code)):
+                raise ValueError(f"Unexpected Ceuta sector identity from SIU: {code}")
+            if not isinstance(geom, dict) or geom.get("type") not in {"Polygon", "MultiPolygon"}:
+                raise ValueError(f"Missing SIU sector polygon for Ceuta {code}")
+            seen.add(code)
+            # Tomo 3 keys are also used by the municipal scraper for these planning codes.
+            title = f"PGOU 2023 — instrumento {code}"
+            row = self._to_proyecto(title, PGOU_TOMO3_URL, None, origen="siu_sectores")
+            row.update({
+                "geom_geojson": geom, "geometry_crs": "EPSG:4326", "geometry_source": "portal_wfs",
+                "geometry_source_url": url, "coord_source": "portal_geometry_centroid",
+            })
+            center = geometry_centroid(geom)
+            if center:
+                row["lat"], row["lon"] = center
+            rows.append(row)
+        return rows
 
     def _collect_bocce(self) -> list[dict[str, Any]]:
         items: list[dict[str, Any]] = []
@@ -361,14 +399,24 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
         return items
 
-    def _collect_tramites(self) -> list[dict[str, Any]]:
+    def _available_bocce(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
+        try:
+            return self._collect_bocce()
+        except PORTAL_FAILURES as exc:
+            unavailable.append({"source": "bocce", "url": f"{self.web_base}/bocce", "error": str(exc)})
+            return []
+
+    def _collect_tramites(self, unavailable: list[dict[str, str]]) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         for code, kind_hint in self.tramites:
             url = self._tramite_url(code)
             try:
-                html = self._fetch(url)
+                html = self._fetch(url, timeout=12)
             except urllib.error.URLError:
                 continue
+            except (TimeoutError, PortalReadError) as exc:
+                unavailable.append({"source": "sede_tramites", "url": url, "error": str(exc)})
+                break
             title = self._page_heading(html, code)
             rows.append(
                 {
@@ -380,6 +428,16 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 }
             )
         return rows
+
+    @staticmethod
+    def _coverage(unavailable: list[dict[str, str]]) -> dict[str, Any]:
+        if not unavailable:
+            return {"status": "ok"}
+        sources = dict.fromkeys(item["source"] for item in unavailable)
+        return {
+            "status": "partial", "reason": f"ceuta_sources_unavailable: {', '.join(sources)}",
+            "unavailable_sources": unavailable,
+        }
 
     def _to_licencia(self, item: dict[str, Any]) -> dict[str, Any] | None:
         blob = item.get("titulo") or ""
@@ -446,19 +504,20 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_licencias(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
+        unavailable: list[dict[str, str]] = []
 
         def add(rec: dict[str, Any] | None) -> None:
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for item in self._collect_tramites():
+        for item in self._collect_tramites(unavailable):
             if item.get("kind_hint") == "licencia":
                 add(self._to_licencia(item))
-        for item in self._collect_bocce():
+        for item in self._available_bocce(unavailable):
             blob = item["titulo"]
             if RE_LICENCIA.search(blob):
                 add(
@@ -477,42 +536,33 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                     }
                 )
 
+        return rows, self._coverage(unavailable)
+
+    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_licencias()
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **coverage,
             "tramites": sum(1 for r in rows if r.get("origen") == "sede_tramite"),
             "bocce": sum(1 for r in rows if r.get("origen") == "bocce"),
         }
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        self.backfill_licencias(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
-        state_path.write_text(
-            json.dumps(
-                {
-                    "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        rows, coverage = self._collect_licencias()
+        return self._update_rows(out_jsonl, state_path, rows, coverage)
 
-    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_proyectos(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
+        unavailable: list[dict[str, str]] = []
 
         def add(rec: dict[str, Any] | None) -> None:
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
 
-        for doc in self._collect_pgou_documents():
+        for doc in self._collect_pgou_documents(unavailable):
             add(
                 self._to_proyecto(
                     doc["titulo"],
@@ -523,7 +573,7 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
             )
 
-        for item in self._collect_bocce():
+        for item in self._available_bocce(unavailable):
             add(
                 self._to_proyecto(
                     item["titulo"],
@@ -534,7 +584,11 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
             )
 
-        for item in self._collect_tramites():
+        if unavailable and not rows:
+            for row in self._collect_siu_sectors():
+                add(row)
+
+        for item in self._collect_tramites(unavailable):
             if item.get("kind_hint") == "proyecto":
                 add(
                     self._to_proyecto(
@@ -545,29 +599,45 @@ class CeutaAyuntamientoAdapter(AyuntamientoAdapter):
                     )
                 )
 
+        return rows, self._coverage(unavailable)
+
+    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_proyectos()
         self._write_jsonl(out_jsonl, rows)
         return {
             "rows": len(rows),
-            "status": "ok",
+            **coverage,
             "pgou": sum(1 for r in rows if r.get("origen") == "pgou_jdownloads"),
             "bocce": sum(1 for r in rows if r.get("origen") == "bocce"),
             "tramites": sum(1 for r in rows if r.get("origen") == "sede_tramite"),
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        self.backfill_proyectos(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
+        rows, coverage = self._collect_proyectos()
+        return self._update_rows(out_jsonl, state_path, rows, coverage)
+
+    def _update_rows(
+        self, out_jsonl: Path, state_path: Path, rows: list[dict[str, Any]], coverage: dict[str, Any],
+    ) -> dict[str, Any]:
+        existing = self._load_jsonl(out_jsonl)
+        if coverage["status"] == "partial":
+            by_id = {row["id"]: row for row in existing}
+            for row in rows:
+                previous = by_id.setdefault(row["id"], {})
+                previous.update({key: value for key, value in row.items() if value is not None})
+            rows = list(by_id.values())
+        self._write_jsonl(out_jsonl, rows)
+        result = {"rows": len(rows), "added": max(0, len(rows) - len(existing)), **coverage}
         state_path.write_text(
             json.dumps(
                 {
                     "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
+                    "count": len(rows),
+                    **result,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        return result

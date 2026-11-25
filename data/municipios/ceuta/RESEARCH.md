@@ -35,12 +35,13 @@ El adapter devuelve **trámites sede** + **anuncios BOCCE** filtrados, no conces
 ## Geometría / visor
 
 - **geometry_status:** `unavailable`
-- **Fuentes:** Mapas interactivos PGOU (Tomo 5 calificación, Tomo 6 gestión) en portal; callejero municipal. Sin WFS/ArcGIS/GeoJSON público enlazado a expediente o licencia.
+- **Fuentes:** Mapas interactivos PGOU (Tomo 5 calificación, Tomo 6 gestión) e IDECeuta. El servicio nacional [SIU Ámbitos o Sectores](https://mapas.fomento.gob.es/arcgis/rest/services/SIU/%C3%81mbitos_o_Sectores/MapServer/0) publica geometrías asociadas a códigos del Tomo 3. Se enlazan por el código exacto del instrumento. No hay geometrías verificadas por licencia.
 - **Estrategia:** No hay query determinista por código de expediente. Orquestador usa `centroid` en manifest + jitter.
 - **Limitaciones:** Contenido tras iframe en tablón; SSL/TLS del host `www.ceuta.es` puede ser lento o no responder desde algunos datacenters; instrumentos PGOU mayormente PDF.
 
 ## Limitaciones generales
 
+- El 25 de noviembre de 2026, los runners x86 y ARM agotaron el tiempo de conexión al portal de Ceuta, al BOCCE, a la sede y a IDECeuta. El [diagnóstico del SIU](https://github.com/PabloMoran23/homes-bocm/actions/runs/45654923988) recuperó desde GitHub 38 ámbitos de los 41 del Tomo 3. Cuando no se recupera planeamiento del portal ni del boletín, el refresco usa esos ámbitos con los identificadores anteriores y registra cobertura parcial. El BOCCE sigue pendiente cuando su host falla.
 - Listado `tema=urb` en sede requiere JavaScript para poblar la tabla (66 trámites).
 - Sin boletín autonómico en `ccaa_history` (`bocm_count: 0`); BOCCE es la fuente paralela.
 - Ciudad autónoma (único municipio).
