@@ -7,8 +7,15 @@ y NDP, por lo que corregir una fecha no crea otra licencia. Los solapamientos co
 el histórico requieren edificio, fecha y tipo coincidentes y candidatos únicos;
 los originales se conservan en `_source_variants`.
 
-El paso municipal `sync_supabase` reconcilia ese snapshot con `homes.licencia` en
-una transacción. Antes de sustituirlo archiva todas las filas anteriores en
+El workflow de Madrid publica SIGMA y ambos CSV con `python -m db.refresh_madrid`.
+El lote recurrente se limita a las dos fuentes actuales según la procedencia
+registrada. Conserva las licencias históricas y los originales históricos vinculados
+a filas actuales. Si coinciden las claves, los hashes oficiales y las versiones
+de validación, confirma la ingesta sin volver a escribir las licencias. La opción
+`--projects-only` publica SIGMA y conserva la fecha de la última ingesta completa.
+
+La reconciliación con `homes.licencia` se ejecuta en una transacción. Antes de
+sustituir el lote archiva sus filas anteriores en
 `homes.madrid_license_snapshot_backup`, identificadas por `batch_id`. Conserva IDs
 reconocibles, vínculos con proyectos y fechas de inserción. Comprueba la versión
 de clasificación, evita snapshots vacíos o caídas de más del 20%, valida las dos

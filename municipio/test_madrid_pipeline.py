@@ -7,7 +7,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 POC_ROOT = Path(__file__).resolve().parents[1]
 if str(POC_ROOT) not in sys.path:
@@ -15,7 +15,7 @@ if str(POC_ROOT) not in sys.path:
 if str(POC_ROOT / "db") not in sys.path:
     sys.path.insert(0, str(POC_ROOT / "db"))
 
-from ingest import portal_proyecto_row  # noqa: E402
+from ingest import portal_proyecto_row, save_proyecto_hijas  # noqa: E402
 from municipio.madrid_export import _catalog_row, build_proyectos  # noqa: E402
 from municipio.manifest import load_manifest  # noqa: E402
 
@@ -35,6 +35,20 @@ POLY = {
 
 
 class MadridIngestMappingTest(unittest.TestCase):
+    def test_nti_and_visor_document_with_same_url_are_written_once(self) -> None:
+        url = "https://example.test/documento"
+        linked = {"id": "135/2018/00716", "_hijas": {
+            "nti_docs": [{"url": url, "titulo": "Acuerdo"}],
+            "documentacion_urls": [url, "https://example.test/otro"],
+        }}
+        with patch("ingest.execute_values") as execute:
+            result = save_proyecto_hijas([linked], conn=MagicMock())
+        self.assertEqual(result["proyecto_documento"], 2)
+        written = execute.call_args.args[2]
+        self.assertEqual([(row[2], row[3], row[-1]) for row in written], [
+            (url, "Acuerdo", "nti"), ("https://example.test/otro", None, "visor"),
+        ])
+
     def test_invalid_calendar_date_is_dropped(self) -> None:
         mapped = portal_proyecto_row(
             {
@@ -158,6 +172,8 @@ class MadridExportTest(unittest.TestCase):
             self.assertEqual(len(rows), 1)
             self.assertEqual(rows[0]["id"], "135/2018/00716")
             self.assertEqual(rows[0]["coord_source"], "sigma_ambito")
+            self.assertEqual(rows[0]["geometry_crs"], "EPSG:4326")
+            self.assertEqual(rows[0]["geometry_axis_order"], "xy")
             self.assertIn("geom_geojson", rows[0])
             self.assertIsNotNone(rows[0].get("lat"))
 

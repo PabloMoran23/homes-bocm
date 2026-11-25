@@ -96,6 +96,8 @@ def _geom_payload(geom: dict[str, Any]) -> dict[str, Any] | None:
             clng, clat = (min_lng + max_lng) / 2, (min_lat + max_lat) / 2
     return {
         "geom_geojson": geom,
+        "geometry_crs": "EPSG:4326",  # SIGMA ArcGIS GeoJSON requests use outSR=4326.
+        "geometry_axis_order": "xy",
         "bbox_min_lng": min_lng,
         "bbox_min_lat": min_lat,
         "bbox_max_lng": max_lng,

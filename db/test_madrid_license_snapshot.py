@@ -4,6 +4,7 @@ import unittest
 from psycopg2.extras import Json
 
 from db.madrid_license_snapshot import prepare_row, source_fingerprint, sync_snapshot
+from sector_geometry.madrid_licencias_current import DATASETS
 
 
 def record(key, dataset='640505', **changes):
@@ -99,6 +100,39 @@ class SnapshotIntegrationTest(unittest.TestCase):
             self.assertEqual(cur.fetchall(), [('other',), ('legacy',)])
             cur.execute("SELECT tgenabled FROM pg_trigger WHERE tgrelid='pg_temp.licencia'::regclass")
             self.assertEqual(cur.fetchall(), [('O',), ('O',)])
+
+    def test_current_refresh_preserves_history_and_reuses_verified_sources(self):
+        sources = [DATASETS[name][0] for name in ("licencias", "declaraciones")]
+        rows = [
+            dict(record(key, code), source_dataset=source,
+                 _territorial_origin={"resourceSha256": key})
+            for key, code, source in zip(("a", "b"), ("640505", "133556"), sources)
+        ]
+        archived = {"old": True}
+        with self.conn.cursor() as cur:
+            cur.execute("ALTER TABLE pg_temp.licencia DISABLE TRIGGER USER")
+            cur.execute("""INSERT INTO pg_temp.licencia(id,licencia_key,municipio_slug,fuente,raw_json)
+                VALUES (3,'madrid-history','madrid','madrid-opendata',%s),
+                       (4,'a','madrid','madrid-opendata',%s)""",
+                        (Json(archived), Json({
+                            "source_dataset": "https://datos.madrid.es/dataset/" + sources[0],
+                            "original": {"_source_variants": [archived]},
+                        })))
+            cur.execute("ALTER TABLE pg_temp.licencia ENABLE TRIGGER USER")
+        applied = sync_snapshot(self.conn, rows, apply=True, schema="pg_temp", current_only=True)
+        self.assertEqual((applied["status"], applied["rows"], applied["previous_rows"]), ("applied", 2, 1))
+        self.conn.commit()
+        with self.conn.cursor() as cur:
+            cur.execute("""SELECT id, licencia_key, raw_json FROM pg_temp.licencia
+                WHERE licencia_key IN ('madrid-history','a') ORDER BY id""")
+            history, current = cur.fetchall()
+            self.assertEqual(history, (3, "madrid-history", archived))
+            self.assertEqual(current[:2], (4, "a"))
+            self.assertEqual(current[2]["original"]["_source_variants"], [archived])
+            # The source receipt also works after the last full snapshot.
+            cur.execute("UPDATE pg_temp.madrid_license_snapshot_runs SET source_digest='full-snapshot'")
+        repeated = sync_snapshot(self.conn, rows, apply=True, schema="pg_temp", current_only=True)
+        self.assertEqual(repeated["status"], "unchanged")
 
     def test_second_batch_failure_rolls_back_the_first_batch(self):
         from psycopg2.errors import CheckViolation
