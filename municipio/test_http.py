@@ -1,5 +1,6 @@
-"""Network-free regression tests for municipal portal timeouts."""
+"""Network-free regression tests for municipal portal responses."""
 
+import gzip
 from email.message import Message
 from http.client import IncompleteRead, RemoteDisconnected
 from unittest import TestCase
@@ -101,3 +102,14 @@ class PortalTimeoutTest(TestCase):
                     read_response(Request(URL), opener=opener, attempts=2)
                 self.assertIs(raised.exception.__cause__, error)
                 self.assertEqual(opener.call_count, 2)
+
+    def test_decompresses_advertised_gzip_and_retries_incomplete_stream(self) -> None:
+        body = gzip.compress(b"complete")
+        truncated = response(body[:-4])
+        complete = response(body)
+        for reply in (truncated, complete):
+            reply.headers["Content-Encoding"] = "gzip"
+        opener = MagicMock(side_effect=[truncated, complete])
+
+        self.assertEqual(read_response(Request(URL), opener=opener)[0], b"complete")
+        self.assertEqual(opener.call_count, 2)

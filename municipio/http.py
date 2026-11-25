@@ -2,16 +2,19 @@
 
 from __future__ import annotations
 
+import gzip
 import logging
 import time
 import urllib.error
 import urllib.request
+import zlib
 from collections.abc import Callable
 from email.message import Message
 from http.client import HTTPResponse, IncompleteRead
 
 
 logger = logging.getLogger(__name__)
+_TRANSIENT_READ_ERRORS = (TimeoutError, IncompleteRead, ConnectionError, EOFError, gzip.BadGzipFile, zlib.error)
 
 
 class PortalReadError(RuntimeError):
@@ -32,10 +35,13 @@ def read_response(
     for attempt in range(1, attempts + 1):
         try:
             with open_request(request, timeout=timeout) as response:
-                return response.read(), response.headers
-        except (TimeoutError, IncompleteRead, ConnectionError, urllib.error.URLError) as exc:
+                raw = response.read()
+                if response.headers.get("Content-Encoding", "").strip().lower() == "gzip":
+                    raw = gzip.decompress(raw)
+                return raw, response.headers
+        except (*_TRANSIENT_READ_ERRORS, urllib.error.URLError) as exc:
             reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
-            if not isinstance(reason, (TimeoutError, IncompleteRead, ConnectionError)):
+            if not isinstance(reason, _TRANSIENT_READ_ERRORS):
                 raise
             is_timeout = isinstance(reason, TimeoutError)
             failure = "timeout" if is_timeout else type(reason).__name__
