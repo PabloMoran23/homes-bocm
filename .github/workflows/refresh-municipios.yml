@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   endpoint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     timeout-minutes: 4
     steps:
       - name: Read public Ceuta sources
