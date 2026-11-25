@@ -17,6 +17,8 @@ from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.gis.icv import enable_icv_compression
+from municipio.http import fetch_text, read_response
 
 WEB_BASE = "https://torrevieja.es"
 SEDE_BASE = "https://torrevieja.sedelectronica.es"
@@ -199,24 +201,15 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
         ua = self.config.get("user_agent", "poc-bocm-torrevieja/1.0")
         if retries is None:
             retries = int(self.config.get("fetch_retries", 2))
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": ua, "Accept-Language": "es;q=0.9"},
-            )
-            try:
-                with self._opener.open(
-                    req, timeout=int(self.config.get("fetch_timeout_s", 45))
-                ) as resp:
-                    charset = resp.headers.get_content_charset() or "utf-8"
-                    return resp.read().decode(charset, errors="replace")
-            except (urllib.error.URLError, TimeoutError, OSError) as exc:
-                last_err = exc
-                if attempt + 1 < retries:
-                    time.sleep(1.5 * (attempt + 1))
-        raise last_err or urllib.error.URLError("fetch failed")
+        time.sleep(self.delay_s)
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": ua, "Accept-Language": "es;q=0.9"},
+        )
+        return fetch_text(
+            req, opener=self._opener.open, attempts=retries,
+            timeout=int(self.config.get("fetch_timeout_s", 45)),
+        )
 
     def _abs_web(self, href: str) -> str:
         return unescape(urllib.parse.urljoin(f"{self.web_base}/", href))
@@ -336,7 +329,6 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _wfs_page_url(self, start: int) -> str:
-        cql = f"cod_ine_mun='{self.ine_mun}'"
         params = urllib.parse.urlencode(
             {
                 "service": "WFS",
@@ -344,21 +336,23 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
                 "request": "GetFeature",
                 "typeName": self.icv_layer,
                 "count": "200",
-                "CQL_FILTER": cql,
                 "outputFormat": "GML3",
                 "srsName": "EPSG:4326",
+                "SORTBY": "id",
                 "STARTINDEX": str(start),
             }
         )
         return f"{self.icv_wfs}?{params}"
 
     def _fetch_wfs(self, url: str) -> bytes:
+        time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-torrevieja/1.0")},
         )
-        with self._opener.open(req, timeout=90) as resp:
-            return resp.read()
+        enable_icv_compression(req)
+        raw, _ = read_response(req, opener=self._opener.open, timeout=90)
+        return raw
 
     def _collect_icv_wfs(self) -> list[dict[str, Any]]:
         if self._wfs_cache is not None:
@@ -371,14 +365,20 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
             try:
                 raw = self._fetch_wfs(url)
                 root = ET.fromstring(raw)
-            except (urllib.error.URLError, ET.ParseError):
-                break
+            except ET.ParseError as exc:
+                raise ValueError(f"Invalid Torrevieja WFS response from {url}") from exc
+            if root.tag != f"{{{_GML_NS['wfs']}}}FeatureCollection":
+                raise ValueError(f"Expected a WFS FeatureCollection from {url}, got {root.tag}")
             members = root.findall("wfs:member", _GML_NS)
             if not members:
                 break
             for member in members:
                 feat = member.find(f"ms:{layer_local}", _GML_NS)
                 if feat is None:
+                    continue
+                # ICV returns the entire regional layer even with a CQL filter.
+                source_ine = (feat.findtext("ms:cod_ine_mun", namespaces=_GML_NS) or "").strip()
+                if source_ine != self.ine_mun:
                     continue
                 fid = feat.findtext("ms:id", default="", namespaces=_GML_NS) or ""
                 pp = _clean_title(feat.findtext("ms:pp", default="", namespaces=_GML_NS) or "")
@@ -399,6 +399,7 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
                     "url": VISOR_GVA,
                     "tipo": "sector SU/SUZ" if clas else "sector planeamiento",
                     "wfs_id": fid,
+                    "cod_ine_mun": source_ine,
                     "pp": pp or None,
                     "ue": ue or None,
                     "origen": "icv_wfs",
@@ -619,6 +620,7 @@ class TorreviejaAyuntamientoAdapter(AyuntamientoAdapter):
             "pp",
             "ue",
             "wfs_id",
+            "cod_ine_mun",
             "geom_geojson",
             "geometry_source",
             "geometry_source_url",
