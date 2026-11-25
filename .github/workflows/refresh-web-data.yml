@@ -152,7 +152,7 @@ jobs:
           python3 -m db.refresh_madrid "${args[@]}"
 
       - name: Activate classification policy when needed
-        timeout-minutes: 30
+        timeout-minutes: 60
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: python3 -m db.entity_reprocess --ensure-active

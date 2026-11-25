@@ -12,8 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "db"))
 sys.path.insert(0, str(ROOT))
 from entity_reprocess import (
-    activate_policy, ensure_replay_schema, ensure_schema, enqueue_stale, replay_batch,
-    reprocess_queue, require_policy_active,
+    activate_policy, activate_policy_bounded, ensure_replay_schema, ensure_schema, enqueue_stale,
+    enqueue_stale_bounded, replay_batch, reprocess_queue, require_policy_active,
 )
 from ingest import _publish_madrid, portal_proyecto_row, save_proyectos, save_licencias
 from municipio.entity_policy import POLICY_VERSION
@@ -147,6 +147,23 @@ class ReprocessIntegrationTest(unittest.TestCase):
                 CREATE FUNCTION homes.web_summary() RETURNS jsonb LANGUAGE sql STABLE AS $$
                     SELECT payload FROM homes.portal_snapshot WHERE name='web_summary' $$""")
         ensure_replay_schema(self.conn)
+        self.assertTrue(self.scalar("SELECT has_function_privilege('service_role', 'homes.activate_entity_policy()', 'EXECUTE')"))
+        self.assertFalse(self.scalar("""SELECT has_function_privilege('service_role',
+            'homes.activate_entity_policy_prepared()', 'EXECUTE')"""))
+        with self.conn.cursor() as cur:
+            # The legacy bootstrap normally discovers this proof already; force
+            # bounded discovery to find it independently in a later ID range.
+            cur.execute("DELETE FROM homes.entity_reprocess_queue WHERE entity_id='legacy-scalar'")
+
+        class UncommittedFixture:
+            def cursor(proxy, *args, **kwargs):
+                return self.conn.cursor(*args, **kwargs)
+
+            def commit(proxy):
+                pass  # Keep the fixture local to this test's transaction.
+
+        with patch("entity_reprocess.SCAN_BATCH_SIZE", 2):
+            enqueue_stale_bounded(UncommittedFixture())
         with patch("entity_reprocess.reprocess_queue", side_effect=AssertionError("unexpected row fallback")):
             self.assertEqual(replay_batch(self.conn)["processed"], 5)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
@@ -158,12 +175,28 @@ class ReprocessIntegrationTest(unittest.TestCase):
             FROM homes.licencia WHERE id=9223372036854775806"""), POLICY_VERSION)
         self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 4})
 
-        activate_policy(self.conn)
+        with patch("entity_reprocess.SCAN_BATCH_SIZE", 2):
+            activate_policy_bounded(self.conn)
         self.assertEqual(self.scalar("SELECT homes.web_summary()"), {"projects": 1})
         with self.conn.cursor() as cur:
             require_policy_active(cur)
         self.assertIn("FROM homes.portal_snapshot", self.scalar(
             "SELECT pg_get_functiondef('homes.web_summary()'::regprocedure)"))
+
+    def test_bounded_activation_rejects_any_unprepared_range(self):
+        self.legacy_without_policy()
+        ensure_replay_schema(self.conn)
+        with self.conn.cursor() as cur:
+            cur.execute("DELETE FROM homes.entity_reprocess_queue")
+        with self.assertRaisesRegex(RuntimeError, "candidatos sin preparar"):
+            activate_policy_bounded(self.conn)
+        self.assertFalse(self.scalar("SELECT active FROM homes.entity_policy_config"))
+
+    def test_prepared_activation_requires_source_locks(self):
+        with self.conn.cursor() as cur:
+            cur.execute((ROOT / "supabase/migrations/20261125200000_entity_policy_bounded_activation.sql").read_text())
+        with self.assertRaisesRegex(psycopg2.Error, "requires both table locks"):
+            self.scalar("SELECT homes.activate_entity_policy_prepared()")
 
     def test_madrid_sigma_batch_activates_the_written_projects_only(self):
         self.add("unrelated")
