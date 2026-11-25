@@ -17,19 +17,25 @@ from municipio.entity_policy import POLICY_KEY, POLICY_VERSION, annotate, origin
 from psycopg2.extras import Json, RealDictCursor, execute_values
 
 TABLES = {"proyecto": ("raw_features_json", "id"), "licencia": ("raw_json", "id")}
-REPLAY_BATCH_SIZE = 500
+REPLAY_BATCH_SIZE = 250
+SCAN_BATCH_SIZE = 2000
 
 
 def ensure_replay_schema(conn) -> None:
     ensure_schema(conn)
     with conn.cursor() as cur:
         cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
-        if cur.fetchone()[0] is not None:
-            return
-        cur.execute("SELECT pg_advisory_xact_lock(85020261014)")
-        cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
         if cur.fetchone()[0] is None:
-            cur.execute((ROOT / "supabase/migrations/20261125190000_entity_policy_rollout_repair.sql").read_text())
+            cur.execute("SELECT pg_advisory_xact_lock(85020261014)")
+            cur.execute("SELECT to_regprocedure('homes.entity_classification_raw(jsonb)')")
+            if cur.fetchone()[0] is None:
+                cur.execute((ROOT / "supabase/migrations/20261125190000_entity_policy_rollout_repair.sql").read_text())
+        cur.execute("SELECT to_regprocedure('homes.activate_entity_policy(boolean)')")
+        if cur.fetchone()[0] is None:
+            cur.execute("SELECT pg_advisory_xact_lock(85020261014)")
+            cur.execute("SELECT to_regprocedure('homes.activate_entity_policy(boolean)')")
+            if cur.fetchone()[0] is None:
+                cur.execute((ROOT / "supabase/migrations/20261125200000_entity_policy_bounded_activation.sql").read_text())
 
 
 def ensure_schema(conn) -> None:
@@ -65,6 +71,44 @@ def activate_policy(conn) -> None:
         cur.execute("SELECT homes.activate_entity_policy()")
 
 
+def _keyset(after):
+    return ("WHERE id > %s", (after,)) if after is not None else ("", ())
+
+
+def activate_policy_bounded(conn) -> None:
+    """Verify and promote batches inside the single atomic rollout transaction."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT target_version FROM homes.entity_policy_config WHERE singleton FOR UPDATE")
+        target = cur.fetchone()[0]
+        cur.execute("LOCK TABLE homes.proyecto, homes.licencia IN SHARE ROW EXCLUSIVE MODE")
+        cur.execute("SELECT EXISTS (SELECT 1 FROM homes.entity_reprocess_queue)")
+        if cur.fetchone()[0]:
+            raise RuntimeError("entity_policy_not_ready: cola pendiente")
+        for table, (raw_col, _) in TABLES.items():
+            after = None
+            while True:
+                where, args = _keyset(after)
+                cur.execute(f"""WITH batch AS MATERIALIZED (
+                    SELECT id, {raw_col}->%s AS policy FROM homes.{table}
+                    {where} ORDER BY id LIMIT %s
+                ), promoted AS (
+                    UPDATE homes.{table} t SET {raw_col} = jsonb_set(
+                        t.{raw_col}, '{{_entity_policy,active}}', b.policy - 'active')
+                    FROM batch b
+                    WHERE t.id=b.id AND b.policy->>'version'=%s
+                      AND b.policy->'active'->>'version' IS DISTINCT FROM %s
+                    RETURNING t.id
+                )
+                SELECT max(id), count(*) FILTER (WHERE policy->>'version' IS DISTINCT FROM %s)
+                FROM batch""", (POLICY_KEY, *args, SCAN_BATCH_SIZE, target, target, target))
+                after, stale = cur.fetchone()
+                if stale:
+                    raise RuntimeError(f"entity_policy_not_ready: {table} contiene candidatos sin preparar")
+                if after is None:
+                    break
+        cur.execute("SELECT homes.activate_entity_policy(true)")
+
+
 def _raw_record(value) -> dict:
     if isinstance(value, dict):
         return value
@@ -98,6 +142,34 @@ def enqueue_stale(conn) -> None:
                 SELECT %s, id::text, 'policy_change' FROM homes.{table}
                 WHERE {raw_col}->%s->>'version' IS DISTINCT FROM %s
                 ON CONFLICT (entity_table, entity_id) DO NOTHING""", (table, POLICY_KEY, POLICY_VERSION))
+
+
+def enqueue_stale_bounded(conn) -> None:
+    """Read and record stale rows in short committed primary-key ranges."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE homes.entity_policy_config SET target_version=%s WHERE singleton AND target_version IS DISTINCT FROM %s",
+                    (POLICY_VERSION, POLICY_VERSION))
+        conn.commit()
+        for table, (raw_col, _) in TABLES.items():
+            after = None
+            while True:
+                where, args = _keyset(after)
+                cur.execute(f"""WITH batch AS MATERIALIZED (
+                    SELECT id, {raw_col}->%s->>'version' AS version FROM homes.{table}
+                    {where} ORDER BY id LIMIT %s
+                ), enqueued AS (
+                    INSERT INTO homes.entity_reprocess_queue(entity_table, entity_id, reason)
+                    SELECT %s, id::text, 'policy_change' FROM batch
+                    WHERE version IS DISTINCT FROM %s
+                    ON CONFLICT (entity_table, entity_id) DO NOTHING
+                    RETURNING entity_id
+                )
+                SELECT max(id) FROM batch""", (POLICY_KEY, *args, SCAN_BATCH_SIZE, table, POLICY_VERSION))
+                after = cur.fetchone()[0]
+                conn.commit()
+                if after is None:
+                    break
+            print(f"entity_policy: revisión de candidatos de {table} completada", flush=True)
 
 
 def _metadata(row: dict, table: str, version: str, reason: str) -> dict:
@@ -275,8 +347,8 @@ def main() -> int:
                     print(json.dumps({"control_active": True, "active_version": POLICY_VERSION}), flush=True)
                     return 0
         ensure_replay_schema(conn)
-        enqueue_stale(conn)
         conn.commit()
+        enqueue_stale_bounded(conn)
         while True:
             batch = replay_batch(conn)
             conn.commit()
@@ -288,7 +360,7 @@ def main() -> int:
             backlog = cur.fetchall()
         if not total["failed"] and not backlog:
             try:
-                activate_policy(conn)
+                activate_policy_bounded(conn)
                 conn.commit()
             except Exception as exc:
                 conn.rollback()
