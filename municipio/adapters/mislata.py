@@ -17,7 +17,7 @@ from typing import Any
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.icv import enable_icv_compression
-from municipio.http import read_response
+from municipio.http import PortalReadError, read_response
 
 BASE = "https://www.mislata.es"
 SEDE = "https://mislata.sedipualba.es"
@@ -27,6 +27,7 @@ INE_MUN = "46169"
 
 TABLON_RSS = f"{SEDE}/tablondeanuncios/tablon_rss.aspx"
 CATALOGO_TRAMITES = f"{SEDE}/catalogoservicios.aspx"
+MUNICIPAL_URBANISMO = f"{BASE}/es/administracion/oficina-virtual/urbanismo"
 ICV_WFS = "https://terramapas.icv.gva.es/0702_Planeamiento"
 ICV_LAYER_SU = "ms:InventarioSuSuz"
 ICV_LAYER_ZON = "Planeamiento.Zonificacion"
@@ -37,7 +38,7 @@ DEFAULT_SEED_PAGES: list[str] = [
     f"{BASE}/es/transparencia/informacion-urbanistica-y-medioambiental/planeamientos-urbanisticos/plan-general-de-ordenacion-urbana",
     f"{BASE}/es/transparencia/informacion-urbanistica-y-medioambiental/planeamientos-urbanisticos/planes-urbanisticos-en-tramite",
     f"{BASE}/es/transparencia/informacion-urbanistica-y-medioambiental/planeamientos-urbanisticos/plano-de-clasificacion-del-suelo",
-    f"{BASE}/es/administracion/oficina-virtual/urbanismo",
+    MUNICIPAL_URBANISMO,
 ]
 
 RE_PLANEAM_PATH = re.compile(
@@ -46,6 +47,10 @@ RE_PLANEAM_PATH = re.compile(
 )
 RE_TRAMITE = re.compile(
     r'href="(https://mislata\.sedipualba\.es/(?:carpetaciudadana|segex)/tramite\.aspx\?idtramite=\d+)"[^>]*>\s*([^<]+)',
+    re.I,
+)
+RE_MUNICIPAL_TRAMITE = re.compile(
+    r'href="(/es/administracion/oficina-virtual/urbanismo/[^"#?]+)"[^>]*>\s*([^<]+)',
     re.I,
 )
 RE_PDF = re.compile(r'href="([^"]+\.pdf[^"]*)"', re.I)
@@ -177,18 +182,44 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_cache: list[dict[str, Any]] | None = None
         self._wfs_by_key: dict[str, dict[str, Any]] | None = None
 
-    def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
+    def _request(self, url: str) -> urllib.request.Request:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-mislata/1.0")},
         )
         enable_icv_compression(req)
-        raw, _ = read_response(req, timeout=timeout, attempts=retries)
+        return req
+
+    @staticmethod
+    def _decode(raw: bytes) -> str:
         try:
             return raw.decode("utf-8")
         except UnicodeDecodeError:
             return raw.decode("latin-1")
+
+    def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
+        raw, _ = read_response(self._request(url), timeout=timeout, attempts=retries)
+        return self._decode(raw)
+
+    def _read_sede(self, url: str) -> tuple[bytes | None, list[dict[str, str]]]:
+        try:
+            raw, _ = read_response(self._request(url), timeout=15, attempts=2)
+        except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
+            if url not in (TABLON_RSS, CATALOGO_TRAMITES):
+                raise
+            return None, [{"url": url, "error": f"{type(exc).__name__}: {exc}"}]
+        return raw, []
+
+    @staticmethod
+    def _coverage(unavailable: list[dict[str, str]]) -> dict[str, Any]:
+        if not unavailable:
+            return {"status": "ok"}
+        return {
+            "status": "partial",
+            "reason": "mislata_sedipualba_sources_unavailable",
+            "unavailable_sources": unavailable,
+        }
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{BASE}/", href)
@@ -222,32 +253,34 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def _collect_tramites(self) -> list[dict[str, Any]]:
-        rows: list[dict[str, Any]] = []
-        seen: set[str] = set()
-        for source_url in (CATALOGO_TRAMITES, f"{BASE}/es/administracion/oficina-virtual/urbanismo"):
-            try:
-                html = self._fetch(source_url)
-            except urllib.error.URLError:
-                continue
-            for href, title in RE_TRAMITE.findall(html):
-                titulo = _clean(unescape(title))
-                if href in seen:
-                    continue
-                seen.add(href)
-                rows.append({"titulo": titulo, "url": href, "origen": "sede_tramite"})
-        return rows
+    def _collect_tramites(self) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+        html = self._fetch(MUNICIPAL_URBANISMO)
+        rows: dict[str, dict[str, Any]] = {}
+        for href, title in RE_MUNICIPAL_TRAMITE.findall(html):
+            url = self._abs_web(href)
+            rows[url] = {"titulo": _clean(title), "url": url, "origen": "drupal_tramite"}
+        if not rows:
+            raise ValueError(f"No verifiable urban planning procedures in {MUNICIPAL_URBANISMO}")
+        catalogue, unavailable = self._read_sede(CATALOGO_TRAMITES)
+        if catalogue is not None:
+            sede_links = RE_TRAMITE.findall(self._decode(catalogue))
+            if not sede_links:
+                raise ValueError(f"No verifiable procedures in {CATALOGO_TRAMITES}")
+            for href, title in sede_links:
+                rows[href] = {"titulo": _clean(title), "url": href, "origen": "sede_tramite"}
+        return list(rows.values()), unavailable
 
-    def _collect_tablon_rss(self) -> list[dict[str, Any]]:
-        try:
-            raw = self._fetch(TABLON_RSS)
-        except urllib.error.URLError:
-            return []
+    def _collect_tablon_rss(self) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+        raw, unavailable = self._read_sede(TABLON_RSS)
+        if raw is None:
+            return [], unavailable
         rows: list[dict[str, Any]] = []
         try:
-            root = ET.fromstring(raw.encode("latin-1", errors="replace"))
-        except ET.ParseError:
-            return []
+            root = ET.fromstring(raw)
+        except ET.ParseError as exc:
+            raise ValueError(f"Invalid RSS response from {TABLON_RSS}") from exc
+        if root.find("channel") is None:
+            raise ValueError(f"Missing RSS channel in {TABLON_RSS}")
         for item in root.findall(".//item"):
             title = _clean(item.findtext("title") or "")
             link = (item.findtext("link") or "").strip()
@@ -255,10 +288,11 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
             if not title or not link:
                 continue
             rows.append({"titulo": title, "url": link, "fecha": fecha, "origen": "tablon_rss"})
-        return rows
+        return rows, []
 
     def _crawl_transparencia_pages(self) -> list[dict[str, Any]]:
         queue: list[str] = list(self.seed_pages)
+        primary_pages = {url.rstrip("/") for url in self.seed_pages}
         seen_pages: set[str] = set()
         rows: list[dict[str, Any]] = []
 
@@ -270,6 +304,8 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
             try:
                 html = self._fetch(url)
             except urllib.error.URLError:
+                if url in primary_pages:
+                    raise
                 continue
             title = self._page_title(html, url.rsplit("/", 1)[-1].replace("-", " "))
             blob = f"{title} {url}"
@@ -363,12 +399,15 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
         }
         if geom:
             rec["geom_geojson"] = geom
+            rec["geometry_crs"] = "EPSG:4326"
+            rec["geometry_axis_order"] = "xy"
             rec["geometry_source"] = "portal_wfs"
-            rec["geometry_source_url"] = self._wfs_page_url(self.icv_layer_su, 0)
             rec["coord_source"] = "portal_geometry_centroid"
             centroid = geometry_centroid(geom)
             if centroid:
                 rec["lat"], rec["lon"] = centroid
+                rec["coordinates_crs"] = "EPSG:4326"
+                rec["coordinates_axis_order"] = "xy"
         return rec
 
     def _collect_icv_wfs(self) -> list[dict[str, Any]]:
@@ -383,17 +422,23 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
                 try:
                     raw = self._fetch(url, timeout=90)
                     root = ET.fromstring(raw)
-                except (urllib.error.URLError, ET.ParseError):
-                    break
+                except ET.ParseError as exc:
+                    raise ValueError(f"Invalid Mislata WFS response from {url}") from exc
+                if root.tag != f"{{{_GML_NS['wfs']}}}FeatureCollection":
+                    raise ValueError(f"Expected a WFS FeatureCollection from {url}, got {root.tag}")
                 members = root.findall(".//wfs:member", _GML_NS)
                 if not members:
                     break
                 for member in members:
                     rec = self._parse_wfs_member(member, layer=layer.split(".")[-1])
                     if rec and rec["wfs_id"] not in seen:
+                        if rec.get("geometry_source"):
+                            rec["geometry_source_url"] = url
                         seen.add(rec["wfs_id"])
                         rows.append(rec)
                 start += 200
+        if not rows:
+            raise ValueError(f"No verifiable Mislata ({self.cod_ine_mun}) features in {self.icv_wfs_url}")
         self._wfs_cache = rows
         self._wfs_by_key = {}
         for rec in rows:
@@ -435,7 +480,10 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
         hit = self._match_wfs(blob)
         if not hit:
             return
-        for key in ("geom_geojson", "geometry_source", "geometry_source_url", "coord_source", "lat", "lon"):
+        for key in (
+            "geom_geojson", "geometry_crs", "geometry_axis_order", "geometry_source", "geometry_source_url",
+            "coordinates_crs", "coordinates_axis_order", "coord_source", "lat", "lon",
+        ):
             if hit.get(key) is not None:
                 rec[key] = hit[key]
 
@@ -452,7 +500,7 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
             "titulo": row["titulo"],
             "url": row["url"],
             "source": "ayuntamiento",
-            "nota": "Página informativa sedipualba; sin registro público de concesiones",
+            "nota": "Página informativa del trámite; sin evidencia de concesión",
             "origen": row.get("origen"),
         }
 
@@ -496,8 +544,12 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
             "clasificacion",
             "wfs_id",
             "geom_geojson",
+            "geometry_crs",
+            "geometry_axis_order",
             "geometry_source",
             "geometry_source_url",
+            "coordinates_crs",
+            "coordinates_axis_order",
             "coord_source",
             "lat",
             "lon",
@@ -529,13 +581,16 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
     def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
-        for item in self._collect_tramites():
+        tramites, unavailable = self._collect_tramites()
+        for item in tramites:
             rec = self._tramite_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        rows.append(
-            {
+        notices, notice_gap = self._collect_tablon_rss()
+        unavailable.extend(notice_gap)
+        if not notice_gap:
+            rows.append({
                 "id": _stable_id("lic", TABLON_RSS),
                 "fecha_concesion": None,
                 "tipo": "tablón sedipualba",
@@ -547,15 +602,17 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
                 "source": "ayuntamiento",
                 "nota": "RSS tablón; sin licencias urbanísticas recientes en feed",
                 "origen": "sede_tablon",
-            }
-        )
-        for item in self._collect_tablon_rss():
+            })
+        for item in notices:
             rec = self._tablon_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
+        if unavailable:
+            current = {r["id"] for r in rows}
+            rows.extend(r for r in self._load_jsonl(out_jsonl) if r["id"] not in current)
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "source": "sede_tramites_tablon"}
+        return {"rows": len(rows), "source": "web_municipal_y_sede", **self._coverage(unavailable)}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
         before = len(self._load_jsonl(out_jsonl))
@@ -567,13 +624,16 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
                     "last_run": datetime.now(timezone.utc).isoformat(),
                     "count": after,
                     "added": max(0, after - before),
+                    "source_coverage": {
+                        key: result[key] for key in ("status", "reason", "unavailable_sources") if key in result
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        return {**result, "added": max(0, after - before)}
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
         rows: list[dict[str, Any]] = []
@@ -588,14 +648,20 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
             add(self._to_proyecto(item))
         for item in self._crawl_transparencia_pages():
             add(self._drupal_to_proyecto(item))
-        for item in self._collect_tablon_rss():
+        if not any(str(row.get("origen", "")).startswith("drupal") for row in rows):
+            raise ValueError("No verifiable projects from Mislata's municipal planning website")
+        notices, unavailable = self._collect_tablon_rss()
+        for item in notices:
             add(self._tablon_to_proyecto(item))
+        if unavailable:
+            for previous in self._load_jsonl(out_jsonl):
+                add(previous)
 
         self._write_jsonl(out_jsonl, rows)
         with_geom = sum(1 for r in rows if record_geometry(r))
         return {
             "rows": len(rows),
-            "status": "ok",
+            **self._coverage(unavailable),
             "icv_wfs": sum(1 for r in rows if r.get("origen") == "icv_wfs"),
             "drupal": sum(1 for r in rows if str(r.get("origen", "")).startswith("drupal")),
             "tablon": sum(1 for r in rows if r.get("origen") == "tablon_rss"),
@@ -613,10 +679,13 @@ class MislataAyuntamientoAdapter(AyuntamientoAdapter):
                     "count": after,
                     "added": max(0, after - before),
                     "with_geometry": result.get("with_geometry", 0),
+                    "source_coverage": {
+                        key: result[key] for key in ("status", "reason", "unavailable_sources") if key in result
+                    },
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {"rows": after, "added": max(0, after - before), "status": "ok", **result}
+        return {**result, "added": max(0, after - before)}
