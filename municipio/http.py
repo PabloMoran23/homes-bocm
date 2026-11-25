@@ -1,4 +1,4 @@
-"""HTTP reads with bounded retries for slow municipal portals."""
+"""HTTP reads with bounded retries for municipal portals."""
 
 from __future__ import annotations
 
@@ -6,36 +6,65 @@ import logging
 import time
 import urllib.error
 import urllib.request
+from collections.abc import Callable
+from email.message import Message
+from http.client import HTTPResponse, IncompleteRead
 
 
 logger = logging.getLogger(__name__)
 
 
-def fetch_text(request: urllib.request.Request, *, encoding: str | None = None) -> str:
-    """Retry timeouts opening or reading a response, then fail with its URL.
+class PortalReadError(RuntimeError):
+    """A portal could not deliver a complete response within the retry budget."""
 
-    Callers must only use this for read-only requests (including search POSTs).
-    Keep exhausted timeouts distinct from URLError: adapters often skip the
-    latter, which would otherwise hide an incomplete refresh.
-    """
-    attempts = 3
+
+def read_response(
+    request: urllib.request.Request,
+    *,
+    opener: Callable[..., HTTPResponse] | None = None,
+    timeout: float = 60,
+    attempts: int = 3,
+) -> tuple[bytes, Message]:
+    """Retry transient failures for a read-only request, including search POSTs."""
+    if attempts < 1:
+        raise ValueError("attempts must be at least 1")
+    open_request = opener if opener is not None else urllib.request.urlopen
     for attempt in range(1, attempts + 1):
         try:
-            with urllib.request.urlopen(request, timeout=60) as response:
-                raw = response.read()
-                charset = encoding or response.headers.get_content_charset() or "utf-8"
-                return raw.decode(charset, errors="replace")
-        except (TimeoutError, urllib.error.URLError) as exc:
-            if not isinstance(exc, TimeoutError) and not isinstance(exc.reason, TimeoutError):
+            with open_request(request, timeout=timeout) as response:
+                return response.read(), response.headers
+        except (TimeoutError, IncompleteRead, ConnectionError, urllib.error.URLError) as exc:
+            reason = exc.reason if isinstance(exc, urllib.error.URLError) else exc
+            if not isinstance(reason, (TimeoutError, IncompleteRead, ConnectionError)):
                 raise
+            is_timeout = isinstance(reason, TimeoutError)
+            failure = "timeout" if is_timeout else type(reason).__name__
             if attempt == attempts:
-                raise TimeoutError(
-                    f"{request.full_url}: timeout after {attempts} attempts "
-                    f"(60s per attempt): {exc}"
+                # Several collectors treat URLError as a missing optional page.
+                # A failed transfer must stay distinguishable from that case.
+                error = TimeoutError if is_timeout else PortalReadError
+                raise error(
+                    f"{request.full_url}: {failure} after {attempts} attempts "
+                    f"({timeout:g}s per attempt): {exc}"
                 ) from exc
             delay = 2 ** attempt
             logger.warning(
-                "Timeout fetching %s (attempt %s/%s); retrying in %ss",
+                "%s fetching %s (attempt %s/%s); retrying in %ss",
+                failure,
                 request.full_url, attempt, attempts, delay,
             )
             time.sleep(delay)
+    raise AssertionError("request loop exhausted without a result")
+
+
+def fetch_text(
+    request: urllib.request.Request,
+    *,
+    encoding: str | None = None,
+    opener: Callable[..., HTTPResponse] | None = None,
+    timeout: float = 60,
+    attempts: int = 3,
+) -> str:
+    raw, headers = read_response(request, opener=opener, timeout=timeout, attempts=attempts)
+    charset = encoding or headers.get_content_charset() or "utf-8"
+    return raw.decode(charset, errors="replace")
