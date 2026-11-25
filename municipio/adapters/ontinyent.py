@@ -14,10 +14,12 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from bs4 import BeautifulSoup
+
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.icv import enable_icv_compression
-from municipio.http import fetch_text
+from municipio.http import PortalReadError, fetch_text, read_response
 
 BASE = "https://www.ontinyent.es"
 SEDE = "https://ontinyent.sedipualba.es"
@@ -26,6 +28,7 @@ ID_PREFIX = "ontinyent"
 INE_MUN = "46184"
 
 TABLON_RSS = f"{SEDE}/tablondeanuncios/tablon_rss.aspx"
+TABLON_HTML = f"{SEDE}/tablondeanuncios/"
 CATALOGO_TRAMITES = f"{SEDE}/catalogoservicios.aspx"
 ICV_WFS = "https://terramapas.icv.gva.es/0702_Planeamiento"
 ICV_LAYER = "ms:InventarioSuSuz"
@@ -181,14 +184,17 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
         self._wfs_cache: list[dict[str, Any]] | None = None
         self._wfs_by_key: dict[str, dict[str, Any]] | None = None
 
-    def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
+    def _request(self, url: str) -> urllib.request.Request:
         time.sleep(self.delay_s)
         req = urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ontinyent/1.0")},
         )
         enable_icv_compression(req)
-        return fetch_text(req, timeout=timeout, attempts=retries, encoding="utf-8")
+        return req
+
+    def _fetch(self, url: str, *, timeout: int = 60, retries: int = 3) -> str:
+        return fetch_text(self._request(url), timeout=timeout, attempts=retries, encoding="utf-8")
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{BASE}/", href)
@@ -222,11 +228,8 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def _collect_tramites(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(CATALOGO_TRAMITES)
-        except urllib.error.URLError:
-            return []
+    def _collect_tramites(self, *, board_unavailable: bool = False) -> list[dict[str, Any]]:
+        html = self._fetch(CATALOGO_TRAMITES, timeout=12, retries=1 if board_unavailable else 2)
         rows: list[dict[str, Any]] = []
         for href, title in RE_TRAMITE.findall(html):
             rows.append(
@@ -239,16 +242,12 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
         return rows
 
     def _collect_tablon_rss(self) -> list[dict[str, Any]]:
-        try:
-            raw = self._fetch(TABLON_RSS)
-        except urllib.error.URLError:
-            return []
+        raw, _ = read_response(self._request(TABLON_RSS), timeout=12, attempts=2)
+        channel = ET.fromstring(raw).find("channel")
+        if channel is None:
+            raise ValueError(f"Missing RSS channel at {TABLON_RSS}")
         rows: list[dict[str, Any]] = []
-        try:
-            root = ET.fromstring(raw)
-        except ET.ParseError:
-            return []
-        for item in root.findall(".//item"):
+        for item in channel.findall("item"):
             title = _clean(item.findtext("title") or "")
             link = (item.findtext("link") or "").strip()
             fecha = _parse_rss_date(item.findtext("pubDate") or "")
@@ -256,6 +255,39 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
                 continue
             rows.append({"titulo": title, "url": link, "fecha": fecha, "origen": "tablon_rss"})
         return rows
+
+    def _collect_tablon_html(self) -> list[dict[str, Any]]:
+        markup = self._fetch(TABLON_HTML, timeout=12, retries=1)
+        board = BeautifulSoup(markup, "html.parser").select_one('div[id$="_pnlAnuncios"] table.gridview')
+        if board is None:
+            raise ValueError(f"Missing announcement table at {TABLON_HTML}")
+        rows: list[dict[str, Any]] = []
+        for line in board.select("tbody tr.clickable"):
+            cells = line.find_all("td", recursive=False)
+            link = line.select_one('a[href*="anuncio.aspx?id="]')
+            if len(cells) != 3 or link is None:
+                raise ValueError(f"Unexpected announcement row at {TABLON_HTML}")
+            rows.append({
+                "titulo": _clean(cells[2].get_text(" ", strip=True)),
+                "url": urllib.parse.urljoin(TABLON_HTML, link["href"]),
+                "fecha": _parse_fecha_dmy(cells[1].get_text(" ", strip=True)),
+                "origen": "tablon_html",
+            })
+        if not rows:
+            raise ValueError(f"No announcements in the HTML table at {TABLON_HTML}")
+        return rows
+
+    def _collect_tablon(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        unavailable = []
+        for url, collect in ((TABLON_RSS, self._collect_tablon_rss), (TABLON_HTML, self._collect_tablon_html)):
+            try:
+                return collect(), {"status": "ok", "tablon_source": url}
+            except (urllib.error.URLError, TimeoutError, PortalReadError, ET.ParseError, ValueError) as exc:
+                unavailable.append({"url": url, "error": str(exc)})
+        return [], {
+            "status": "partial", "reason": "ontinyent_sedipualba_edicts_unavailable",
+            "unavailable_sources": unavailable,
+        }
 
     def _crawl_drupal_pages(self) -> list[dict[str, Any]]:
         queue: list[str] = list(self.seed_pages)
@@ -502,41 +534,43 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
             return None
         return self._to_proyecto(row)
 
-    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_licencias(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
-        for item in self._collect_tramites():
+        board, coverage = self._collect_tablon()
+        board_unavailable = coverage["status"] == "partial"
+        try:
+            tramites = self._collect_tramites(board_unavailable=board_unavailable)
+        except (urllib.error.URLError, TimeoutError, PortalReadError) as exc:
+            coverage["status"] = "partial"
+            coverage["reason"] = (
+                "ontinyent_sedipualba_edicts_and_catalogue_unavailable" if board_unavailable
+                else "ontinyent_sedipualba_catalogue_unavailable"
+            )
+            coverage.setdefault("unavailable_sources", []).append({"url": CATALOGO_TRAMITES, "error": str(exc)})
+            tramites = []
+        for item in tramites:
             rec = self._tramite_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
-        for item in self._collect_tablon_rss():
+        for item in board:
             rec = self._tablon_to_licencia(item)
             if rec and rec["id"] not in seen:
                 seen.add(rec["id"])
                 rows.append(rec)
+        return rows, coverage
+
+    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_licencias()
         self._write_jsonl(out_jsonl, rows)
-        return {"rows": len(rows), "status": "ok", "source": "sede_tramites_tablon"}
+        return {"rows": len(rows), "source": "sede_tramites_tablon", **coverage}
 
     def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        result = self.backfill_licencias(out_jsonl)
-        after = result["rows"]
-        state_path.write_text(
-            json.dumps(
-                {
-                    "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        rows, coverage = self._collect_licencias()
+        return self._update_rows(out_jsonl, state_path, rows, coverage)
 
-    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_proyectos(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         seen: set[str] = set()
 
@@ -549,40 +583,51 @@ class OntinyentAyuntamientoAdapter(AyuntamientoAdapter):
             add(self._to_proyecto(item))
         for item in self._crawl_drupal_pages():
             add(self._drupal_to_proyecto(item))
-        for item in self._collect_tablon_rss():
+        board, coverage = self._collect_tablon()
+        for item in board:
             add(self._tablon_to_proyecto(item))
+        if coverage["status"] == "partial" and not rows:
+            raise ValueError("Ontinyent announcement sources are unavailable and no planning records were recovered")
+        return rows, coverage
 
+    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_proyectos()
         self._write_jsonl(out_jsonl, rows)
         with_geom = sum(1 for r in rows if record_geometry(r))
         return {
             "rows": len(rows),
-            "status": "ok",
+            **coverage,
             "icv_wfs": sum(1 for r in rows if r.get("origen") == "icv_wfs"),
             "drupal": sum(1 for r in rows if r.get("origen") == "drupal_pagina"),
-            "tablon": sum(1 for r in rows if r.get("origen") == "tablon_rss"),
+            "tablon": sum(1 for r in rows if r.get("origen") in ("tablon_rss", "tablon_html")),
             "with_geometry": with_geom,
         }
 
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        result = self.backfill_proyectos(out_jsonl)
-        after = result["rows"]
+        rows, coverage = self._collect_proyectos()
+        return self._update_rows(out_jsonl, state_path, rows, coverage, include_geometry=True)
+
+    def _update_rows(
+        self, out_jsonl: Path, state_path: Path, rows: list[dict[str, Any]],
+        coverage: dict[str, Any], *, include_geometry: bool = False,
+    ) -> dict[str, Any]:
+        existing = self._load_jsonl(out_jsonl)
+        if coverage["status"] == "partial":
+            rows = list({row["id"]: row for row in existing + rows}.values())
+        self._write_jsonl(out_jsonl, rows)
+        result = {"rows": len(rows), "added": max(0, len(rows) - len(existing)), **coverage}
+        if include_geometry:
+            result["with_geometry"] = sum(1 for row in rows if record_geometry(row))
         state_path.write_text(
             json.dumps(
                 {
                     "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
-                    "with_geometry": result.get("with_geometry", 0),
+                    "count": len(rows),
+                    **result,
                 },
                 ensure_ascii=False,
                 indent=2,
             ),
             encoding="utf-8",
         )
-        return {
-            "rows": after,
-            "added": max(0, after - before),
-            "status": "ok",
-            "with_geometry": result.get("with_geometry", 0),
-        }
+        return result

@@ -20,6 +20,7 @@
 - **Web:** Drupal 10 con módulos `digital_value` (tema portalesmunicipales.es). Sin JSON:API pública.
 - **Proyectos:** páginas estáticas `/va/pagina/...` con PDFs en `/sites/www.ontinyent.es/files/`. Crawl por semillas urbanismo.
 - **Tablón:** sedipualba ASP.NET; listado HTML + **RSS** (`tablon_rss.aspx`). Anuncios urbanísticos mezclados con otros edictos.
+- El 25 de noviembre de 2026, el tablón HTML contenía los 20 anuncios del RSS y otros 10 del mismo registro. El refresco utiliza ese listado si falla el RSS. Si ambos accesos fallan, conserva los registros anteriores y deja constancia de la cobertura parcial mientras actualiza el portal municipal y el ICV.
 - **Licencias:** no hay registro público de concesiones; solo fichas de trámite sedipualba (certificado digital obligatorio) y edictos del tablón.
 
 ## Licencias de obra
