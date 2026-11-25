@@ -7,6 +7,7 @@ import json
 import csv
 import gzip
 import tempfile
+from collections import Counter
 from datetime import datetime, timezone
 from datetime import date
 from decimal import Decimal, InvalidOperation
@@ -14,9 +15,11 @@ from pathlib import Path
 
 from psycopg2.extras import RealDictCursor
 
-from db.license_dates import parse_date
+from db.license_dates import DATE_RULE_VERSION, parse_date
+from sector_geometry.madrid_licencias_current import DATASETS
 
 _LOG = logging.getLogger(__name__)
+CURRENT_SOURCES = {f"https://datos.madrid.es/dataset/{dataset}" for dataset, _, _ in DATASETS.values()}
 
 SOURCE_IDENTITY_FIELDS = {
     "anio_dataset", "ndp_edificio", "fecha_de_alta", "fecha_concesin",
@@ -85,7 +88,7 @@ def prepare_row(record: dict) -> dict:
 
 
 def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None,
-                  apply: bool = False, schema: str = "homes") -> dict:
+                  apply: bool = False, schema: str = "homes", current_only: bool = False) -> dict:
     """Caller owns the transaction. A failed assertion rolls back the entire swap.
 
     Only official-source Madrid rows and legacy rows proved against the original
@@ -95,28 +98,31 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
     from municipio.entity_policy import POLICY_VERSION
     if schema not in {"homes", "pg_temp"}:
         raise ValueError("Unsupported schema")
+    if current_only and evidence:
+        raise ValueError("La actualización de los CSV no atribuye registros históricos")
     table = f"{schema}.licencia"
     with conn.cursor() as cur:
         cur.execute("SELECT version,target_version FROM homes.entity_policy_config WHERE singleton")
         if cur.fetchone() != (POLICY_VERSION, POLICY_VERSION):
             raise RuntimeError("La versión de clasificación de la base no coincide")
     prepared = {}
-    digest = hashlib.sha256()
     for record in records:
         row = prepare_row(record)
+        if current_only and row.get("source_dataset") not in CURRENT_SOURCES:
+            continue
         key = str(row.get("licencia_key") or row.get("id") or "")
         if not key or key in prepared:
             raise ValueError("Claves de licencia ausentes o duplicadas en el snapshot")
         prepared[key] = row
         if len(prepared) % 50000 == 0:
             _LOG.info("Clasificadas %s licencias", len(prepared))
-        digest.update(json.dumps(row, sort_keys=True, ensure_ascii=False, default=str).encode())
     if not prepared:
         raise ValueError("No se puede publicar un snapshot vacío")
     sources = {r.get("source_dataset") for r in prepared.values()}
-    if not all(any(code in (s or "") for s in sources) for code in ("640505", "133556")):
+    if not CURRENT_SOURCES.issubset(sources) and (
+        current_only or not all(any(code in (s or "") for s in sources) for code in ("640505", "133556"))
+    ):
         raise ValueError("El snapshot debe incluir ambos CSV municipales completos")
-    source_digest = digest.hexdigest()
     if apply:
         # Acquire before reading scope, so a concurrent writer cannot add Madrid
         # rows between the scope snapshot and the replacement.
@@ -130,19 +136,57 @@ def sync_snapshot(conn, records: list[dict], *, evidence: set[str] | None = None
                 cur.execute("SELECT pg_advisory_xact_lock(85020261103)")
     scope, unknown = [], 0
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(f"SELECT id,licencia_key,municipio_slug,CASE WHEN municipio_slug IS NULL THEN raw_json END AS raw_json FROM {table} WHERE (municipio_slug='madrid' AND fuente='madrid-opendata') OR (municipio_slug IS NULL AND fuente IS NULL) ORDER BY id")
+        if current_only:
+            cur.execute(f"""SELECT id, licencia_key, municipio_slug, NULL::jsonb AS raw_json,
+                raw_json->>'source_dataset' AS dataset, raw_json->'original'->'_source_variants' AS variants,
+                raw_json#>>'{{_territorial_origin,resourceSha256}}' AS resource,
+                raw_json#>>'{{_entity_policy,active,version}}' AS policy,
+                raw_json#>>'{{temporal,ruleVersion}}' AS temporal
+                FROM {table} WHERE municipio_slug='madrid' AND fuente='madrid-opendata'
+                AND raw_json->>'source_dataset' = ANY(%s) ORDER BY id""", (sorted(CURRENT_SOURCES),))
+        else:
+            cur.execute(f"SELECT id,licencia_key,municipio_slug,CASE WHEN municipio_slug IS NULL THEN raw_json END AS raw_json FROM {table} WHERE (municipio_slug='madrid' AND fuente='madrid-opendata') OR (municipio_slug IS NULL AND fuente IS NULL) ORDER BY id")
         for row in cur:
             if row["municipio_slug"] == "madrid" or (evidence and source_fingerprint(row["raw_json"] or {}) in evidence):
                 scope.append(row)
             else:
                 unknown += 1
+    if current_only:
+        previous_counts = Counter(row["dataset"] for row in scope)
+        current_counts = Counter(row["source_dataset"] for row in prepared.values())
+        for dataset, count in previous_counts.items():
+            if current_counts[dataset] < .8 * count:
+                raise ValueError(f"El CSV {dataset} pierde más del 20% de registros")
+        for previous in scope:
+            row = prepared.get(previous["licencia_key"])
+            if row and previous["variants"]:
+                original = row.get("original") or {}
+                variants = list(original.get("_source_variants") or [])
+                variants.extend(item for item in previous["variants"] if item not in variants)
+                row["original"] = {**original, "_source_variants": variants}
+                prepared[previous["licencia_key"]] = prepare_row(row)
+    digest = hashlib.sha256()
+    for row in prepared.values():
+        digest.update(json.dumps(row, sort_keys=True, ensure_ascii=False, default=str).encode())
+    source_digest = digest.hexdigest()
     keys = set(prepared)
+    existing_keys = {row["licencia_key"] for row in scope}
+    if current_only and keys == existing_keys:
+        receipts = {
+            (row["source_dataset"], (row.get("_territorial_origin") or {}).get("resourceSha256"))
+            for row in prepared.values()
+        }
+        if (len(receipts) == len(CURRENT_SOURCES) and all(resource for _, resource in receipts)
+                and all((row["dataset"], row["resource"]) in receipts
+                        and row["policy"] == POLICY_VERSION and row["temporal"] == DATE_RULE_VERSION
+                        for row in scope)):
+            return {"status": "unchanged", "rows": len(keys), "source_digest": source_digest}
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (f"{schema}.madrid_license_snapshot_runs",))
         if cur.fetchone()[0]:
             cur.execute(f"SELECT source_digest FROM {schema}.madrid_license_snapshot_runs ORDER BY applied_at DESC LIMIT 1")
             previous = cur.fetchone()
-            if previous and previous[0] == source_digest and keys == {r["licencia_key"] for r in scope}:
+            if previous and previous[0] == source_digest and keys == existing_keys:
                 return {"status": "unchanged", "rows": len(keys), "source_digest": source_digest}
     _LOG.info("Snapshot: %s filas; anteriores: %s; legado no atribuido: %s", len(keys), len(scope), unknown)
     existing = {r["licencia_key"]: r for r in scope}

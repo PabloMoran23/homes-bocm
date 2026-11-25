@@ -15,6 +15,7 @@ from functools import lru_cache
 from typing import Any
 
 from pyproj import CRS, Transformer
+from shapely.errors import ShapelyError
 from shapely.geometry import Point, mapping, shape
 from shapely.ops import transform, unary_union
 
@@ -45,7 +46,7 @@ def valid_coordinates(lat: Any, lng: Any) -> bool:
             return False
         lat, lng = float(lat), float(lng)
         return math.isfinite(lat) and math.isfinite(lng) and -90 <= lat <= 90 and -180 <= lng <= 180
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, ShapelyError):
         return False
 
 
@@ -115,6 +116,18 @@ def official_boundary(name: str) -> dict | None:
     return None
 
 
+@lru_cache(maxsize=512)
+def _official_territory(name: str) -> tuple[Any, str]:
+    boundary = official_boundary(name)
+    if not boundary:
+        return None, _hash({})
+    try:
+        territory = shape(normalize_geometry(boundary["geometry"], boundary["crs"], boundary["axis_order"]))
+    except (ValueError, TypeError):
+        territory = None
+    return territory, _hash({name: boundary})
+
+
 def manifest_geography_config(manifest) -> dict:
     from municipio.manifest import load_yaml
     data = load_yaml(manifest.path)
@@ -152,26 +165,31 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     boundaries = cfg.get("municipal_boundaries") or rec.get("municipal_boundaries") or {}
     boundary = cfg.get("municipal_boundary") or rec.get("municipal_boundary")
     can_transform = bool(geom and crs) or bool(not geom and coordinate_crs and any(original.get(k) is not None for k in ("lat", "lon", "lng")))
-    if not boundary and fetch_boundary and can_transform:
-        boundary = official_boundary(municipality)
-    if boundary:
-        boundaries = {**boundaries, municipality: boundary}
-        out["municipal_boundary"] = boundary
     scope = rec.get("municipality_scope") or [municipality]
     if not isinstance(scope, list) or not scope or any(not isinstance(name, str) or not name for name in scope):
         scope = [municipality]
+    territory = None
+    if fetch_boundary and can_transform and not boundary and not boundaries and scope == [municipality]:
+        territory, boundary_hash = _official_territory(municipality)
+    else:
+        if not boundary and fetch_boundary and can_transform:
+            boundary = official_boundary(municipality)
+        if boundary:
+            boundaries = {**boundaries, municipality: boundary}
+        targets = []
+        for name in scope:
+            b = boundaries.get(name)
+            if b:
+                try:
+                    targets.append(shape(normalize_geometry(b.get("geometry", b), b.get("crs", "EPSG:4326"), b.get("axis_order", "xy"))))
+                except Exception:
+                    pass
+        if len(targets) == len(scope) and targets:
+            territory = unary_union(targets)
+        boundary_hash = _hash(boundaries)
     errors = {}
     if geom is None and any(original.get(k) is not None for k in ("geom_geojson", "geometry", "geom")):
         errors["geometry"] = "invalid_or_unsupported_geometry_structure"
-    targets = []
-    for name in scope:
-        b = boundaries.get(name)
-        if b:
-            try:
-                targets.append(shape(normalize_geometry(b.get("geometry", b), b.get("crs", "EPSG:4326"), b.get("axis_order", "xy"))))
-            except Exception:
-                pass
-    territory = unary_union(targets) if len(targets) == len(scope) and targets else None
     multi = len(scope) > 1 and bool(rec.get("multimunicipal_evidence")) and municipality in scope
 
     def municipal_check(g):
@@ -222,7 +240,7 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
                   "coordinate_source_crs": coordinate_crs,
                   "axis_order": order, "config_hash": _hash(cfg), "input_hash": _hash(original), "errors": errors,
                   "status": "quarantined" if errors else "valid" if out.get("lat") is not None else "unlocated",
-                  "municipality_scope": scope, "boundary_hash": _hash(boundaries)}
+                  "municipality_scope": scope, "boundary_hash": boundary_hash}
     validation["output_hash"] = _hash({k: out[k] for k in FIELDS if k in out})
     out["geography_validation"] = validation
     return out

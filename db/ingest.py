@@ -23,7 +23,7 @@ import sys
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any, Iterator, Literal
 
 import psycopg2
 from psycopg2.extras import Json, execute_values
@@ -39,7 +39,7 @@ from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 from municipio.entity_policy import annotate  # noqa: E402
-from entity_reprocess import ensure_schema, reprocess_queue  # noqa: E402
+from entity_reprocess import classify_written_projects, ensure_schema, reprocess_queue  # noqa: E402
 from license_dates import license_temporal  # noqa: E402
 from project_semantics import apply as apply_project_semantics, source_record  # noqa: E402
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
@@ -867,7 +867,11 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None) -> int:
         ensure_schema(c)
         execute_values(cur, sql, tuples, page_size=100)
         save_semantic_versions(cur, ready)
-        _classify_saved(c, "proyecto", [str(r["id"]) for r in ready])
+        ids = [str(r["id"]) for r in ready]
+        if all(row.get("municipio_slug") == "madrid" and row.get("fuente") == "sigma" for row in ready):
+            classify_written_projects(c, ids)
+        else:
+            _classify_saved(c, "proyecto", ids)
     return len(ready)
 
 
@@ -1041,7 +1045,7 @@ def save_inmuebles(rows: list[dict[str, Any]], *, conn=None) -> dict[str, int]:
 def save_proyecto_hijas(items: list[dict[str, Any]], *, conn=None) -> dict[str, int]:
     """Trámites visor, docs NTI y vínculos BOCM (particularidad Madrid)."""
     tramite_rows: list[tuple] = []
-    doc_rows: list[tuple] = []
+    docs_by_key: dict[tuple[str, str], tuple] = {}
     bocm_rows: list[tuple] = []
     now = _now()
     for item in items:
@@ -1073,7 +1077,8 @@ def save_proyecto_hijas(items: list[dict[str, Any]], *, conn=None) -> dict[str, 
                 url = _blank(d.get("url"))
                 if not url:
                     continue
-                doc_rows.append(
+                docs_by_key.setdefault(
+                    (pid, url),
                     (
                         pid,
                         i,
@@ -1084,12 +1089,14 @@ def save_proyecto_hijas(items: list[dict[str, Any]], *, conn=None) -> dict[str, 
                         _blank(d.get("tipodocNti") or d.get("tipodoc_nti")),
                         _blank(d.get("fechaDocumento") or d.get("fecha_documento")),
                         "nti",
-                    )
+                    ),
                 )
         for i, url in enumerate(hijas.get("documentacion_urls") or []):
             if not url:
                 continue
-            doc_rows.append((pid, 10000 + i, str(url), None, None, None, None, None, "visor"))
+            url = str(url)
+            # The visor may repeat an NTI URL. Keep its richer NTI record.
+            docs_by_key.setdefault((pid, url), (pid, 10000 + i, url, None, None, None, None, None, "visor"))
         for pub in hijas.get("bocm_publicaciones") or []:
             if not isinstance(pub, dict) or not pub.get("bocm_id"):
                 continue
@@ -1112,6 +1119,7 @@ def save_proyecto_hijas(items: list[dict[str, Any]], *, conn=None) -> dict[str, 
                     now,
                 )
             )
+    doc_rows = list(docs_by_key.values())
     stats = {"proyecto_tramite": 0, "proyecto_documento": 0, "proyecto_bocm_publicacion": 0}
     if not tramite_rows and not doc_rows and not bocm_rows:
         return stats
@@ -1500,14 +1508,24 @@ def persist_boletin_row(session: IngestSession | None, row: dict[str, Any], *, b
         print(f"  aviso supabase: {exc}", flush=True)
 
 
-def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manifest=None) -> dict[str, Any]:
+def sync_municipio_output(
+    slug: str, *, dry_run: bool = False, conn=None, manifest=None,
+    madrid_licenses: Literal["full", "current", "skip"] = "full",
+) -> dict[str, Any]:
     """Lee output/municipios/<slug>/*.jsonl y hace upsert. Lo usa el post-merge de cada PR."""
     from municipio.manifest import load_manifest
 
     manifest = manifest or load_manifest(slug)
+    madrid_refresh = madrid_licenses != "full"
+    if madrid_refresh and manifest.slug != "madrid":
+        raise ValueError("El modo de refresco de Madrid solo se aplica a Madrid capital")
     out_dir = manifest.output_dir
     proyectos_raw = _read_jsonl(out_dir / "proyectos.jsonl")
-    licencias_raw = _read_jsonl(out_dir / "licencias.jsonl")
+    licencias_raw = [] if madrid_licenses == "skip" else _read_jsonl(out_dir / "licencias.jsonl")
+    if madrid_refresh and not proyectos_raw:
+        raise ValueError("Madrid: el refresco requiere proyectos de SIGMA")
+    if madrid_licenses == "current" and not licencias_raw:
+        raise ValueError("Madrid: faltan las licencias y declaraciones de los CSV actuales")
     stats: dict[str, Any] = {
         "slug": slug,
         "nombre": manifest.nombre,
@@ -1553,16 +1571,24 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manife
                 }
             )
 
+    if madrid_refresh:
+        geocoded = sum(row["has_geometry"] for row in proy_rows)
+        if not geocoded:
+            raise ValueError("Madrid: la validación geográfica no ha acreditado ningún ámbito SIGMA")
+        print(f"Madrid: {len(proy_rows)} proyectos preparados, {geocoded} con geometría validada", flush=True)
+
+    madrid_snapshot = manifest.slug == "madrid" and bool(licencias_raw)
     lic_rows = []
     for rec in licencias_raw:
         if not rec.get("id"):
             continue
-        row = dict(rec)
-        row["_territorial_origin"] = {"municipio_slug": manifest.slug,
-            "adapter": manifest.portal.adapter or "municipio-manifest", "url": manifest.portal.base_url}
-        row["municipio_slug"] = rec.get("municipio_slug") or manifest.slug
-        row["fuente"] = rec.get("fuente") or rec.get("source") or "ayuntamiento"
-        lic_rows.append(row)
+        if not madrid_snapshot:
+            row = dict(rec)
+            row["_territorial_origin"] = {"municipio_slug": manifest.slug,
+                "adapter": manifest.portal.adapter or "municipio-manifest", "url": manifest.portal.base_url}
+            row["municipio_slug"] = rec.get("municipio_slug") or manifest.slug
+            row["fuente"] = rec.get("fuente") or rec.get("source") or "ayuntamiento"
+            lic_rows.append(row)
         if rec.get("pdf_url"):
             doc_rows.append(
                 {
@@ -1573,7 +1599,7 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manife
             )
 
     stats["proyectos_mapped"] = len(proy_rows)
-    stats["licencias_mapped"] = len(lic_rows)
+    stats["licencias_mapped"] = sum(bool(row.get("id")) for row in licencias_raw) if madrid_snapshot else len(lic_rows)
     stats["documentos"] = len(doc_rows)
     stats["hijas"] = len(hijas_rows)
     if dry_run:
@@ -1584,16 +1610,20 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manife
         stats["reason"] = "sin SUPABASE_DB_URL"
         return stats
 
-    with IngestSession("municipio", municipio_slug=manifest.slug, conn=conn) as ses:
+    scraper = "madrid-projects" if madrid_licenses == "skip" else "municipio"
+    with IngestSession(scraper, municipio_slug=manifest.slug, conn=conn) as ses:
         ses.save_municipio_from_manifest(manifest)
         ses.save_proyectos(proy_rows)
         if hijas_rows:
             for key, n in save_proyecto_hijas(hijas_rows, conn=ses.conn).items():
                 ses._bump(key, n)
-        if manifest.slug == "madrid" and licencias_raw:
+        if madrid_refresh:
+            print(f"Madrid: proyectos y fuentes vinculadas escritos {ses.counts}", flush=True)
+        if madrid_snapshot:
             from db.madrid_license_snapshot import sync_snapshot
-            stats["madrid_licenses"] = sync_snapshot(ses.conn, licencias_raw, apply=True)
-            ses._bump("licencia", stats["madrid_licenses"]["rows"])
+            report = sync_snapshot(ses.conn, licencias_raw, apply=True, current_only=madrid_licenses == "current")
+            stats["madrid_licenses"] = report
+            ses._bump("licencia", 0 if madrid_refresh and report["status"] == "unchanged" else report["rows"])
         else:
             inm_ids = save_inmuebles(lic_rows, conn=ses.conn)
             if inm_ids:
@@ -1604,7 +1634,8 @@ def sync_municipio_output(slug: str, *, dry_run: bool = False, conn=None, manife
                         row["inmueble_id"] = inm_ids[ndp]
             ses.save_licencias(lic_rows)
         ses.save_documentos(doc_rows)
-        touch_last_ingest_at(manifest.slug, conn=ses.conn)
+        if madrid_licenses != "skip":
+            touch_last_ingest_at(manifest.slug, conn=ses.conn)
         stats["upserted"] = dict(ses.counts)
     stats["status"] = "ok"
     return stats

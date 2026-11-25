@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       refresh_licencias:
-        description: "Descargar licencias (desactivar solo para reexportar la caché)"
+        description: "Descargar y publicar licencias. Desactivar para actualizar solo SIGMA."
         type: boolean
         default: true
   schedule:
@@ -126,8 +126,8 @@ jobs:
           node scripts/test-license-current.mjs
           npm run test:license-dates
 
-      - name: Refresh Madrid public datasets
-        timeout-minutes: 60
+      - name: Download Madrid public datasets
+        timeout-minutes: 35
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -135,38 +135,33 @@ jobs:
             echo "SUPABASE_DB_URL is required for direct public data sync." >&2
             exit 1
           fi
-          REFRESH_LIC=1
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "false" ]; then
-            REFRESH_LIC=0
-          fi
           python3 -m municipio run --municipio madrid --step proyectos_update
-          python3 -m municipio run --municipio madrid --step enrich_geometry
-          python3 -m municipio run --municipio madrid --step geocode
-          if [ "$REFRESH_LIC" = "1" ]; then
-            echo "Licencias y declaraciones: descarga de los CSV actuales desde 2023 y upsert."
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] || [ "${{ inputs.refresh_licencias }}" != "false" ]; then
             MADRID_LICENCIAS=1 python3 -m municipio run --municipio madrid --step licencias_update
-          else
-            echo "Licencias: se reexporta el JSONL cacheado si existe (sin descarga)."
-            python3 -m municipio run --municipio madrid --step licencias_update
           fi
-          python3 -m municipio run --municipio madrid --step sync_supabase
-          python3 -c "
-          from pathlib import Path
-          p = Path('output/municipios/madrid/proyectos.jsonl')
-          if not p.is_file():
-              raise SystemExit('Missing output/municipios/madrid/proyectos.jsonl')
-          n = sum(1 for line in p.open() if line.strip())
-          print(f'Madrid JSONL OK — proyectos: {n}')
-          if n < 1:
-              raise SystemExit('proyectos.jsonl vacío')
-          "
 
-
-      - name: Reclassify changed entities and check activity
-        timeout-minutes: 30
+      - name: Publish Madrid datasets in Supabase
+        timeout-minutes: 60
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: python3 db/entity_reprocess.py
+        run: |
+          args=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.refresh_licencias }}" = "false" ]; then
+            args+=(--projects-only)
+          fi
+          python3 -m db.refresh_madrid "${args[@]}"
+
+      - name: Check active classification policy
+        timeout-minutes: 2
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          python3 - <<'PY'
+          from db.ingest import connect
+          from db.entity_reprocess import require_policy_active
+          with connect() as conn, conn.cursor() as cur:
+              require_policy_active(cur)
+          PY
 
       - name: Prepare blind entity review sample
         env:

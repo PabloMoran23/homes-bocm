@@ -124,6 +124,23 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertIsNotNone(self.scalar("SELECT homes.get_proyecto_portal('legacy')"))
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
 
+    def test_madrid_sigma_batch_activates_the_written_projects_only(self):
+        self.add("unrelated")
+        with self.conn.cursor() as cur:
+            cur.execute("INSERT INTO homes.entity_reprocess_queue(entity_table,entity_id) VALUES ('proyecto','unrelated')")
+        rows = [
+            portal_proyecto_row({
+                "id": key, "titulo": "Plan parcial Sector 12", "expediente": "2026/12",
+                "url": "https://example/exp/12", "fuente": "sigma",
+            }, slug="madrid", nombre="Madrid")
+            for key in ("sigma-a", "sigma-b")
+        ]
+        self.assertEqual(save_proyectos(rows, conn=self.conn), 2)
+        self.assertEqual(self.scalar("""SELECT count(*) FROM homes.proyecto
+            WHERE id=ANY(%s) AND raw_features_json#>>'{_entity_policy,active,version}'=%s""",
+            (["sigma-a", "sigma-b"], POLICY_VERSION)), 2)
+        self.assertEqual(self.scalar("SELECT array_agg(entity_id) FROM homes.entity_reprocess_queue"), ["unrelated"])
+
     def test_rule_upgrade_preserves_active_snapshot_until_atomic_switch(self):
         self.add()
         with patch("entity_reprocess.POLICY_VERSION", "next"), patch("municipio.entity_policy.POLICY_VERSION", "next"):

@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 from municipio.entity_policy import POLICY_KEY, POLICY_VERSION, annotate, original
-from psycopg2.extras import Json, RealDictCursor
+from psycopg2.extras import Json, RealDictCursor, execute_values
 
 TABLES = {"proyecto": ("raw_features_json", "id"), "licencia": ("raw_json", "id")}
 
@@ -79,6 +79,42 @@ def enqueue_stale(conn) -> None:
                 ON CONFLICT (entity_table, entity_id) DO NOTHING""", (table, POLICY_KEY, POLICY_VERSION))
 
 
+def _metadata(row: dict, table: str, version: str, reason: str) -> dict:
+    raw_col, _ = TABLES[table]
+    derived = annotate(source_record(row, table), kind=table)
+    metadata = {k: v for k, v in derived[POLICY_KEY].items() if k != "active"}
+    previous = (row.get(raw_col) or {}).get(POLICY_KEY) or {}
+    active = None
+    if metadata["version"] == version:
+        active = dict(metadata)
+    elif reason == "policy_change" and isinstance(previous.get("active"), dict):
+        # A prepared policy version keeps the active classification until rollout.
+        active = previous["active"]
+    return {**metadata, "active": active}
+
+
+def classify_written_projects(conn, ids: list[str]) -> None:
+    """Publish classifications in batches while the caller owns the project write locks."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute("SELECT version FROM homes.entity_policy_config WHERE singleton")
+        version = cur.fetchone()["version"]
+        for offset in range(0, len(ids), 500):
+            cur.execute("""SELECT p.*, q.reason AS queue_reason FROM homes.proyecto p
+                JOIN homes.entity_reprocess_queue q ON q.entity_table='proyecto' AND q.entity_id=p.id
+                WHERE p.id=ANY(%s) FOR UPDATE OF q""", (ids[offset:offset + 500],))
+            updates = [
+                (row["id"], Json(_metadata(row, "proyecto", version, row["queue_reason"])))
+                for row in cur
+            ]
+            if updates:
+                execute_values(cur, """UPDATE homes.proyecto p SET raw_features_json =
+                    jsonb_set(coalesce(p.raw_features_json, '{}'::jsonb), '{_entity_policy}', v.metadata)
+                    FROM (VALUES %s) AS v(id, metadata) WHERE p.id=v.id""",
+                    updates, template="(%s,%s::jsonb)", page_size=500)
+                cur.execute("""DELETE FROM homes.entity_reprocess_queue
+                    WHERE entity_table='proyecto' AND entity_id=ANY(%s)""", ([key for key, _ in updates],))
+
+
 def reprocess_queue(conn, *, table: str | None = None, ids: list[str] | None = None, batch_size: int = 500) -> dict:
     """Bloquea fila+cola; fallo deja evidencia y pendiente para el siguiente intento."""
     stats = {"processed": 0, "failed": 0, "unknown": 0}
@@ -113,16 +149,7 @@ def reprocess_queue(conn, *, table: str | None = None, ids: list[str] | None = N
                 if cur.fetchone() is None:
                     continue
                 if row:
-                    derived = annotate(source_record(row, entity_table), kind=entity_table)
-                    metadata = {k: v for k, v in derived[POLICY_KEY].items() if k != "active"}
-                    previous = (row.get(raw_col) or {}).get(POLICY_KEY) or {}
-                    metadata["active"] = None
-                    if metadata["version"] == config["version"]:
-                        metadata["active"] = {k: v for k, v in metadata.items() if k != "active"}
-                    elif item["reason"] == "policy_change" and isinstance(previous.get("active"), dict):
-                        # Una regla nueva se prepara sin retirar resultados válidos
-                        # de la versión activa. Una fuente cambiada no hereda esto.
-                        metadata["active"] = previous["active"]
+                    metadata = _metadata(row, entity_table, config["version"], item["reason"])
                     # No reemplazar el original por la proyección con columnas auxiliares.
                     stored = {**(row.get(raw_col) or {}), POLICY_KEY: metadata}
                     cur.execute(f"UPDATE homes.{entity_table} SET {raw_col}=%s WHERE id=%s", (Json(stored), entity_id))
