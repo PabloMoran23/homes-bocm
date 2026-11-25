@@ -47,6 +47,7 @@ from project_semantics import apply as apply_project_semantics, source_record  #
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
 
 SCHEMA = "homes"
+LICENSE_LOOKUP_BATCH_SIZE = 500
 
 _GEOM_TYPES = {
     "Polygon",
@@ -179,11 +180,14 @@ def _next_licencia_ids(cur, keys: list[str]) -> dict[str, int]:
         return {}
     # The snapshot reconciliation uses the same lock before allocating IDs.
     cur.execute(f"LOCK TABLE {SCHEMA}.licencia IN SHARE ROW EXCLUSIVE MODE")
-    cur.execute(
-        f"SELECT licencia_key, id FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)",
-        (keys,),
-    )
-    out = {str(r[0]): int(r[1]) for r in cur.fetchall()}
+    unique_keys = list(dict.fromkeys(keys))
+    out = {}
+    for start in range(0, len(unique_keys), LICENSE_LOOKUP_BATCH_SIZE):
+        cur.execute(
+            f"SELECT licencia_key, id FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)",
+            (unique_keys[start:start + LICENSE_LOOKUP_BATCH_SIZE],),
+        )
+        out.update((str(key), int(license_id)) for key, license_id in cur.fetchall())
     cur.execute(f"SELECT COALESCE(MAX(id), 0) FROM {SCHEMA}.licencia")
     nxt = int(cur.fetchone()[0]) + 1
     for k in keys:
@@ -914,13 +918,23 @@ def save_proyectos(rows: list[dict[str, Any]], *, conn=None, semantic_history_pr
 
 def _license_rows_to_write(cur, rows: list[tuple]) -> list[tuple]:
     """Filter before INSERT: its BEFORE trigger would enqueue even a no-op conflict."""
-    cur.execute(f"""SELECT licencia_key, anio_dataset, fecha_alta, fecha_concesion,
-                   tipo_expediente, objeto, unidad, lat, lng,
-                   raw_json - '_entity_policy' - '_semantic_contract',
-                   inmueble_id, municipio_slug, fuente, id_origen
-            FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)
-            ORDER BY licencia_key FOR UPDATE""", ([row[1] for row in rows],))
-    current = {row[0]: tuple(row[1:]) for row in cur.fetchall()}
+    keys = list(dict.fromkeys(row[1] for row in rows))
+    if len(keys) > LICENSE_LOOKUP_BATCH_SIZE:
+        # Keep PostgreSQL's key order for row locks across pages.
+        cur.execute("SELECT key FROM unnest(%s::text[]) AS requested(key) ORDER BY key", (keys,))
+        keys = [key for (key,) in cur.fetchall()]
+    current = {}
+    for start in range(0, len(keys), LICENSE_LOOKUP_BATCH_SIZE):
+        cur.execute(
+            f"""SELECT licencia_key, anio_dataset, fecha_alta, fecha_concesion,
+                       tipo_expediente, objeto, unidad, lat, lng,
+                       raw_json - '_entity_policy' - '_semantic_contract',
+                       inmueble_id, municipio_slug, fuente, id_origen
+                FROM {SCHEMA}.licencia WHERE licencia_key = ANY(%s)
+                ORDER BY licencia_key FOR UPDATE""",
+            (keys[start:start + LICENSE_LOOKUP_BATCH_SIZE],),
+        )
+        current.update((row[0], tuple(row[1:])) for row in cur.fetchall())
     ready = []
     for row in rows:
         previous = current.get(row[1])

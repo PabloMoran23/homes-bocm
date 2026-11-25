@@ -25,6 +25,7 @@ TABLON_SEARCH = f"{BASE}/es/tablon-oficial/ayuntamiento-valladolid-tablon-oficia
 PLAI_BASE = "https://servicios.jcyl.es/PlanPublica"
 PLAI_MUNICIPIO = 186
 PLAI_PROVINCIA = 47
+DROUS_OUT_WKID = 4326
 
 DEFAULT_TABLON_SEARCHES: list[tuple[str, str]] = [
     ("S_TEMA_EDICTO_min", "ANUNCIO DE INFORMACIÓN PÚBLICA"),
@@ -352,7 +353,7 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
             "outFields": "*",
             "returnGeometry": "true" if geometry else "false",
             "f": "geojson" if geometry else "json",
-            "outSR": "4326",
+            "outSR": str(DROUS_OUT_WKID),
             "resultOffset": str(offset),
             "resultRecordCount": str(count),
             "orderByFields": "OBJECTID",
@@ -396,6 +397,7 @@ class ValladolidAyuntamientoAdapter(AyuntamientoAdapter):
         geom = feature.get("geometry")
         if isinstance(geom, dict) and geom.get("type") in {"Polygon", "MultiPolygon"}:
             rec["geom_geojson"] = geom
+            rec["geometry_crs"] = f"EPSG:{DROUS_OUT_WKID}"
             rec["geometry_source"] = "portal_visor_arcgis"
             rec["geometry_source_url"] = query_url
             centroid = geometry_centroid(geom)

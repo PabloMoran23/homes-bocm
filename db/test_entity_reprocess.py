@@ -15,7 +15,7 @@ from entity_reprocess import (
     activate_policy, activate_policy_bounded, ensure_replay_schema, ensure_schema, enqueue_stale,
     enqueue_stale_bounded, replay_batch, reprocess_queue, require_policy_active,
 )
-from ingest import _publish_madrid, portal_proyecto_row, save_proyectos, save_licencias
+from ingest import _next_licencia_ids, _publish_madrid, portal_proyecto_row, save_proyectos, save_licencias
 from municipio.entity_policy import POLICY_VERSION
 from municipio.manifest import load_manifest
 
@@ -392,6 +392,40 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
         self.assertEqual(save_licencias(rows, conn=self.conn), 0)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+
+    def test_batched_license_lookups_preserve_writes_and_duplicate_keys(self):
+        record = {"titulo": "Obras de viviendas", "fuente": "ayuntamiento",
+                  "municipio_slug": "madrid", "expediente": "2026/12", "url": "https://example/12"}
+        update = {**record, "id": "z-existing"}
+        unchanged = {**record, "id": "a-existing"}
+        self.assertEqual(save_licencias([update, unchanged], conn=self.conn), 2)
+        changed = {**update, "titulo": "Obras de reforma"}
+        new = [{**record, "id": key} for key in ("ñ-new", "b-new", "á-new")]
+        expected_ids = {"z-existing": 1, "a-existing": 2, "ñ-new": 3, "b-new": 4, "á-new": 5}
+
+        with self.conn.cursor() as cur:
+            for batch_size in (500, 2):
+                with self.subTest(batch_size=batch_size), patch("ingest.LICENSE_LOOKUP_BATCH_SIZE", batch_size):
+                    cur.execute("SAVEPOINT license_comparison")
+                    keys = [new[0]["id"], update["id"], new[0]["id"], new[1]["id"],
+                            unchanged["id"], new[2]["id"], update["id"]]
+                    self.assertEqual(_next_licencia_ids(cur, keys), expected_ids)
+                    rows = [new[0], unchanged, new[1], changed, new[2], unchanged]
+                    self.assertEqual(save_licencias(rows, conn=self.conn), 4)
+                    self.assertEqual(self.scalar("SELECT jsonb_object_agg(licencia_key,id) FROM homes.licencia"), expected_ids)
+                    self.assertEqual(self.scalar("SELECT objeto FROM homes.licencia WHERE id=1"), changed["titulo"])
+                    self.assertEqual(save_licencias(rows, conn=self.conn), 0)
+                    self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
+
+                    cur.execute("SAVEPOINT duplicate_change")
+                    with self.assertRaises(psycopg2.errors.CardinalityViolation):
+                        save_licencias([update, new[1], update, new[2]], conn=self.conn)
+                    cur.execute("ROLLBACK TO SAVEPOINT duplicate_change")
+                    self.assertEqual(self.scalar("SELECT objeto FROM homes.licencia WHERE id=1"), changed["titulo"])
+
+                    cur.execute("ROLLBACK TO SAVEPOINT license_comparison")
+                    cur.execute("RELEASE SAVEPOINT license_comparison")
+                    self.assertEqual(self.scalar("SELECT count(*) FROM homes.licencia"), 2)
 
     def test_municipal_batch_preserves_failed_record_and_classifies_the_rest(self):
         from entity_reprocess import _metadata

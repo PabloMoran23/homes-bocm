@@ -105,6 +105,22 @@ class DuePlanTest(TestCase):
         self.assertNotIn("retry", result["results"][0])
         self.assertEqual((result["ok"], result["failed"]), (1, 1))
 
+    def test_reports_failure_to_park_an_ingest_error(self) -> None:
+        plan = due_plan(slugs=["ontinyent"], timestamps={}, dead_letters={"ontinyent"}, now=NOW, force=True)
+        worker_result = {
+            "steps": {"sync_supabase": {"error": "connection interrupted", "type": "OperationalError"}},
+            "dead_letter_error": "database unavailable",
+        }
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded", return_value=worker_result,
+        ), patch("ingest.release_dead_letter") as release:
+            result = run_due(force=True)
+        row = result["results"][0]
+        self.assertEqual(row["failed_steps"], ["sync_supabase"])
+        self.assertEqual(row["steps"]["sync_supabase"]["error"], "connection interrupted")
+        self.assertEqual(row["dead_letter_error"], "database unavailable")
+        release.assert_not_called()
+
     def test_invalid_timeout_rejected_before_planning(self) -> None:
         for value in (0, -1, float("inf"), float("nan")):
             with self.subTest(value=value), patch("municipio.schedule.due_plan") as plan:

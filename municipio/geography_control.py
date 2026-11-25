@@ -96,21 +96,27 @@ def normalize_geometry(geometry: dict, crs: Any, axis_order: str = "xy") -> dict
 
 
 @lru_cache(maxsize=512)
-def official_boundary(name: str) -> dict | None:
-    """IGN OGC API returns RFC7946 (longitude, latitude); exact name only.
+def official_boundary(name: str, *, national_code: str | None = None) -> dict | None:
+    """Get the exact municipality from the IGN OGC API, optionally by national code.
 
     Failures are not evidence of a location. No nearest-municipality selection.
     Cache is per process/run, so recurring ingestion refreshes the evidence.
     """
     if not name:
         return None
-    query = urllib.parse.urlencode({"f": "json", "limit": "100", "nationallevelname": "Municipio", "nameunit": name})
+    selector = {"nationalcode": national_code} if national_code else {"nameunit": name}
+    query = urllib.parse.urlencode({"f": "json", "limit": "100", "nationallevelname": "Municipio", **selector})
     url = "https://api-features.ign.es/collections/administrativeunit/items?" + query
     try:
         with urllib.request.urlopen(url, timeout=15) as response:
             data = json.load(response)
         features = [f for f in data.get("features", []) if str(f.get("properties", {}).get("nameunit", "")).casefold() == name.casefold()]
         if len(features) == 1:
+            if national_code:
+                props = features[0]["properties"]
+                if (data.get("numberMatched") != 1 or props.get("nationalcode") != national_code
+                        or props.get("nationallevelname") != "Municipio"):
+                    return None
             return {"geometry": features[0]["geometry"], "source": url, "crs": "EPSG:4326", "axis_order": "xy"}
     except Exception:
         pass
@@ -118,8 +124,8 @@ def official_boundary(name: str) -> dict | None:
 
 
 @lru_cache(maxsize=512)
-def _official_territory(name: str) -> tuple[Any, str]:
-    boundary = official_boundary(name)
+def _official_territory(name: str, national_code: str | None = None) -> tuple[Any, str]:
+    boundary = official_boundary(name, national_code=national_code) if national_code else official_boundary(name)
     if not boundary:
         return None, _hash({})
     try:
@@ -197,6 +203,7 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     coordinate_crs = cfg.get("coordinates_crs") or rec.get("coordinates_crs") or cfg.get("source_crs") or rec.get("source_crs")
     boundaries = cfg.get("municipal_boundaries") or rec.get("municipal_boundaries") or {}
     boundary = cfg.get("municipal_boundary") or rec.get("municipal_boundary")
+    national_code = cfg.get("ign_national_code")
     can_transform = bool(geom and crs) or bool(not geom and coordinate_crs and any(original.get(k) is not None for k in ("lat", "lon", "lng")))
     scope = rec.get("municipality_scope") or [municipality]
     if not isinstance(scope, list) or not scope or any(not isinstance(name, str) or not name for name in scope):
@@ -209,10 +216,10 @@ def normalize_record(rec: dict[str, Any], *, cfg: dict | None = None, municipali
     if prepared_scope:
         territory, boundary_hash, _ = _prepared
     elif fetch_boundary and can_transform and not boundary and not boundaries and scope == [municipality]:
-        territory, boundary_hash = _official_territory(municipality)
+        territory, boundary_hash = _official_territory(municipality, national_code)
     else:
         if not boundary and fetch_boundary and can_transform:
-            boundary = official_boundary(municipality)
+            boundary = official_boundary(municipality, national_code=national_code) if national_code else official_boundary(municipality)
         if boundary:
             boundaries = {**boundaries, municipality: boundary}
         territory, boundary_hash = _scope_territory(boundaries, scope)

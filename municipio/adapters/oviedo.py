@@ -67,6 +67,8 @@ RE_RPGUR_ROW = re.compile(
     r'<td>\s*([^<]*?)\s*</td>',
     re.S,
 )
+RE_RPGUR_TOTAL = re.compile(r'class="pagebanner">\s*([0-9.,]+)\s+registros? encontrad[oa]s?', re.I)
+RE_RPGUR_PAGE = re.compile(r'class="selected_page">\s*(\d+)\s*</span>', re.I)
 RE_DETAIL_FIELD = re.compile(
     r'label_consulta2">\s*([^<:]+?)\s*:?\s*</label>.*?'
     r'(?:label_form_consulta_enlace">\s*<a[^>]*>([^<]+)</a>|'
@@ -218,6 +220,7 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
         index: dict[str, dict[str, Any]] = {}
         try:
             data = self._fetch_json(url)
+            crs = ((data.get("crs") or {}).get("properties") or {}).get("name")
             for feat in data.get("features") or []:
                 if not isinstance(feat, dict):
                     continue
@@ -229,6 +232,7 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
                 key = str(inv_id)
                 index[key] = {
                     "geom_geojson": geom,
+                    "geometry_crs": crs,
                     "geometry_source": "portal_wfs",
                     "geometry_source_url": url,
                     "coord_source": "portal_geometry_centroid",
@@ -252,8 +256,9 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _fetch_rpgur_list(self) -> list[dict[str, str]]:
         rows: list[dict[str, str]] = []
-        page = 1
-        while page <= self.max_rpgur_pages:
+        seen: set[str] = set()
+        expected_total: int | None = None
+        for page in range(1, self.max_rpgur_pages + 1):
             params = {
                 "method": "listPublico",
                 "idConcejo": self.rpgur_concejo_id,
@@ -262,16 +267,27 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
                 "page": str(page),
             }
             url = f"{self.rpgur_base}/busquedaConsulta?{urllib.parse.urlencode(params)}"
-            try:
-                html = self._fetch(url, encoding="iso-8859-1")
-            except urllib.error.URLError:
-                break
-            page_rows = 0
-            for m in RE_RPGUR_ROW.finditer(html):
-                page_rows += 1
+            html = self._fetch(url, encoding="iso-8859-1")
+            total = RE_RPGUR_TOTAL.search(html)
+            selected_page = RE_RPGUR_PAGE.search(html)
+            if total is None or selected_page is None or int(selected_page.group(1)) != page:
+                raise ValueError(f"Oviedo RPGUR has no verified pagination for page {page}")
+            reported_total = int(total.group(1).replace(".", "").replace(",", ""))
+            if expected_total is None:
+                expected_total = reported_total
+            if not reported_total or reported_total != expected_total:
+                raise ValueError(f"Oviedo RPGUR has an empty or inconsistent count on page {page}")
+            page_rows = list(RE_RPGUR_ROW.finditer(html))
+            if not page_rows:
+                raise ValueError(f"Oviedo RPGUR returned no parsed instruments on page {page}")
+            for m in page_rows:
+                instrument_id = m.group(1)
+                if instrument_id in seen:
+                    raise ValueError(f"Oviedo RPGUR repeated instrument {instrument_id} on page {page}")
+                seen.add(instrument_id)
                 rows.append(
                     {
-                        "id": m.group(1),
+                        "id": instrument_id,
                         "ambito": _strip_html(m.group(2)),
                         "concejo": _strip_html(m.group(3)),
                         "clasificacion": _strip_html(m.group(4)),
@@ -280,10 +296,11 @@ class OviedoAyuntamientoAdapter(AyuntamientoAdapter):
                         "estado": _strip_html(m.group(7)),
                     }
                 )
-            if page_rows == 0 or f"page={page + 1}" not in html:
+            if len(rows) == expected_total:
+                return rows
+            if len(rows) > expected_total or not re.search(rf"[?&]page={page + 1}(?!\d)", unescape(html)):
                 break
-            page += 1
-        return rows
+        raise ValueError(f"Oviedo RPGUR incomplete: read {len(rows)} of {expected_total} instruments")
 
     def _fetch_rpgur_detail(self, id_instrumento: str) -> dict[str, str]:
         url = (

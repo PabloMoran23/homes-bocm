@@ -13,17 +13,19 @@ from pathlib import Path
 from typing import Any
 
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.geography_control import normalize_geometry
 from municipio.geometry import geometry_centroid, record_geometry
 from municipio.gis.sitcm import WFS_BASE, resolve_municipio_wfs
+from municipio.http import PortalReadError, read_response
 
 WP_BASE = "https://www.ayuntamiento-losmolinos.es"
 SEDE_BASE = "https://sede.ayuntamiento-losmolinos.es/eAdmin"
 TRANSP_BASE = "https://transparencia.ayuntamiento-losmolinos.es"
 MUNICIPIO = "Los Molinos"
 ID_PREFIX = "los-molinos"
+SITCM_VISOR = "https://www.comunidad.madrid/medio-ambiente/sistema-informacion-territorial-visor-sit"
+SOURCE_ERRORS = (urllib.error.URLError, TimeoutError, PortalReadError)
 
-TABLON_ALL = f"{SEDE_BASE}/Tablon.do?action=verAnuncios"
-TRAMITES_URL = f"{SEDE_BASE}/Registrar.do?action=listadoEntradas"
 URBANISMO_URL = f"{WP_BASE}/?page_id=36668"
 
 DEFAULT_TRANSPARENCIA_PAGES: list[dict[str, Any]] = [
@@ -222,6 +224,8 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         )
         self._wfs_cache: dict[str, dict[str, Any]] | None = None
         self._wfs_catalogue: list[dict[str, Any]] | None = None
+        self._unreachable_hosts: dict[str | None, str] = {}
+        self._unavailable_sources: dict[tuple[str, str], dict[str, str]] = {}
 
     def _fetch(self, url: str, data: bytes | None = None) -> str:
         time.sleep(self.delay_s)
@@ -229,15 +233,44 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         req = urllib.request.Request(url, data=data, headers=headers)
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            raw = resp.read()
-            charset = resp.headers.get_content_charset() or (
-                "utf-8" if "ayuntamiento-losmolinos" in url else "iso-8859-1"
-            )
-            return raw.decode(charset, errors="replace")
+        raw, headers = read_response(req, timeout=10, attempts=2)
+        charset = headers.get_content_charset() or (
+            "utf-8" if "ayuntamiento-losmolinos" in url else "iso-8859-1"
+        )
+        return raw.decode(charset, errors="replace")
 
-    def _fetch_json(self, url: str) -> Any:
-        return json.loads(self._fetch(url))
+    def _fetch_source(self, source: str, url: str, data: bytes | None = None) -> str:
+        host = urllib.parse.urlsplit(url).hostname
+        error = self._unreachable_hosts.get(host)
+        if error is None:
+            try:
+                return self._fetch(url, data=data)
+            except SOURCE_ERRORS as exc:
+                error = str(exc)
+                cause = exc.__cause__ or exc
+                # urllib wraps connection failures in URLError. An HTTP response or a
+                # broken body only establishes failure of the requested resource.
+                if isinstance(cause, urllib.error.URLError) and not isinstance(cause, urllib.error.HTTPError):
+                    self._unreachable_hosts[host] = error
+        self._unavailable_sources.setdefault((source, url), {"source": source, "url": url, "error": error})
+        return ""
+
+    def _begin_collection(self) -> None:
+        self._unreachable_hosts.clear()
+        self._unavailable_sources.clear()
+        self._wfs_cache = None
+        self._wfs_catalogue = None
+
+    def _coverage(self) -> dict[str, Any]:
+        if not self._unavailable_sources:
+            return {"status": "ok"}
+        unavailable = list(self._unavailable_sources.values())
+        sources = dict.fromkeys(item["source"] for item in unavailable)
+        return {
+            "status": "partial",
+            "reason": f"los_molinos_sources_unavailable: {', '.join(sources)}",
+            "unavailable_sources": unavailable,
+        }
 
     def _abs_wp(self, href: str) -> str:
         return urllib.parse.urljoin(f"{self.wp_base}/", unescape(href).replace("&amp;", "&"))
@@ -272,19 +305,12 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
 
     def _search_tablon(self, term: str) -> dict[str, dict[str, Any]]:
         body = urllib.parse.urlencode({"referenciaBusqueda": term}).encode("utf-8")
-        try:
-            html = self._fetch(TABLON_ALL, data=body)
-        except urllib.error.URLError:
-            return {}
+        html = self._fetch_source("tablon", f"{self.sede_base}/Tablon.do?action=verAnuncios", data=body)
         return self._parse_tablon_html(html)
 
     def _collect_tablon(self) -> dict[str, dict[str, Any]]:
-        by_id: dict[str, dict[str, Any]] = {}
-        try:
-            html = self._fetch(TABLON_ALL)
-            by_id.update(self._parse_tablon_html(html))
-        except urllib.error.URLError:
-            pass
+        html = self._fetch_source("tablon", f"{self.sede_base}/Tablon.do?action=verAnuncios")
+        by_id = self._parse_tablon_html(html)
         for term in self.search_terms:
             for ann_id, rec in self._search_tablon(term).items():
                 by_id.setdefault(ann_id, rec)
@@ -310,10 +336,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
             section = str(page.get("section") or page_id)
             default_tipo = str(page.get("tipo") or "urbanismo")
             page_url = f"{self.transp_base}/?page_id={page_id}"
-            try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
-                continue
+            html = self._fetch_source("transparencia_planeamiento", page_url)
             for title, code in self._extract_transparencia_docs(html):
                 rec: dict[str, Any] = {
                     "id": _stable_id("proy", code),
@@ -336,10 +359,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         licencias: list[dict[str, Any]] = []
         seen: set[str] = set()
         for page_url in self.wp_seed_pages:
-            try:
-                html = self._fetch(page_url)
-            except urllib.error.URLError:
-                continue
+            html = self._fetch_source("web_urbanismo", page_url)
             for m in RE_WP_PDF.finditer(html):
                 href = m.group(1)
                 pdf_url = self._abs_wp(href)
@@ -383,10 +403,8 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         return proyectos, licencias
 
     def _collect_tramites_urbanismo(self) -> list[dict[str, Any]]:
-        try:
-            html = self._fetch(TRAMITES_URL)
-        except urllib.error.URLError:
-            return []
+        url = f"{self.sede_base}/Registrar.do?action=listadoEntradas"
+        html = self._fetch_source("catalogo_tramites", url)
         titles: dict[str, str] = {}
         for m in RE_MODAL_TITLE.finditer(html):
             tid, title = m.group(1), _clean_title(m.group(2))
@@ -415,7 +433,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
             )
         return rows
 
-    def _wfs_query(self, cql: str, count: int = 20) -> tuple[list[dict[str, Any]], bool]:
+    def _wfs_query_url(self, cql: str, count: int) -> str:
         params = urllib.parse.urlencode(
             {
                 "service": "WFS",
@@ -428,22 +446,31 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
                 "CQL_FILTER": cql,
             }
         )
-        url = f"{self.wfs_url}?{params}"
+        return f"{self.wfs_url}?{params}"
+
+    def _wfs_query(self, cql: str, count: int = 20) -> tuple[list[dict[str, Any]], bool]:
+        url = self._wfs_query_url(cql, count)
+        body = self._fetch_source("sitcm_ambitos", url)
         try:
-            data = self._fetch_json(url)
-        except (urllib.error.URLError, json.JSONDecodeError):
+            data = json.loads(body)
+        except json.JSONDecodeError:
             return [], False
-        if not isinstance(data, dict):
+        if not isinstance(data, dict) or data.get("type") != "FeatureCollection":
             return [], False
-        features = [f for f in (data.get("features") or []) if isinstance(f, dict)]
+        raw_features = data.get("features")
+        if not isinstance(raw_features, list):
+            return [], False
+        features = [f for f in raw_features if isinstance(f, dict)]
         matched = data.get("numberMatched")
-        return features, isinstance(matched, int) and len(features) == matched
+        return features, type(matched) is int and len(features) == len(raw_features) == matched
+
+    def _wfs_municipio_filter(self) -> str:
+        return "DS_MUNICIPIO='" + self.wfs_municipio.replace("'", "''") + "'"
 
     def _load_wfs_ambitos(self) -> dict[str, dict[str, Any]]:
         if self._wfs_cache is not None:
             return self._wfs_cache
-        muni = self.wfs_municipio.replace("'", "''")
-        feats, complete = self._wfs_query(f"DS_MUNICIPIO='{muni}'", count=120)
+        feats, complete = self._wfs_query(self._wfs_municipio_filter(), count=120)
         if complete:
             self._wfs_catalogue = feats
         cache: dict[str, dict[str, Any]] = {}
@@ -458,6 +485,53 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
                 cache.setdefault(code_m.group(1).upper(), f)
         self._wfs_cache = cache
         return cache
+
+    def _collect_sitcm_ambitos(self) -> list[dict[str, Any]]:
+        self._load_wfs_ambitos()
+        if not self._wfs_catalogue:
+            raise ValueError("Los Molinos requires a complete, nonempty SITCM catalogue when municipal planning is unavailable")
+        source_url = self._wfs_query_url(self._wfs_municipio_filter(), 120)
+        rows = []
+        seen: set[str] = set()
+        for feature in self._wfs_catalogue:
+            props = feature.get("properties") or {}
+            code = props.get("CD_UNI")
+            title = str(props.get("DS_NOMB_AMB") or "").strip()
+            registry = str(props.get("CD_REUR") or "").strip()
+            if (props.get("DS_MUNICIPIO") != self.wfs_municipio or not isinstance(code, str)
+                    or not code.strip() or code in seen or not title or not registry.isdecimal()):
+                raise ValueError(f"Invalid Los Molinos SITCM sector identity: {code}")
+            geometry = feature.get("geometry")
+            if not isinstance(geometry, dict) or geometry.get("type") not in {"Polygon", "MultiPolygon"}:
+                raise ValueError(f"Missing Los Molinos SITCM polygon for {code}")
+            geometry = normalize_geometry(geometry, "EPSG:4326")
+            center = geometry_centroid(geometry)
+            if center is None:
+                raise ValueError(f"Invalid Los Molinos SITCM polygon for {code}")
+            seen.add(code)
+            rows.append({
+                "id": _stable_id("proy", f"sitcm:{code}"),
+                "municipio": MUNICIPIO,
+                "titulo": title,
+                "fecha": props.get("FC_BOCM"),
+                "tipo": "planeamiento",
+                "url": SITCM_VISOR,
+                "source": "sitcm",
+                "catalog_source": "sitcm",
+                "bocm_source_id": "sitcm",
+                "origen": "sitcm_ambitos",
+                "exp_numero_original": f"REUR {registry} / {code}",
+                "sitcm_code": code,
+                "ambito_sit": title,
+                "geom_geojson": geometry,
+                "geometry_crs": "EPSG:4326",
+                "geometry_source": "portal_wfs",
+                "geometry_source_url": source_url,
+                "coord_source": "portal_geometry_centroid",
+                "lat": center[0],
+                "lon": center[1],
+            })
+        return rows
 
     def _fetch_geometry(self, titulo: str) -> dict[str, Any] | None:
         title = titulo or ""
@@ -474,7 +548,6 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
                 candidates.append((100.0, code, feat))
 
         parts = _sector_ilike_parts(title)
-        muni = self.wfs_municipio.replace("'", "''")
         if parts:
             pattern = "%" + "%".join(p.replace("'", "''") for p in parts[:6]) + "%"
             if self._wfs_catalogue is not None and "\\" not in pattern:
@@ -487,7 +560,7 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
                          if matches.fullmatch(str((f.get("properties") or {}).get("DS_NOMB_AMB") or ""))][:10]
             else:
                 feats, _ = self._wfs_query(
-                    f"DS_MUNICIPIO='{muni}' AND DS_NOMB_AMB ILIKE '{pattern}'",
+                    f"{self._wfs_municipio_filter()} AND DS_NOMB_AMB ILIKE '{pattern}'",
                     count=10,
                 )
             title_low = title.lower()
@@ -602,63 +675,38 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
                     rows.append(json.loads(line))
         return rows
 
-    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+    def _collect_licencias(self, *, replace_duplicates: bool = False) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        self._begin_collection()
         tablon = self._collect_tablon()
-        rows: list[dict[str, Any]] = []
-        seen: set[str] = set()
+        rows: dict[str, dict[str, Any]] = {}
+
+        def add(row: dict[str, Any] | None) -> None:
+            if row and (replace_duplicates or row["id"] not in rows):
+                rows[row["id"]] = row
+
         for rec in tablon.values():
-            lic = self._title_to_licencia(rec)
-            if lic and lic["id"] not in seen:
-                seen.add(lic["id"])
-                rows.append(lic)
+            add(self._title_to_licencia(rec))
         _, wp_lic = self._collect_wp_docs()
         for rec in wp_lic:
-            if rec["id"] not in seen:
-                seen.add(rec["id"])
-                rows.append(rec)
+            add(rec)
         for rec in self._collect_tramites_urbanismo():
-            if rec["id"] not in seen:
-                seen.add(rec["id"])
-                rows.append(rec)
-        self._write_jsonl(out_jsonl, rows)
-        return {
-            "rows": len(rows),
-            "status": "ok",
+            add(rec)
+        return list(rows.values()), {
+            **self._coverage(),
             "tablon_items": len(tablon),
             "tramites": len(self.tramite_ids),
         }
 
-    def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        existing = {r["id"]: r for r in self._load_jsonl(out_jsonl)}
-        before = len(existing)
-        tablon = self._collect_tablon()
-        for rec in tablon.values():
-            lic = self._title_to_licencia(rec)
-            if lic:
-                existing[lic["id"]] = lic
-        _, wp_lic = self._collect_wp_docs()
-        for rec in wp_lic:
-            existing[rec["id"]] = rec
-        for rec in self._collect_tramites_urbanismo():
-            existing[rec["id"]] = rec
-        rows = list(existing.values())
-        self._write_jsonl(out_jsonl, rows)
-        added = len(rows) - before
-        state_path.write_text(
-            json.dumps(
-                {
-                    "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": len(rows),
-                    "added": max(0, added),
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
-        return {"rows": len(rows), "added": max(0, added), "status": "ok"}
+    def backfill_licencias(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_licencias()
+        return self._save_collection(out_jsonl, rows, coverage)
 
-    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+    def update_licencias(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_licencias(replace_duplicates=True)
+        return self._save_collection(out_jsonl, rows, coverage, state_path, retain_existing=True)
+
+    def _collect_proyectos(self) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        self._begin_collection()
         seen: set[str] = set()
         rows: list[dict[str, Any]] = []
 
@@ -675,29 +723,49 @@ class LosMolinosAyuntamientoAdapter(AyuntamientoAdapter):
         tablon = self._collect_tablon()
         for rec in tablon.values():
             add(self._title_to_proyecto(rec))
+        if self._unavailable_sources and not rows:
+            for row in self._collect_sitcm_ambitos():
+                add(row)
 
-        self._write_jsonl(out_jsonl, rows)
-        return {
-            "rows": len(rows),
-            "status": "ok",
+        return rows, {
+            **self._coverage(),
             "wp_docs": len(wp_proy),
             "tablon_items": sum(1 for r in rows if r.get("origen") == "tablon"),
+            "sitcm_ambitos": sum(1 for r in rows if r.get("origen") == "sitcm_ambitos"),
         }
 
+    def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
+        rows, coverage = self._collect_proyectos()
+        return self._save_collection(out_jsonl, rows, coverage)
+
     def update_proyectos(self, out_jsonl: Path, state_path: Path) -> dict[str, Any]:
-        before = len(self._load_jsonl(out_jsonl))
-        self.backfill_proyectos(out_jsonl)
-        after = len(self._load_jsonl(out_jsonl))
-        state_path.write_text(
-            json.dumps(
-                {
-                    "last_run": datetime.now(timezone.utc).isoformat(),
-                    "count": after,
-                    "added": max(0, after - before),
-                },
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
-        return {"rows": after, "added": max(0, after - before), "status": "ok"}
+        rows, coverage = self._collect_proyectos()
+        return self._save_collection(out_jsonl, rows, coverage, state_path)
+
+    def _save_collection(
+        self, out_jsonl: Path, rows: list[dict[str, Any]], coverage: dict[str, Any],
+        state_path: Path | None = None, *, retain_existing: bool = False,
+    ) -> dict[str, Any]:
+        partial = coverage["status"] == "partial"
+        existing = self._load_jsonl(out_jsonl) if state_path is not None or partial else []
+        if partial or retain_existing:
+            by_id = {row["id"]: row for row in existing}
+            for row in rows:
+                if partial and row["id"] in by_id:
+                    by_id[row["id"]].update({key: value for key, value in row.items() if value is not None})
+                else:
+                    by_id[row["id"]] = row
+            rows = list(by_id.values())
+        self._write_jsonl(out_jsonl, rows)
+        result = {"rows": len(rows), **coverage}
+        if state_path is not None:
+            result["added"] = max(0, len(rows) - len(existing))
+            state_path.write_text(
+                json.dumps(
+                    {"last_run": datetime.now(timezone.utc).isoformat(), "count": len(rows), **result},
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+        return result

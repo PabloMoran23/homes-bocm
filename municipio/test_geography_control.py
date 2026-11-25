@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
+from urllib.parse import parse_qs, urlsplit
 
 from pyproj import Transformer
 
-from municipio.geography_control import _official_territory, geography_normalizer, normalize_geometry, normalize_record
+from municipio.geography_control import _official_territory, geography_normalizer, normalize_geometry, normalize_record, official_boundary
 from municipio.geography_replay import replay_file
 from municipio.geocode import _geocode_records
 from municipio.validate import validate_manifest
@@ -21,6 +23,46 @@ POLY = {"type": "Polygon", "coordinates": [[[-3.9, 40.1], [-3.8, 40.1], [-3.8, 4
 
 
 class GeographyTest(unittest.TestCase):
+    def test_configured_ign_boundary_is_shared_by_geocode_and_validation(self):
+        national_code = "34074747186"
+        cfg = {"ign_national_code": national_code}
+        properties = {"nameunit": "Valladolid", "nationalcode": national_code, "nationallevelname": "Municipio"}
+        data = {"numberMatched": 1, "features": [{"properties": properties, "geometry": BOUNDARY}]}
+        records = [{"geom_geojson": POLY, "geometry_crs": "EPSG:4326"}]
+        manifest = SimpleNamespace(nombre="Valladolid", slug="valladolid", portal=SimpleNamespace(config={}))
+        self.addCleanup(official_boundary.cache_clear)
+        self.addCleanup(_official_territory.cache_clear)
+        with (
+            patch("municipio.geography_control.urllib.request.urlopen", return_value=io.BytesIO(json.dumps(data).encode())) as fetch,
+            patch("municipio.geocode.manifest_geography_config", return_value=cfg),
+        ):
+            validation = normalize_record(records[0], cfg=cfg, municipality=manifest.nombre, fetch_boundary=True)
+            stats = _geocode_records(records, manifest=manifest, cache={})
+        self.assertEqual(validation["geography_validation"]["status"], "valid")
+        self.assertEqual(records[0]["geography_validation"]["status"], "valid")
+        self.assertEqual(stats["from_geometry"], 1)
+        self.assertEqual(fetch.call_count, 1)
+        params = parse_qs(urlsplit(fetch.call_args.args[0]).query)
+        self.assertEqual(params["nationalcode"], [national_code])
+        self.assertEqual(params["nationallevelname"], ["Municipio"])
+        self.assertNotIn("nameunit", params)
+
+    def test_configured_ign_boundary_requires_unambiguous_code_name_and_level(self):
+        national_code = "34074747186"
+        props = {"nameunit": "Valladolid", "nationalcode": national_code, "nationallevelname": "Municipio"}
+        self.addCleanup(official_boundary.cache_clear)
+        for properties, count in (
+            ({**props, "nameunit": "Different municipality"}, 1),
+            ({**props, "nationalcode": "34074700000"}, 1),
+            ({**props, "nationallevelname": "Provincia"}, 1),
+            (props, 2),
+        ):
+            with self.subTest(properties=properties, count=count):
+                official_boundary.cache_clear()
+                data = {"numberMatched": count, "features": [{"properties": properties, "geometry": BOUNDARY}]}
+                with patch("municipio.geography_control.urllib.request.urlopen", return_value=io.BytesIO(json.dumps(data).encode())):
+                    self.assertIsNone(official_boundary("Valladolid", national_code=national_code))
+
     def test_validate_checks_geometry_against_the_cached_official_boundary(self):
         self.addCleanup(_official_territory.cache_clear)
         with tempfile.TemporaryDirectory() as tmp:

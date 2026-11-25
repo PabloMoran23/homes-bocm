@@ -353,6 +353,9 @@ def run_due(
             print(f"  OK {slug}", flush=True)
         else:
             out["failed"] += 1
+            if (park_error := result.get("dead_letter_error")):
+                row["dead_letter_error"] = park_error
+                print(f"  DLQ FAIL {slug}: {park_error}", flush=True)
             print(f"  FAIL {slug}: {errors}", flush=True)
 
     out["status"] = "ok" if out["failed"] == 0 else "partial"

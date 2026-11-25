@@ -38,3 +38,8 @@ licencias:
 proyectos:
   enabled: true
   source: ayuntamiento
+
+geometry:
+  validation:
+    # El filtro por nombre del IGN no devuelve el término municipal.
+    ign_national_code: "34074747186"
