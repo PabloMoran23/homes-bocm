@@ -13,6 +13,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.http import fetch_text
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid
 
@@ -264,8 +265,7 @@ class BuenavistaDelNorteAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-buenavista-del-norte/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text(req, encoding="utf-8")
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))

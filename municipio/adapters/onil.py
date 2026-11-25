@@ -14,6 +14,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.http import fetch_text, read_response
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -201,12 +202,11 @@ class OnilAyuntamientoAdapter(AyuntamientoAdapter):
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
         req = urllib.request.Request(url, data=data, headers=headers)
-        with self._opener.open(req, timeout=60) as resp:
-            raw = resp.read()
-            charset = resp.headers.get_content_charset() or (
-                "iso-8859-1" if "Tablon.do" in url or "Registrar.do" in url else "utf-8"
-            )
-            return raw.decode(charset, errors="replace")
+        raw, headers = read_response(req, opener=self._opener.open)
+        charset = headers.get_content_charset() or (
+            "iso-8859-1" if "Tablon.do" in url or "Registrar.do" in url else "utf-8"
+        )
+        return raw.decode(charset, errors="replace")
 
     def _fetch_json(self, url: str, *, timeout: int = 120) -> Any:
         time.sleep(self.delay_s)
@@ -214,8 +214,7 @@ class OnilAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-onil/1.0")},
         )
-        with self._opener.open(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        return json.loads(fetch_text(req, encoding="utf-8", opener=self._opener.open, timeout=timeout))
 
     def _parse_tablon_html(self, html: str) -> dict[str, dict[str, Any]]:
         by_id: dict[str, dict[str, Any]] = {}

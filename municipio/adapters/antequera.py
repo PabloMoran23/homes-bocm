@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from municipio.http import fetch_text
 from municipio.onboarding_snapshot import reviewed_records
 import hashlib
 import http.cookiejar
@@ -185,13 +186,8 @@ class AntequeraAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-antequera/1.0")},
         )
-        if use_sede_ssl or "sedelectronica.es" in url:
-            with self._opener.open(req, timeout=90) as resp:
-                charset = resp.headers.get_content_charset() or "utf-8"
-                return resp.read().decode(charset, errors="replace")
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            charset = resp.headers.get_content_charset() or "utf-8"
-            return resp.read().decode(charset, errors="replace")
+        opener = self._opener.open if use_sede_ssl or "sedelectronica.es" in url else None
+        return fetch_text(req, opener=opener, timeout=90)
 
     def _abs_web(self, href: str) -> str:
         return urllib.parse.urljoin(f"{self.web_base}/", unescape(href))

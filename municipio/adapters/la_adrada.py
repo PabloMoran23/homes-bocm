@@ -14,6 +14,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.idecyl import fetch_text_with_idecyl_chain
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -145,8 +146,7 @@ class LaAdradaAyuntamientoAdapter(AyuntamientoAdapter):
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-adrada/1.0")},
         )
         opener = self._opener if sede else urllib.request.build_opener()
-        with opener.open(req, timeout=90 if sede else 60) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text_with_idecyl_chain(req, opener=opener.open, timeout=90 if sede else 60)
 
     def _fetch_json(self, url: str) -> Any:
         time.sleep(self.delay_s)
@@ -154,8 +154,7 @@ class LaAdradaAyuntamientoAdapter(AyuntamientoAdapter):
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-la-adrada/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+        return json.loads(fetch_text_with_idecyl_chain(req, timeout=90))
 
     def _wfs_query_url(self, layer: str) -> str:
         params = urllib.parse.urlencode(

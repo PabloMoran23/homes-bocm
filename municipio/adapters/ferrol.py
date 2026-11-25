@@ -16,6 +16,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 from municipio.adapters.portal import AyuntamientoAdapter
+from municipio.http import PortalReadError, fetch_text
 
 WEB_BASE = "https://www.ferrol.gal"
 SEDE_CIVIDAS = "https://www.ferrol.gal:8443/cividas-core-web-ferrol/"
@@ -98,7 +99,6 @@ class FerrolAyuntamientoAdapter(AyuntamientoAdapter):
         self.web_base = str(self.config.get("web_base") or WEB_BASE).rstrip("/")
         self.max_siotuga_des = int(self.config.get("max_siotuga_desarrollo", 80))
         self._prefer_wayback = bool(self.config.get("prefer_wayback", False))
-        self._direct_blocked = self._prefer_wayback
         self._direct_timeout_s = float(self.config.get("direct_timeout_s", 12))
         self._ssl_ctx = ssl.create_default_context()
         if self.config.get("sede_insecure_ssl", True):
@@ -113,30 +113,30 @@ class FerrolAyuntamientoAdapter(AyuntamientoAdapter):
         headers = {"User-Agent": self.config.get("user_agent", "poc-bocm-ferrol/1.0")}
         if data is not None:
             headers["Content-Type"] = "application/x-www-form-urlencoded"
-        candidates: list[str] = []
-        if not self._direct_blocked:
-            candidates.append(url)
-        if self.config.get("wayback_fallback", True):
+        candidates = [url]
+        # A Wayback capture can cover a public GET that is temporarily down,
+        # but cannot process the stateful live SIOTUGA search POSTs.
+        live_inventory = urllib.parse.urlsplit(url).hostname == urllib.parse.urlsplit(SIOTUGA_INVENTARIO).hostname
+        if data is None and not live_inventory and self.config.get("wayback_fallback", True):
             candidates.append(_wayback_url(url))
-        last_err: urllib.error.URLError | None = None
+            if self._prefer_wayback:
+                candidates.reverse()
         for attempt_url in candidates:
             timeout = self._direct_timeout_s if attempt_url == url else 75.0
             ctx = self._ssl_ctx if (use_sede_ssl or ":8443" in attempt_url) else None
             req = urllib.request.Request(attempt_url, data=data, headers=headers)
+            opener = self._opener.open
+            if ctx is not None:
+                opener = urllib.request.build_opener(
+                    urllib.request.HTTPCookieProcessor(self._jar),
+                    urllib.request.HTTPSHandler(context=ctx),
+                ).open
             try:
-                if ctx is not None:
-                    resp_cm = urllib.request.urlopen(req, timeout=timeout, context=ctx)
-                else:
-                    resp_cm = self._opener.open(req, timeout=timeout)
-                with resp_cm as resp:
-                    enc = resp.headers.get_content_charset() or "utf-8"
-                    return resp.read().decode(enc, errors="replace")
-            except urllib.error.URLError as exc:
-                last_err = exc
-                if attempt_url == url:
-                    self._direct_blocked = True
-                continue
-        raise last_err or urllib.error.URLError("fetch failed")
+                return fetch_text(req, opener=opener, timeout=timeout, attempts=2)
+            except (urllib.error.URLError, TimeoutError, PortalReadError):
+                if attempt_url == candidates[-1]:
+                    raise
+        raise AssertionError("No Ferrol source was attempted")
 
     def _get_siotuga_token(self) -> str:
         if self._siotuga_token:

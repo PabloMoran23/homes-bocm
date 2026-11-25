@@ -14,6 +14,7 @@ from html import unescape
 from pathlib import Path
 from typing import Any
 
+from municipio.idecyl import fetch_text_with_idecyl_chain
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
 
@@ -198,8 +199,7 @@ class MirandaDeAzanAyuntamientoAdapter(AyuntamientoAdapter):
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-miranda-de-azan/1.0")},
         )
         opener = self._opener if sede else urllib.request.build_opener()
-        with opener.open(req, timeout=timeout) as resp:
-            return resp.read().decode("utf-8", errors="replace")
+        return fetch_text_with_idecyl_chain(req, opener=opener.open, timeout=timeout)
 
     def _fetch_json(self, url: str) -> Any:
         return json.loads(self._fetch(url))
