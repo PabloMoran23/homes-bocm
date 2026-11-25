@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any
+
+import psycopg2
 
 from municipio.manifest import MunicipioManifest
 
@@ -31,4 +34,13 @@ def sync_manifest(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict
             "reason": "sin SUPABASE_DB_URL",
             "slug": manifest.slug,
         }
-    return sync_municipio_output(manifest.slug, dry_run=dry_run)
+    for attempt in range(1, 4):
+        try:
+            return sync_municipio_output(manifest.slug, dry_run=dry_run, manifest=manifest)
+        except (psycopg2.InterfaceError, psycopg2.OperationalError) as exc:
+            code = exc.pgcode or ""
+            transient = not code or code.startswith("08") or code in {"40001", "40P01", "55P03", "57P01"}
+            if attempt == 3 or not transient:
+                raise
+            print(f"  {manifest.slug}: conexión o transacción de ingesta interrumpida, reintento {attempt + 1}/3", flush=True)
+            time.sleep(2 ** attempt)

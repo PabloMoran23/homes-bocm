@@ -37,7 +37,8 @@ class DuePlanTest(TestCase):
         plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, dead_letters=set(), now=NOW)
         children = {child.pid for child in multiprocessing.active_children()}
 
-        def runner(manifest, step):
+        def runner(manifest, step, *, on_step):
+            on_step("proyectos_update")
             if manifest.slug == "oviedo":
                 time.sleep(60)
             return {"steps": {"proyectos_update": {"rows": 1}}}
@@ -52,13 +53,14 @@ class DuePlanTest(TestCase):
         self.assertEqual(park.call_args.args, ("oviedo",))
         self.assertEqual(park.call_args.kwargs["step"], "schedule_timeout")
         self.assertIn("0.2 seconds", park.call_args.kwargs["error"])
+        self.assertIn("(proyectos_update)", park.call_args.kwargs["error"])
         self.assertEqual(result["results"][0]["retry"], "dead_letter")
         self.assertEqual((result["ok"], result["failed"], result["status"]), (1, 1, "partial"))
         release.assert_called_once_with("leon")
         self.assertEqual({child.pid for child in multiprocessing.active_children()}, children)
 
     def test_worker_ignoring_termination_is_killed(self) -> None:
-        def stubborn(*args):
+        def stubborn(*args, **kwargs):
             signal.signal(signal.SIGTERM, signal.SIG_IGN)
             time.sleep(60)
         with patch("municipio.schedule.load_manifest"), patch("municipio.schedule.run", side_effect=stubborn):
@@ -67,7 +69,7 @@ class DuePlanTest(TestCase):
 
     def test_worker_crash_does_not_report_success(self) -> None:
         with patch("municipio.schedule.load_manifest"), patch(
-            "municipio.schedule.run", side_effect=lambda *args: os._exit(7)
+            "municipio.schedule.run", side_effect=lambda *args, **kwargs: os._exit(7)
         ):
             with self.assertRaisesRegex(RuntimeError, "municipio_worker_exit: oviedo: 7"):
                 _run_bounded("oviedo", "update", 5)

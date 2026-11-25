@@ -60,6 +60,8 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          PGCONNECT_TIMEOUT: "15"
+          PGOPTIONS: "-c statement_timeout=180000 -c lock_timeout=30000"
           INTERVAL_DAYS: ${{ github.event.inputs.interval_days || '15' }}
           LIMIT: ${{ github.event.inputs.limit || '20' }}
           TIMEOUT_MINUTES: ${{ github.event.inputs.timeout_minutes || '30' }}

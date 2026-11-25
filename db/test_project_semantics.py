@@ -87,7 +87,8 @@ class ContractTest(unittest.TestCase):
         class Connection:
             def cursor(self): return Cursor()
         from ingest import _PROYECTO_UPSERT_COLS
-        with patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"), patch("ingest._classify_saved"):
+        with (patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"),
+              patch("ingest._semantic_history_ready", return_value=True), patch("ingest._classify_saved")):
             save_proyectos([source], conn=Connection())
         values = dict(zip(_PROYECTO_UPSERT_COLS, execute.call_args_list[0].args[2][0]))
         saved = values["raw_features_json"].adapted
@@ -108,7 +109,8 @@ class ContractTest(unittest.TestCase):
             def fetchall(self): return []
         class Connection:
             def cursor(self): return Cursor()
-        with patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"), patch("ingest._classify_saved"):
+        with (patch("ingest.execute_values") as execute, patch("ingest.ensure_schema"),
+              patch("ingest._semantic_history_ready", return_value=True), patch("ingest._classify_saved")):
             self.assertEqual(save_proyectos([row], conn=Connection()), 1)
         sql = execute.call_args_list[0].args[1]
         self.assertIn("fecha_aprob = CASE WHEN EXCLUDED.raw_features_json ? '_semantic_contract'", sql)

@@ -64,7 +64,10 @@ def _is_timeout(exc: BaseException) -> bool:
     return "timeout" in text or "timed out" in text
 
 
-def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = False) -> dict[str, Any]:
+def run(
+    manifest: MunicipioManifest, step: Step = "all", *, staging: bool = False,
+    on_step: Callable[[str], None] | None = None,
+) -> dict[str, Any]:
     """Run pipeline steps. A failed step parks the municipality and stops the run.
 
     Staging never syncs and does not write the dead letter.
@@ -75,6 +78,8 @@ def run(manifest: MunicipioManifest, step: Step = "all", *, staging: bool = Fals
     results: dict[str, Any] = {"slug": manifest.slug, "steps": {}}
     timed_out = False
     for name in steps:
+        if on_step is not None:
+            on_step(name)
         if name == "sync_supabase" and timed_out:
             results["steps"][name] = {
                 "status": "skipped",

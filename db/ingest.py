@@ -40,7 +40,7 @@ from license_territory import resolve_territory, territorial_raw
 
 from municipio.geometry import geometry_bbox, record_geometry  # noqa: E402
 from municipio.entity_policy import annotate  # noqa: E402
-from entity_reprocess import classify_written_projects, ensure_schema, reprocess_queue  # noqa: E402
+from entity_reprocess import classify_written, classify_written_projects, ensure_schema, reprocess_queue  # noqa: E402
 from license_dates import license_temporal  # noqa: E402
 from project_semantics import apply as apply_project_semantics, source_record  # noqa: E402
 from municipio.geography_control import normalize_record, manifest_geography_config, valid_coordinates  # noqa: E402
@@ -723,6 +723,17 @@ def _rows_to_write(cur, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return [row for row, ident in keyed if ident is None or current.get(row["id"]) != ident]
 
 
+def _semantic_history_ready(cur) -> bool:
+    cur.execute("""SELECT EXISTS (
+        SELECT 1 FROM pg_class c JOIN pg_constraint p ON p.conrelid=c.oid
+        JOIN pg_attribute a ON a.attrelid=c.oid AND p.conkey=ARRAY[a.attnum]
+        WHERE c.oid=to_regclass('homes.proyectos_historico') AND c.relrowsecurity
+          AND p.contype='p' AND a.attname='id' AND a.attidentity='a'
+          AND to_regclass('homes.proyectos_historico_proyecto_created_idx') IS NOT NULL
+    )""")
+    return cur.fetchone()[0]
+
+
 def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
     """Append one history row per project being written. Caller already dropped unchanged rows."""
     versions = []
@@ -734,7 +745,12 @@ def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
             versions.append((row["id"], derived["source_hash"], derived["contract_version"],
                              derived["template_version"], Json(source_record(raw)), Json(derived)))
     if versions:
-        cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
+        # Only bootstrap a new or legacy schema. The ALTER statements otherwise
+        # take table locks on every municipality's ingest transaction.
+        if not _semantic_history_ready(cur):
+            cur.execute("SELECT pg_advisory_xact_lock(85720261014)")
+            if not _semantic_history_ready(cur):
+                cur.execute((DB_DIR / "schema_project_semantics.sql").read_text(encoding="utf-8"))
         execute_values(cur, f"""INSERT INTO {SCHEMA}.proyectos_historico
                          (proyecto_id, source_hash, contract_version, template_version, source_record, derivation)
                          VALUES %s""", versions, page_size=100)
@@ -743,10 +759,20 @@ def save_semantic_versions(cur, rows: list[dict[str, Any]]) -> None:
 def _classify_saved(conn, table: str, ids: list[str]) -> None:
     # Las escrituras y la retirada de la cola forman una sola transacción.
     for start in range(0, len(ids), 500):
-        result = reprocess_queue(conn, table=table, ids=ids[start:start + 500])
-        if result["failed"]:
-            # No ocultar el fallo: la fila permanece en cola y fuera de actividad.
-            print(f"entity_policy_error: {table}: {result}", flush=True)
+        batch = ids[start:start + 500]
+        with conn.cursor() as cur:
+            cur.execute("SAVEPOINT classify_written_batch")
+            try:
+                classify_written(conn, table, batch)
+            except (psycopg2.InterfaceError, psycopg2.OperationalError):
+                raise
+            except Exception:
+                # Isolate bad records using the regular queue's per-row handling.
+                cur.execute("ROLLBACK TO SAVEPOINT classify_written_batch")
+                result = reprocess_queue(conn, table=table, ids=batch)
+                if result["failed"]:
+                    print(f"entity_policy_error: {table}: {result}", flush=True)
+            cur.execute("RELEASE SAVEPOINT classify_written_batch")
 
 
 
@@ -1361,7 +1387,7 @@ def finish_ingest_run(
                 status = %s,
                 rows_upserted = %s,
                 error = %s
-            WHERE id = %s
+            WHERE id = %s AND status = 'running'
             """,
             (status, Json(rows_upserted or {}), _blank(error), run_id),
         )
@@ -1381,11 +1407,16 @@ class IngestSession:
     def __enter__(self) -> "IngestSession":
         if not self._external_conn:
             self.conn = connect()
-        self.run_id = start_ingest_run(
-            self.scraper, self.municipio_slug, conn=self.conn
-        )
-        if not self._external_conn:
-            self.conn.commit()
+        try:
+            self.run_id = start_ingest_run(
+                self.scraper, self.municipio_slug, conn=self.conn
+            )
+            if not self._external_conn:
+                self.conn.commit()
+        except Exception:
+            if not self._external_conn:
+                self.conn.close()
+            raise
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
@@ -1404,19 +1435,24 @@ class IngestSession:
                 finish_ingest_run(
                     self.run_id,
                     status="error" if exc else "ok",
-                    rows_upserted=self.counts,
+                    rows_upserted=self.counts if exc is None else {},
                     error=str(exc) if exc else None,
                     conn=self.conn,
                 )
                 self.conn.commit()
             elif self.conn is not None:
                 self.conn.commit()
-        except Exception:
-            if self.conn is not None:
-                try:
+        except Exception as failure:
+            try:
+                if self.conn is not None and not self.conn.closed:
                     self.conn.rollback()
-                except Exception:
-                    pass
+                if self.run_id is not None:
+                    finish_ingest_run(self.run_id, status="error",
+                                      error=str(exc if exc is not None else failure))
+            except Exception as tracking_error:
+                logging.warning("No se pudo cerrar el registro de ingesta %s: %s", self.run_id, tracking_error)
+            if exc is None:
+                raise
         finally:
             if self.conn is not None:
                 self.conn.close()

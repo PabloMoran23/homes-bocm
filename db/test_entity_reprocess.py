@@ -279,6 +279,53 @@ class ReprocessIntegrationTest(unittest.TestCase):
         self.assertEqual(save_licencias(rows, conn=self.conn), 0)
         self.assertEqual(self.scalar("SELECT count(*) FROM homes.entity_reprocess_queue"), 0)
 
+    def test_municipal_batch_preserves_failed_record_and_classifies_the_rest(self):
+        from entity_reprocess import _metadata
+
+        self.scalar("INSERT INTO homes.municipio(slug,nombre) VALUES ('toledo','Toledo') RETURNING slug")
+
+        def classify(row, table, version, reason):
+            if row["id"] == "batch-invalid":
+                raise ValueError("unclassifiable record")
+            return _metadata(row, table, version, reason)
+
+        rows = [
+            portal_proyecto_row(
+                {"id": identity, "titulo": "Plan parcial Sector 12", "expediente": "2026/12"},
+                slug="toledo", nombre="Toledo",
+            )
+            for identity in ("batch-invalid", "batch-valid")
+        ]
+        with patch("entity_reprocess._metadata", side_effect=classify):
+            self.assertEqual(save_proyectos(rows, conn=self.conn), 2)
+        self.assertEqual(
+            self.scalar("SELECT entity_id FROM homes.entity_reprocess_queue WHERE attempts=1"),
+            "batch-invalid",
+        )
+        self.assertEqual(
+            self.scalar("""SELECT raw_features_json->'_entity_policy'->'active'->>'version'
+                            FROM homes.proyecto WHERE id='batch-valid'"""),
+            POLICY_VERSION,
+        )
+
+    def test_interrupted_ingest_session_reports_a_failed_commit(self):
+        from ingest import IngestSession
+
+        worker = psycopg2.connect(**self.params)
+        recovery = psycopg2.connect(**self.params)
+        self.addCleanup(worker.close)
+        self.addCleanup(recovery.close)
+        with patch("ingest.connect", side_effect=[worker, recovery]):
+            with self.assertRaises(psycopg2.InterfaceError):
+                with IngestSession("test") as session:
+                    worker.close()
+        self.assertEqual(
+            self.scalar("SELECT status FROM homes.ingest_run WHERE id=%s", (session.run_id,)),
+            "error",
+        )
+        self.scalar("DELETE FROM homes.ingest_run WHERE id=%s RETURNING id", (session.run_id,))
+        self.conn.commit()
+
     def test_licenses_do_not_promote_date_or_foreign_categories(self):
         common = {"titulo": "Obras de viviendas", "expediente": "2026/12", "url": "https://example/12", "municipio_slug": "madrid"}
         save_licencias([{**common, "id": "request", "fecha": "2026-10-14"},
