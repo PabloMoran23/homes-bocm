@@ -1572,14 +1572,19 @@ def _publish_madrid(manifest, projects, children, documents, licenses, *, projec
                     result = action(conn)
                     conn.commit()
                     return result
-                except (psycopg2.InterfaceError, psycopg2.OperationalError) as exc:
+                except (psycopg2.InterfaceError, psycopg2.OperationalError,
+                        psycopg2.errors.ReadOnlySqlTransaction) as exc:
                     code = exc.pgcode or ""
+                    read_only = isinstance(exc, psycopg2.errors.ReadOnlySqlTransaction)
                     if not conn.closed:
-                        try:
-                            conn.rollback()
-                        except (psycopg2.InterfaceError, psycopg2.OperationalError):
+                        if read_only:
                             conn.close()
-                    transient = not code or code.startswith("08") or code in {"40001", "40P01", "55P03", "57014", "57P01"}
+                        else:
+                            try:
+                                conn.rollback()
+                            except (psycopg2.InterfaceError, psycopg2.OperationalError):
+                                conn.close()
+                    transient = read_only or not code or code.startswith("08") or code in {"40001", "40P01", "55P03", "57014", "57P01"}
                     if attempt == 3 or not transient:
                         raise
                     print(f"Madrid: {label} interrumpido ({code or type(exc).__name__}), reintento {attempt + 1}/3",
@@ -1590,7 +1595,7 @@ def _publish_madrid(manifest, projects, children, documents, licenses, *, projec
             with c.cursor() as cur:
                 _ensure_semantic_history(cur)
 
-        save_municipio_from_manifest(manifest, conn=conn)
+        transaction("registro del municipio", lambda c: save_municipio_from_manifest(manifest, conn=c))
         run_id = start_ingest_run(scraper, manifest.slug, conn=conn)
         conn.commit()
         try:

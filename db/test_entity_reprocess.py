@@ -237,18 +237,21 @@ class ReprocessIntegrationTest(unittest.TestCase):
         def temporarily_interrupted(batch, *, conn, semantic_history_prepared):
             self.assertTrue(semantic_history_prepared)
             lengths.append(len(batch))
+            if len(lengths) == 3:
+                raise psycopg2.errors.ReadOnlySqlTransaction("transient read-only routing")
             count = save_proyectos(batch, conn=conn, semantic_history_prepared=semantic_history_prepared)
             if len(lengths) == 2:
                 raise psycopg2.errors.QueryCanceled("transient timeout")
             return count
 
         from ingest import _ensure_semantic_history
-        with (patch("ingest.connect", side_effect=lambda: psycopg2.connect(**self.params)),
+        with (patch("ingest.connect", side_effect=lambda: psycopg2.connect(**self.params)) as connect,
               patch("ingest.save_proyectos", side_effect=temporarily_interrupted),
               patch("ingest._ensure_semantic_history", wraps=_ensure_semantic_history) as prepare,
               patch("ingest.time.sleep")):
             result = _publish_madrid(manifest, projects, [], [], [], projects_only=True)
-        self.assertEqual(lengths, [100, 1, 1])
+        self.assertEqual(lengths, [100, 1, 1, 1])
+        self.assertEqual(connect.call_count, 2)
         prepare.assert_called_once()
         self.assertEqual(result["upserted"]["proyecto"], 101)
         self.assertEqual(self.scalar("""SELECT count(*) FROM homes.proyectos_historico
