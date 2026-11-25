@@ -11,7 +11,6 @@ portal:
     urbanismo_base: "https://www.ponferrada.org/es/ponferrada-temas/obras-urbanismo"
     request_delay_s: 0.35
     user_agent: "poc-bocm-ponferrada/1.0"
-    insecure_ssl: true
     centroid: [42.5496, -6.5962]
     wfs_base: "https://idecyl.jcyl.es/geoserver/urbanismo/ows"
     wfs_municipio: Ponferrada

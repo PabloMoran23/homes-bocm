@@ -1,22 +1,25 @@
 from __future__ import annotations
 
 import hashlib
-import http.client
 import json
+import logging
 import re
 import ssl
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from html import unescape
 from pathlib import Path
 from typing import Any
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 from municipio.adapters.portal import AyuntamientoAdapter
 from municipio.geometry import geometry_centroid, record_geometry
+from municipio.http import PortalReadError, fetch_text
+from municipio.idecyl import fetch_text_with_idecyl_chain
 
 WEB_BASE = "https://www.ponferrada.org"
 URBANISMO_BASE = f"{WEB_BASE}/es/ponferrada-temas/obras-urbanismo"
@@ -27,6 +30,7 @@ PLAN_BASE = "https://servicios.jcyl.es/PlanPublica"
 PLAN_PROVINCIA = 24
 PLAN_MUNICIPIO = 115
 SIUR_URL = "https://idecyl.jcyl.es/siur/index.html?id=24115"
+LOGGER = logging.getLogger(__name__)
 
 WFS_LAYERS: tuple[tuple[str, str], ...] = (
     ("urbanismo:plau_cyl_instrumentos_ambito", "instrumento"),
@@ -186,9 +190,14 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
         self.plan_provincia = int(self.config.get("plan_provincia") or PLAN_PROVINCIA)
         self.plan_municipio = int(self.config.get("plan_municipio") or PLAN_MUNICIPIO)
         self._ssl_ctx = ssl.create_default_context()
-        if self.config.get("insecure_ssl", True):
-            self._ssl_ctx.check_hostname = False
-            self._ssl_ctx.verify_mode = ssl.CERT_NONE
+        # The municipal server omits this intermediate, linked from its
+        # leaf certificate at secure.globalsign.com/cacert/gsrsaovsslca2018.crt.
+        # Keep the system root and hostname checks active.
+        if hasattr(ssl, "VERIFY_X509_PARTIAL_CHAIN"):
+            self._ssl_ctx.verify_flags &= ~ssl.VERIFY_X509_PARTIAL_CHAIN
+        self._ssl_ctx.load_verify_locations(
+            cafile=Path(__file__).resolve().parents[1] / "gis" / "globalsign-rsa-ov-ssl-ca-2018.pem"
+        )
         self._wfs_cache: list[dict[str, Any]] | None = None
         self._sector_geom_cache: dict[str, dict[str, Any] | None] = {}
 
@@ -197,36 +206,22 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
             return href
         return urljoin(f"{self.web_base}/", href.lstrip("/"))
 
-    def _fetch(self, url: str, *, retries: int = 3) -> str:
-        last_err: Exception | None = None
-        for attempt in range(retries):
-            time.sleep(self.delay_s)
-            req = urllib.request.Request(
-                url,
-                headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ponferrada/1.0")},
-            )
-            try:
-                with urllib.request.urlopen(req, timeout=90, context=self._ssl_ctx) as resp:
-                    charset = resp.headers.get_content_charset() or "utf-8"
-                    return resp.read().decode(charset, errors="replace")
-            except (http.client.IncompleteRead, urllib.error.URLError, OSError, ConnectionError) as exc:
-                last_err = exc
-                if attempt + 1 < retries:
-                    time.sleep(self.delay_s * (attempt + 2))
-                    continue
-                raise
-        if last_err:
-            raise last_err
-        raise RuntimeError(f"fetch failed: {url}")
-
-    def _fetch_json(self, url: str) -> Any:
+    def _request(self, url: str) -> urllib.request.Request:
         time.sleep(self.delay_s)
-        req = urllib.request.Request(
+        return urllib.request.Request(
             url,
             headers={"User-Agent": self.config.get("user_agent", "poc-bocm-ponferrada/1.0")},
         )
-        with urllib.request.urlopen(req, timeout=90) as resp:
-            return json.loads(resp.read().decode("utf-8", errors="replace"))
+
+    def _fetch(self, url: str) -> str:
+        def open_page(request, *, timeout):
+            context = self._ssl_ctx if urlsplit(request.full_url).hostname == "www.ponferrada.org" else None
+            return urllib.request.urlopen(request, timeout=timeout, context=context)
+
+        return fetch_text(self._request(url), opener=open_page, timeout=18, attempts=2)
+
+    def _fetch_json(self, url: str) -> Any:
+        return json.loads(fetch_text_with_idecyl_chain(self._request(url), timeout=18))
 
     @staticmethod
     def _title_from_url(url: str) -> str:
@@ -263,10 +258,7 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
             if url in seen:
                 continue
             seen.add(url)
-            try:
-                html = self._fetch(url)
-            except (urllib.error.URLError, OSError, ConnectionError):
-                continue
+            html = self._fetch(url)
             for m in RE_PAGE_LINK.finditer(html):
                 path = m.group(1)
                 if path.endswith((".nodos",)) or ".nodos," in path:
@@ -297,14 +289,13 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
             ("noticias-novedades", "web_noticias"),
             ("normativa", "web_normativa"),
         ):
-            for url in self._crawl_section(section):
-                if url in seen:
-                    continue
-                seen.add(url)
-                try:
-                    html = self._fetch(url)
-                except (urllib.error.URLError, OSError, ConnectionError):
-                    continue
+            urls = [url for url in self._crawl_section(section) if url not in seen]
+            seen.update(urls)
+            with ThreadPoolExecutor(max_workers=3) as workers:
+                pages = list(workers.map(self._fetch_web_detail, urls))
+            for url, html in zip(urls, pages):
+                if html is None:
+                    continue  # This document has been removed by the source.
                 titulo = self._page_title(
                     html,
                     self._title_from_url(url),
@@ -334,12 +325,25 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
                 )
         return rows
 
+    def _fetch_web_detail(self, url: str) -> str | None:
+        try:
+            return self._fetch(url)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (404, 410):
+                raise
+            return None
+        except (TimeoutError, PortalReadError) as exc:
+            # The discoverable index confirms this publication and its URL.
+            # Retain that evidence if the individual page cannot be fetched.
+            LOGGER.warning("Ponferrada: using the indexed link for %s: %s", url, exc)
+            return ""
+
     def _collect_tramite_pages(self) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
         for url in self.tramite_pages:
             try:
                 html = self._fetch(url)
-            except (urllib.error.URLError, OSError, ConnectionError, http.client.IncompleteRead):
+            except (urllib.error.URLError, OSError, ConnectionError, PortalReadError):
                 titulo = self._title_from_url(url)
             else:
                 titulo = self._page_title(html, self._title_from_url(url), url=url)
@@ -472,6 +476,7 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
                     rec["sector_code"] = num
                 if isinstance(geom, dict) and geom.get("type"):
                     rec["geom_geojson"] = geom
+                    rec["geometry_crs"] = "EPSG:4326"
                     rec["geometry_source"] = "portal_wfs"
                     rec["geometry_source_url"] = url
                     rec["coord_source"] = "portal_geometry_centroid"
@@ -535,6 +540,7 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
             if not geom:
                 continue
             rec["geom_geojson"] = geom
+            rec["geometry_crs"] = "EPSG:4326"
             rec["geometry_source"] = "portal_wfs"
             rec["geometry_source_url"] = source_url
             rec["coord_source"] = "portal_geometry_centroid"
@@ -549,6 +555,7 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
             if titulo and wfs_title and (titulo in wfs_title or wfs_title in titulo):
                 for key in (
                     "geom_geojson",
+                    "geometry_crs",
                     "geometry_source",
                     "geometry_source_url",
                     "coord_source",
@@ -652,7 +659,7 @@ class PonferradaAyuntamientoAdapter(AyuntamientoAdapter):
     def _safe_collect(self, label: str, fn) -> list[dict[str, Any]]:
         try:
             return fn()
-        except (urllib.error.URLError, OSError, ConnectionError, http.client.IncompleteRead, json.JSONDecodeError) as exc:
+        except (urllib.error.URLError, OSError, ConnectionError, PortalReadError, json.JSONDecodeError) as exc:
             return [{"_error": label, "_message": str(exc)}]
 
     def backfill_proyectos(self, out_jsonl: Path) -> dict[str, Any]:
