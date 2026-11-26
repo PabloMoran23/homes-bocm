@@ -89,7 +89,7 @@ class ArnedoTests(unittest.TestCase):
         self.assertEqual(raw['codigo_ine'], '26018')
         self.assertEqual(manifest.provincia, 'La Rioja')
         self.assertFalse(manifest.licencias.enabled)
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertEqual(manifest.portal.adapter, 'municipio.adapters.arnedo:ArnedoAyuntamientoAdapter')
 

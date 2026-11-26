@@ -21,6 +21,6 @@ licencias:
   enabled: false
   notes: El catálogo de trámites no acredita licencias concedidas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

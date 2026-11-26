@@ -107,8 +107,9 @@ class ParserTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '08107')
         self.assertEqual(manifest.provincia, 'Barcelona')
-        for group, field in [('licencias', 'enabled'), ('schedule', 'enabled'), ('geocode', 'jitter_missing')]:
+        for group, field in [('licencias', 'enabled'), ('geocode', 'jitter_missing')]:
             self.assertIs(raw[group][field], False)
+        self.assertIs(raw['schedule']['enabled'], True)
         self.assertIsInstance(load_portal_adapter(manifest), Adapter)
         adapter = Adapter('llica-d-amunt')
         with TemporaryDirectory() as directory:

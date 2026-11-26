@@ -2,7 +2,8 @@ name: Refresh municipios
 
 on:
   schedule:
-    # Cada 4 horas, minuto 17 UTC. Cada corrida refresca hasta 20 municipios vencidos.
+    # Cada 4 horas, minuto 17 UTC. Cada corrida reparte la cola en 4 trabajos
+    # paralelos (shards) de hasta 20 municipios vencidos cada uno.
     - cron: "17 */4 * * *"
   workflow_dispatch:
     inputs:
@@ -43,10 +44,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
-      max-parallel: 3
+      max-parallel: 4
       fail-fast: false
       matrix:
         slugs: ${{ fromJSON(github.event.inputs.recovery_batches || '[""]') }}
+        # Con slugs o lotes explícitos no se reparte: un solo shard.
+        shard: ${{ fromJSON((github.event.inputs.recovery_batches || github.event.inputs.slugs) && '[0]' || '[0,1,2,3]') }}
 
     steps:
       - uses: actions/checkout@v4
@@ -82,6 +85,8 @@ jobs:
           MANUAL_SLUGS: ${{ github.event.inputs.slugs || '' }}
           RECOVERY_BATCHES: ${{ github.event.inputs.recovery_batches || '' }}
           FORCE: ${{ github.event.inputs.force || 'false' }}
+          SHARD: ${{ matrix.shard }}
+          SHARDS: ${{ (github.event.inputs.recovery_batches || github.event.inputs.slugs) && '1' || '4' }}
         run: |
           set -euo pipefail
           if [ -z "${SUPABASE_DB_URL:-}" ]; then
@@ -115,8 +120,8 @@ jobs:
                   seen.add(slug)
           PY
           fi
-          CMD_DUE=(python3 -m municipio schedule due --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}")
-          CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update --timeout-minutes "${TIMEOUT_MINUTES}")
+          CMD_DUE=(python3 -m municipio schedule due --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --shard "${SHARD}" --shards "${SHARDS}")
+          CMD_RUN=(python3 -m municipio schedule run --interval-days "${INTERVAL_DAYS}" --limit "${LIMIT}" --step update --timeout-minutes "${TIMEOUT_MINUTES}" --shard "${SHARD}" --shards "${SHARDS}")
           if [ -n "${SLUGS}" ]; then
             IFS=',' read -ra parts <<< "${SLUGS}"
             for slug in "${parts[@]}"; do

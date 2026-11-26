@@ -109,7 +109,7 @@ class OsunaTests(unittest.TestCase):
         manifest = load_manifest('osuna')
         raw = load_yaml(manifest.path)
         self.assertEqual((raw['codigo_ine'], manifest.nombre, manifest.provincia), ('41068', 'Osuna', 'Sevilla'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         adapter = load_portal_adapter(manifest)

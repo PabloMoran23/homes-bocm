@@ -100,7 +100,7 @@ class BergaParserTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '08022')
         self.assertEqual(manifest.provincia, 'Barcelona')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         adapter = load_portal_adapter(manifest)

@@ -70,7 +70,7 @@ class BenetusserTests(unittest.TestCase):
         self.assertEqual(raw['codigo_ine'], '46054')
         self.assertEqual(manifest.provincia, 'Valencia')
         self.assertFalse(manifest.licencias.enabled)
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         adapter = BenetusserAyuntamientoAdapter('benetusser')
         with tempfile.TemporaryDirectory() as directory:

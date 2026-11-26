@@ -91,7 +91,7 @@ class LaAlgabaTests(unittest.TestCase):
         self.assertEqual(raw["codigo_ine"], "41007")
         self.assertEqual(manifest.provincia, "Sevilla")
         self.assertFalse(manifest.licencias.enabled)
-        self.assertFalse(raw["schedule"]["enabled"])
+        self.assertTrue(raw["schedule"]["enabled"])
         self.assertFalse(raw["geocode"]["jitter_missing"])
         self.assertEqual(manifest.portal.adapter, "municipio.adapters.la_algaba:LaAlgabaAyuntamientoAdapter")
 

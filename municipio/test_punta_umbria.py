@@ -105,7 +105,7 @@ class PuntaUmbriaTests(unittest.TestCase):
         manifest = load_manifest('punta-umbria')
         raw = load_yaml(manifest.path)
         self.assertEqual((raw['codigo_ine'], manifest.nombre, manifest.provincia), ('21060', 'Punta Umbría', 'Huelva'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         with tempfile.TemporaryDirectory() as directory:

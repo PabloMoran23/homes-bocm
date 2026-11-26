@@ -46,7 +46,7 @@ class SopelaTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '48085')
         self.assertEqual(raw['provincia'], 'Bizkaia')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         with tempfile.TemporaryDirectory() as directory:

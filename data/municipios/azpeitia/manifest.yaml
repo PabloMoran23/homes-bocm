@@ -19,6 +19,6 @@ licencias:
   enabled: false
   notes: No se extraen formularios, solicitudes ni anuncios como licencias concedidas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

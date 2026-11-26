@@ -17,6 +17,6 @@ proyectos:
   enabled: true
   source: ayuntamiento
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

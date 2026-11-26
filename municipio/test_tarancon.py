@@ -79,7 +79,7 @@ class TaranconTests(unittest.TestCase):
         manifest = load_manifest('tarancon')
         raw = load_yaml(manifest.path)
         self.assertEqual((manifest.nombre, manifest.provincia, raw['codigo_ine']), ('Tarancón', 'Cuenca', '16203'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         with tempfile.TemporaryDirectory() as tmp:

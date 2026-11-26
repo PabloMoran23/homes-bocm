@@ -11,7 +11,7 @@ from types import SimpleNamespace
 from unittest import TestCase
 from unittest.mock import patch
 
-from municipio.schedule import _run_bounded, due_plan, run_due
+from municipio.schedule import EMPTY_OUTPUT_REASON, _run_bounded, due_plan, run_due, shard_of
 
 
 NOW = datetime(2026, 8, 19, 12, 0, tzinfo=UTC)
@@ -38,6 +38,76 @@ class DuePlanTest(TestCase):
         self.assertEqual((result["ok"], result["failed"]), (0, 1))
         self.assertEqual(result["results"][0]["steps"]["sync_supabase"]["error"], "sin datos")
         release.assert_not_called()
+
+    def test_empty_output_fails_and_parks_instead_of_reporting_ok(self) -> None:
+        plan = due_plan(slugs=["irun", "leon"], timestamps={}, dead_letters=set(), now=NOW)
+        empty = {"steps": {
+            "proyectos_update": {"status": "ok", "rows": 0},
+            "sync_supabase": {"status": "skipped", "reason": EMPTY_OUTPUT_REASON},
+        }}
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded",
+            side_effect=[empty, {"steps": {"sync_supabase": {"status": "ok"}}}],
+        ), patch("ingest.park_dead_letter") as park, patch("ingest.release_dead_letter") as release:
+            result = run_due()
+        self.assertEqual((result["ok"], result["failed"], result["status"]), (1, 1, "partial"))
+        row = result["results"][0]
+        self.assertEqual((row["slug"], row["ok"], row["failed_steps"]), ("irun", False, ["sync_supabase"]))
+        self.assertEqual(row["retry"], "dead_letter")
+        park.assert_called_once()
+        self.assertEqual(park.call_args.args, ("irun",))
+        self.assertEqual(park.call_args.kwargs["step"], "empty_output")
+        release.assert_called_once_with("leon")
+
+    def test_empty_output_reports_failure_to_park(self) -> None:
+        plan = due_plan(slugs=["irun"], timestamps={}, dead_letters=set(), now=NOW)
+        empty = {"steps": {"sync_supabase": {"status": "skipped", "reason": EMPTY_OUTPUT_REASON}}}
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded", return_value=empty,
+        ), patch("ingest.park_dead_letter", side_effect=RuntimeError("DB unavailable")):
+            result = run_due()
+        self.assertEqual(result["failed"], 1)
+        self.assertEqual(result["results"][0]["dead_letter_error"], "DB unavailable")
+
+    def test_missing_database_url_skip_is_not_an_empty_output_failure(self) -> None:
+        plan = due_plan(slugs=["leon"], timestamps={}, dead_letters=set(), now=NOW)
+        with patch("municipio.schedule.due_plan", return_value=plan), patch(
+            "municipio.schedule._run_bounded",
+            return_value={"steps": {"sync_supabase": {"status": "skipped", "reason": "sin SUPABASE_DB_URL"}}},
+        ), patch("ingest.park_dead_letter") as park, patch("ingest.release_dead_letter"):
+            result = run_due()
+        self.assertEqual((result["ok"], result["failed"]), (1, 0))
+        park.assert_not_called()
+
+    def test_shards_partition_the_queue_without_overlap(self) -> None:
+        slugs = [f"municipio-{i}" for i in range(200)]
+        picked: list[str] = []
+        for shard in range(4):
+            with patch("municipio.schedule.list_manifest_slugs", return_value=slugs), patch(
+                "municipio.schedule._schedule_config", return_value={}
+            ):
+                plan = due_plan(timestamps={}, dead_letters=set(), now=NOW, limit=1000, shard=shard, shards=4)
+            names = [row["slug"] for row in plan["picked"]]
+            self.assertTrue(names, f"shard {shard} vacío")
+            self.assertTrue(all(shard_of(name, 4) == shard for name in names))
+            picked.extend(names)
+        self.assertEqual(sorted(picked), sorted(slugs))
+
+    def test_explicit_slugs_are_not_sharded(self) -> None:
+        with patch("municipio.schedule._schedule_config", return_value={}):
+            plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, dead_letters=set(), now=NOW, shard=3, shards=4)
+        self.assertEqual({row["slug"] for row in plan["picked"]}, {"oviedo", "leon"})
+
+    def test_invalid_shard_rejected(self) -> None:
+        for shard, shards in ((4, 4), (-1, 4), (0, 0)):
+            with self.subTest(shard=shard, shards=shards), self.assertRaises(ValueError):
+                due_plan(slugs=["leon"], timestamps={}, dead_letters=set(), now=NOW, shard=shard, shards=shards)
+
+    def test_cli_passes_shard(self) -> None:
+        from municipio.cli import main
+        with patch("municipio.schedule.run_due", return_value={"failed": 0}) as runner:
+            self.assertEqual(main(["schedule", "run", "--shard", "2", "--shards", "4", "--dry-run"]), 0)
+        self.assertEqual((runner.call_args.kwargs["shard"], runner.call_args.kwargs["shards"]), (2, 4))
 
     def test_failed_refresh_remains_partial_and_next_municipio_runs(self) -> None:
         plan = due_plan(slugs=["oviedo", "leon"], timestamps={}, dead_letters=set(), now=NOW)

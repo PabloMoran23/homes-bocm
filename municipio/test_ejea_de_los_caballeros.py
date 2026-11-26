@@ -69,7 +69,7 @@ class PlanningTests(unittest.TestCase):
         manifest = load_manifest('ejea-de-los-caballeros')
         raw = load_yaml(manifest.path)
         self.assertEqual((raw['codigo_ine'], manifest.provincia), ('50095', 'Zaragoza'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         self.assertIsInstance(load_portal_adapter(manifest), EjeaDeLosCaballerosAyuntamientoAdapter)

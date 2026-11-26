@@ -19,6 +19,6 @@ licencias:
   enabled: false
   notes: Formularios de solicitud y anuncios de contratación excluidos.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

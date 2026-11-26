@@ -72,7 +72,7 @@ class SantomeraTests(unittest.TestCase):
     def test_manifest_identity_and_disabled_features(self):
         raw = load_yaml(Path('data/municipios/santomera/manifest.yaml'))
         self.assertEqual((raw['codigo_ine'], raw['nombre'], raw['provincia']), ('30901', 'Santomera', 'Murcia'))
-        self.assertIs(raw['schedule']['enabled'], False)
+        self.assertIs(raw['schedule']['enabled'], True)
         self.assertIs(raw['geocode']['jitter_missing'], False)
         self.assertFalse(load_manifest('santomera').licencias.enabled)
 

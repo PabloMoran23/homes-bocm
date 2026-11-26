@@ -82,7 +82,7 @@ class ArenysDeMarTests(unittest.TestCase):
         manifest = load_manifest(path)
         self.assertEqual(manifest.provincia, 'Barcelona')
         self.assertEqual(raw['codigo_ine'], '08006')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         self.assertTrue(manifest.proyectos.enabled)

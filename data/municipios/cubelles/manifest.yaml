@@ -18,6 +18,6 @@ licencias:
   enabled: false
   notes: Los trámites de solicitud no son licencias concedidas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

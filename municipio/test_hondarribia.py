@@ -63,7 +63,7 @@ class HondarribiaTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '20036')
         self.assertEqual(manifest.provincia, 'Gipuzkoa')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         with tempfile.TemporaryDirectory() as tmp:

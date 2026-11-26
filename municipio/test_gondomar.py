@@ -87,7 +87,7 @@ class ParserTests(unittest.TestCase):
         manifest = load_manifest('gondomar')
         raw = load_yaml(manifest.path)
         self.assertEqual((raw['codigo_ine'], manifest.provincia), ('36021', 'Pontevedra'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         adapter = GondomarAyuntamientoAdapter('gondomar')

@@ -83,7 +83,7 @@ class InventoryTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw["codigo_ine"], "43092")
         self.assertEqual(manifest.provincia, "Tarragona")
-        self.assertFalse(raw["schedule"]["enabled"])
+        self.assertTrue(raw["schedule"]["enabled"])
         self.assertFalse(raw["geocode"]["jitter_missing"])
         self.assertFalse(manifest.licencias.enabled)
         with TemporaryDirectory() as folder:
