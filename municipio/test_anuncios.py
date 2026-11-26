@@ -87,6 +87,8 @@ class GestionaBoardTest(TestCase):
     def test_read_board_rejects_non_board_page(self) -> None:
         with self.assertRaises(RuntimeError):
             read_board(BOARD, fetch=lambda request: "<html>Error</html>", sleep=lambda _: None)
+        with self.assertRaisesRegex(RuntimeError, "no operativa"):
+            read_board(BOARD, fetch=lambda request: "<h1>Sede Electrónica Indeterminada</h1>", sleep=lambda _: None)
 
     def test_board_url_from_manifest(self) -> None:
         self.assertEqual(

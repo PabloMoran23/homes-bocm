@@ -177,6 +177,8 @@ def read_board(
             return fetch_text(request, opener=opener.open, timeout=timeout)
 
     first = fetch(urllib.request.Request(board_url, headers={"User-Agent": user_agent}))
+    if "Sede Electrónica Indeterminada" in first or "Sede Electr&oacute;nica Indeterminada" in first:
+        raise GestionaBoardError(f"{board_url}: sede Gestiona no operativa (Sede Electrónica Indeterminada)")
     if "class_name" not in first and "more_results" not in first and "board" not in first.lower():
         raise GestionaBoardError(f"{board_url}: la respuesta no parece un tablón Gestiona")
     by_id: dict[str, dict[str, Any]] = {}
