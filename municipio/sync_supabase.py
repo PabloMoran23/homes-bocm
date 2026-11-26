@@ -56,7 +56,23 @@ def sync_manifest(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict
             "reason": "sin SUPABASE_DB_URL",
             "slug": manifest.slug,
         }
-    return retry_database_write(
+    result = retry_database_write(
         lambda: sync_municipio_output(manifest.slug, dry_run=dry_run, manifest=manifest),
         slug=manifest.slug, operation="ingesta",
     )
+    result["anuncios"] = sync_anuncios(manifest, dry_run=dry_run)
+    return result
+
+
+def sync_anuncios(manifest: MunicipioManifest, *, dry_run: bool = False) -> dict[str, Any]:
+    """Anuncios del tablón: aparte y sin aparcar el municipio si falla."""
+    from anuncios import sync_municipio_anuncios
+
+    try:
+        return retry_database_write(
+            lambda: sync_municipio_anuncios(manifest, dry_run=dry_run),
+            slug=manifest.slug, operation="ingesta de anuncios",
+        )
+    except Exception as exc:  # noqa: BLE001 - auxiliar: proyectos y licencias ya están escritos
+        print(f"  {manifest.slug}: anuncios no sincronizados ({exc})", flush=True)
+        return {"status": "failed", "reason": f"{type(exc).__name__}: {exc}"[:500]}

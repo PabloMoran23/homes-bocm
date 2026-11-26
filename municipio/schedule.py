@@ -266,7 +266,7 @@ def _step_summary(payload: Any) -> dict[str, Any]:
         return {"status": "ok"}
     if payload.get("error"):
         return {"error": payload.get("error"), "type": payload.get("type")}
-    out = {k: payload[k] for k in ("status", "rows", "proyectos", "licencias", "reason") if k in payload}
+    out = {k: payload[k] for k in ("status", "rows", "proyectos", "licencias", "anuncios", "truncated", "reason") if k in payload}
     return out or {"status": "ok"}
 
 
