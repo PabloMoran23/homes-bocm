@@ -2,7 +2,8 @@
 
 La web se despliega desde `web/` como proyecto Next.js en Vercel. El build de
 producción usa `web/vercel.json` (`NEXT_PUBLIC_EDITION=public`, `SKIP_BUILD_DATA=1`);
-Vercel sirve los artefactos ya generados en `web/public/data/` (no regenera en build).
+los ficheros de datos (`/data/*.json|geojson`) no están en git ni en el deploy:
+viven en Supabase Storage (ver «Datos web en Supabase Storage»).
 
 ## Estado actual (revisión 2026-05-28)
 
@@ -66,8 +67,39 @@ Una rama antigua conserva su propia versión del filtro: debe incorporar `main`
 para aplicar estas reglas a nuevas previews. Los merges en `main` usan el filtro
 actualizado. La regresión se comprueba en `check-vercel-build-filter.yml`.
 
-`vercel.json` fija edición pública y omite `build-data` en Vercel; los JSON/GeoJSON
-deben estar commiteados en `web/public/data/`.
+`vercel.json` fija edición pública y omite `build-data` en Vercel. Los JSON/GeoJSON
+se leen en tiempo de ejecución del release vivo en Supabase Storage; publicar
+datos no requiere commit ni deploy.
+
+## Datos web en Supabase Storage
+
+Bucket público `web-data` (migración `20261126170000_web_data_storage.sql`):
+
+| Ruta | Contenido | Caché |
+| --- | --- | --- |
+| `objects/<sha256>.<ext>` | cuerpo de cada fichero, direccionado por contenido (no se reescribe) | 5 min (llega al navegador vía `/data/*`) |
+| `manifests/<versión>.json` | lista nombre → objeto de cada release | 1 año |
+| `manifest.json` | release vivo | 60 s |
+
+- **Publicar:** `npm run publish-data` (CI, con `SUPABASE_SERVICE_ROLE_KEY`). Solo
+  sube los ficheros cuyos bytes cambian; los que no están en local conservan su
+  versión publicada, así que un export parcial (p. ej. solo `sitemap-projects.json`)
+  es válido. `manifest.json` se escribe al final: los lectores ven el release
+  anterior o el nuevo, nunca una mezcla. Conserva los 5 últimos releases y borra
+  los objetos que ya no referencia ninguno. Cada release queda en
+  `homes.web_data_release`.
+- **Navegador:** sigue pidiendo `/data/<fichero>`. `middleware.ts` lo reescribe al
+  objeto vivo en Storage; Vercel lo comprime y lo cachea en CDN 5 min
+  (`vercel.json`, cabeceras de `/data/*`). Un release nuevo se ve en ≤ 10 min.
+- **Servidor:** `fetchStaticJson()` (lib/fetch-static-json.ts) lee el disco si
+  hay copia local y si no el objeto vivo en Storage. Las páginas ISR recogen el
+  release nuevo en su siguiente revalidación.
+- **Base de datos:** ninguna petición web consulta Postgres para estos ficheros.
+- **Local:** `npm run pull-data` descarga el release vivo a `public/data/`;
+  `npm run build-data` lo regenera. En `next dev` se sirve la copia local
+  (`WEB_DATA_SOURCE=storage` fuerza Storage).
+- **Siembra / rollback:** lanzar *Refresh web data* a mano con `seed_from_ref`
+  = un commit que tenga `web/public/data/` publica esos ficheros como release vivo.
 
 ### Dominio propio · homes-urbanismo.es (Hostinger)
 
@@ -118,7 +150,7 @@ Versión operativa actual: no descarga BOCM nuevos con LLM ni recalcula
 | --- | --- | --- |
 | SIGMA (Ayto. Madrid) | Semanal (lunes) | Descarga + upsert catálogo y geometrías |
 | Licencias urbanísticas y declaraciones responsables | Semanal (lunes), día 17 UTC o manual | CSV actuales desde 2023 → JSONL → Supabase y web |
-| `web/public/data` | Semanal | `npm run build-data` scope `madrid-public` |
+| Datos web (`/data/*`) | Semanal | `npm run build-data` scope `madrid-public` → Supabase Storage |
 
 Cada ejecución programada descarga los conjuntos `640505` (licencias otorgadas)
 y `133556` (declaraciones responsables), que sustituyen al retirado `300193`.
@@ -147,19 +179,22 @@ python3 -m municipio run --municipio madrid --step sync_supabase
 Flujo del job:
 
 1. Restaura cache `output/` (o release `web-data-baseline`).
-2. Refresca SIGMA; licencias si toca.
-3. Sync a Supabase (`SUPABASE_DB_URL`).
-4. `npm run build-data` en `web/`.
-5. Verifica `madrid-dashboard-stats.json` y `npm run build` (public).
-6. Commit `web/public/data/` → push → deploy Vercel.
+2. `npm run pull-data`: parte del release vivo (varios exports leen los ficheros previos).
+3. Refresca SIGMA; licencias si toca.
+4. Sync a Supabase (`SUPABASE_DB_URL`).
+5. `npm run build-data` en `web/`.
+6. Verifica `madrid-dashboard-stats.json` y `npm run build` (public, con los asserts de datos).
+7. `npm run publish-data` → Supabase Storage; registra el release. Sin commit ni deploy.
 
-`/madrid/estadisticas` lee JSON estático; no requiere Supabase en runtime.
+`/madrid/estadisticas` lee JSON del release vivo; no consulta Postgres.
 
 ## Secretos GitHub
 
 | Secreto / variable | Obligatorio | Uso |
 | --- | --- | --- |
 | `SUPABASE_DB_URL` | Sí | Sync Postgres en refresh |
+| `SUPABASE_SERVICE_ROLE_KEY` | Sí | Publicar datos web en Storage (bucket `web-data`) |
+| `SUPABASE_URL` (variable) | No | Se deduce del usuario del pooler en `SUPABASE_DB_URL` |
 | `DATA_SNAPSHOT_URL` | No | Bootstrap inicial `output/` |
 | `DATA_SNAPSHOT_RELEASE_TAG` | No | Default `web-data-baseline` |
 

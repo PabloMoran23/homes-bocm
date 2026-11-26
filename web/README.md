@@ -1,7 +1,7 @@
 # Web · Homes Urbanismo (Madrid)
 
 Portal Next.js: mapa unificado (SIGMA + licencias + BOCM), boletín por zona, fichas y
-estadísticas. Datos estáticos en `public/data/`; Supabase para RPC dinámicos.
+estadísticas. Datos `/data/*` en Supabase Storage (bucket `web-data`); Supabase para RPC dinámicos.
 
 ## Requisitos
 
@@ -15,12 +15,15 @@ estadísticas. Datos estáticos en `public/data/`; Supabase para RPC dinámicos.
 npm install
 npm run dev:public      # MVP Madrid (como producción)
 npm run dev             # edición full (todas las rutas de desarrollo)
+npm run pull-data       # descarga el release vivo de datos a public/data
 npm run build-data      # regenera public/data (scope según BUILD_DATA_SCOPE)
+npm run publish-data    # publica public/data en Storage (requiere SUPABASE_SERVICE_ROLE_KEY)
 npm run build:public    # build producción con datos madrid-public
 npm run verify:production   # comprueba datos + build public
 ```
 
-En Vercel no se ejecuta `build-data` (`SKIP_BUILD_DATA=1`); los JSON deben estar en git.
+`public/data/` no está en git. En Vercel no se ejecuta `build-data` (`SKIP_BUILD_DATA=1`):
+la web lee el release vivo de Supabase Storage.
 Ver `../docs/production-web.md`.
 
 ## Rutas (edición `public`)

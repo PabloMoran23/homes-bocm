@@ -7,8 +7,6 @@ __pycache__/
 !.env.example
 !web/.env.local.example
 
-# Datos web generados (incluir en deploy)
-!web/public/data/
 pdfs/
 pdfs_history/
 output/

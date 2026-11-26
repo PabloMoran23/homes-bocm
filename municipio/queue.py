@@ -467,7 +467,7 @@ def init_from_summary(
         return init_from_bocm_data(min_bocm_count=min_bocm_count, path=path)
 
     if not SUMMARY_JSON.is_file():
-        raise FileNotFoundError(f"No existe {SUMMARY_JSON}")
+        raise FileNotFoundError(f"No existe {SUMMARY_JSON} (descárgalo con: cd web && npm run pull-data)")
 
     summary = json.loads(SUMMARY_JSON.read_text(encoding="utf-8"))
     by_municipio = summary.get("byMunicipio") or []

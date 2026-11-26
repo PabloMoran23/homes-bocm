@@ -16,7 +16,7 @@ El POC original (scripts `0_`, `1_`, `2_`, dashboard) está en [`junk/`](./junk/
 En la carpeta [`web/`](./web/) hay una aplicación Next.js.
 
 ```bash
-cd web && npm install && npm run build-data && npm run dev
+cd web && npm install && npm run pull-data && npm run dev   # o build-data para regenerar
 ```
 
 **Producción:** [`docs/production-web.md`](docs/production-web.md).
