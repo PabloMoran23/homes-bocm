@@ -16,6 +16,6 @@ proyectos:
 licencias:
   enabled: false
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

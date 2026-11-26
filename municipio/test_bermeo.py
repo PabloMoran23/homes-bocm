@@ -96,7 +96,7 @@ class BermeoTests(unittest.TestCase):
         self.assertEqual(raw['codigo_ine'], '48017')
         self.assertEqual(manifest.provincia, 'Bizkaia')
         self.assertEqual(manifest.portal.adapter, 'municipio.adapters.bermeo:BermeoAyuntamientoAdapter')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
 

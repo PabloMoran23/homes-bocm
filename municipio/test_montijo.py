@@ -86,7 +86,7 @@ class MontijoTests(unittest.TestCase):
         m = load_manifest('montijo')
         raw = load_yaml(m.path)
         self.assertEqual((raw['codigo_ine'], m.nombre, m.provincia), ('06088', 'Montijo', 'Badajoz'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(m.licencias.enabled)
         a = load_portal_adapter(m)

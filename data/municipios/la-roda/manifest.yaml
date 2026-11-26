@@ -18,6 +18,6 @@ licencias:
   enabled: false
   notes: No se ha verificado un registro de licencias concedidas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

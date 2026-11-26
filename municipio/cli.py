@@ -124,6 +124,10 @@ def main(argv: list[str] | None = None) -> int:
             dest="municipios",
             help="Restringir a estos slugs (repetible)",
         )
+        sp.add_argument("--shard", type=int, default=0,
+                        help="Partición a procesar (0..shards-1), para trabajos en paralelo")
+        sp.add_argument("--shards", type=int, default=1,
+                        help="Número de particiones (default 1: sin reparto)")
     run_p.add_argument("--step", default="update", help="Paso del orquestador (default: update)")
     run_p.add_argument("--timeout-minutes", type=float, default=30,
                        help="Tiempo máximo por municipio antes de enviarlo a DLQ (default: 30)")
@@ -163,6 +167,8 @@ def main(argv: list[str] | None = None) -> int:
                 limit=args.limit,
                 include_madrid=args.include_madrid,
                 slugs=slugs,
+                shard=args.shard,
+                shards=args.shards,
             )
             print(json.dumps(plan, indent=2, ensure_ascii=False, default=str))
             return 0
@@ -176,6 +182,8 @@ def main(argv: list[str] | None = None) -> int:
                 dry_run=args.dry_run,
                 force=args.force,
                 timeout_seconds=args.timeout_minutes * 60,
+                shard=args.shard,
+                shards=args.shards,
             )
             print(json.dumps(payload, indent=2, ensure_ascii=False, default=str))
             if payload.get("failed"):

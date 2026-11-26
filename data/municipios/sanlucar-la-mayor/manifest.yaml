@@ -16,6 +16,6 @@ proyectos:
   municipio_aliases:
     - Sanlúcar la Mayor
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

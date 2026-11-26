@@ -15,6 +15,6 @@ proyectos:
   source: ayuntamiento
   notes: Planeamiento municipal servido por la Junta de Extremadura; procedencia regional explícita en cada registro. Cobertura parcial respecto a obras y licencias.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

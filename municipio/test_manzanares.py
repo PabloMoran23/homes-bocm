@@ -62,8 +62,9 @@ class ManzanaresTests(unittest.TestCase):
     def test_manifest_loader_and_snapshot_update(self):
         raw = load_yaml(Path('data/municipios/manzanares/manifest.yaml'))
         self.assertEqual((raw['codigo_ine'], raw['provincia']), ('13053', 'Ciudad Real'))
-        for section, key in [('licencias', 'enabled'), ('schedule', 'enabled'), ('geocode', 'jitter_missing')]:
+        for section, key in [('licencias', 'enabled'), ('geocode', 'jitter_missing')]:
             self.assertIs(raw[section][key], False)
+        self.assertIs(raw['schedule']['enabled'], True)
         adapter = load_portal_adapter(load_manifest('manzanares'))
         self.assertIsInstance(adapter, Adapter)
         with tempfile.TemporaryDirectory() as directory:

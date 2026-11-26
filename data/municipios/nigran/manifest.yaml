@@ -15,6 +15,6 @@ licencias:
   enabled: false
   notes: No public granted-licence register verified; application forms excluded.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

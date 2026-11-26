@@ -21,6 +21,6 @@ licencias:
   enabled: false
   notes: Los formularios de solicitud no acreditan licencias concedidas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

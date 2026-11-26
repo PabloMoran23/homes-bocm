@@ -17,6 +17,7 @@ import os
 import signal
 import sys
 import tempfile
+import zlib
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,9 @@ DEFAULT_LIMIT = 20
 DEFAULT_STEP = "update"
 DEFAULT_TIMEOUT_SECONDS = 30 * 60
 SKIP_SLUGS = {"madrid"}
+# Debe coincidir con db/ingest.py:sync_municipio_output cuando no hay filas.
+EMPTY_OUTPUT_REASON = "sin datos en output/municipios"
+EMPTY_OUTPUT_ERROR = "empty_output: el scraper no devolvió proyectos ni licencias"
 
 
 def _run_worker(slug: str, step: str, result_path: str) -> None:
@@ -177,8 +181,19 @@ def due_plan(
     now: datetime | None = None,
     force: bool = False,
     dead_letters: set[str] | None = None,
+    shard: int = 0,
+    shards: int = 1,
 ) -> dict[str, Any]:
-    """Municipios a refrescar: nunca ingestados primero, luego los más viejos."""
+    """Municipios a refrescar: nunca ingestados primero, luego los más viejos.
+
+    Con ``shards > 1`` solo considera los slugs de la partición ``shard``
+    (reparto estable por CRC32), para que varios trabajos en paralelo no se
+    pisen. Con slugs explícitos no se reparte.
+    """
+    shards = int(shards)
+    shard = int(shard)
+    if shards < 1 or not 0 <= shard < shards:
+        raise ValueError("shard debe estar entre 0 y shards-1, con shards >= 1")
     now = now or datetime.now(UTC)
     available = slugs or list_manifest_slugs()
     stamps = timestamps if timestamps is not None else _load_timestamps()
@@ -188,6 +203,8 @@ def due_plan(
     skipped: list[dict[str, Any]] = []
 
     for slug in available:
+        if not slugs and shards > 1 and shard_of(slug, shards) != shard:
+            continue
         cfg = _schedule_config(slug)
         enabled = _truthy(cfg.get("enabled"), default=True)
         force_madrid = slug == "madrid" and include_madrid
@@ -221,6 +238,8 @@ def due_plan(
         "now": now.isoformat(),
         "interval_days": interval_days,
         "limit": limit,
+        "shard": shard,
+        "shards": shards,
         "manifests": len(available),
         "due_total": len(due),
         "fresh_total": len(fresh),
@@ -228,6 +247,10 @@ def due_plan(
         "picked": picked,
         "due_remaining": due[len(picked) :],
     }
+
+
+def shard_of(slug: str, shards: int) -> int:
+    return zlib.crc32(slug.encode("utf-8")) % shards
 
 
 def _step_errors(result: dict[str, Any]) -> list[str]:
@@ -257,6 +280,8 @@ def run_due(
     dry_run: bool = False,
     force: bool = False,
     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+    shard: int = 0,
+    shards: int = 1,
 ) -> dict[str, Any]:
     if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
         raise ValueError("timeout_seconds must be finite and greater than zero")
@@ -266,6 +291,8 @@ def run_due(
         include_madrid=include_madrid,
         slugs=slugs,
         force=force,
+        shard=shard,
+        shards=shards,
     )
     out: dict[str, Any] = {
         "plan": {
@@ -274,6 +301,8 @@ def run_due(
                 "now",
                 "interval_days",
                 "limit",
+                "shard",
+                "shards",
                 "manifests",
                 "due_total",
                 "fresh_total",
@@ -323,7 +352,27 @@ def run_due(
             continue
         errors = _step_errors(result)
         sync = result.get("steps", {}).get("sync_supabase")
-        if force and not errors and sync is not None and sync.get("status") != "ok":
+        empty_output = (
+            not errors
+            and sync is not None
+            and sync.get("status") == "skipped"
+            and sync.get("reason") == EMPTY_OUTPUT_REASON
+        )
+        if empty_output:
+            # Sin filas no se escribe last_ingest_at: sin esto el municipio
+            # vuelve a la cabeza de la cola en cada corrida y se reporta OK.
+            sync["error"] = EMPTY_OUTPUT_ERROR
+            errors.append("sync_supabase")
+            try:
+                from ingest import park_dead_letter
+                retry_database_write(
+                    lambda: park_dead_letter(slug, step="empty_output", error=EMPTY_OUTPUT_ERROR),
+                    slug=slug, operation="escritura de la cola de fallos",
+                )
+                result["retry"] = "dead_letter"
+            except Exception as park_exc:
+                result["dead_letter_error"] = str(park_exc)
+        elif force and not errors and sync is not None and sync.get("status") != "ok":
             sync["error"] = sync.get("reason") or "Supabase no confirmó la ingesta"
             errors.append("sync_supabase")
         ok = not errors
@@ -336,6 +385,8 @@ def run_due(
                 for name, payload in (result.get("steps") or {}).items()
             },
         }
+        if result.get("retry"):
+            row["retry"] = result["retry"]
         out["results"].append(row)
         if ok:
             try:

@@ -80,7 +80,7 @@ class BarbastroTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '22048')
         self.assertEqual(manifest.provincia, 'Huesca')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         adapter = load_portal_adapter(manifest)

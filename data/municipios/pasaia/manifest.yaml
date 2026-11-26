@@ -19,6 +19,6 @@ licencias:
   enabled: false
   notes: No se ha verificado un inventario de licencias concedidas; formularios excluidos.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

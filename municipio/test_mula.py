@@ -71,7 +71,7 @@ class MulaTests(unittest.TestCase):
         self.assertEqual(manifest.provincia, 'Murcia')
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '30029')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / 'licencias.jsonl'

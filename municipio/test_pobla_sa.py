@@ -53,7 +53,7 @@ class PoblaSaTests(unittest.TestCase):
         raw = load_yaml(manifest.path)
         self.assertEqual(raw['codigo_ine'], '07044')
         self.assertEqual(manifest.provincia, 'Illes Balears')
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         adapter = load_portal_adapter(manifest)

@@ -82,7 +82,7 @@ class DaimielTests(unittest.TestCase):
         manifest = load_manifest('daimiel')
         raw = load_yaml(manifest.path)
         self.assertEqual((raw['codigo_ine'], manifest.provincia), ('13039', 'Ciudad Real'))
-        self.assertFalse(raw['schedule']['enabled'])
+        self.assertTrue(raw['schedule']['enabled'])
         self.assertFalse(raw['geocode']['jitter_missing'])
         self.assertFalse(manifest.licencias.enabled)
         with self.assertRaises(NotImplementedError):

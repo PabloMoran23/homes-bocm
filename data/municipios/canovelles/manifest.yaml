@@ -19,6 +19,6 @@ licencias:
   enabled: false
   notes: El apartado de licencias contiene información pública de un expediente en curso, no concesiones verificadas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

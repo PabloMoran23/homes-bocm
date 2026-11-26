@@ -17,6 +17,6 @@ licencias:
   enabled: false
   notes: La página Llicències contiene formularios, no concesiones verificadas.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false

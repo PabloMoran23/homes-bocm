@@ -16,6 +16,6 @@ proyectos:
   municipio_aliases: [Bailén, Bailen]
   notes: Instrumentos agrupados con sus documentos; no se incluyen formularios ni licitaciones.
 schedule:
-  enabled: false
+  enabled: true
 geocode:
   jitter_missing: false
