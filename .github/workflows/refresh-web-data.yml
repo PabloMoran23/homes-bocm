@@ -7,21 +7,74 @@ on:
         description: "Descargar y publicar licencias. Desactivar para actualizar solo SIGMA."
         type: boolean
         default: true
+      seed_from_ref:
+        description: "Solo siembra: publica en Supabase Storage los web/public/data de este commit, sin refrescar nada."
+        type: string
+        default: ""
   schedule:
     # Lunes 03:17 UTC (~05:17 CEST en verano) — SIGMA + visor
     - cron: "17 3 * * 1"
     # Día 17 de cada mes 03:17 UTC — refresco adicional
     - cron: "17 3 17 * *"
 
+# Web data is published to Supabase Storage (bucket web-data), not to git.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: refresh-web-data
   cancel-in-progress: false
 
 jobs:
+  seed:
+    if: github.event_name == 'workflow_dispatch' && inputs.seed_from_ref != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Take web/public/data from the seed commit
+        env:
+          SEED_REF: ${{ inputs.seed_from_ref }}
+        run: |
+          set -euo pipefail
+          git rev-parse --verify "${SEED_REF}^{commit}"
+          git checkout "$SEED_REF" -- web/public/data
+          ls web/public/data | wc -l
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Publish web data to Supabase Storage
+        working-directory: web
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SEED_REF: ${{ inputs.seed_from_ref }}
+        run: node scripts/publish-web-data.mjs --source "seed:$SEED_REF" --release-out ../web-data-release.json
+
+      - name: Setup Python
+        if: hashFiles('web-data-release.json') != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Record release in Supabase
+        if: hashFiles('web-data-release.json') != ''
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          pip install psycopg2-binary
+          python3 db/record_web_data_release.py web-data-release.json
+
   refresh:
+    if: github.event_name != 'workflow_dispatch' || inputs.seed_from_ref == ''
     runs-on: ubuntu-latest
     timeout-minutes: 180
     env:
@@ -120,6 +173,14 @@ jobs:
         working-directory: web
         run: npm ci
 
+      # Several export scripts read the previous files; start from the live release.
+      - name: Pull live web data from Supabase Storage
+        working-directory: web
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+        run: npm run pull-data
+
       - name: Verify license web contracts
         working-directory: web
         run: |
@@ -196,27 +257,20 @@ jobs:
           SKIP_BUILD_DATA: "1"
         run: npm run build
 
-      - name: Commit refreshed web data
-        run: |
-          set -euo pipefail
-          verified_base=$(git rev-parse HEAD)
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/public/data
-          git add -f web/public/data/madrid-dashboard-stats.json
-          if git diff --cached --quiet; then
-            echo "No web data changes to commit."
-          else
-            git commit -m "Refresh web data (incl. madrid-dashboard-stats.json)"
-            git fetch origin main
-            git merge-base --is-ancestor "$verified_base" FETCH_HEAD
-            if ! git diff --quiet "$verified_base" FETCH_HEAD -- web; then
-              echo "La web cambió después de verificar el build. Ejecuta el refresco sobre el nuevo main." >&2
-              exit 1
-            fi
-            git rebase --autostash FETCH_HEAD
-            git push origin HEAD:main
-          fi
+      # Every check above ran on these exact files. manifest.json switches last.
+      - name: Publish web data to Supabase Storage
+        working-directory: web
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: npm run publish-data -- --source refresh-web-data --release-out ../web-data-release.json
+
+      - name: Record release in Supabase
+        if: hashFiles('web-data-release.json') != ''
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: python3 db/record_web_data_release.py web-data-release.json
 
       - name: Save generated data cache
         if: success()

@@ -12,6 +12,22 @@ import {
   isValidAdminSession,
 } from "@/lib/admin-auth";
 import { clientIpFrom, decideAccess } from "@/lib/bot-guard";
+import { webDataObjectUrl, webDataUsesStorage } from "@/lib/web-data";
+
+/**
+ * /data/* → live object in Supabase Storage. Same-origin URLs for the
+ * browser; Vercel proxies, compresses and caches the response (see the
+ * /data headers in vercel.json). Falls through to public/ when Storage is
+ * off (local dev) or the file is not published.
+ */
+async function webDataRewrite(request: NextRequest): Promise<NextResponse> {
+  if (!webDataUsesStorage()) return NextResponse.next();
+  const target = await webDataObjectUrl(request.nextUrl.pathname);
+  if (!target) return NextResponse.next();
+  // Browser caching comes from the object's own Cache-Control (5 min, set by
+  // publish-web-data.mjs); vercel.json sets the CDN cache for /data/*.
+  return NextResponse.rewrite(new URL(target));
+}
 
 function wwwRedirect(request: NextRequest): NextResponse | null {
   const host = request.headers.get("host") ?? "";
@@ -109,6 +125,9 @@ async function botGuard(request: NextRequest): Promise<NextResponse | null> {
 }
 
 export async function middleware(request: NextRequest) {
+  // Static data files never went through bot guard or edition gates.
+  if (request.nextUrl.pathname.startsWith("/data/")) return webDataRewrite(request);
+
   const blocked = await botGuard(request);
   if (blocked) return blocked;
 
@@ -148,5 +167,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)", "/data/:path*"],
 };

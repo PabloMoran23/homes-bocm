@@ -65,7 +65,7 @@ En otro proyecto: SQL Editor o `supabase db push`.
 
 | Funcionalidad | Fuente |
 | --- | --- |
-| Mapa `/explore`, estadísticas | JSON/GeoJSON en `web/public/data/` |
+| Mapa `/explore`, estadísticas | JSON/GeoJSON `/data/*` en Supabase Storage (bucket `web-data`) |
 | `/api/boletin-area`, fichas ubicación/SIGMA | RPC Supabase `homes.*` |
 | Admin / sync | Service role (solo local / CI) |
 

@@ -42,22 +42,6 @@ yarn-error.log*
 # MapLibre worker copiado desde node_modules (postinstall / predev)
 public/maplibre/
 
-# Datos generados (npm run build-data → public/data/)
-public/data/*.json
-!public/data/madrid-sigma-visor-slim.json
-!public/data/madrid-dashboard-stats.json
-!public/data/madrid-licencias-filter-rows.json
-!public/data/madrid-sigma-filter-rows.json
-!public/data/ubicaciones-search.json
-!public/data/projects.json
-!public/data/madrid-sigma-clasificacion.json
-!public/data/madrid-sigma-programas.json
-!public/data/landing-map-spotlight.json
-!public/data/madrid-sigma-map-cards.json
-!public/data/madrid-presentacion.json
-!public/data/summary.json
-!public/data/sitemap-projects.json
-
-# Operational temporal quarantine reports produced with the public snapshot.
-!public/data/madrid-license-temporal-quarantine.json
-!public/data/madrid-filter-temporal-quarantine.json
+# Datos web: viven en Supabase Storage (bucket web-data), no en git.
+# Copia local: npm run pull-data (release vivo) o npm run build-data (regenerar).
+public/data/

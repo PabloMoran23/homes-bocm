@@ -3,7 +3,12 @@ import { isPublicEdition } from "@/lib/edition";
 import { projectPath } from "@/lib/project-display";
 import { sigmaFichaPath } from "@/lib/sigma-ficha-path";
 import { getSiteUrl } from "@/lib/site-url";
-import projects from "@/public/data/sitemap-projects.json";
+import { fetchStaticJson } from "@/lib/fetch-static-json";
+
+type SitemapProject = { proyectoId: string; investigadoAt?: string };
+
+// The project list comes from the live web data release, not the bundle.
+export const revalidate = 86400;
 
 const PUBLIC_PAGES: {
   path: string;
@@ -42,6 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Snapshot ordenado por calidad (y fecha) con db/export_sitemap_projects.py;
   // aquí solo se aplica el tope, así que la BD no se consulta al servir el sitemap.
+  const projects = (await fetchStaticJson<SitemapProject[]>("/data/sitemap-projects.json")) ?? [];
   const projectEntries: MetadataRoute.Sitemap = projects
     .slice(0, projectLimit())
     .map((project) => ({
