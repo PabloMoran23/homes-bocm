@@ -159,6 +159,25 @@ export function isPlanGeneral(texts: Array<string | null | undefined>): boolean 
   return true;
 }
 
+/**
+ * Municipios de más de 200.000 habitantes (INE). En ellos «lo nuevo en Madrid» son
+ * demasiados avisos, así que el formulario no nombra la ciudad: habla del barrio.
+ */
+const CIUDADES_GRANDES = new Set([
+  "madrid", "barcelona", "valencia", "sevilla", "zaragoza", "malaga", "murcia",
+  "palma", "palma de mallorca", "las palmas de gran canaria", "bilbao", "alicante",
+  "alacant", "cordoba", "valladolid", "vigo", "gijon", "l'hospitalet de llobregat",
+  "hospitalet de llobregat", "vitoria", "vitoria-gasteiz", "a coruna", "la coruna",
+  "elche", "elx", "granada", "terrassa", "badalona", "oviedo", "cartagena", "sabadell",
+  "jerez de la frontera", "mostoles", "santa cruz de tenerife", "pamplona", "iruna",
+  "almeria", "alcala de henares", "fuenlabrada",
+]);
+
+export function isCiudadGrande(municipio: string | null | undefined): boolean {
+  const name = fold(municipio).replace(/^(.+), (la|el|a|l')$/, "$2 $1").replace(/\s*\/.*$/, "");
+  return CIUDADES_GRANDES.has(name);
+}
+
 export function resolveSeguirOferta(input: {
   fase?: string | null;
   faseNormalizada?: string | null;
@@ -172,20 +191,23 @@ export function resolveSeguirOferta(input: {
   const planGeneral = isPlanGeneral(input.instrumentos ?? []);
   const cerrado = isExpedienteCerrado(input);
   const municipio = cleanPlaceLabel(input.municipio);
-  const local = cleanPlaceLabel(input.barrio) ?? cleanPlaceLabel(input.distrito) ?? cleanPlaceLabel(input.ambito) ?? municipio;
-  if (planGeneral) return { aviso: "zona", lugar: municipio ?? local };
+  const barrio = cleanPlaceLabel(input.barrio) ?? cleanPlaceLabel(input.distrito) ?? cleanPlaceLabel(input.ambito);
+  // En una ciudad grande no se nombra la ciudad: sin barrio conocido, el texto dice «este barrio».
+  const ciudad = isCiudadGrande(input.municipio) ? null : municipio;
+  const local = barrio ?? ciudad;
+  if (planGeneral) return { aviso: "zona", lugar: isCiudadGrande(input.municipio) ? null : municipio ?? local };
   if (cerrado) return { aviso: "zona", lugar: local };
   return { aviso: "proyecto", lugar: local };
 }
 
 function lugarEn(lugar: string | null): string {
-  return lugar ? `en ${lugar}` : "en tu zona";
+  return lugar ? `en ${lugar}` : "en este barrio";
 }
 
 export function seguirCopy(aviso: SeguirAviso, lugar: string | null): SeguirCopy {
   if (aviso === "zona") {
     const donde = lugarEn(lugar);
-    const titulo = lugar ? `Avísame de lo nuevo en ${lugar}` : "Avísame de lo nuevo en tu zona";
+    const titulo = lugar ? `Avísame de lo nuevo en ${lugar}` : "Avísame de lo nuevo en este barrio";
     return {
       aviso,
       lugar,
@@ -197,7 +219,7 @@ export function seguirCopy(aviso: SeguirAviso, lugar: string | null): SeguirCopy
       legal: `Solo usaremos tu correo para avisarte de novedades urbanísticas ${donde}.`,
       confirmacion: `Te avisaremos por correo cuando haya novedades urbanísticas ${donde}.`,
       pregunta: "¿Por qué quieres estos avisos?",
-      ya: lugar ? `Ya te avisaremos de lo nuevo en ${lugar}.` : "Ya te avisaremos de lo nuevo en tu zona.",
+      ya: lugar ? `Ya te avisaremos de lo nuevo en ${lugar}.` : "Ya te avisaremos de lo nuevo en este barrio.",
     };
   }
   return {
