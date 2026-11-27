@@ -101,8 +101,8 @@ const plan = seguir.resolveSeguirOferta({
 });
 assert.equal(plan.aviso, "zona");
 assert.equal(plan.lugar, null, "A big city's general plan does not name the city");
-assert.equal(seguir.seguirCopy(plan.aviso, plan.lugar).titulo, "Avísame de lo nuevo en tu barrio");
-assert.match(seguir.seguirCopy(plan.aviso, plan.lugar).legal, /novedades urbanísticas en tu barrio/);
+assert.equal(seguir.seguirCopy(plan.aviso, plan.lugar).titulo, "Avísame de lo nuevo en este barrio");
+assert.match(seguir.seguirCopy(plan.aviso, plan.lugar).legal, /novedades urbanísticas en este barrio/);
 
 const planPueblo = seguir.resolveSeguirOferta({
   fase: "Aprobación definitiva",

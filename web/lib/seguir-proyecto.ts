@@ -192,7 +192,7 @@ export function resolveSeguirOferta(input: {
   const cerrado = isExpedienteCerrado(input);
   const municipio = cleanPlaceLabel(input.municipio);
   const barrio = cleanPlaceLabel(input.barrio) ?? cleanPlaceLabel(input.distrito) ?? cleanPlaceLabel(input.ambito);
-  // En una ciudad grande no se nombra la ciudad: sin barrio conocido, el texto dice «tu barrio».
+  // En una ciudad grande no se nombra la ciudad: sin barrio conocido, el texto dice «este barrio».
   const ciudad = isCiudadGrande(input.municipio) ? null : municipio;
   const local = barrio ?? ciudad;
   if (planGeneral) return { aviso: "zona", lugar: isCiudadGrande(input.municipio) ? null : municipio ?? local };
@@ -201,13 +201,13 @@ export function resolveSeguirOferta(input: {
 }
 
 function lugarEn(lugar: string | null): string {
-  return lugar ? `en ${lugar}` : "en tu barrio";
+  return lugar ? `en ${lugar}` : "en este barrio";
 }
 
 export function seguirCopy(aviso: SeguirAviso, lugar: string | null): SeguirCopy {
   if (aviso === "zona") {
     const donde = lugarEn(lugar);
-    const titulo = lugar ? `Avísame de lo nuevo en ${lugar}` : "Avísame de lo nuevo en tu barrio";
+    const titulo = lugar ? `Avísame de lo nuevo en ${lugar}` : "Avísame de lo nuevo en este barrio";
     return {
       aviso,
       lugar,
@@ -219,7 +219,7 @@ export function seguirCopy(aviso: SeguirAviso, lugar: string | null): SeguirCopy
       legal: `Solo usaremos tu correo para avisarte de novedades urbanísticas ${donde}.`,
       confirmacion: `Te avisaremos por correo cuando haya novedades urbanísticas ${donde}.`,
       pregunta: "¿Por qué quieres estos avisos?",
-      ya: lugar ? `Ya te avisaremos de lo nuevo en ${lugar}.` : "Ya te avisaremos de lo nuevo en tu barrio.",
+      ya: lugar ? `Ya te avisaremos de lo nuevo en ${lugar}.` : "Ya te avisaremos de lo nuevo en este barrio.",
     };
   }
   return {
