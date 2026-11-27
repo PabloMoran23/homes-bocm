@@ -28,6 +28,10 @@ const EVENT_LABELS: Record<string, string> = {
   mapa_seleccionar: "Selección en el mapa",
   ficha_proyecto_ver: "Consulta de ficha",
   ficha_pestana: "Sección de ficha",
+  seguir_visto: "Formulario de seguimiento visto",
+  seguir_clic: "Clic en seguimiento",
+  seguir_alta: "Alta de seguimiento",
+  seguir_segmento: "Motivo de seguimiento",
 };
 
 export function labelAnalyticsSource(source: string): string {

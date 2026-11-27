@@ -1,7 +1,7 @@
-export const EVENT_NAMES = ["page_view", "page_engagement", "document_click", "outbound_click", "boletin_buscar", "ficha_proyecto_ver", "estadisticas_filtro", "mapa_buscar", "mapa_seleccionar", "ficha_pestana"] as const;
+export const EVENT_NAMES = ["page_view", "page_engagement", "document_click", "outbound_click", "boletin_buscar", "ficha_proyecto_ver", "estadisticas_filtro", "mapa_buscar", "mapa_seleccionar", "ficha_pestana", "seguir_visto", "seguir_clic", "seguir_alta", "seguir_segmento"] as const;
 const UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i;
 const NUMBERS: Record<string, number> = { active_seconds: 86400, scroll_percent: 100, radius_m: 3000, months: 120, resultados: 100000, activos: 20, caracteres: 200 };
-const STRINGS = new Set(["id", "kind", "modo", "tab", "distrito", "barrio", "municipio", "destination_host", "document_type", "distritos", "actuaciones", "procedimientos", "usos", "anio", "categoriaProyecto", "tipoObra", "tipoLegal", "escala", "iniciativa"]);
+const STRINGS = new Set(["id", "kind", "modo", "tab", "distrito", "barrio", "municipio", "destination_host", "document_type", "distritos", "actuaciones", "procedimientos", "usos", "anio", "categoriaProyecto", "tipoObra", "tipoLegal", "escala", "iniciativa", "posicion", "proyecto", "valor"]);
 type CleanEvent = { id: string; session: string; page: string; name: string; path: string; source: string; at: number; props: Record<string, string | number | boolean> };
 
 export function sanitizeAnalyticsBatch(body: unknown, now = Date.now()): CleanEvent[] | null {
