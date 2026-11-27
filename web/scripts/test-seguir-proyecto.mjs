@@ -100,7 +100,23 @@ const plan = seguir.resolveSeguirOferta({
   municipio: "Madrid",
 });
 assert.equal(plan.aviso, "zona");
-assert.equal(plan.lugar, "Madrid", "A general plan names the municipality, not one district");
+assert.equal(plan.lugar, null, "A big city's general plan does not name the city");
+assert.equal(seguir.seguirCopy(plan.aviso, plan.lugar).titulo, "Avísame de lo nuevo en tu barrio");
+assert.match(seguir.seguirCopy(plan.aviso, plan.lugar).legal, /novedades urbanísticas en tu barrio/);
+
+const planPueblo = seguir.resolveSeguirOferta({
+  fase: "Aprobación definitiva",
+  instrumentos: ["Plan General de Ordenación Urbana"],
+  distrito: "Centro",
+  municipio: "Torrelodones",
+});
+assert.equal(planPueblo.lugar, "Torrelodones", "A small town's general plan names the town");
+
+const cerradoPueblo = seguir.resolveSeguirOferta({ fase: "Aprobación definitiva", instrumentos: ["Plan parcial"], municipio: "Torrelodones" });
+assert.equal(cerradoPueblo.lugar, "Torrelodones");
+assert.equal(seguir.isCiudadGrande("València"), true);
+assert.equal(seguir.isCiudadGrande("Coruña, A"), true);
+assert.equal(seguir.isCiudadGrande("Getafe"), false);
 
 const catalogacion = seguir.resolveSeguirOferta({
   faseNormalizada: "en_tramitacion",
@@ -128,7 +144,7 @@ const codigo = seguir.resolveSeguirOferta({
   municipio: "Madrid",
 });
 assert.equal(codigo.aviso, "zona");
-assert.equal(codigo.lugar, "Madrid", "A planning code is not used as the place name");
+assert.equal(codigo.lugar, null, "A planning code is not a place name, and a big city is not named");
 
 const archivado = seguir.resolveSeguirOferta({
   fase: "Archivado",
