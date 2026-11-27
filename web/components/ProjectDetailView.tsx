@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
+import { SeguirProyectoForm } from "@/components/seguir-proyecto/SeguirProyecto";
 import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
@@ -249,7 +250,7 @@ export function ProjectDetailView({
 
   return (
     <main className={`mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6 sm:py-8 ${infoExtra ? "project-research" : "overflow-x-hidden"}`}>
-      {!hasTerritoryNavigation ? <nav className="mb-8 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+      {!hasTerritoryNavigation ? <nav className="mb-3 flex flex-wrap items-center gap-2 text-sm text-slate-500 sm:mb-6">
         <Link href="/explore" className="font-medium text-[var(--portal-accent)] hover:underline">
           ← Mapa
         </Link>
@@ -277,6 +278,7 @@ export function ProjectDetailView({
             {p.pdfUrl ? <a href={p.pdfUrl} target="_blank" rel="noopener noreferrer">Documento BOCM ↗</a> : null}
             {p.sigmaVisorUrl ? <a href={p.sigmaVisorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
           </>}
+          follow={<SeguirProyectoForm position="cabecera" />}
         />
       ) : (
       <header className="portal-hero-bg mb-8 overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm">
@@ -295,6 +297,15 @@ export function ProjectDetailView({
                 Información pública
               </span>
             ) : null}
+            {hasValue(p.estadoTramitacion) ? (
+              <span className="rounded-full bg-[#f4e8d2] px-3 py-0.5 text-xs font-semibold text-slate-900 ring-1 ring-[#d4923a]/35">
+                {p.estadoTramitacion}
+              </span>
+            ) : hasValue(p.sigmaFase) ? (
+              <span className="rounded-full bg-[#e4ecec] px-3 py-0.5 text-xs font-semibold text-slate-900 ring-1 ring-[#1f4f53]/20">
+                {p.sigmaFase}
+              </span>
+            ) : null}
             {hasValue(p.tipoInstrumento) ? (
               <span className="rounded-full bg-white/80 px-3 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200">
                 {p.tipoInstrumento}
@@ -302,7 +313,9 @@ export function ProjectDetailView({
             ) : null}
           </div>
 
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start">
+            <div className="min-w-0 flex-1">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             {researchedTitle || visorH1 || headline}
           </h1>
           {infoExtra ? (
@@ -322,7 +335,9 @@ export function ProjectDetailView({
           {researchedTitle && researchedTitle !== headline ? (
             <p className="mt-2 text-xs text-slate-500">Referencia de origen: {headline}</p>
           ) : null}
-
+            </div>
+            <SeguirProyectoForm position="cabecera" />
+          </div>
           {!infoExtra && p.sigmaExpediente ? (
             <p className="mt-3 font-mono text-sm font-medium text-[var(--portal-accent)]">
               Expediente {p.sigmaExpediente}
@@ -629,6 +644,7 @@ export function ProjectDetailView({
                   <h2 className="text-lg font-semibold text-slate-900">Documentos oficiales</h2>
                   <p className="mt-1 text-sm text-slate-600">{SIGMA_DOCUMENTOS_INTRO}</p>
                 </div>
+                <SeguirProyectoForm position="documentos" />
 
                 {(p.sigmaVisorDocumentacionUrls?.length ?? 0) > 0 ? (
                   <ul className="flex flex-wrap gap-2">

@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
+import { cleanFollowSegment, cleanFollowSignup } from "@/lib/seguir-proyecto";
 
 export async function POST(request: NextRequest) {
   if (request.headers.get("origin") !== request.nextUrl.origin) {
@@ -9,27 +10,17 @@ export async function POST(request: NextRequest) {
     return new NextResponse(null, { status: 413 });
   }
 
-  let email: string;
-  let source: "project" | "boletin" | "dashboard";
-  let contextKey: string;
+  let signup: ReturnType<typeof cleanFollowSignup> = null;
+  let segment: ReturnType<typeof cleanFollowSegment> = null;
   try {
     const text = await request.text();
     if (text.length > 2048) return new NextResponse(null, { status: 413 });
     const body = JSON.parse(text);
     if (!body || typeof body !== "object") return new NextResponse(null, { status: 400 });
     if (body.website) return new NextResponse(null, { status: 204 });
-    if (!["project", "boletin", "dashboard"].includes(body.source)) {
-      return new NextResponse(null, { status: 400 });
-    }
-    source = body.source;
-    contextKey = source === "project" && typeof body.contextKey === "string" ? body.contextKey.trim() : "";
-    if ((source === "project" && !contextKey) || contextKey.length > 200) {
-      return new NextResponse(null, { status: 400 });
-    }
-    email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
-    if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return new NextResponse(null, { status: 400 });
-    }
+    if (body.intent === "segmento") segment = cleanFollowSegment(body);
+    else signup = cleanFollowSignup(body);
+    if (!segment && !signup) return new NextResponse(null, { status: 400 });
   } catch {
     return new NextResponse(null, { status: 400 });
   }
@@ -42,13 +33,28 @@ export async function POST(request: NextRequest) {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(5000) }) },
   });
+  const params = segment
+    ? {
+        p_key: registrationKey,
+        p_email: segment.email,
+        p_source: "project",
+        p_context_key: segment.contextKey,
+        p_segmento: segment.segmento,
+      }
+    : {
+        p_key: registrationKey,
+        p_email: signup!.email,
+        p_source: signup!.source,
+        p_context_key: signup!.contextKey,
+        p_posicion: signup!.posicion,
+        p_municipio: signup!.municipio,
+        p_referrer: signup!.referrer,
+        p_utm: signup!.utm,
+        p_aviso: signup!.aviso,
+        p_ambito: signup!.ambito,
+      };
   try {
-    const { error } = await supabase.rpc("homes_launch_waitlist_register", {
-      p_key: registrationKey,
-      p_email: email,
-      p_source: source,
-      p_context_key: contextKey,
-    });
+    const { error } = await supabase.rpc("homes_launch_waitlist_register", params);
     if (error) return new NextResponse(null, { status: 503 });
     return new NextResponse(null, { status: 204 });
   } catch {

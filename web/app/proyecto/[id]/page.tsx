@@ -1,4 +1,5 @@
-import { LaunchWaitlistSection } from "@/components/LaunchWaitlistSection";
+import { SeguirProyectoPie, SeguirProyectoProvider } from "@/components/seguir-proyecto/SeguirProyecto";
+import { firstPlaceName, resolveSeguirOferta } from "@/lib/seguir-proyecto";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import {
@@ -8,12 +9,14 @@ import {
 import {
   directoryProjectPath,
   getDirectoryProject,
+  projectTerritory,
+  type DirectoryProject,
 } from "@/lib/project-directory";
 import { ProyectoViewTracker } from "@/components/ProyectoViewTracker";
 import { ProjectDetailView } from "@/components/ProjectDetailView";
 import { SigmaExpedienteDetailView } from "@/components/SigmaExpedienteDetailView";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getSigmaClasificacionForGrupos } from "@/lib/load-sigma-clasificacion";
+import { getSigmaClasificacionForGrupo, getSigmaClasificacionForGrupos } from "@/lib/load-sigma-clasificacion";
 import { getSigmaMetricForGrupo } from "@/lib/load-sigma-metrics";
 import { getSigmaProgramaForGrupo } from "@/lib/load-sigma-programas";
 import { loadProjectById } from "@/lib/load-project";
@@ -50,6 +53,15 @@ async function projectId(params: PageProps["params"]): Promise<string> {
     return decodeURIComponent(id);
   } catch {
     notFound();
+  }
+}
+
+function municipioDirectorio(project: DirectoryProject | undefined): string | null {
+  if (!project) return null;
+  try {
+    return projectTerritory(project).municipality.name;
+  } catch {
+    return null;
   }
 }
 
@@ -97,17 +109,42 @@ export default async function ProyectoPage({ params }: PageProps) {
 
   const project = await loadProjectById(id);
   if (project) {
-    const [programaCtx, infoExtra] = await Promise.all([
+    const [programaCtx, infoExtra, clasificacionPropia] = await Promise.all([
       project.sigmaExpediente
         ? getSigmaProgramaForGrupo(String(project.sigmaExpediente))
         : Promise.resolve(null),
       loadProyectoInfoExtra(id, project.id, project.sigmaExpediente),
+      project.sigmaExpediente
+        ? getSigmaClasificacionForGrupo(String(project.sigmaExpediente))
+        : Promise.resolve(null),
     ]);
     const clasificacionByExpediente = await clasificacionProgramaMiembros(
       programaCtx?.programa,
     );
+    const municipio = firstPlaceName([
+      project.municipio,
+      municipioDirectorio(directoryProject),
+      project.territorioLabel,
+    ]);
+    const oferta = resolveSeguirOferta({
+      fase: project.sigmaFase,
+      faseNormalizada: clasificacionPropia?.faseNormalizada,
+      estado: project.estadoTramitacion,
+      instrumentos: [
+        project.tipoInstrumento,
+        project.sigmaTipoFigura,
+        project.sigmaFiguraCodigo,
+        clasificacionPropia?.tipoLegal,
+        project.sigmaDenominacion,
+        project.title,
+        project.sigmaVisorCabecera?.h1,
+        project.sigmaVisorCabecera?.h2,
+      ],
+      ambito: project.nombreSector,
+      municipio,
+    });
     return (
-      <>
+      <SeguirProyectoProvider projectId={id} municipio={municipio} aviso={oferta.aviso} lugar={oferta.lugar}>
         {directoryProject ? (
           <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
         ) : breadcrumbLd ? (
@@ -122,11 +159,11 @@ export default async function ProyectoPage({ params }: PageProps) {
           clasificacionByExpediente={clasificacionByExpediente}
           infoExtra={infoExtra}
         />
-        <LaunchWaitlistSection source="project" contextKey={id} />
+        <SeguirProyectoPie />
         {directoryProject ? (
           <RelatedDirectoryProjects project={directoryProject} />
         ) : null}
-      </>
+      </SeguirProyectoProvider>
     );
   }
 
@@ -141,8 +178,26 @@ export default async function ProyectoPage({ params }: PageProps) {
   const clasificacionByExpediente = await clasificacionProgramaMiembros(
     programaCtx?.programa,
   );
+  const municipio = firstPlaceName([municipioDirectorio(directoryProject), "Madrid"]);
+  const oferta = resolveSeguirOferta({
+    fase: ficha.catalog?.FAS_TX_DENOM,
+    faseNormalizada: ficha.clasificacion?.faseNormalizada,
+    instrumentos: [
+      ficha.catalog?.FIG_TX_ETIQ,
+      ficha.catalog?.TFIG_TX_ABREV,
+      ficha.clasificacion?.tipoLegal,
+      ficha.catalog?.EXP_TX_DENOM,
+      ficha.visorFicha?.figuraTipo,
+      ficha.visorFicha?.tipoPlaneamiento,
+      ficha.visorCabecera?.h1,
+      ficha.visorCabecera?.h2,
+    ],
+    distrito: ficha.visorFicha?.distrito,
+    ambito: ficha.visorFicha?.ambitoOrdenacion || ficha.visorFicha?.descripcionAmbito,
+    municipio,
+  });
   return (
-    <>
+    <SeguirProyectoProvider projectId={id} municipio={municipio} aviso={oferta.aviso} lugar={oferta.lugar}>
       {directoryProject ? (
         <ProjectTerritoryNavigation project={{ ...directoryProject, title: pageTitle || directoryProject.title }} />
       ) : breadcrumbLd ? (
@@ -158,10 +213,10 @@ export default async function ProyectoPage({ params }: PageProps) {
         clasificacionByExpediente={clasificacionByExpediente}
         infoExtra={infoExtra}
       />
-      <LaunchWaitlistSection source="project" contextKey={id} />
+      <SeguirProyectoPie />
       {directoryProject ? (
         <RelatedDirectoryProjects project={directoryProject} />
       ) : null}
-    </>
+    </SeguirProyectoProvider>
   );
 }

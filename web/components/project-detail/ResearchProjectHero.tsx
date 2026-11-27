@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import { proyectoInfoChips } from "./ProyectoInfoExtraPanel";
 import type { ProyectoInfoExtra } from "@/lib/proyecto-info-extra";
 
-export function ResearchProjectHero({ title, location, subtitle, info, map, actions }: {
+export function ResearchProjectHero({ title, location, subtitle, info, map, actions, follow = null }: {
   title: string;
   location: string;
   subtitle?: string | null;
   info: ProyectoInfoExtra;
   map: ReactNode;
   actions?: ReactNode;
+  follow?: ReactNode;
 }) {
   const metrics = proyectoInfoChips(info);
   const [displayTitle, designation] = title.split(/\s[—–]\s/);
@@ -23,6 +24,7 @@ export function ResearchProjectHero({ title, location, subtitle, info, map, acti
           <p className="research-eyebrow">Explorador territorial <span>/</span> {location}</p>
           <h1>{displayTitle}</h1>
           {designation || subtitle ? <p className="research-subtitle">{designation || subtitle}</p> : null}
+          {follow ? <div className="research-follow">{follow}</div> : null}
         </div>
         <a className="research-outline-link" href="#investigacion">Explorar investigación <span aria-hidden="true">↓</span></a>
       </div>
