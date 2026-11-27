@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from "react";
 import { SeguirProyectoForm } from "@/components/seguir-proyecto/SeguirProyecto";
 import { DetailBreadcrumbLink } from "@/components/detail/DetailPageShell";
 import { SigmaMetricsPanel } from "@/components/detail/SigmaMetricsCards";
-import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
@@ -200,7 +199,6 @@ export function SigmaExpedienteDetailView({
           info={infoExtra}
           map={<WhenIdle delayMs={4000} fallback={<div className="research-map-loading">Cargando mapa del territorio…</div>}><ResearchTerritoryMap geo={sigmaGeo} location="Ámbito del proyecto" /></WhenIdle>}
           actions={visorUrl ? <a href={visorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
-          follow={<SeguirProyectoForm position="cabecera" />}
         />
       ) : (
       <SigmaProjectHero
@@ -209,7 +207,6 @@ export function SigmaExpedienteDetailView({
         visorUrl={visorUrl}
         bocmFirstId={hasBocm ? ficha.bocmProyectos[0].id : null}
         bocmCount={ficha.bocmProyectos.length}
-        follow={<SeguirProyectoForm position="cabecera" />}
       />
       )}
 
@@ -237,7 +234,7 @@ export function SigmaExpedienteDetailView({
         </div>
       ) : null}
 
-      <ExploreAreaBanner />
+      <div className="my-7"><SeguirProyectoForm position="cabecera" /></div>
 
       <div className={infoExtra ? "mt-6 min-w-0" : "mt-8 grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {infoExtra ? null : (

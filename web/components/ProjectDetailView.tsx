@@ -5,7 +5,6 @@ import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { useEffect, useMemo, useState } from "react";
 import { SeguirProyectoForm } from "@/components/seguir-proyecto/SeguirProyecto";
-import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { ResearchProjectHero } from "@/components/project-detail/ResearchProjectHero";
 import { NtiDocumentList } from "@/components/project-detail/NtiDocumentList";
 import {
@@ -278,7 +277,6 @@ export function ProjectDetailView({
             {p.pdfUrl ? <a href={p.pdfUrl} target="_blank" rel="noopener noreferrer">Documento BOCM ↗</a> : null}
             {p.sigmaVisorUrl ? <a href={p.sigmaVisorUrl} target="_blank" rel="noopener noreferrer">Consultar Ayuntamiento ↗</a> : null}
           </>}
-          follow={<SeguirProyectoForm position="cabecera" />}
         />
       ) : (
       <header className="portal-hero-bg mb-8 overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm">
@@ -336,7 +334,6 @@ export function ProjectDetailView({
             <p className="mt-2 text-xs text-slate-500">Referencia de origen: {headline}</p>
           ) : null}
             </div>
-            <SeguirProyectoForm position="cabecera" />
           </div>
           {!infoExtra && p.sigmaExpediente ? (
             <p className="mt-3 font-mono text-sm font-medium text-[var(--portal-accent)]">
@@ -439,7 +436,7 @@ export function ProjectDetailView({
       </header>
       )}
 
-      <ExploreAreaBanner />
+      <div className="my-7"><SeguirProyectoForm position="cabecera" /></div>
 
       <div className={infoExtra ? "min-w-0" : "grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"}>
         {/* Sidebar */}

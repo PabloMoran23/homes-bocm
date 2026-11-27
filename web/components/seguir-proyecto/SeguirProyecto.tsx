@@ -294,9 +294,7 @@ export function SeguirProyectoForm({ position }: { position: SeguirPosicion }) {
       aria-labelledby={position === "barra" ? undefined : headingId}
       className={position === "pie"
         ? "mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6"
-        : position === "cabecera"
-          ? "w-full max-w-md"
-          : "w-full"}
+        : "w-full"}
     >
       {already ? (
         <p role="status" className="rounded-xl border border-[#d9e0d2] bg-[#f7f3eb] px-3 py-2 text-sm text-[#344a40]">
@@ -354,18 +352,20 @@ function SignupForm({ position, headingId }: { position: SeguirPosicion; heading
   }
 
   return (
-    <div className={cardClass(position)}>
-      {position === "barra" ? null : (
-        <h2 id={headingId} className={position === "pie" ? "text-2xl font-semibold tracking-tight text-[var(--portal-ink)]" : "text-base font-semibold text-[var(--portal-ink)]"}>
-          {seguir.copy.titulo}
-        </h2>
-      )}
-      <p className={position === "pie" ? "mt-2 max-w-xl text-sm leading-relaxed text-[#52645c]" : "mt-1 text-sm leading-snug text-[#52645c]"}>
-        {seguir.copy.texto}
-      </p>
-      <form className="mt-3" onSubmit={onSubmit} noValidate aria-busy={seguir.busy}>
+    <div className={`${cardClass(position)}${position === "cabecera" ? " lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:items-center lg:gap-10" : ""}`}>
+      <div>
+        {position === "barra" ? null : (
+          <h2 id={headingId} className={position === "pie" ? "text-2xl font-semibold tracking-tight text-[var(--portal-ink)]" : position === "cabecera" ? "text-xl font-semibold tracking-tight text-[var(--portal-ink)]" : "text-base font-semibold text-[var(--portal-ink)]"}>
+            {seguir.copy.titulo}
+          </h2>
+        )}
+        <p className={position === "pie" || position === "cabecera" ? "mt-2 max-w-xl text-sm leading-relaxed text-[#52645c]" : "mt-1 text-sm leading-snug text-[#52645c]"}>
+          {seguir.copy.texto}
+        </p>
+      </div>
+      <form className={position === "cabecera" ? "mt-4 lg:mt-0" : "mt-3"} onSubmit={onSubmit} noValidate aria-busy={seguir.busy}>
         <label htmlFor={emailId} className="sr-only">Correo electrónico</label>
-        <div className={position === "pie" ? "flex flex-col gap-2 sm:flex-row" : "flex flex-col gap-2"}>
+        <div className={position === "pie" || position === "cabecera" ? "flex flex-col gap-2 sm:flex-row" : "flex flex-col gap-2"}>
           <input
             id={emailId}
             name="email"
@@ -467,6 +467,9 @@ function cardClass(position: SeguirPosicion) {
     return "rounded-2xl border border-[#d9e0d2] bg-[#edf0e7] p-5 text-[var(--portal-ink)] sm:p-8";
   }
   if (position === "barra") return "text-[var(--portal-ink)]";
+  if (position === "cabecera") {
+    return "rounded-xl border border-[#d9e0d2] bg-[#f7f3eb] p-5 text-[var(--portal-ink)] sm:px-8 sm:py-6";
+  }
   return "rounded-xl border border-[#d9e0d2] bg-[#f7f3eb] p-3 text-[var(--portal-ink)] shadow-sm";
 }
 

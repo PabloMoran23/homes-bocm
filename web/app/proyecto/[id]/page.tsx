@@ -1,4 +1,5 @@
-import { SeguirProyectoPie, SeguirProyectoProvider } from "@/components/seguir-proyecto/SeguirProyecto";
+import { SeguirProyectoProvider } from "@/components/seguir-proyecto/SeguirProyecto";
+import { ExploreAreaBanner } from "@/components/project-detail/ExploreAreaBanner";
 import { firstPlaceName, resolveSeguirOferta } from "@/lib/seguir-proyecto";
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -159,7 +160,7 @@ export default async function ProyectoPage({ params }: PageProps) {
           clasificacionByExpediente={clasificacionByExpediente}
           infoExtra={infoExtra}
         />
-        <SeguirProyectoPie />
+        <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6"><ExploreAreaBanner /></div>
         {directoryProject ? (
           <RelatedDirectoryProjects project={directoryProject} />
         ) : null}
@@ -213,7 +214,7 @@ export default async function ProyectoPage({ params }: PageProps) {
         clasificacionByExpediente={clasificacionByExpediente}
         infoExtra={infoExtra}
       />
-      <SeguirProyectoPie />
+      <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6"><ExploreAreaBanner /></div>
       {directoryProject ? (
         <RelatedDirectoryProjects project={directoryProject} />
       ) : null}
